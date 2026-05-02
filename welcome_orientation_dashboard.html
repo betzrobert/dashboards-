@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Welcome Orientation Attendance Dashboard — Week of 4.27.26</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<style>
+  :root {
+    --navy: #0f2748;
+    --navy-2: #1c3a6b;
+    --green: #2e7d4f;
+    --green-light: #4ea878;
+    --red: #c0392b;
+    --red-light: #e17a6e;
+    --gray: #6b7280;
+    --gray-light: #e5e7eb;
+    --bg: #f6f7fb;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --amber: #d4a017;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+    color: white;
+    padding: 28px 40px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  header h1 {
+    margin: 0 0 4px;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  header .sub {
+    font-size: 14px;
+    opacity: 0.85;
+  }
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 40px 60px;
+  }
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kpi {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 18px 20px;
+    border-left: 4px solid var(--navy);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .kpi.green { border-left-color: var(--green); }
+  .kpi.red { border-left-color: var(--red); }
+  .kpi.amber { border-left-color: var(--amber); }
+  .kpi .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--gray);
+    font-weight: 600;
+  }
+  .kpi .value {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-top: 4px;
+    line-height: 1.1;
+  }
+  .kpi .sub {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .grid.full { grid-template-columns: 1fr; }
+  .card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .card h2 {
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .card .desc {
+    font-size: 12px;
+    color: var(--gray);
+    margin-bottom: 14px;
+  }
+  .chart-wrap {
+    position: relative;
+    height: 320px;
+  }
+  .chart-wrap.tall { height: 380px; }
+  table.detail {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.detail th {
+    background: var(--navy);
+    color: white;
+    text-align: left;
+    padding: 9px 12px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  table.detail td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--gray-light);
+  }
+  table.detail tr:hover td { background: #fafbfd; }
+  .pct-good { color: var(--green); font-weight: 600; }
+  .pct-warn { color: var(--amber); font-weight: 600; }
+  .pct-bad { color: var(--red); font-weight: 600; }
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .pill.na { background: var(--gray-light); color: var(--gray); }
+  .footnote {
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 10px;
+    font-style: italic;
+  }
+  .legend-row {
+    display: flex;
+    gap: 18px;
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .swatch {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Welcome Orientation Attendance Dashboard</h1>
+  <div class="sub">AssistRx HR Onboarding & Employee Experience &nbsp;|&nbsp; Week of 4.27.26 &nbsp;|&nbsp; 8 Locations &nbsp;|&nbsp; 118 Expected Attendees</div>
+</header>
+
+<div class="container">
+
+  <!-- KPI Row -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="label">Expected Total</div>
+      <div class="value">118</div>
+      <div class="sub">109 FTE + 9 Contractors</div>
+    </div>
+    <div class="kpi green">
+      <div class="label">Day 1 Attendance</div>
+      <div class="value">96</div>
+      <div class="sub">81.4% of expected</div>
+    </div>
+    <div class="kpi green">
+      <div class="label">Day 2 Attendance</div>
+      <div class="value">95</div>
+      <div class="sub">80.5% of expected*</div>
+    </div>
+    <div class="kpi amber">
+      <div class="label">Day 3 Attendance</div>
+      <div class="value">53</div>
+      <div class="sub">Pending entries for 3 sites</div>
+    </div>
+    <div class="kpi red">
+      <div class="label">Day 1 No-Shows</div>
+      <div class="value">22</div>
+      <div class="sub">18.6% gap to expected</div>
+    </div>
+  </div>
+
+  <!-- Row 1: Expected vs Actual + Attendance Rate -->
+  <div class="grid">
+    <div class="card">
+      <h2>Expected vs. Actual Attendance by Location</h2>
+      <div class="desc">Comparing planned headcount against day-by-day check-ins for each orientation site</div>
+      <div class="chart-wrap tall"><canvas id="expectedVsActual"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>Day 1 Attendance Rate by Location</h2>
+      <div class="desc">Percentage of expected attendees present on opening day — sorted highest to lowest</div>
+      <div class="chart-wrap tall"><canvas id="day1Rate"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Row 2: Daily trend lines -->
+  <div class="grid full">
+    <div class="card">
+      <h2>Daily Attendance Trend by Location</h2>
+      <div class="desc">Day 1 → Day 2 → Day 3 progression. Watch for retention drop-off across the 3-day orientation. Locations with pending Day 3 data are shown with dashed segments.</div>
+      <div class="chart-wrap tall"><canvas id="dailyTrend"></canvas></div>
+      <div class="legend-row">
+        <span><span class="swatch" style="background:#0f2748"></span>Solid line = recorded attendance</span>
+        <span><span class="swatch" style="background:#9ca3af;opacity:0.6"></span>Dashed = data pending entry</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 3: Workforce mix + Day-over-day change -->
+  <div class="grid">
+    <div class="card">
+      <h2>Workforce Mix: FTE vs. Contractors</h2>
+      <div class="desc">Composition of expected attendees by employment classification</div>
+      <div class="chart-wrap"><canvas id="workforceMix"></canvas></div>
+      <div class="footnote">Per AssistRx convention, Contractor-Temporary Associates are typically excluded from retention reporting; shown here for orientation logistics only.</div>
+    </div>
+    <div class="card">
+      <h2>Day-over-Day Attendance Change</h2>
+      <div class="desc">Net change from Day 1 to Day 2 — green = gain, red = loss, gray = no change</div>
+      <div class="chart-wrap"><canvas id="dodChange"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Row 4: Detail table -->
+  <div class="grid full">
+    <div class="card">
+      <h2>Location Detail — Week of 4.27.26</h2>
+      <div class="desc">Full attendance breakdown with attrition gap (Expected minus best daily attendance recorded)</div>
+      <table class="detail">
+        <thead>
+          <tr>
+            <th>Location</th>
+            <th>FTE</th>
+            <th>Contractors</th>
+            <th>Expected</th>
+            <th>Day 1</th>
+            <th>Day 2</th>
+            <th>Day 3</th>
+            <th>Day 1 Rate</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="detailTable"></tbody>
+      </table>
+      <div class="footnote">* Day 2 percentage calculated against the 116 expected attendees from locations that have Day 2 data recorded (excludes Remote Non-Hub).</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+Chart.register(ChartDataLabels);
+
+// Data
+const locations = ['Maitland','SouthPark Advance','SouthPark','CoAssist','Overland Park','Arizona','Remote Hub','Remote Non-Hub'];
+const fte = [8,39,10,11,3,3,33,2];
+const contractors = [0,0,0,0,0,0,9,0];
+const expected = [8,39,10,11,3,3,42,2];
+const day1 = [7,31,7,7,2,3,37,2];
+const day2 = [7,32,7,7,2,3,37,null];
+const day3 = [7,30,6,7,null,3,null,null];
+const notes = ['','','One agent removed mid-training for background check','','Joined remote session','','',''];
+
+// Color palette
+const navy = '#0f2748';
+const navyLight = '#1c3a6b';
+const green = '#2e7d4f';
+const greenLight = '#4ea878';
+const red = '#c0392b';
+const redLight = '#e17a6e';
+const gray = '#9ca3af';
+const amber = '#d4a017';
+
+// Common font for chart text
+Chart.defaults.font.family = "'Segoe UI', Arial, sans-serif";
+Chart.defaults.color = '#374151';
+
+// 1. Expected vs Actual (grouped horizontal bar)
+new Chart(document.getElementById('expectedVsActual'), {
+  type: 'bar',
+  data: {
+    labels: locations,
+    datasets: [
+      { label: 'Expected', data: expected, backgroundColor: navy, borderRadius: 3 },
+      { label: 'Day 1 Actual', data: day1, backgroundColor: green, borderRadius: 3 }
+    ]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+      datalabels: {
+        anchor: 'end', align: 'right', color: '#1a1a1a',
+        font: { size: 11, weight: '600' },
+        formatter: v => v
+      },
+      tooltip: { callbacks: { label: c => `${c.dataset.label}: ${c.parsed.x}` } }
+    },
+    scales: {
+      x: { beginAtZero: true, grid: { color: '#eef0f4' }, ticks: { font: { size: 11 } } },
+      y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+    }
+  }
+});
+
+// 2. Day 1 Attendance rate by location (sorted)
+const rateData = locations.map((loc, i) => ({
+  loc, rate: (day1[i] / expected[i]) * 100, d1: day1[i], exp: expected[i]
+})).sort((a,b) => b.rate - a.rate);
+
+new Chart(document.getElementById('day1Rate'), {
+  type: 'bar',
+  data: {
+    labels: rateData.map(d => d.loc),
+    datasets: [{
+      label: 'Day 1 Attendance %',
+      data: rateData.map(d => d.rate),
+      backgroundColor: rateData.map(d => d.rate === 100 ? green : d.rate >= 85 ? greenLight : d.rate >= 75 ? amber : red),
+      borderRadius: 3
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      datalabels: {
+        anchor: 'end', align: 'right', color: '#1a1a1a',
+        font: { size: 11, weight: '600' },
+        formatter: (v, ctx) => {
+          const d = rateData[ctx.dataIndex];
+          return `${v.toFixed(0)}% (${d.d1}/${d.exp})`;
+        }
+      },
+      tooltip: { callbacks: { label: c => `${c.parsed.x.toFixed(1)}%` } }
+    },
+    scales: {
+      x: { beginAtZero: true, max: 110, grid: { color: '#eef0f4' }, ticks: { callback: v => v + '%', font: { size: 11 } } },
+      y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+    }
+  }
+});
+
+// 3. Daily trend by location (multi-line)
+const palette = [navy, green, red, amber, navyLight, greenLight, redLight, '#7c3aed'];
+const trendDatasets = locations.map((loc, i) => {
+  const points = [day1[i], day2[i], day3[i]];
+  // Determine which segments are "pending"
+  const segmentColors = [];
+  for (let j = 0; j < 2; j++) {
+    if (points[j] === null || points[j+1] === null) segmentColors.push('pending');
+    else segmentColors.push('solid');
+  }
+  return {
+    label: loc,
+    data: points,
+    borderColor: palette[i],
+    backgroundColor: palette[i],
+    borderWidth: 2.5,
+    tension: 0.25,
+    pointRadius: 4,
+    pointHoverRadius: 6,
+    spanGaps: true,
+    segment: {
+      borderDash: ctx => {
+        const v0 = ctx.p0.parsed.y, v1 = ctx.p1.parsed.y;
+        return (v0 == null || v1 == null) ? [4,4] : undefined;
+      }
+    }
+  };
+});
+
+new Chart(document.getElementById('dailyTrend'), {
+  type: 'line',
+  data: { labels: ['Day 1','Day 2','Day 3'], datasets: trendDatasets },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11 }, padding: 8 } },
+      datalabels: {
+        align: 'top', offset: 4, color: ctx => ctx.dataset.borderColor,
+        font: { size: 10, weight: '600' },
+        formatter: v => v == null ? '' : v
+      },
+      tooltip: {
+        callbacks: { label: c => `${c.dataset.label}: ${c.parsed.y == null ? 'pending' : c.parsed.y}` }
+      }
+    },
+    scales: {
+      x: { grid: { color: '#eef0f4' }, ticks: { font: { size: 12, weight: '600' } } },
+      y: { beginAtZero: true, grid: { color: '#eef0f4' }, title: { display: true, text: 'Attendees Present', font: { size: 11 } } }
+    }
+  }
+});
+
+// 4. Workforce mix donut
+new Chart(document.getElementById('workforceMix'), {
+  type: 'doughnut',
+  data: {
+    labels: ['FTE (109)', 'Contractors (9)'],
+    datasets: [{
+      data: [109, 9],
+      backgroundColor: [navy, amber],
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '60%',
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 }, padding: 12 } },
+      datalabels: {
+        color: '#fff', font: { size: 14, weight: '700' },
+        formatter: (v, ctx) => {
+          const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
+          return `${v}\n(${(v/total*100).toFixed(1)}%)`;
+        }
+      },
+      tooltip: { callbacks: { label: c => `${c.label}: ${c.parsed} (${(c.parsed/118*100).toFixed(1)}%)` } }
+    }
+  }
+});
+
+// 5. Day-over-day change (Day 1 to Day 2)
+const dodData = locations.map((loc, i) => {
+  if (day1[i] == null || day2[i] == null) return { loc, change: null };
+  return { loc, change: day2[i] - day1[i] };
+}).filter(d => d.change !== null);
+
+new Chart(document.getElementById('dodChange'), {
+  type: 'bar',
+  data: {
+    labels: dodData.map(d => d.loc),
+    datasets: [{
+      label: 'Net change',
+      data: dodData.map(d => d.change),
+      backgroundColor: dodData.map(d => d.change > 0 ? green : d.change < 0 ? red : gray),
+      borderRadius: 3
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      datalabels: {
+        anchor: ctx => ctx.dataset.data[ctx.dataIndex] >= 0 ? 'end' : 'start',
+        align: ctx => ctx.dataset.data[ctx.dataIndex] >= 0 ? 'end' : 'start',
+        color: '#1a1a1a', font: { size: 11, weight: '600' },
+        formatter: v => v > 0 ? `+${v}` : v
+      },
+      tooltip: { callbacks: { label: c => `Change: ${c.parsed.y > 0 ? '+' : ''}${c.parsed.y}` } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 45, minRotation: 30 } },
+      y: { beginAtZero: true, grid: { color: '#eef0f4' }, suggestedMin: -2, suggestedMax: 2, ticks: { stepSize: 1, font: { size: 11 } } }
+    }
+  }
+});
+
+// 6. Detail table
+const tbody = document.getElementById('detailTable');
+locations.forEach((loc, i) => {
+  const rate = (day1[i] / expected[i]) * 100;
+  const rateClass = rate === 100 ? 'pct-good' : rate >= 85 ? 'pct-good' : rate >= 75 ? 'pct-warn' : 'pct-bad';
+  const fmt = v => v == null ? '<span class="pill na">pending</span>' : v;
+  tbody.innerHTML += `
+    <tr>
+      <td><strong>${loc}</strong></td>
+      <td>${fte[i]}</td>
+      <td>${contractors[i]}</td>
+      <td>${expected[i]}</td>
+      <td>${fmt(day1[i])}</td>
+      <td>${fmt(day2[i])}</td>
+      <td>${fmt(day3[i])}</td>
+      <td class="${rateClass}">${rate.toFixed(1)}%</td>
+      <td style="color:#6b7280;font-size:12px">${notes[i] || '—'}</td>
+    </tr>
+  `;
+});
+</script>
+</body>
+</html>
