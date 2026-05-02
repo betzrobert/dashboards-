@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AssistRx Onboarding Survey Dashboard | Lookback Refresh</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+
+  :root {
+    --navy: #1D3557;
+    --green: #1D9E75;
+    --green-light: #e8f7f2;
+    --amber: #E09B2F;
+    --red: #D85A30;
+    --red-light: #fdf0eb;
+    --white: #ffffff;
+    --gray-50: #f8f9fb;
+    --gray-100: #eef0f4;
+    --gray-200: #dde1ea;
+    --gray-400: #8b93a7;
+    --gray-600: #4b5568;
+    --text: #1a2233;
+    --wave-30: #1D9E75;
+    --wave-60: #2563EB;
+    --wave-90: #7C3AED;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--gray-50);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .header {
+    background: var(--navy);
+    padding: 28px 40px 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header-left h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: #fff;
+    letter-spacing: -0.3px;
+    line-height: 1.1;
+  }
+  .header-left .subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 5px;
+    font-weight: 400;
+  }
+  .header-badge {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 500;
+  }
+
+  .tab-bar {
+    background: var(--navy);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    padding: 0 40px;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 12px 20px 10px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: rgba(255,255,255,0.85); }
+  .tab-btn.active {
+    color: #fff;
+    border-bottom-color: var(--green);
+  }
+
+  .main { padding: 28px 40px 48px; max-width: 1400px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .kpi-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 22px 18px;
+    border: 1px solid var(--gray-100);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 8px;
+  }
+  .kpi-value {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--navy);
+  }
+  .kpi-value.green { color: var(--green); }
+  .kpi-value.amber { color: var(--amber); }
+  .kpi-value.red { color: var(--red); }
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--gray-400);
+    margin-top: 5px;
+  }
+
+  .chart-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .chart-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .chart-full { margin-bottom: 20px; }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid var(--gray-100);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    letter-spacing: -0.1px;
+  }
+  .card-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--green-light);
+    color: var(--green);
+  }
+  .card-tag.amber { background: #fef3e2; color: var(--amber); }
+  .card-tag.red { background: var(--red-light); color: var(--red); }
+  .card-tag.blue { background: #eff6ff; color: #2563EB; }
+  .card-tag.purple { background: #f5f3ff; color: #7C3AED; }
+  .card-tag.navy { background: var(--gray-100); color: var(--navy); }
+
+  .card-body { padding: 20px 22px; }
+  .chart-wrap { position: relative; }
+
+  .wave-legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .wave-dot {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gray-600);
+  }
+  .wave-dot span {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  /* Callout cards */
+  .callout {
+    background: #fff;
+    border-left: 4px solid var(--navy);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .callout.up { border-left-color: var(--green); background: linear-gradient(90deg, #f0fdf9 0%, #ffffff 50%); }
+  .callout.down { border-left-color: var(--red); background: linear-gradient(90deg, #fef2ed 0%, #ffffff 50%); }
+  .callout.flat { border-left-color: var(--amber); background: linear-gradient(90deg, #fef9ef 0%, #ffffff 50%); }
+  .callout.info { border-left-color: #2563EB; background: linear-gradient(90deg, #eff6ff 0%, #ffffff 50%); }
+  .callout-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .callout-arrow {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .callout-arrow.up { color: var(--green); }
+  .callout-arrow.down { color: var(--red); }
+  .callout-arrow.flat { color: var(--amber); }
+  .callout-text {
+    font-size: 12.5px;
+    color: var(--gray-600);
+    line-height: 1.5;
+  }
+
+  /* Note banner */
+  .data-note {
+    background: #fff8e6;
+    border: 1px solid #f5d585;
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    font-size: 12.5px;
+    color: var(--gray-600);
+    line-height: 1.5;
+  }
+  .data-note strong { color: var(--navy); }
+
+  /* Tables */
+  .factor-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .factor-table th {
+    background: var(--gray-50);
+    color: var(--gray-400);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .factor-table th.right { text-align: right; }
+  .factor-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: middle;
+    color: var(--text);
+  }
+  .factor-table td.right { text-align: right; font-weight: 600; }
+  .factor-table tr:last-child td { border-bottom: none; }
+  .factor-table tr:hover td { background: var(--gray-50); }
+
+  .fav-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .fav-pill.green { background: var(--green-light); color: var(--green); }
+  .fav-pill.amber { background: #fef3e2; color: var(--amber); }
+  .fav-pill.red { background: var(--red-light); color: var(--red); }
+
+  .change-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .change-pill.up { background: var(--green-light); color: var(--green); }
+  .change-pill.down { background: var(--red-light); color: var(--red); }
+  .change-pill.flat { background: var(--gray-100); color: var(--gray-600); }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 12px;
+    margin-top: 4px;
+  }
+
+  /* Checklist */
+  .checklist-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .checklist-row:last-child { border-bottom: none; }
+  .checklist-item-label {
+    flex: 1;
+    font-size: 12.5px;
+    color: var(--gray-600);
+  }
+  .checklist-count {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--navy);
+    min-width: 32px;
+    text-align: right;
+  }
+  .checklist-pct {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--red);
+    min-width: 40px;
+    text-align: right;
+  }
+  .checklist-bar-bg { width: 90px; height: 6px; background: var(--gray-100); border-radius: 4px; overflow: hidden; }
+  .checklist-bar-fill { height: 100%; border-radius: 4px; background: var(--red); }
+
+  @media (max-width: 900px) {
+    .main { padding: 20px 20px 40px; }
+    .header { padding: 20px; }
+    .tab-bar { padding: 0 20px; }
+    .chart-grid-2, .chart-grid-3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <h1>Culture Amp Onboarding Survey Dashboard</h1>
+    <div class="subtitle">AssistRx · Lookback Refresh · 30-Day, 60-Day, 90-Day Waves</div>
+  </div>
+  <div class="header-badge">Updated Apr 27, 2026</div>
+</header>
+
+<nav class="tab-bar">
+  <button class="tab-btn active" onclick="showSection('overview', event)">Overview</button>
+  <button class="tab-btn" onclick="showSection('trends', event)">Trends vs. Prior Dashboard</button>
+  <button class="tab-btn" onclick="showSection('s30', event)">30-Day Wave</button>
+  <button class="tab-btn" onclick="showSection('s60', event)">60-Day Wave</button>
+  <button class="tab-btn" onclick="showSection('s90', event)">90-Day Wave</button>
+  <button class="tab-btn" onclick="showSection('checklist', event)">Onboarding Checklist</button>
+</nav>
+
+<main class="main">
+
+<!-- ══════════ OVERVIEW ══════════ -->
+<section id="overview" class="section active">
+  <div class="data-note">
+    <strong>Data window:</strong> 30-Day = Mar 26 – Apr 27, 2026 (1-month lookback) · 60-Day = Feb 26 – Apr 27, 2026 (2-month) · <strong>90-Day = Jan 26 – Apr 27, 2025 (a 12-month-old cohort, n=20 only)</strong>. The 90-Day data should be interpreted with caution — small sample and dated relative to the 30/60-Day waves.
+  </div>
+
+  <div class="wave-legend">
+    <div class="wave-dot"><span style="background:var(--wave-30)"></span>30-Day Wave</div>
+    <div class="wave-dot"><span style="background:var(--wave-60)"></span>60-Day Wave</div>
+    <div class="wave-dot"><span style="background:var(--wave-90)"></span>90-Day Wave</div>
+  </div>
+
+  <div class="section-label">Participation</div>
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">30-Day Submitted</div>
+      <div class="kpi-value green">91</div>
+      <div class="kpi-sub">of 200 eligible · <strong>45.5%</strong> rate</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">60-Day Submitted</div>
+      <div class="kpi-value" style="color:var(--wave-60)">82</div>
+      <div class="kpi-sub">of 294 eligible · <strong>27.9%</strong> rate</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">90-Day Submitted</div>
+      <div class="kpi-value" style="color:var(--wave-90)">20</div>
+      <div class="kpi-sub">of 59 eligible · <strong>33.9%</strong> rate</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total Responses</div>
+      <div class="kpi-value amber">193</div>
+      <div class="kpi-sub">across all 3 waves</div>
+    </div>
+  </div>
+
+  <div class="chart-grid-2" style="margin-top:8px;">
+    <div class="card chart-full">
+      <div class="card-header">
+        <span class="card-title">Overall Favorable Score — Trend Across Waves</span>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="overallTrendChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card chart-full">
+      <div class="card-header">
+        <span class="card-title">Factor Scores by Wave</span>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="factorCompareChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card chart-full">
+    <div class="card-header">
+      <span class="card-title">Sentiment Split by Factor — All Waves (Respondent Counts)</span>
+      <span class="card-tag">Favorable · Neutral · Unfavorable</span>
+    </div>
+    <div class="card-body">
+      <div class="chart-wrap" style="height:320px">
+        <canvas id="sentimentStackChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card chart-full">
+    <div class="card-header">
+      <span class="card-title">Factor Score Comparison — All Waves</span>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <table class="factor-table">
+        <thead>
+          <tr>
+            <th>Factor</th>
+            <th class="right">30-Day</th>
+            <th class="right">60-Day</th>
+            <th class="right">90-Day</th>
+            <th>30→90 Trend</th>
+          </tr>
+        </thead>
+        <tbody id="factorCompareTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TRENDS VS PRIOR ══════════ -->
+<section id="trends" class="section">
+  <div class="data-note">
+    <strong>Comparison Note:</strong> Prior dashboard reflected results from <strong>Dec 31, 2025 – Apr 22, 2026</strong> with much larger samples (272 / 171 / 199). Current waves use shorter lookbacks (30-Day=1mo, 60-Day=2mo, 90-Day=2025 cohort, n=20). Direction-of-travel insights below should be read with sample size in mind.
+  </div>
+
+  <div class="section-label">Wave-Over-Wave Score Changes (Current vs. Prior Dashboard)</div>
+
+  <div class="card chart-full">
+    <div class="card-header">
+      <span class="card-title">Factor Score Change — Prior vs. Current</span>
+      <span class="card-tag">% point change</span>
+    </div>
+    <div class="card-body">
+      <div class="chart-wrap" style="height:340px">
+        <canvas id="trendComparisonChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Top Movers — What's Changed</div>
+
+  <div class="callout down">
+    <div class="callout-title"><span class="callout-arrow down">▼</span> 30-Day Onboarding Experience dropped 2.7 pts (84.4% → 81.7%)</div>
+    <div class="callout-text">Decline driven primarily by "I was provided accurate information about AssistRx during recruitment" falling from 70% to 66% favorable, with unfavorable jumping from 14% to 21%. New hires increasingly feel the recruitment pitch doesn't match reality.</div>
+  </div>
+
+  <div class="callout down">
+    <div class="callout-title"><span class="callout-arrow down">▼</span> 30-Day Overall fell 5.2 pts (83.9% → 78.7%)</div>
+    <div class="callout-text">Largest single drop on the Overall factor. "Would recommend AssistRx as a great place to work" dropped from 82% to 74% favorable — a notable softening in advocacy at the early-tenure mark.</div>
+  </div>
+
+  <div class="callout down">
+    <div class="callout-title"><span class="callout-arrow down">▼</span> 30-Day Job Satisfaction dropped 1.2 pts, but training got worse</div>
+    <div class="callout-text">"Efficient training on procedures applicable to my role" dropped from 65% to 59% favorable — already the lowest item, now even lower. Training effectiveness continues to be a structural weak point at the 30-day mark.</div>
+  </div>
+
+  <div class="callout down">
+    <div class="callout-title"><span class="callout-arrow down">▼</span> 30-Day Team & Culture dropped 5.0 pts (85.7% → 80.6%)</div>
+    <div class="callout-text">All three Team & Culture items declined: "Felt welcomed" (86%→80%), "Team members supportive" (86%→81%), "Comfortable asking questions" (85%→80%). Culture was previously the strongest factor — this weakening warrants attention.</div>
+  </div>
+
+  <div class="callout up">
+    <div class="callout-title"><span class="callout-arrow up">▲</span> 60-Day Overall improved 0.7 pts (82.5% → 83.2%)</div>
+    <div class="callout-text">"Would recommend AssistRx" jumped from 82% to 85% at the 60-day mark, and "I am proud to work at AssistRx" reached 85% favorable. By month two, sentiment is strengthening rather than declining.</div>
+  </div>
+
+  <div class="callout up">
+    <div class="callout-title"><span class="callout-arrow up">▲</span> 60-Day Job Satisfaction improved 2.3 pts (77.2% → 79.5%)</div>
+    <div class="callout-text">"On-the-job training prepared me to do my job well" climbed from 67% to 72% favorable at 60 days — meaningful improvement in training perception once people are actually doing the work.</div>
+  </div>
+
+  <div class="callout flat">
+    <div class="callout-title"><span class="callout-arrow flat">●</span> Onboarding Checklist gaps largely improved</div>
+    <div class="callout-text">"High-quality 1:1 with leadership" dropped from 51% gap to 48% at 30-day, 51% to 35% at 60-day. "Equipped with tools/software" improved at every wave. Manager 1:1 time is still the #1 gap, but the trend line is finally moving in the right direction.</div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title"><span class="callout-arrow flat">ⓘ</span> 90-Day data is from a 2025 cohort, n=20</div>
+    <div class="callout-text">The 90-Day file covers Jan–Apr 2025 with only 20 respondents. Year-over-year comparison shows Job Satisfaction rebound from 83.8% to 78.3% and Communication weakening (74.5% → 73.3%), but with such a small sample these movements may not be statistically meaningful.</div>
+  </div>
+
+  <div class="callout up">
+    <div class="callout-title"><span class="callout-arrow up">▲</span> Response rates are stronger this cycle</div>
+    <div class="callout-text">30-Day participation jumped from 41.7% to 45.5% — the highest rate observed across both dashboards. This may reflect either improved survey reminders or increased new-hire engagement.</div>
+  </div>
+</section>
+
+<!-- ══════════ 30-DAY ══════════ -->
+<section id="s30" class="section">
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">Responses</div>
+      <div class="kpi-value green">91</div>
+      <div class="kpi-sub">of 200 eligible</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Response Rate</div>
+      <div class="kpi-value green">45.5%</div>
+      <div class="kpi-sub">↑ 3.8 pts vs. prior</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Onboarding Exp.</div>
+      <div class="kpi-value green">81.7%</div>
+      <div class="kpi-sub">↓ 2.7 pts vs. prior (84.4%)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Overall Score</div>
+      <div class="kpi-value amber">78.8%</div>
+      <div class="kpi-sub">↓ 5.2 pts vs. prior (83.9%)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Highest Factor</div>
+      <div class="kpi-value green">81.7%</div>
+      <div class="kpi-sub">Onboarding Experience</div>
+    </div>
+  </div>
+
+  <div class="chart-grid-2">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Factor Scores — 30-Day</span>
+        <span class="card-tag">Favorable %</span>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="chart30Factors"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Sentiment Split — 30-Day Factors</span>
+        <span class="card-tag">Respondent Counts</span>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap" style="height:260px">
+          <canvas id="chart30Sentiment"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card chart-full">
+    <div class="card-header">
+      <span class="card-title">Question-Level Results — 30-Day Survey</span>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <table class="factor-table">
+        <thead>
+          <tr>
+            <th>Factor</th>
+            <th>Question</th>
+            <th class="right">n</th>
+            <th class="right">Favorable</th>
+            <th class="right">Neutral</th>
+            <th class="right">Unfavorable</th>
+          </tr>
+        </thead>
+        <tbody id="table30Questions"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 60-DAY ══════════ -->
+<section id="s60" class="section">
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">Responses</div>
+      <div class="kpi-value" style="color:var(--wave-60)">82</div>
+      <div class="kpi-sub">of 294 eligible</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Response Rate</div>
+      <div class="kpi-value" style="color:var(--wave-60)">27.9%</div>
+      <div class="kpi-sub">↓ 1.7 pts vs. prior</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Onboarding Exp.</div>
+      <div class="kpi-value" style="color:var(--wave-60)">75.6%</div>
+      <div class="kpi-sub">↓ 3.3 pts vs. prior (78.9%)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Overall Score</div>
+      <div class="kpi-value" style="color:var(--wave-60)">83.2%</div>
+      <div class="kpi-sub">↑ 0.7 pts vs. prior (82.5%)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Highest Factor</div>
+      <div class="kpi-value" style="color:var(--wave-60)">87.8%</div>
+      <div class="kpi-sub">Team & Culture</div>
+    </div>
+  </div>
+
+  <div class="chart-grid-2">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Factor Scores — 60-Day</span>
+        <span class="card-tag blue">Favorable %</span>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap" style="height:280px">
+          <canvas id="chart60Factors"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Sentiment Split — 60-Day Factors</span>
+        <span class="card-tag blue">Respondent Counts</span>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap" style="height:280px">
+          <canvas id="chart60Sentiment"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card chart-full">
+    <div class="card-header">
+      <span class="card-title">Question-Level Results — 60-Day Survey</span>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <table class="factor-table">
+        <thead>
+          <tr>
+            <th>Factor</th>
+            <th>Question</th>
+            <th class="right">n</th>
+            <th class="right">Favorable</th>
+            <th class="right">Neutral</th>
+            <th class="right">Unfavorable</th>
+          </tr>
+        </thead>
+        <tbody id="table60Questions"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 90-DAY ══════════ -->
+<section id="s90" class="section">
+  <div class="data-note">
+    <strong>Sample-size caution:</strong> 90-Day data is from <strong>Jan 26 – Apr 27, <span style="color:var(--red);">2025</span></strong> — a year-old cohort with only n=20. Treat all 90-Day percentages as directional rather than statistically robust.
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">Responses</div>
+      <div class="kpi-value" style="color:var(--wave-90)">20</div>
+      <div class="kpi-sub">of 59 eligible</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Response Rate</div>
+      <div class="kpi-value" style="color:var(--wave-90)">33.9%</div>
+      <div class="kpi-sub">↑ 0.2 pts vs. prior</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Onboarding Exp.</div>
+      <div class="kpi-value" style="color:var(--wave-90)">76.4%</div>
+      <div class="kpi-sub">↓ 1.0 pts vs. prior (77.4%)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Overall Score</div>
+      <div class="kpi-value" style="color:var(--wave-90)">83.8%</div>
+      <div class="kpi-sub">↑ 1.9 pts vs. prior (81.9%)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Highest Factor</div>
+      <div class="kpi-value" style="color:var(--wave-90)">86.7%</div>
+      <div class="kpi-sub">Team & Culture</div>
+    </div>
+  </div>
+
+  <div class="chart-grid-2">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Factor Scores — 90-Day</span>
+        <span class="card-tag purple">Favorable %</span>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap" style="height:280px">
+          <canvas id="chart90Factors"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Sentiment Split — 90-Day Factors</span>
+        <span class="card-tag purple">Respondent Counts</span>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap" style="height:280px">
+          <canvas id="chart90Sentiment"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card chart-full">
+    <div class="card-header">
+      <span class="card-title">Question-Level Results — 90-Day Survey</span>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <table class="factor-table">
+        <thead>
+          <tr>
+            <th>Factor</th>
+            <th>Question</th>
+            <th class="right">n</th>
+            <th class="right">Favorable</th>
+            <th class="right">Neutral</th>
+            <th class="right">Unfavorable</th>
+          </tr>
+        </thead>
+        <tbody id="table90Questions"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CHECKLIST ══════════ -->
+<section id="checklist" class="section">
+  <p style="font-size:13px;color:var(--gray-400);margin-bottom:20px;">Items respondents selected as <strong>NOT yet covered or completed</strong> during onboarding.</p>
+
+  <div class="chart-grid-3">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">30-Day — Gaps</span>
+        <span class="card-tag">91 respondents</span>
+      </div>
+      <div class="card-body" style="padding:16px 20px;">
+        <div id="checklist30"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">60-Day — Gaps</span>
+        <span class="card-tag blue">82 respondents</span>
+      </div>
+      <div class="card-body" style="padding:16px 20px;">
+        <div id="checklist60"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">90-Day — Gaps</span>
+        <span class="card-tag purple">20 respondents</span>
+      </div>
+      <div class="card-body" style="padding:16px 20px;">
+        <div id="checklist90"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card chart-full">
+    <div class="card-header">
+      <span class="card-title">Checklist Gap Comparison — All Waves (Respondent Count)</span>
+      <span class="card-tag red">Items NOT Completed</span>
+    </div>
+    <div class="card-body">
+      <div class="chart-wrap" style="height:320px">
+        <canvas id="checklistCompareChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+Chart.register(ChartDataLabels);
+
+const NAVY='#1D3557', GREEN='#1D9E75', AMBER='#E09B2F', RED='#D85A30';
+const W30='#1D9E75', W60='#2563EB', W90='#7C3AED';
+const FAV_COLOR='#1D9E75', NEU_COLOR='#E09B2F', UNF_COLOR='#D85A30';
+
+// ─── DATA — current refresh ───
+const DATA = {
+  factors: {
+    d30:[
+      {name:'Onboarding Experience',score:0.8167,pop:90, fav:0.82,neu:0.09,unf:0.09},
+      {name:'Overall',              score:0.7875,pop:91, fav:0.79,neu:0.13,unf:0.08},
+      {name:'Job Satisfaction',     score:0.7694,pop:90, fav:0.77,neu:0.12,unf:0.11},
+      {name:'Org. Alignment',       score:0.8022,pop:91, fav:0.80,neu:0.12,unf:0.08},
+      {name:'Team & Culture',       score:0.8059,pop:91, fav:0.81,neu:0.13,unf:0.06},
+    ],
+    d60:[
+      {name:'Onboarding Experience',score:0.7561,pop:82, fav:0.76,neu:0.15,unf:0.09},
+      {name:'Overall',              score:0.8323,pop:82, fav:0.83,neu:0.13,unf:0.04},
+      {name:'Team & Culture',       score:0.8780,pop:82, fav:0.88,neu:0.10,unf:0.02},
+      {name:'Job Satisfaction',     score:0.7951,pop:81, fav:0.80,neu:0.13,unf:0.07},
+      {name:'Communication',        score:0.7764,pop:82, fav:0.78,neu:0.15,unf:0.07},
+      {name:'Prof. Development',    score:0.7654,pop:81, fav:0.77,neu:0.17,unf:0.06},
+    ],
+    d90:[
+      {name:'Onboarding Experience',score:0.7643,pop:20, fav:0.76,neu:0.19,unf:0.05},
+      {name:'Overall',              score:0.8375,pop:20, fav:0.84,neu:0.12,unf:0.04},
+      {name:'Communication',        score:0.7333,pop:20, fav:0.73,neu:0.15,unf:0.12},
+      {name:'Job Satisfaction',     score:0.7833,pop:20, fav:0.78,neu:0.19,unf:0.03},
+      {name:'Prof. Development',    score:0.7100,pop:20, fav:0.71,neu:0.22,unf:0.07},
+      {name:'Team & Culture',       score:0.8667,pop:20, fav:0.87,neu:0.11,unf:0.02},
+    ]
+  },
+  questions: {
+    d30:[
+      {factor:'Onboarding Experience',q:'Provided accurate info during recruitment',pop:91,fav:0.66,neu:0.13,unf:0.21},
+      {factor:'Onboarding Experience',q:'Recruitment process was professional',pop:91,fav:0.86,neu:0.10,unf:0.04},
+      {factor:'Onboarding Experience',q:'Supported in the onboarding process',pop:90,fav:0.81,neu:0.12,unf:0.07},
+      {factor:'Onboarding Experience',q:'Provided information regarding benefits',pop:91,fav:0.95,neu:0.03,unf:0.02},
+      {factor:'Overall',q:'I feel I belong at AssistRx',pop:91,fav:0.81,neu:0.14,unf:0.05},
+      {factor:'Overall',q:'Made the right decision to join AssistRx',pop:91,fav:0.81,neu:0.10,unf:0.09},
+      {factor:'Overall',q:'Would recommend AssistRx as great place to work',pop:91,fav:0.74,neu:0.17,unf:0.09},
+      {factor:'Job Satisfaction',q:'Efficient training on procedures applicable to my role',pop:91,fav:0.59,neu:0.20,unf:0.21},
+      {factor:'Job Satisfaction',q:'Know what I still need to learn to perform well',pop:91,fav:0.80,neu:0.09,unf:0.11},
+      {factor:'Job Satisfaction',q:'Know what I can do for a successful career here',pop:90,fav:0.81,neu:0.11,unf:0.08},
+      {factor:'Job Satisfaction',q:'Understand what is expected in my role',pop:91,fav:0.85,neu:0.10,unf:0.05},
+      {factor:'Org. Alignment',q:'Know how my work contributes to AssistRx goals',pop:91,fav:0.87,neu:0.09,unf:0.04},
+      {factor:'Org. Alignment',q:"Know AssistRx organizational values",pop:91,fav:0.85,neu:0.07,unf:0.08},
+      {factor:'Org. Alignment',q:"AssistRx values align with my own",pop:91,fav:0.84,neu:0.12,unf:0.04},
+      {factor:'Org. Alignment',q:'Experience matched my expectations',pop:91,fav:0.66,neu:0.20,unf:0.14},
+      {factor:'Team & Culture',q:'Felt welcomed at AssistRx',pop:91,fav:0.80,neu:0.12,unf:0.08},
+      {factor:'Team & Culture',q:'Team members and leaders supportive',pop:91,fav:0.81,neu:0.14,unf:0.05},
+      {factor:'Team & Culture',q:'Comfortable asking questions to leaders/team',pop:91,fav:0.80,neu:0.15,unf:0.05},
+    ],
+    d60:[
+      {factor:'Overall',q:'I feel I belong at AssistRx',pop:82,fav:0.78,neu:0.17,unf:0.05},
+      {factor:'Overall',q:'Made the right decision to join AssistRx',pop:82,fav:0.84,neu:0.12,unf:0.04},
+      {factor:'Overall',q:'Would recommend AssistRx as great place to work',pop:82,fav:0.85,neu:0.10,unf:0.05},
+      {factor:'Overall',q:'Proud to work at AssistRx',pop:82,fav:0.85,neu:0.11,unf:0.04},
+      {factor:'Onboarding Experience',q:'Overall onboarding experience satisfactory',pop:82,fav:0.76,neu:0.15,unf:0.09},
+      {factor:'Onboarding Experience',q:'Feel welcomed by my colleagues',pop:82,fav:0.85,neu:0.11,unf:0.04},
+      {factor:'Onboarding Experience',q:'Role expectations communicated through onboarding',pop:82,fav:0.63,neu:0.19,unf:0.18},
+      {factor:'Onboarding Experience',q:'Supported in the onboarding process',pop:82,fav:0.78,neu:0.16,unf:0.06},
+      {factor:'Team & Culture',q:'Team members and leaders supportive',pop:82,fav:0.89,neu:0.10,unf:0.01},
+      {factor:'Team & Culture',q:'Felt welcomed since starting at AssistRx',pop:82,fav:0.88,neu:0.07,unf:0.05},
+      {factor:'Team & Culture',q:'Comfortable asking questions to leader/team',pop:82,fav:0.87,neu:0.12,unf:0.01},
+      {factor:'Job Satisfaction',q:'Satisfied with role and responsibilities',pop:81,fav:0.78,neu:0.12,unf:0.10},
+      {factor:'Job Satisfaction',q:'Skills align with my job tasks',pop:82,fav:0.83,neu:0.06,unf:0.11},
+      {factor:'Job Satisfaction',q:'Find my job rewarding',pop:82,fav:0.74,neu:0.22,unf:0.04},
+      {factor:'Job Satisfaction',q:'On-the-job training prepared me to do job well',pop:82,fav:0.72,neu:0.18,unf:0.10},
+      {factor:'Job Satisfaction',q:'Understand what is expected in my role',pop:82,fav:0.88,neu:0.08,unf:0.04},
+      {factor:'Communication',q:'Communication effective and clear from leadership',pop:82,fav:0.78,neu:0.12,unf:0.10},
+      {factor:'Communication',q:'Adequately informed about company updates',pop:82,fav:0.72,neu:0.19,unf:0.09},
+      {factor:'Communication',q:'Leadership accessible when I have questions',pop:82,fav:0.83,neu:0.13,unf:0.04},
+      {factor:'Prof. Development',q:'Opportunities for career advancement',pop:82,fav:0.82,neu:0.16,unf:0.02},
+      {factor:'Prof. Development',q:'Encouraged to pursue career growth',pop:82,fav:0.80,neu:0.15,unf:0.05},
+      {factor:'Prof. Development',q:'Discussed development goals with leadership',pop:81,fav:0.48,neu:0.33,unf:0.19},
+      {factor:'Prof. Development',q:'Professional development is important to me',pop:82,fav:0.96,neu:0.04,unf:0.00},
+    ],
+    d90:[
+      {factor:'Onboarding Experience',q:'Overall onboarding experience satisfactory',pop:20,fav:0.75,neu:0.15,unf:0.10},
+      {factor:'Onboarding Experience',q:'Resources sufficient for training needs',pop:20,fav:0.65,neu:0.25,unf:0.10},
+      {factor:'Onboarding Experience',q:'Built strong relationships with my team',pop:20,fav:0.90,neu:0.10,unf:0.00},
+      {factor:'Onboarding Experience',q:'Onboarding prepared me for my role',pop:20,fav:0.55,neu:0.35,unf:0.10},
+      {factor:'Onboarding Experience',q:'Satisfied with my role and responsibilities',pop:20,fav:0.75,neu:0.25,unf:0.00},
+      {factor:'Onboarding Experience',q:'Appreciate the overall work environment',pop:20,fav:0.90,neu:0.10,unf:0.00},
+      {factor:'Onboarding Experience',q:'Comfortable asking questions to leader/team',pop:20,fav:0.85,neu:0.10,unf:0.05},
+      {factor:'Overall',q:'I feel I belong at AssistRx',pop:20,fav:0.85,neu:0.10,unf:0.05},
+      {factor:'Overall',q:'Made the right decision to join AssistRx',pop:20,fav:0.85,neu:0.10,unf:0.05},
+      {factor:'Overall',q:'Would recommend AssistRx',pop:20,fav:0.80,neu:0.15,unf:0.05},
+      {factor:'Overall',q:'Proud to work at AssistRx',pop:20,fav:0.85,neu:0.15,unf:0.00},
+      {factor:'Communication',q:'Communication effective and clear from leadership',pop:20,fav:0.80,neu:0.15,unf:0.05},
+      {factor:'Communication',q:'Adequately informed about company updates',pop:20,fav:0.65,neu:0.20,unf:0.15},
+      {factor:'Communication',q:'Leadership accessible when I have questions',pop:20,fav:0.75,neu:0.10,unf:0.15},
+      {factor:'Job Satisfaction',q:'Feel good and confident in challenges',pop:20,fav:0.80,neu:0.10,unf:0.10},
+      {factor:'Job Satisfaction',q:'Find my job rewarding',pop:20,fav:0.70,neu:0.30,unf:0.00},
+      {factor:'Job Satisfaction',q:'Understand what is expected in my role',pop:20,fav:0.85,neu:0.15,unf:0.00},
+      {factor:'Prof. Development',q:'My role aligns with my career goals',pop:20,fav:0.65,neu:0.25,unf:0.10},
+      {factor:'Prof. Development',q:'Discussed development goals with leadership',pop:20,fav:0.50,neu:0.35,unf:0.15},
+      {factor:'Prof. Development',q:'Encouraged to pursue career growth',pop:20,fav:0.75,neu:0.20,unf:0.05},
+      {factor:'Prof. Development',q:'Professional development important to me',pop:20,fav:0.90,neu:0.10,unf:0.00},
+      {factor:'Prof. Development',q:'Opportunities for career advancement',pop:20,fav:0.75,neu:0.20,unf:0.05},
+      {factor:'Team & Culture',q:'Team members and leaders supportive',pop:20,fav:0.90,neu:0.10,unf:0.00},
+      {factor:'Team & Culture',q:'Work-life balance supported at AssistRx',pop:20,fav:0.80,neu:0.15,unf:0.05},
+      {factor:'Team & Culture',q:'Feel included at AssistRx',pop:20,fav:0.90,neu:0.10,unf:0.00},
+    ]
+  },
+  checklist: {
+    d30:[
+      {item:'High quality 1:1 with direct leadership',count:26,pct:0.48},
+      {item:'Assigned person to ask for help',count:22,pct:0.41},
+      {item:'Introduced to my team',count:22,pct:0.41},
+      {item:'Aware of who direct leadership is',count:22,pct:0.41},
+      {item:'Equipped with tools/software for role',count:21,pct:0.39},
+      {item:'Other',count:17,pct:0.31},
+      {item:'Access to work email address',count:15,pct:0.28},
+      {item:'Building access ID card',count:14,pct:0.26},
+    ],
+    d60:[
+      {item:'High quality 1:1 with direct leadership',count:13,pct:0.35},
+      {item:'Equipped with tools/software for role',count:12,pct:0.32},
+      {item:'Aware of who direct leadership is',count:11,pct:0.30},
+      {item:'Other',count:11,pct:0.30},
+      {item:'Introduced to my team',count:11,pct:0.30},
+      {item:'Building access ID card',count:10,pct:0.27},
+      {item:'Assigned person to ask for help',count:8,pct:0.22},
+      {item:'Access to work email address',count:7,pct:0.19},
+    ],
+    d90:[
+      {item:'High quality 1:1 with direct leadership',count:6,pct:0.60},
+      {item:'Assigned person to ask for help',count:5,pct:0.50},
+      {item:'Aware of who direct leadership is',count:4,pct:0.40},
+      {item:'Access to work email',count:4,pct:0.40},
+      {item:'Equipped with tools/software for role',count:3,pct:0.30},
+      {item:'Introduced to my team',count:3,pct:0.30},
+      {item:'Building access ID card',count:3,pct:0.30},
+    ]
+  },
+  // Prior dashboard scores for trend comparison
+  prior: {
+    d30:{Onboarding:84.4,Overall:83.9,Job:78.2,Org:83.4,Team:85.7},
+    d60:{Onboarding:78.9,Overall:82.5,Team:88.3,Job:77.2,Comm:75.7,Dev:77.5},
+    d90:{Onboarding:77.4,Overall:81.9,Comm:74.5,Job:83.8,Dev:77.0,Team:81.4}
+  },
+  current: {
+    d30:{Onboarding:81.7,Overall:78.8,Job:76.9,Org:80.2,Team:80.6},
+    d60:{Onboarding:75.6,Overall:83.2,Team:87.8,Job:79.5,Comm:77.6,Dev:76.5},
+    d90:{Onboarding:76.4,Overall:83.8,Comm:73.3,Job:78.3,Dev:71.0,Team:86.7}
+  }
+};
+
+function pct(v){ return Math.round(v*100)+'%'; }
+function favPill(v){
+  const p=Math.round(v*100);
+  let cls = p>=80?'green': p>=70?'amber':'red';
+  return `<span class="fav-pill ${cls}">${p}%</span>`;
+}
+
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+function buildOverall(){
+  // Overall trend line
+  new Chart(document.getElementById('overallTrendChart'),{
+    type:'line',
+    data:{
+      labels:['30-Day','60-Day','90-Day'],
+      datasets:[
+        {label:'Onboarding Experience',data:[81.7,75.6,76.4],borderColor:'#E09B2F',backgroundColor:'rgba(224,155,47,0.08)',tension:0.3,borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#E09B2F'},
+        {label:'Overall',data:[78.8,83.2,83.8],borderColor:NAVY,backgroundColor:'rgba(29,53,87,0.06)',tension:0.3,borderWidth:2.5,pointRadius:5,pointBackgroundColor:NAVY},
+        {label:'Team & Culture',data:[80.6,87.8,86.7],borderColor:W30,backgroundColor:'rgba(29,158,117,0.08)',tension:0.3,borderWidth:2.5,pointRadius:5,pointBackgroundColor:W30},
+        {label:'Job Satisfaction',data:[76.9,79.5,78.3],borderColor:W60,backgroundColor:'rgba(37,99,235,0.08)',tension:0.3,borderWidth:2.5,pointRadius:5,pointBackgroundColor:W60},
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        datalabels:{display:true,color:ctx=>ctx.dataset.borderColor,font:{weight:'700',size:10},formatter:v=>v+'%',anchor:'top',align:'top',offset:4},
+        legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}
+      },
+      scales:{
+        y:{min:60,max:100,ticks:{callback:v=>v+'%',font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}},
+        x:{ticks:{font:{size:11}},grid:{display:false}}
+      }
+    }
+  });
+
+  // Factor compare bar chart (common factors)
+  new Chart(document.getElementById('factorCompareChart'),{
+    type:'bar',
+    data:{
+      labels:['Overall','Job Satisfaction','Team & Culture'],
+      datasets:[
+        {label:'30-Day',data:[78.8,76.9,80.6],backgroundColor:W30,borderRadius:4},
+        {label:'60-Day',data:[83.2,79.5,87.8],backgroundColor:W60,borderRadius:4},
+        {label:'90-Day',data:[83.8,78.3,86.7],backgroundColor:W90,borderRadius:4},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        datalabels:{display:true,color:'#fff',font:{weight:'700',size:10},formatter:v=>v+'%',anchor:'center',align:'center'},
+        legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}
+      },
+      scales:{
+        y:{min:60,max:100,ticks:{callback:v=>v+'%',font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}},
+        x:{ticks:{font:{size:11}},grid:{display:false}}
+      }
+    }
+  });
+
+  // Sentiment stack
+  const sentLabels=[],favData=[],neuData=[],unfData=[];
+  [[DATA.factors.d30,'30-D'],[DATA.factors.d60,'60-D'],[DATA.factors.d90,'90-D']].forEach(([factors,wave])=>{
+    factors.forEach(f=>{
+      sentLabels.push(f.name+' ('+wave+')');
+      favData.push(Math.round(f.fav*f.pop));
+      neuData.push(Math.round(f.neu*f.pop));
+      unfData.push(Math.round(f.unf*f.pop));
+    });
+  });
+
+  new Chart(document.getElementById('sentimentStackChart'),{
+    type:'bar',
+    data:{
+      labels:sentLabels,
+      datasets:[
+        {label:'Favorable',data:favData,backgroundColor:FAV_COLOR,borderRadius:2},
+        {label:'Neutral',data:neuData,backgroundColor:AMBER,borderRadius:2},
+        {label:'Unfavorable',data:unfData,backgroundColor:RED,borderRadius:2},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>2,color:'#fff',font:{weight:'700',size:9},formatter:v=>v,anchor:'center',align:'center'},
+        legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}
+      },
+      scales:{
+        x:{stacked:true,ticks:{font:{size:9},maxRotation:60,minRotation:45},grid:{display:false}},
+        y:{stacked:true,ticks:{font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}}
+      }
+    }
+  });
+
+  // Factor compare table
+  const tbody=document.getElementById('factorCompareTableBody');
+  const allFactors=['Onboarding Experience','Overall','Job Satisfaction','Team & Culture','Org. Alignment','Communication','Prof. Development'];
+  const get=(arr,name)=>arr.find(x=>x.name===name);
+  allFactors.forEach(fn=>{
+    const f30=get(DATA.factors.d30,fn);
+    const f60=get(DATA.factors.d60,fn);
+    const f90=get(DATA.factors.d90,fn);
+    const s30=f30?Math.round(f30.score*100):null;
+    const s60=f60?Math.round(f60.score*100):null;
+    const s90=f90?Math.round(f90.score*100):null;
+    const trend = (s90&&s30)? (s90>s30?'▲':'▼'):'—';
+    const trendColor = (s90&&s30)?(s90>s30?'color:var(--green)':'color:var(--red)'):'';
+    tbody.innerHTML+=`<tr>
+      <td><strong>${fn}</strong></td>
+      <td class="right">${s30?s30+'%':'—'}</td>
+      <td class="right">${s60?s60+'%':'—'}</td>
+      <td class="right">${s90?s90+'%':'—'}</td>
+      <td style="font-size:14px;font-weight:700;${trendColor}">${trend}</td>
+    </tr>`;
+  });
+}
+
+function buildTrendsCompare(){
+  // Bar chart comparing prior vs current for each wave's factors
+  const labels=[
+    '30-D Onboarding','30-D Overall','30-D Job Sat','30-D Org Align','30-D Team',
+    '60-D Onboarding','60-D Overall','60-D Team','60-D Job Sat','60-D Comm','60-D Dev',
+    '90-D Onboarding','90-D Overall','90-D Comm','90-D Job Sat','90-D Dev','90-D Team'
+  ];
+  const prior=[84.4,83.9,78.2,83.4,85.7,  78.9,82.5,88.3,77.2,75.7,77.5,  77.4,81.9,74.5,83.8,77.0,81.4];
+  const cur  =[81.7,78.8,76.9,80.2,80.6,  75.6,83.2,87.8,79.5,77.6,76.5,  76.4,83.8,73.3,78.3,71.0,86.7];
+
+  new Chart(document.getElementById('trendComparisonChart'),{
+    type:'bar',
+    data:{
+      labels:labels,
+      datasets:[
+        {label:'Prior Dashboard',data:prior,backgroundColor:'#94a3b8',borderRadius:3},
+        {label:'Current Refresh',data:cur,backgroundColor:NAVY,borderRadius:3},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        datalabels:{display:false},
+        legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}},
+        tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.raw+'%'}}
+      },
+      scales:{
+        y:{min:60,max:100,ticks:{callback:v=>v+'%',font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}},
+        x:{ticks:{font:{size:9},maxRotation:60,minRotation:45},grid:{display:false}}
+      }
+    }
+  });
+}
+
+function buildWaveChart(canvasId, factors, color){
+  new Chart(document.getElementById(canvasId),{
+    type:'bar',
+    data:{
+      labels:factors.map(f=>f.name),
+      datasets:[{label:'Favorable %',data:factors.map(f=>Math.round(f.score*100)),backgroundColor:color,borderRadius:6}]
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        datalabels:{display:true,color:'#fff',font:{weight:'700',size:11},formatter:v=>v+'%',anchor:'center',align:'center'},
+        legend:{display:false}
+      },
+      scales:{
+        x:{min:50,max:100,ticks:{callback:v=>v+'%',font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}},
+        y:{ticks:{font:{size:11}},grid:{display:false}}
+      }
+    }
+  });
+}
+
+function buildSentimentChart(canvasId, factors){
+  new Chart(document.getElementById(canvasId),{
+    type:'bar',
+    data:{
+      labels:factors.map(f=>f.name),
+      datasets:[
+        {label:'Favorable',data:factors.map(f=>Math.round(f.fav*f.pop)),backgroundColor:FAV_COLOR,borderRadius:2},
+        {label:'Neutral',data:factors.map(f=>Math.round(f.neu*f.pop)),backgroundColor:AMBER,borderRadius:2},
+        {label:'Unfavorable',data:factors.map(f=>Math.round(f.unf*f.pop)),backgroundColor:RED,borderRadius:2},
+      ]
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>2,color:'#fff',font:{weight:'700',size:10},formatter:v=>v,anchor:'center',align:'center'},
+        legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}
+      },
+      scales:{
+        x:{stacked:true,ticks:{font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}},
+        y:{stacked:true,ticks:{font:{size:11}},grid:{display:false}}
+      }
+    }
+  });
+}
+
+function buildQuestionTable(tbodyId, questions){
+  const tbody=document.getElementById(tbodyId);
+  let lastFactor='';
+  questions.forEach(q=>{
+    const isNew=q.factor!==lastFactor;
+    lastFactor=q.factor;
+    tbody.innerHTML+=`<tr>
+      <td>${isNew?`<strong>${q.factor}</strong>`:''}</td>
+      <td style="color:var(--gray-600);font-size:12px">${q.q}</td>
+      <td class="right" style="color:var(--gray-400)">${q.pop}</td>
+      <td class="right">${favPill(q.fav)}</td>
+      <td class="right"><span style="color:var(--amber);font-weight:600">${pct(q.neu)}</span></td>
+      <td class="right"><span style="color:var(--red);font-weight:600">${pct(q.unf)}</span></td>
+    </tr>`;
+  });
+}
+
+function buildChecklist(divId, items, color){
+  const div=document.getElementById(divId);
+  const maxCount=Math.max(...items.map(i=>i.count));
+  items.sort((a,b)=>b.count-a.count).forEach(item=>{
+    div.innerHTML+=`<div class="checklist-row">
+      <div class="checklist-item-label">${item.item}</div>
+      <div class="checklist-bar-bg"><div class="checklist-bar-fill" style="width:${Math.round(item.count/maxCount*100)}%;background:${color}"></div></div>
+      <div class="checklist-count">${item.count}</div>
+      <div class="checklist-pct">${Math.round(item.pct*100)}%</div>
+    </div>`;
+  });
+}
+
+function buildChecklistCompare(){
+  const items=[
+    {label:'1:1 with Leadership',d30:26,d60:13,d90:6},
+    {label:'Tools/Software',d30:21,d60:12,d90:3},
+    {label:'Assigned Help Person',d30:22,d60:8,d90:5},
+    {label:'Introduced to Team',d30:22,d60:11,d90:3},
+    {label:'Know Direct Leadership',d30:22,d60:11,d90:4},
+    {label:'Building Access Card',d30:14,d60:10,d90:3},
+    {label:'Work Email Access',d30:15,d60:7,d90:4},
+  ];
+  new Chart(document.getElementById('checklistCompareChart'),{
+    type:'bar',
+    data:{
+      labels:items.map(x=>x.label),
+      datasets:[
+        {label:'30-Day',data:items.map(x=>x.d30),backgroundColor:W30,borderRadius:4},
+        {label:'60-Day',data:items.map(x=>x.d60),backgroundColor:W60,borderRadius:4},
+        {label:'90-Day',data:items.map(x=>x.d90),backgroundColor:W90,borderRadius:4},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        datalabels:{display:true,color:'#fff',font:{weight:'700',size:10},formatter:v=>v>0?v:null,anchor:'center',align:'center'},
+        legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}
+      },
+      scales:{
+        y:{ticks:{font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}},
+        x:{ticks:{font:{size:11}},grid:{display:false}}
+      }
+    }
+  });
+}
+
+function showSection(id, e){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(e && e.target) e.target.classList.add('active');
+}
+
+// Init
+buildOverall();
+buildTrendsCompare();
+buildWaveChart('chart30Factors', DATA.factors.d30, W30);
+buildSentimentChart('chart30Sentiment', DATA.factors.d30);
+buildQuestionTable('table30Questions', DATA.questions.d30);
+
+buildWaveChart('chart60Factors', DATA.factors.d60, W60);
+buildSentimentChart('chart60Sentiment', DATA.factors.d60);
+buildQuestionTable('table60Questions', DATA.questions.d60);
+
+buildWaveChart('chart90Factors', DATA.factors.d90, W90);
+buildSentimentChart('chart90Sentiment', DATA.factors.d90);
+buildQuestionTable('table90Questions', DATA.questions.d90);
+
+buildChecklist('checklist30', DATA.checklist.d30, W30);
+buildChecklist('checklist60', DATA.checklist.d60, W60);
+buildChecklist('checklist90', DATA.checklist.d90, W90);
+buildChecklistCompare();
+</script>
+</body>
+</html>
