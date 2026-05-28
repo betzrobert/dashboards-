@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinkedIn Profiles Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f9fafb;color:#111;padding:1.5rem}
+h1{font-size:20px;font-weight:500;margin-bottom:1.5rem;color:#111}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
+.metric{background:#f1f5f9;border-radius:8px;padding:1rem;text-align:center}
+.metric-label{font-size:12px;color:#64748b;margin-bottom:4px}
+.metric-value{font-size:24px;font-weight:500;color:#111}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem}
+.chart-box{background:#fff;border:0.5px solid #e2e8f0;border-radius:12px;padding:1rem}
+.chart-label{font-size:12px;color:#64748b;margin-bottom:8px}
+.controls{display:flex;gap:8px;align-items:center;margin-bottom:1rem;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:180px}
+.search-wrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:16px;pointer-events:none}
+input[type=text]{width:100%;padding:8px 12px 8px 34px;font-size:13px;border-radius:8px;border:0.5px solid #cbd5e1;background:#fff;outline:none}
+input[type=text]:focus{border-color:#93c5fd}
+.filter-btn{font-size:13px;padding:5px 14px;border-radius:20px;border:0.5px solid #cbd5e1;background:transparent;color:#64748b;cursor:pointer}
+.filter-btn.active{background:#eff6ff;color:#1d4ed8;border-color:#93c5fd}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:#fff;border:0.5px solid #e2e8f0;border-radius:12px;padding:1rem 1.25rem;cursor:default}
+.card:hover{border-color:#cbd5e1}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:6px}
+.badge-hr{background:#eef2ff;color:#3730a3}
+.badge-fin{background:#ecfdf5;color:#065f46}
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+a{text-decoration:none}
+@media(max-width:600px){.metrics{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<h1>FL/Orlando HR &amp; Finance Leaders</h1>
+
+<div class="metrics">
+  <div class="metric"><div class="metric-label">Total profiles</div><div class="metric-value">20</div></div>
+  <div class="metric"><div class="metric-label">HR leaders</div><div class="metric-value">11</div></div>
+  <div class="metric"><div class="metric-label">Finance leaders</div><div class="metric-value">9</div></div>
+  <div class="metric"><div class="metric-label">Avg experience</div><div class="metric-value">20 yrs</div></div>
+</div>
+
+<div class="charts">
+  <div class="chart-box">
+    <div class="chart-label">Experience distribution</div>
+    <div style="position:relative;height:160px"><canvas id="expChart" role="img" aria-label="Bar chart of experience ranges">Experience distribution.</canvas></div>
+  </div>
+  <div class="chart-box">
+    <div class="chart-label">HR vs Finance</div>
+    <div style="position:relative;height:160px"><canvas id="typeChart" role="img" aria-label="Donut chart: 11 HR, 9 Finance">11 HR, 9 Finance.</canvas></div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <i class="ti ti-search"></i>
+    <input type="text" id="search" placeholder="Search name, company, title…">
+  </div>
+  <button class="filter-btn active" onclick="setFilter(this,'all')">All</button>
+  <button class="filter-btn" onclick="setFilter(this,'HR')">HR</button>
+  <button class="filter-btn" onclick="setFilter(this,'Finance')">Finance</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const profiles = [
+  {name:"Cheri D. Benedetti",title:"CHRO",company:"CenterWell / The Villages Health",location:"Lady Lake, FL",type:"HR",yoe:19,li:"https://www.linkedin.com/in/cheribenedetti",certs:"SHRM-SCP"},
+  {name:"Stephen S.",title:"VP Transformation",company:"Brink's Inc",location:"Greater Orlando",type:"Finance",yoe:14,li:"https://www.linkedin.com/in/stephen-s-b242146",certs:"CIA"},
+  {name:"Scott Vandeburgt",title:"Sr Director Finance & Accounting",company:"Con-Air Industries",location:"Port Orange, FL",type:"Finance",yoe:24,li:"https://www.linkedin.com/in/scott-vandeburgt-b5b5b5",certs:"CFA"},
+  {name:"Matthew Stover",title:"VP Finance & Accounting",company:"Lennar",location:"Winter Garden, FL",type:"Finance",yoe:26,li:"https://www.linkedin.com/in/matthew-stover-42577118",certs:""},
+  {name:"Mark J. Pulaski",title:"SVP Business Intelligence",company:"Distinctive Living / PROVISIO",location:"Greater Orlando",type:"Finance",yoe:12,li:"https://www.linkedin.com/in/mark-pulaski",certs:""},
+  {name:"Juan Duque",title:"VP Finance / CFO",company:"Reworld Waste",location:"Orlando, FL",type:"Finance",yoe:27,li:"https://www.linkedin.com/in/juan-c-duque",certs:"MBA, MSF"},
+  {name:"Gary Hardey",title:"VP Finance / Controller / CFO",company:"Spectrum Medical Partners",location:"Greater Orlando",type:"Finance",yoe:27,li:"https://www.linkedin.com/in/gary-hardey-74252130",certs:""},
+  {name:"Fabio Pelho",title:"Head of FP&A",company:"AiFi Inc.",location:"Orlando, FL",type:"Finance",yoe:19,li:"https://www.linkedin.com/in/fabiopelho",certs:""},
+  {name:"Carter Grant",title:"VP Finance / Corporate Controller",company:"EnsembleIQ",location:"Greater Orlando",type:"Finance",yoe:16,li:"https://www.linkedin.com/in/carter-grant",certs:"CPA"},
+  {name:"Carl Perrone",title:"Strategic Finance",company:"VODA.ai",location:"Greater Orlando",type:"Finance",yoe:16,li:"https://www.linkedin.com/in/carl-perrone",certs:"CPA, MBA"},
+  {name:"Andrew Fore",title:"Finance & Shared Services Leader",company:"Consulting / Open",location:"Greater Orlando",type:"Finance",yoe:28,li:"https://www.linkedin.com/in/andrew-fore",certs:""},
+  {name:"Herna Quero",title:"VP Human Resources",company:"K2 Medical Research",location:"Orlando, FL",type:"HR",yoe:15,li:"https://www.linkedin.com/in/herna-quero-sphr-ab83085a",certs:"SPHR"},
+  {name:"Ty Ingle",title:"Strategic HR Executive",company:"Open / Seeking Role",location:"Orlando, FL",type:"HR",yoe:24,li:"https://www.linkedin.com/in/ty-ingle",certs:""},
+  {name:"Richard Winters",title:"Director HRBP",company:"Millennium Physician Group",location:"Winter Garden, FL",type:"HR",yoe:16,li:"https://www.linkedin.com/in/richard-winters-people-professional",certs:"SPHR, SHRM-SCP"},
+  {name:"Elliott Willis",title:"CHRO",company:"Watson Clinic LLP",location:"Lakeland/Orlando, FL",type:"HR",yoe:20,li:"https://www.linkedin.com/in/elliott-willis-jd-sphr-635231a3",certs:"JD, SPHR"},
+  {name:"Brandi Garrett",title:"VP Human Resources",company:"Inspire Aesthetics Group",location:"Greater Orlando",type:"HR",yoe:22,li:"https://www.linkedin.com/in/brandigarretthr",certs:"PHR, SHRM-CP"},
+  {name:"Joy Sylvester",title:"VP Total Rewards",company:"Memorial Hermann Health",location:"Orlando, FL",type:"HR",yoe:15,li:"https://www.linkedin.com/in/joysylvester",certs:"SPHR, FACHE"},
+  {name:"Christy Pavel",title:"Chief People Officer",company:"Women's Care",location:"Orlando/Tampa, FL",type:"HR",yoe:29,li:"https://www.linkedin.com/in/christy-pavel-mba",certs:"MBA"},
+  {name:"Ty Hubbard",title:"Fractional CPO / HR Consultant",company:"The HR Hub, LLC",location:"Greater Orlando",type:"HR",yoe:15,li:"https://www.linkedin.com/in/tysonhubbard",certs:"SPHR"},
+  {name:"Shawnee De Anda",title:"Chief People Officer",company:"Thriveworks",location:"Orlando, FL",type:"HR",yoe:21,li:"https://www.linkedin.com/in/shawneeirmen",certs:"PHR, PRC"},
+];
+
+const avatarColors=[
+  {bg:"#eef2ff",fg:"#3730a3"},{bg:"#ecfdf5",fg:"#065f46"},{bg:"#fff7ed",fg:"#9a3412"},
+  {bg:"#fdf4ff",fg:"#701a75"},{bg:"#eff6ff",fg:"#1e40af"},{bg:"#f0fdf4",fg:"#166534"}
+];
+
+function initials(n){return n.split(" ").filter(w=>w&&w[0]===w[0].toUpperCase()&&!/[,.(]/.test(w)).slice(0,2).map(w=>w[0]).join("")}
+
+function renderCards(list){
+  const g=document.getElementById("grid");
+  g.innerHTML="";
+  if(!list.length){g.innerHTML='<div style="font-size:14px;color:#64748b;grid-column:1/-1;text-align:center;padding:2rem">No profiles match.</div>';return;}
+  list.forEach((p,i)=>{
+    const ac=avatarColors[i%avatarColors.length];
+    const d=document.createElement("div");
+    d.className="card";
+    d.innerHTML=`
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <div class="avatar" style="background:${ac.bg};color:${ac.fg}">${initials(p.name)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+          <div style="font-size:12px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</div>
+        </div>
+        <span class="badge ${p.type==='HR'?'badge-hr':'badge-fin'}">${p.type}</span>
+      </div>
+      <div style="margin-top:10px;border-top:0.5px solid #e2e8f0;padding-top:10px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b">
+          <i class="ti ti-building" style="font-size:14px"></i>
+          <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.company}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b">
+          <i class="ti ti-map-pin" style="font-size:14px"></i>${p.location}
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+          <span style="font-size:12px;color:#64748b"><i class="ti ti-briefcase" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>${p.yoe} yrs exp</span>
+          ${p.certs?`<span style="font-size:11px;color:#94a3b8">${p.certs}</span>`:''}
+          <a href="${p.li}" target="_blank" style="font-size:12px;color:#2563eb;display:flex;align-items:center;gap:3px">
+            <i class="ti ti-brand-linkedin" style="font-size:15px"></i>Profile
+          </a>
+        </div>
+      </div>`;
+    g.appendChild(d);
+  });
+}
+
+let currentFilter="all";
+function setFilter(btn,f){
+  document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  currentFilter=f;
+  applyFilters();
+}
+function applyFilters(){
+  const q=document.getElementById("search").value.toLowerCase();
+  const list=profiles.filter(p=>{
+    const mf=currentFilter==="all"||p.type===currentFilter;
+    const mq=!q||[p.name,p.company,p.title,p.location].some(s=>s.toLowerCase().includes(q));
+    return mf&&mq;
+  });
+  renderCards(list);
+}
+document.getElementById("search").addEventListener("input",applyFilters);
+renderCards(profiles);
+
+new Chart(document.getElementById("expChart"),{
+  type:"bar",
+  data:{
+    labels:["10–15 yrs","15–20 yrs","20–25 yrs","25–30 yrs"],
+    datasets:[{data:[3,7,5,5],backgroundColor:"#93c5fd",borderRadius:4,borderSkipped:false}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:"rgba(0,0,0,0.05)"},ticks:{font:{size:11},color:"#94a3b8"}},
+            y:{grid:{color:"rgba(0,0,0,0.05)"},ticks:{font:{size:11},color:"#94a3b8",stepSize:2}}}}
+});
+
+new Chart(document.getElementById("typeChart"),{
+  type:"doughnut",
+  data:{
+    labels:["HR (11)","Finance (9)"],
+    datasets:[{data:[11,9],backgroundColor:["#818cf8","#34d399"],borderWidth:0}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:"65%",
+    plugins:{legend:{position:"bottom",labels:{font:{size:12},color:"#64748b",boxWidth:12,padding:16}}}}
+});
+</script>
+</body>
+</html>
