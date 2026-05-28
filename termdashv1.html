@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AssistRx TA Resume Review — Leadership Report</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f2f5;
+      color: #1a2233;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #003087 0%, #0057b8 60%, #0099cc 100%);
+      color: #fff;
+      padding: 28px 40px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 3px 12px rgba(0,0,0,.25);
+    }
+    .header-left h1 { font-size: 1.65rem; font-weight: 700; letter-spacing: .3px; }
+    .header-left p  { font-size: .88rem; opacity: .85; margin-top: 4px; }
+    .header-badges  { display: flex; gap: 12px; }
+    .header-badge {
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 8px;
+      padding: 10px 20px;
+      text-align: center;
+    }
+    .header-badge .big { font-size: 1.9rem; font-weight: 800; }
+    .header-badge .lbl { font-size: .75rem; opacity: .8; margin-top: 2px; }
+
+    /* ── Layout ── */
+    .body-wrap { padding: 28px 36px 40px; max-width: 1500px; margin: 0 auto; }
+
+    /* ── Combined strip ── */
+    .combined-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .cstat {
+      background: #fff;
+      border-radius: 10px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 6px rgba(0,0,0,.08);
+      border-top: 4px solid #0057b8;
+      text-align: center;
+    }
+    .cstat .num  { font-size: 2rem; font-weight: 800; color: #0057b8; }
+    .cstat .sub  { font-size: .78rem; color: #666; margin-top: 4px; }
+    .cstat.green { border-top-color: #22a65a; }
+    .cstat.green .num { color: #22a65a; }
+    .cstat.red   { border-top-color: #d93025; }
+    .cstat.red   .num { color: #d93025; }
+    .cstat.amber { border-top-color: #e6a800; }
+    .cstat.amber .num { color: #c48800; }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 12px;
+    }
+
+    /* ── Recruiter columns (3-up) ── */
+    .recruiter-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .recruiter-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 8px rgba(0,0,0,.09);
+      overflow: hidden;
+    }
+    .recruiter-card .rc-header {
+      padding: 16px 22px 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .recruiter-card.tommy   .rc-header { background: linear-gradient(90deg,#003087,#0057b8); }
+    .recruiter-card.yolanda .rc-header { background: linear-gradient(90deg,#5b2d8e,#8e44ad); }
+    .recruiter-card.jake    .rc-header { background: linear-gradient(90deg,#1a6b3c,#27ae60); }
+    .rc-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .rc-name { color: #fff; }
+    .rc-name h2 { font-size: 1rem; font-weight: 700; }
+    .rc-name p  { font-size: .76rem; opacity: .82; margin-top: 2px; }
+
+    .rc-body { padding: 16px 20px 18px; }
+
+    /* stat rows */
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: .86rem;
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-row .label { color: #555; }
+    .stat-row .value { font-weight: 700; }
+    .value.blue   { color: #0057b8; }
+    .value.green  { color: #22a65a; }
+    .value.red    { color: #d93025; }
+    .value.amber  { color: #c48800; }
+    .value.purple { color: #7b35c1; }
+    .value.teal   { color: #1a6b3c; }
+
+    /* progress bar */
+    .prog-wrap { margin: 12px 0 6px; }
+    .prog-label { display: flex; justify-content: space-between; font-size: .77rem; color: #555; margin-bottom: 4px; }
+    .prog-bg { background: #e8edf5; border-radius: 99px; height: 8px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 99px; }
+    .fill-blue   { background: linear-gradient(90deg,#0057b8,#0099cc); }
+    .fill-green  { background: linear-gradient(90deg,#22a65a,#42d678); }
+    .fill-purple { background: linear-gradient(90deg,#6d28d9,#9b59b6); }
+    .fill-teal   { background: linear-gradient(90deg,#1a6b3c,#27ae60); }
+    .fill-amber  { background: linear-gradient(90deg,#c48800,#e6a800); }
+
+    /* mini divider */
+    .divider { border: none; border-top: 1px solid #eee; margin: 12px 0; }
+
+    /* ── Fit breakdown ── */
+    .fit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(60px,1fr));
+      gap: 7px;
+      margin-top: 10px;
+    }
+    .fit-chip {
+      background: #f5f7fa;
+      border-radius: 8px;
+      padding: 9px 4px;
+      text-align: center;
+      border: 1px solid #e4e8f0;
+    }
+    .fit-chip .fc-num  { font-size: 1.2rem; font-weight: 800; }
+    .fit-chip .fc-lbl  { font-size: .65rem; color: #666; margin-top: 2px; line-height: 1.2; }
+    .fit-chip.strong   { border-color: #22a65a; background: #f0faf4; }
+    .fit-chip.strong .fc-num { color: #22a65a; }
+    .fit-chip.good     { border-color: #0057b8; background: #f0f5ff; }
+    .fit-chip.good .fc-num   { color: #0057b8; }
+    .fit-chip.fair     { border-color: #e6a800; background: #fffbf0; }
+    .fit-chip.fair .fc-num   { color: #c48800; }
+    .fit-chip.weak     { border-color: #d93025; background: #fff5f5; }
+    .fit-chip.weak .fc-num   { color: #d93025; }
+    .fit-chip.noresume { border-color: #aaa; background: #f9f9f9; }
+    .fit-chip.noresume .fc-num { color: #888; }
+
+    /* ── Termed employee table ── */
+    .termed-section {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 8px rgba(0,0,0,.09);
+      padding: 20px 24px 24px;
+      margin-bottom: 28px;
+    }
+    .termed-section h3 { font-size: 1rem; font-weight: 700; margin-bottom: 14px; color: #d93025; }
+    .tab-buttons { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .tab-btn {
+      padding: 6px 16px;
+      border-radius: 99px;
+      border: 1px solid #ccc;
+      background: #f5f5f5;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .tab-btn.active-tommy   { background:#003087; color:#fff; border-color:#003087; }
+    .tab-btn.active-yolanda { background:#5b2d8e; color:#fff; border-color:#5b2d8e; }
+    .tab-btn.active-jake    { background:#1a6b3c; color:#fff; border-color:#1a6b3c; }
+    .tab-btn.active-all     { background:#1a2233; color:#fff; border-color:#1a2233; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+    table { width: 100%; border-collapse: collapse; font-size: .83rem; }
+    th {
+      background: #f5f7fa;
+      text-align: left;
+      padding: 8px 12px;
+      font-weight: 700;
+      color: #444;
+      border-bottom: 2px solid #e0e4ec;
+    }
+    td { padding: 7px 12px; border-bottom: 1px solid #f0f0f0; color: #333; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafbff; }
+    .badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 99px;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+    .badge-red    { background: #fde8e7; color: #c0392b; }
+    .badge-amber  { background: #fff3cd; color: #856404; }
+    .badge-blue   { background: #e8f0fe; color: #1a56db; }
+    .badge-green  { background: #d4edda; color: #155724; }
+    .badge-purple { background: #f3f0ff; color: #5b2d8e; }
+    .badge-gray   { background: #f0f0f0; color: #666; }
+
+    /* ── Internal vs External ── */
+    .split-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 8px;
+    }
+    .split-chip {
+      border-radius: 8px;
+      padding: 9px 12px;
+      border: 1px solid #e4e8f0;
+    }
+    .split-chip .sc-pct { font-size: 1.3rem; font-weight: 800; }
+    .split-chip .sc-lbl { font-size: .72rem; color: #666; margin-top: 2px; }
+    .split-chip.int { background: #eef6ff; border-color: #bedcff; }
+    .split-chip.int .sc-pct { color: #0057b8; }
+    .split-chip.ext { background: #f3f0ff; border-color: #c9baff; }
+    .split-chip.ext .sc-pct { color: #5b2d8e; }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      font-size: .76rem;
+      color: #aaa;
+      padding: 12px 0 4px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1000px) {
+      .recruiter-grid { grid-template-columns: 1fr; }
+      .combined-strip { grid-template-columns: repeat(3,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════ HEADER ════════════════ -->
+<div class="header">
+  <div class="header-left">
+    <h1>AssistRx — TA Resume Review</h1>
+    <p>Leadership Report &nbsp;·&nbsp; YTD 2026 &nbsp;·&nbsp; Generated May 28, 2026 &nbsp;·&nbsp; 3 Recruiters</p>
+  </div>
+  <div class="header-badges">
+    <div class="header-badge">
+      <div class="big">430</div>
+      <div class="lbl">Total<br>Candidates</div>
+    </div>
+    <div class="header-badge">
+      <div class="big">95.1%</div>
+      <div class="lbl">Review<br>Completion</div>
+    </div>
+    <div class="header-badge">
+      <div class="big">87.9%</div>
+      <div class="lbl">Overall<br>Retention</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ BODY ════════════════ -->
+<div class="body-wrap">
+
+  <!-- ── Combined KPIs ── -->
+  <div class="section-label">Combined Portfolio — All Recruiters (Tommy · Yolanda · Jake)</div>
+  <div class="combined-strip">
+    <div class="cstat">
+      <div class="num">430</div>
+      <div class="sub">Total Candidates<br><span style="font-size:.7rem;color:#aaa">115 + 50 + 265</span></div>
+    </div>
+    <div class="cstat blue">
+      <div class="num">95.1%</div>
+      <div class="sub">Resumes Reviewed<br><span style="color:#aaa;font-size:.73rem">409 of 430</span></div>
+    </div>
+    <div class="cstat green">
+      <div class="num">87.9%</div>
+      <div class="sub">Still at AssistRx<br><span style="color:#aaa;font-size:.73rem">378 of 430</span></div>
+    </div>
+    <div class="cstat red">
+      <div class="num">50</div>
+      <div class="sub">Total Term Matches<br><span style="color:#aaa;font-size:.73rem">5 Tommy · 1 Yolanda · 44 Jake</span></div>
+    </div>
+    <div class="cstat amber">
+      <div class="num">21</div>
+      <div class="sub">No Resume / No Text<br><span style="color:#aaa;font-size:.73rem">3 Tommy · 2 Yolanda · 15 Jake (≈8%)</span></div>
+    </div>
+  </div>
+
+  <!-- ── Recruiter Side-by-Side ── -->
+  <div class="section-label">Recruiter Breakdown</div>
+  <div class="recruiter-grid">
+
+    <!-- ── TOMMY ── -->
+    <div class="recruiter-card tommy">
+      <div class="rc-header">
+        <div class="rc-avatar">TG</div>
+        <div class="rc-name">
+          <h2>Thomas Gardner</h2>
+          <p>YTD Hired Grid · Hub / Patient Access Roles</p>
+        </div>
+      </div>
+      <div class="rc-body">
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Review Completion</span><span style="font-weight:700">97.4%</span></div>
+          <div class="prog-bg"><div class="prog-fill fill-blue" style="width:97.4%"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Retention Rate</span><span style="font-weight:700;color:#22a65a">95.7%</span></div>
+          <div class="prog-bg"><div class="prog-fill fill-green" style="width:95.7%"></div></div>
+        </div>
+        <hr class="divider">
+        <div class="stat-row"><span class="label">Total Hires</span><span class="value blue">115</span></div>
+        <div class="stat-row"><span class="label">Resumes Reviewed</span><span class="value blue">112</span></div>
+        <div class="stat-row"><span class="label">Missing Resumes</span><span class="value amber">3</span></div>
+        <div class="stat-row"><span class="label">Still at AssistRx</span><span class="value green">110</span></div>
+        <div class="stat-row"><span class="label">Term Matches</span><span class="value red">5 &nbsp;<span style="font-weight:400;font-size:.76rem;color:#999">(all involuntary)</span></span></div>
+        <hr class="divider">
+        <div class="section-label" style="margin-bottom:6px">Internal vs. External</div>
+        <div class="split-row">
+          <div class="split-chip int">
+            <div class="sc-pct">100%</div>
+            <div class="sc-lbl">Internal · 38 of 38</div>
+          </div>
+          <div class="split-chip ext">
+            <div class="sc-pct">93.5%</div>
+            <div class="sc-lbl">External · 72 of 77</div>
+          </div>
+        </div>
+        <hr class="divider">
+        <div class="section-label" style="margin-bottom:6px">Fit Distribution</div>
+        <div class="fit-grid">
+          <div class="fit-chip strong"><div class="fc-num">40</div><div class="fc-lbl">★★★ Strong</div></div>
+          <div class="fit-chip good"  ><div class="fc-num">35</div><div class="fc-lbl">★★ Good</div></div>
+          <div class="fit-chip fair"  ><div class="fc-num">25</div><div class="fc-lbl">★ Fair</div></div>
+          <div class="fit-chip weak"  ><div class="fc-num">12</div><div class="fc-lbl">○ Developing</div></div>
+          <div class="fit-chip noresume"><div class="fc-num">3</div><div class="fc-lbl">No Resume</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── YOLANDA ── -->
+    <div class="recruiter-card yolanda">
+      <div class="rc-header">
+        <div class="rc-avatar">YL</div>
+        <div class="rc-name">
+          <h2>Yolanda</h2>
+          <p>Pharm Tech Grid · Pharmacy Technician Roles</p>
+        </div>
+      </div>
+      <div class="rc-body">
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Review Completion</span><span style="font-weight:700">96.0%</span></div>
+          <div class="prog-bg"><div class="prog-fill fill-purple" style="width:96.0%"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Confirmed Hire Retention</span><span style="font-weight:700;color:#22a65a">100%</span></div>
+          <div class="prog-bg"><div class="prog-fill fill-green" style="width:100%"></div></div>
+        </div>
+        <hr class="divider">
+        <div class="stat-row"><span class="label">Total Candidates</span><span class="value purple">50</span></div>
+        <div class="stat-row"><span class="label">Resumes Reviewed</span><span class="value purple">48</span></div>
+        <div class="stat-row"><span class="label">Missing / No Data</span><span class="value amber">2</span></div>
+        <div class="stat-row"><span class="label">Confirmed Hires</span><span class="value green">3</span></div>
+        <div class="stat-row"><span class="label">Hire Retention</span><span class="value green">3 of 3 · 100%</span></div>
+        <div class="stat-row"><span class="label">Term Matches (candidates)</span><span class="value amber">1 &nbsp;<span style="font-weight:400;font-size:.76rem;color:#999">(prior employee, not hire)</span></span></div>
+        <hr class="divider">
+        <div class="section-label" style="margin-bottom:6px">Confirmed Hires — All Retained ✓</div>
+        <div style="font-size:.82rem;color:#333;line-height:2.0">
+          &nbsp;✅&nbsp; Darlyn Grace Duran<br>
+          &nbsp;✅&nbsp; Jillian Pinnock<br>
+          &nbsp;✅&nbsp; Tanisha Ramirez
+        </div>
+        <hr class="divider">
+        <div class="section-label" style="margin-bottom:6px">Fit Distribution</div>
+        <div class="fit-grid">
+          <div class="fit-chip strong"><div class="fc-num">5</div><div class="fc-lbl">★★★ Strong</div></div>
+          <div class="fit-chip good"  ><div class="fc-num">12</div><div class="fc-lbl">★★ Good</div></div>
+          <div class="fit-chip fair"  ><div class="fc-num">20</div><div class="fc-lbl">★ Fair</div></div>
+          <div class="fit-chip weak"  ><div class="fc-num">8</div><div class="fc-lbl">○ Weak</div></div>
+          <div class="fit-chip noresume"><div class="fc-num">2</div><div class="fc-lbl">No Data</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── JAKE ── -->
+    <div class="recruiter-card jake">
+      <div class="rc-header">
+        <div class="rc-avatar">JK</div>
+        <div class="rc-name">
+          <h2>Jake</h2>
+          <p>TAReview Pool · Hub / Patient Access Roles</p>
+        </div>
+      </div>
+      <div class="rc-body">
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Review Completion</span><span style="font-weight:700">94.3%</span></div>
+          <div class="prog-bg"><div class="prog-fill fill-teal" style="width:94.3%"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Retention Rate</span><span style="font-weight:700;color:#d93025">83.4%</span></div>
+          <div class="prog-bg"><div class="prog-fill fill-amber" style="width:83.4%"></div></div>
+        </div>
+        <hr class="divider">
+        <div class="stat-row"><span class="label">Total Unique Candidates</span><span class="value teal">265</span></div>
+        <div class="stat-row"><span class="label">Total Files Reviewed</span><span class="value teal">279</span></div>
+        <div class="stat-row"><span class="label">No Resume / No Text</span><span class="value amber">15</span></div>
+        <div class="stat-row"><span class="label">Still at AssistRx</span><span class="value green">221</span></div>
+        <div class="stat-row"><span class="label">Term Matches</span><span class="value red">44</span></div>
+        <hr class="divider">
+        <div class="section-label" style="margin-bottom:6px">Term Reason Breakdown</div>
+        <div style="font-size:.82rem;color:#555;line-height:1.9">
+          &nbsp;🔴&nbsp; Abandoned Job: 11<br>
+          &nbsp;🔴&nbsp; Misconduct: 10<br>
+          &nbsp;🔴&nbsp; Attendance: 8<br>
+          &nbsp;🟡&nbsp; Dissatisfied / Mutual: 6<br>
+          &nbsp;⚪&nbsp; Performance / Other / Org: 9
+        </div>
+        <hr class="divider">
+        <div class="section-label" style="margin-bottom:6px">Fit Distribution</div>
+        <div class="fit-grid">
+          <div class="fit-chip strong"><div class="fc-num">94</div><div class="fc-lbl">★★★ Strong</div></div>
+          <div class="fit-chip good"  ><div class="fc-num">85</div><div class="fc-lbl">★★ Good</div></div>
+          <div class="fit-chip fair"  ><div class="fc-num">59</div><div class="fc-lbl">★ Fair</div></div>
+          <div class="fit-chip weak"  ><div class="fc-num">27</div><div class="fc-lbl">○ Developing</div></div>
+          <div class="fit-chip noresume"><div class="fc-num">15</div><div class="fc-lbl">No Resume</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /recruiter-grid -->
+
+  <!-- ── Termed Employee Tables ── -->
+  <div class="termed-section">
+    <h3>⚠ Term File Matches — 50 Total Across All Recruiters</h3>
+
+    <div class="tab-buttons">
+      <button class="tab-btn active-tommy" onclick="showTab('tommy',this)">Thomas Gardner (5)</button>
+      <button class="tab-btn" onclick="showTab('yolanda',this)">Yolanda (1)</button>
+      <button class="tab-btn" onclick="showTab('jake',this)">Jake (44)</button>
+      <button class="tab-btn" onclick="showTab('all',this)">All Combined</button>
+    </div>
+
+    <!-- Tommy tab -->
+    <div id="tab-tommy" class="tab-pane active">
+      <table>
+        <thead><tr><th>Name</th><th>Term Date</th><th>Term Type</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Odetta Daniels</td><td>2025</td><td><span class="badge badge-red">Involuntary</span></td><td>Termed</td></tr>
+          <tr><td>Eulanda Morgan</td><td>2025</td><td><span class="badge badge-red">Involuntary</span></td><td>Termed</td></tr>
+          <tr><td>Leon Evans</td><td>2025</td><td><span class="badge badge-red">Involuntary</span></td><td>Termed</td></tr>
+          <tr><td>Elisha Cook</td><td>2025</td><td><span class="badge badge-red">Involuntary</span></td><td>Termed</td></tr>
+          <tr><td>Alexis Ramos</td><td>2025</td><td><span class="badge badge-red">Involuntary</span></td><td>Termed</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:.76rem;color:#999;margin-top:10px;">All 5 of Tommy's terms are involuntary — zero voluntary attrition.</p>
+    </div>
+
+    <!-- Yolanda tab -->
+    <div id="tab-yolanda" class="tab-pane">
+      <table>
+        <thead><tr><th>Name</th><th>Term Date</th><th>Note</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Marguerite Umraugh</td><td>2025</td><td><span class="badge badge-gray">Prior Employee</span></td><td>Candidate only — not a confirmed hire</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:.76rem;color:#999;margin-top:10px;">Marguerite was a prior AssistRx employee who applied for the Pharm Tech role. All 3 confirmed hires remain active.</p>
+    </div>
+
+    <!-- Jake tab -->
+    <div id="tab-jake" class="tab-pane">
+      <table>
+        <thead><tr><th>Name</th><th>Term Date</th><th>Term Reason</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Amanda Stratton</td><td>05/22/2026</td><td><span class="badge badge-red">Misconduct</span></td><td>Termed</td></tr>
+          <tr><td>Ariel Whittaker</td><td>03/12/2026</td><td><span class="badge badge-red">Performance</span></td><td>Termed</td></tr>
+          <tr><td>Ashley Ferrell</td><td>03/31/2026</td><td><span class="badge badge-red">Misconduct</span></td><td>Termed</td></tr>
+          <tr><td>Bianca Malone</td><td>04/09/2026</td><td><span class="badge badge-red">Misconduct</span></td><td>Termed</td></tr>
+          <tr><td>Camilla Spradley</td><td>04/23/2026</td><td><span class="badge badge-amber">Dissatisfied w/ Job</span></td><td>Termed</td></tr>
+          <tr><td>Cherice Parramore</td><td>04/09/2026</td><td><span class="badge badge-gray">Other</span></td><td>Termed</td></tr>
+          <tr><td>Cheyenne Browning</td><td>05/18/2026</td><td><span class="badge badge-amber">Dissatisfied w/ Job</span></td><td>Termed</td></tr>
+          <tr><td>Cristie Wiggins</td><td>05/07/2026</td><td><span class="badge badge-gray">Other</span></td><td>Termed</td></tr>
+          <tr><td>Crystal Brown</td><td>03/16/2026</td><td><span class="badge badge-amber">Dissatisfied w/ Job</span></td><td>Termed</td></tr>
+          <tr><td>Crystal Many</td><td>04/22/2026</td><td><span class="badge badge-amber">Dissatisfied w/ Job</span></td><td>Termed</td></tr>
+          <tr><td>Cynthia Preshong</td><td>03/31/2026</td><td><span class="badge badge-red">Abandoned Job</span></td><td>Termed</td></tr>
+          <tr><td>Dashyra Galloway</td><td>04/07/2026</td><td><span class="badge badge-red">Attendance</span></td><td>Termed</td></tr>
+          <tr><td>Debbie Figueroa</td><td>03/06/2026</td><td><span class="badge badge-red">Attendance</span></td><td>Termed</td></tr>
+          <tr><td>Desirae Denson</td><td>03/25/2026</td><td><span class="badge badge-red">Abandoned Job</span></td><td>Termed</td></tr>
+          <tr><td>Destiny Colon</td><td>03/02/2026</td><td><span class="badge badge-red">Abandoned Job</span></td><td>Termed</td></tr>
+          <tr><td>Erica Young</td><td>04/14/2026</td><td><span class="badge badge-red">Abandoned Job</span></td><td>Termed</td></tr>
+          <tr><td>Evelin Lezcano</td><td>03/27/2026</td><td><span class="badge badge-red">Performance</span></td><td>Termed</td></tr>
+          <tr><td>Gabrielle Cooper</td><td>04/24/2026</td><td><span class="badge badge-red">Attendance</span></td><td>Termed</td></tr>
+          <tr><td>Gedeon Dejean</td><td>04/16/2026</td><td><span class="badge badge-red">Abandoned Job</span></td><td>Termed</td></tr>
+          <tr><td>Jaala Lacy</td><td>04/29/2026</td><td><span class="badge badge-red">Attendance</span></td><td>Termed</td></tr>
+          <tr><td>Jazmin Pillado</td><td>04/21/2026</td><td><span class="badge badge-green">Mutual</span></td><td>Termed</td></tr>
+          <tr><td>Jenna Miller</td><td>03/11/2026</td><td><span class="badge badge-red">Misconduct</span></td><td>Termed</td></tr>
+          <tr><td>Jesus Rodriguez</td><td>05/01/2026</td><td><span class="badge badge-red">Attendance</span></td><td>Termed</td></tr>
+          <tr><td>Kamoy Gaye</td><td>03/13/2026</td><td><span class="badge badge-red">Misconduct</span></td><td>Termed</td></tr>
+          <tr><td>Kristina Arevalo</td><td>03/25/2026</td><td><span class="badge badge-red">Misconduct</span></td><td>Termed</td></tr>
+          <tr><td>Lourdes Ductan</td><td>05/13/2026</td><td><span class="badge badge-red">Misconduct</span></td><td>Termed</td></tr>
+          <tr><td>Marguerite Charleron</td><td>03/30/2026</td><td><span class="badge badge-red">Performance</span></td><td>Termed</td></tr>
+          <tr><td>Mashayla Clermont</td><td>03/24/2026</td><td><span class="badge badge-red">Abandoned Job</span></td><td>Termed</td></tr>
+          <tr><td>Melani Mullins</td><td>03/25/2026</td><td><span class="badge badge-red">Attendance</span></td><td>Termed</td></tr>
+          <tr><td>Moyosola Bello</td><td>02/09/2026</td><td><span class="badge badge-red">Misconduct</span></td><td>Termed</td></tr>
+          <tr><td>Nancy Dominique</td><td>03/02/2026</td><td><span class="badge badge-gray">Org Design</span></td><td>Termed</td></tr>
+          <tr><td>Presley Vandervort</td><td>04/14/2026</td><td><span class="badge badge-gray">Other</span></td><td>Termed</td></tr>
+          <tr><td>Rayden Bonzil</td><td>05/11/2026</td><td><span class="badge badge-red">Abandoned Job</span></td><td>Termed</td></tr>
+          <tr><td>Rena Sahadeo</td><td>03/16/2026</td><td><span class="badge badge-red">Attendance</span></td><td>Termed</td></tr>
+          <tr><td>Renay Detreville</td><td>03/16/2026</td><td><span class="badge badge-red">Attendance</span></td><td>Termed</td></tr>
+          <tr><td>Ronda Rucker</td><td>03/24/2026</td><td><span class="badge badge-red">Abandoned Job</span></td><td>Termed</td></tr>
+          <tr><td>Shanel Davidson</td><td>04/16/2026</td><td><span class="badge badge-red">Misconduct</span></td><td>Termed</td></tr>
+          <tr><td>Shiara Gerald</td><td>03/10/2026</td><td><span class="badge badge-red">Misconduct</span></td><td>Termed</td></tr>
+          <tr><td>Tamiko Crawford</td><td>03/12/2026</td><td><span class="badge badge-red">Performance</span></td><td>Termed</td></tr>
+          <tr><td>Tara Jones</td><td>04/06/2026</td><td><span class="badge badge-red">Attendance</span></td><td>Termed</td></tr>
+          <tr><td>Tricia Contreras</td><td>04/21/2026</td><td><span class="badge badge-red">Abandoned Job</span></td><td>Termed</td></tr>
+          <tr><td>Uriel Ponce</td><td>04/09/2026</td><td><span class="badge badge-red">Attendance</span></td><td>Termed</td></tr>
+          <tr><td>Withshamma Alexis</td><td>04/06/2026</td><td><span class="badge badge-red">Abandoned Job</span></td><td>Termed</td></tr>
+          <tr><td>Yajaira Santana</td><td>03/26/2026</td><td><span class="badge badge-amber">Dissatisfied w/ Job</span></td><td>Termed</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:.76rem;color:#999;margin-top:10px;">* John and Hailey (TA temps) excluded from all reporting. Duplicates (same candidate, multiple req #s) de-duplicated to unique headcount.</p>
+    </div>
+
+    <!-- All Combined tab -->
+    <div id="tab-all" class="tab-pane">
+      <table>
+        <thead><tr><th>Name</th><th>Recruiter</th><th>Term Date</th><th>Term Reason</th></tr></thead>
+        <tbody>
+          <tr><td>Odetta Daniels</td><td><span class="badge badge-blue">Thomas Gardner</span></td><td>2025</td><td><span class="badge badge-red">Involuntary</span></td></tr>
+          <tr><td>Eulanda Morgan</td><td><span class="badge badge-blue">Thomas Gardner</span></td><td>2025</td><td><span class="badge badge-red">Involuntary</span></td></tr>
+          <tr><td>Leon Evans</td><td><span class="badge badge-blue">Thomas Gardner</span></td><td>2025</td><td><span class="badge badge-red">Involuntary</span></td></tr>
+          <tr><td>Elisha Cook</td><td><span class="badge badge-blue">Thomas Gardner</span></td><td>2025</td><td><span class="badge badge-red">Involuntary</span></td></tr>
+          <tr><td>Alexis Ramos</td><td><span class="badge badge-blue">Thomas Gardner</span></td><td>2025</td><td><span class="badge badge-red">Involuntary</span></td></tr>
+          <tr><td>Marguerite Umraugh</td><td><span class="badge badge-purple">Yolanda</span></td><td>2025</td><td><span class="badge badge-gray">Prior Employee (candidate)</span></td></tr>
+          <tr><td>Amanda Stratton</td><td><span class="badge badge-green">Jake</span></td><td>05/22/2026</td><td><span class="badge badge-red">Misconduct</span></td></tr>
+          <tr><td>Ariel Whittaker</td><td><span class="badge badge-green">Jake</span></td><td>03/12/2026</td><td><span class="badge badge-red">Performance</span></td></tr>
+          <tr><td>Ashley Ferrell</td><td><span class="badge badge-green">Jake</span></td><td>03/31/2026</td><td><span class="badge badge-red">Misconduct</span></td></tr>
+          <tr><td>Bianca Malone</td><td><span class="badge badge-green">Jake</span></td><td>04/09/2026</td><td><span class="badge badge-red">Misconduct</span></td></tr>
+          <tr><td>Camilla Spradley</td><td><span class="badge badge-green">Jake</span></td><td>04/23/2026</td><td><span class="badge badge-amber">Dissatisfied</span></td></tr>
+          <tr><td>Cherice Parramore</td><td><span class="badge badge-green">Jake</span></td><td>04/09/2026</td><td><span class="badge badge-gray">Other</span></td></tr>
+          <tr><td>Cheyenne Browning</td><td><span class="badge badge-green">Jake</span></td><td>05/18/2026</td><td><span class="badge badge-amber">Dissatisfied</span></td></tr>
+          <tr><td>Cristie Wiggins</td><td><span class="badge badge-green">Jake</span></td><td>05/07/2026</td><td><span class="badge badge-gray">Other</span></td></tr>
+          <tr><td>Crystal Brown</td><td><span class="badge badge-green">Jake</span></td><td>03/16/2026</td><td><span class="badge badge-amber">Dissatisfied</span></td></tr>
+          <tr><td>Crystal Many</td><td><span class="badge badge-green">Jake</span></td><td>04/22/2026</td><td><span class="badge badge-amber">Dissatisfied</span></td></tr>
+          <tr><td>Cynthia Preshong</td><td><span class="badge badge-green">Jake</span></td><td>03/31/2026</td><td><span class="badge badge-red">Abandoned Job</span></td></tr>
+          <tr><td>Dashyra Galloway</td><td><span class="badge badge-green">Jake</span></td><td>04/07/2026</td><td><span class="badge badge-red">Attendance</span></td></tr>
+          <tr><td>Debbie Figueroa</td><td><span class="badge badge-green">Jake</span></td><td>03/06/2026</td><td><span class="badge badge-red">Attendance</span></td></tr>
+          <tr><td>Desirae Denson</td><td><span class="badge badge-green">Jake</span></td><td>03/25/2026</td><td><span class="badge badge-red">Abandoned Job</span></td></tr>
+          <tr><td>Destiny Colon</td><td><span class="badge badge-green">Jake</span></td><td>03/02/2026</td><td><span class="badge badge-red">Abandoned Job</span></td></tr>
+          <tr><td>Erica Young</td><td><span class="badge badge-green">Jake</span></td><td>04/14/2026</td><td><span class="badge badge-red">Abandoned Job</span></td></tr>
+          <tr><td>Evelin Lezcano</td><td><span class="badge badge-green">Jake</span></td><td>03/27/2026</td><td><span class="badge badge-red">Performance</span></td></tr>
+          <tr><td>Gabrielle Cooper</td><td><span class="badge badge-green">Jake</span></td><td>04/24/2026</td><td><span class="badge badge-red">Attendance</span></td></tr>
+          <tr><td>Gedeon Dejean</td><td><span class="badge badge-green">Jake</span></td><td>04/16/2026</td><td><span class="badge badge-red">Abandoned Job</span></td></tr>
+          <tr><td>Jaala Lacy</td><td><span class="badge badge-green">Jake</span></td><td>04/29/2026</td><td><span class="badge badge-red">Attendance</span></td></tr>
+          <tr><td>Jazmin Pillado</td><td><span class="badge badge-green">Jake</span></td><td>04/21/2026</td><td><span class="badge badge-green">Mutual</span></td></tr>
+          <tr><td>Jenna Miller</td><td><span class="badge badge-green">Jake</span></td><td>03/11/2026</td><td><span class="badge badge-red">Misconduct</span></td></tr>
+          <tr><td>Jesus Rodriguez</td><td><span class="badge badge-green">Jake</span></td><td>05/01/2026</td><td><span class="badge badge-red">Attendance</span></td></tr>
+          <tr><td>Kamoy Gaye</td><td><span class="badge badge-green">Jake</span></td><td>03/13/2026</td><td><span class="badge badge-red">Misconduct</span></td></tr>
+          <tr><td>Kristina Arevalo</td><td><span class="badge badge-green">Jake</span></td><td>03/25/2026</td><td><span class="badge badge-red">Misconduct</span></td></tr>
+          <tr><td>Lourdes Ductan</td><td><span class="badge badge-green">Jake</span></td><td>05/13/2026</td><td><span class="badge badge-red">Misconduct</span></td></tr>
+          <tr><td>Marguerite Charleron</td><td><span class="badge badge-green">Jake</span></td><td>03/30/2026</td><td><span class="badge badge-red">Performance</span></td></tr>
+          <tr><td>Mashayla Clermont</td><td><span class="badge badge-green">Jake</span></td><td>03/24/2026</td><td><span class="badge badge-red">Abandoned Job</span></td></tr>
+          <tr><td>Melani Mullins</td><td><span class="badge badge-green">Jake</span></td><td>03/25/2026</td><td><span class="badge badge-red">Attendance</span></td></tr>
+          <tr><td>Moyosola Bello</td><td><span class="badge badge-green">Jake</span></td><td>02/09/2026</td><td><span class="badge badge-red">Misconduct</span></td></tr>
+          <tr><td>Nancy Dominique</td><td><span class="badge badge-green">Jake</span></td><td>03/02/2026</td><td><span class="badge badge-gray">Org Design</span></td></tr>
+          <tr><td>Presley Vandervort</td><td><span class="badge badge-green">Jake</span></td><td>04/14/2026</td><td><span class="badge badge-gray">Other</span></td></tr>
+          <tr><td>Rayden Bonzil</td><td><span class="badge badge-green">Jake</span></td><td>05/11/2026</td><td><span class="badge badge-red">Abandoned Job</span></td></tr>
+          <tr><td>Rena Sahadeo</td><td><span class="badge badge-green">Jake</span></td><td>03/16/2026</td><td><span class="badge badge-red">Attendance</span></td></tr>
+          <tr><td>Renay Detreville</td><td><span class="badge badge-green">Jake</span></td><td>03/16/2026</td><td><span class="badge badge-red">Attendance</span></td></tr>
+          <tr><td>Ronda Rucker</td><td><span class="badge badge-green">Jake</span></td><td>03/24/2026</td><td><span class="badge badge-red">Abandoned Job</span></td></tr>
+          <tr><td>Shanel Davidson</td><td><span class="badge badge-green">Jake</span></td><td>04/16/2026</td><td><span class="badge badge-red">Misconduct</span></td></tr>
+          <tr><td>Shiara Gerald</td><td><span class="badge badge-green">Jake</span></td><td>03/10/2026</td><td><span class="badge badge-red">Misconduct</span></td></tr>
+          <tr><td>Tamiko Crawford</td><td><span class="badge badge-green">Jake</span></td><td>03/12/2026</td><td><span class="badge badge-red">Performance</span></td></tr>
+          <tr><td>Tara Jones</td><td><span class="badge badge-green">Jake</span></td><td>04/06/2026</td><td><span class="badge badge-red">Attendance</span></td></tr>
+          <tr><td>Tricia Contreras</td><td><span class="badge badge-green">Jake</span></td><td>04/21/2026</td><td><span class="badge badge-red">Abandoned Job</span></td></tr>
+          <tr><td>Uriel Ponce</td><td><span class="badge badge-green">Jake</span></td><td>04/09/2026</td><td><span class="badge badge-red">Attendance</span></td></tr>
+          <tr><td>Withshamma Alexis</td><td><span class="badge badge-green">Jake</span></td><td>04/06/2026</td><td><span class="badge badge-red">Abandoned Job</span></td></tr>
+          <tr><td>Yajaira Santana</td><td><span class="badge badge-green">Jake</span></td><td>03/26/2026</td><td><span class="badge badge-amber">Dissatisfied</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="font-size:.76rem;color:#999;margin-top:12px;">* John and Hailey (TA temps, no longer at AssistRx) excluded from all reporting throughout.</p>
+  </div>
+
+  <!-- ── Footer ── -->
+  <div class="footer">
+    AssistRx Talent Acquisition &nbsp;·&nbsp; Confidential — Internal Use Only &nbsp;·&nbsp; May 28, 2026
+  </div>
+
+</div><!-- /body-wrap -->
+
+<script>
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.className = 'tab-btn');
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active-' + id);
+  }
+</script>
+
+</body>
+</html>
