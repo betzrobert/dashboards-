@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AssistRx TA Resume Review — Leadership Report</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f2f5;
+      color: #1a2233;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #003087 0%, #0057b8 60%, #0099cc 100%);
+      color: #fff;
+      padding: 28px 40px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 3px 12px rgba(0,0,0,.25);
+    }
+    .header-left h1 { font-size: 1.65rem; font-weight: 700; letter-spacing: .3px; }
+    .header-left p  { font-size: .88rem; opacity: .85; margin-top: 4px; }
+    .header-badge {
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 8px;
+      padding: 10px 20px;
+      text-align: center;
+    }
+    .header-badge .big { font-size: 1.9rem; font-weight: 800; }
+    .header-badge .lbl { font-size: .75rem; opacity: .8; margin-top: 2px; }
+
+    /* ── Layout ── */
+    .body-wrap { padding: 28px 36px 40px; max-width: 1300px; margin: 0 auto; }
+
+    /* ── Combined strip ── */
+    .combined-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .cstat {
+      background: #fff;
+      border-radius: 10px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 6px rgba(0,0,0,.08);
+      border-top: 4px solid #0057b8;
+      text-align: center;
+    }
+    .cstat .num  { font-size: 2rem; font-weight: 800; color: #0057b8; }
+    .cstat .sub  { font-size: .78rem; color: #666; margin-top: 4px; }
+    .cstat.green { border-top-color: #22a65a; }
+    .cstat.green .num { color: #22a65a; }
+    .cstat.red   { border-top-color: #d93025; }
+    .cstat.red   .num { color: #d93025; }
+    .cstat.amber { border-top-color: #e6a800; }
+    .cstat.amber .num { color: #c48800; }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 12px;
+    }
+
+    /* ── Recruiter columns ── */
+    .recruiter-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-bottom: 28px;
+    }
+
+    .recruiter-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 8px rgba(0,0,0,.09);
+      overflow: hidden;
+    }
+    .recruiter-card .rc-header {
+      padding: 16px 22px 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .recruiter-card.tommy .rc-header { background: linear-gradient(90deg,#003087,#0057b8); }
+    .recruiter-card.yolanda .rc-header { background: linear-gradient(90deg,#5b2d8e,#8e44ad); }
+    .rc-avatar {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: rgba(255,255,255,.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 800; color: #fff;
+    }
+    .rc-name { color: #fff; }
+    .rc-name h2 { font-size: 1.05rem; font-weight: 700; }
+    .rc-name p  { font-size: .78rem; opacity: .82; margin-top: 2px; }
+
+    .rc-body { padding: 18px 22px 20px; }
+
+    /* stat rows */
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: .88rem;
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-row .label { color: #555; }
+    .stat-row .value { font-weight: 700; }
+    .value.blue   { color: #0057b8; }
+    .value.green  { color: #22a65a; }
+    .value.red    { color: #d93025; }
+    .value.amber  { color: #c48800; }
+    .value.purple { color: #7b35c1; }
+
+    /* progress bar */
+    .prog-wrap { margin: 14px 0 8px; }
+    .prog-label { display: flex; justify-content: space-between; font-size: .78rem; color: #555; margin-bottom: 5px; }
+    .prog-bg { background: #e8edf5; border-radius: 99px; height: 9px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 99px; }
+    .fill-blue   { background: linear-gradient(90deg,#0057b8,#0099cc); }
+    .fill-green  { background: linear-gradient(90deg,#22a65a,#42d678); }
+    .fill-purple { background: linear-gradient(90deg,#6d28d9,#9b59b6); }
+
+    /* mini divider */
+    .divider { border: none; border-top: 1px solid #eee; margin: 14px 0; }
+
+    /* ── Fit breakdown ── */
+    .fit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(70px,1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .fit-chip {
+      background: #f5f7fa;
+      border-radius: 8px;
+      padding: 10px 6px;
+      text-align: center;
+      border: 1px solid #e4e8f0;
+    }
+    .fit-chip .fc-num  { font-size: 1.3rem; font-weight: 800; }
+    .fit-chip .fc-lbl  { font-size: .68rem; color: #666; margin-top: 3px; line-height: 1.2; }
+    .fit-chip.strong   { border-color: #22a65a; background: #f0faf4; }
+    .fit-chip.strong .fc-num { color: #22a65a; }
+    .fit-chip.good     { border-color: #0057b8; background: #f0f5ff; }
+    .fit-chip.good .fc-num   { color: #0057b8; }
+    .fit-chip.fair     { border-color: #e6a800; background: #fffbf0; }
+    .fit-chip.fair .fc-num   { color: #c48800; }
+    .fit-chip.weak     { border-color: #d93025; background: #fff5f5; }
+    .fit-chip.weak .fc-num   { color: #d93025; }
+    .fit-chip.noresume { border-color: #aaa; background: #f9f9f9; }
+    .fit-chip.noresume .fc-num { color: #888; }
+
+    /* ── Termed employee table ── */
+    .termed-section {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 8px rgba(0,0,0,.09);
+      padding: 20px 24px 24px;
+      margin-bottom: 28px;
+    }
+    .termed-section h3 { font-size: 1rem; font-weight: 700; margin-bottom: 14px; color: #d93025; }
+    table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+    th {
+      background: #f5f7fa;
+      text-align: left;
+      padding: 8px 12px;
+      font-weight: 700;
+      color: #444;
+      border-bottom: 2px solid #e0e4ec;
+    }
+    td { padding: 8px 12px; border-bottom: 1px solid #f0f0f0; color: #333; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafbff; }
+    .badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 99px;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+    .badge-red   { background: #fde8e7; color: #c0392b; }
+    .badge-blue  { background: #e8f0fe; color: #1a56db; }
+    .badge-gray  { background: #f0f0f0; color: #666; }
+
+    /* ── Internal vs External ── */
+    .split-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .split-chip {
+      border-radius: 8px;
+      padding: 10px 14px;
+      border: 1px solid #e4e8f0;
+    }
+    .split-chip .sc-pct { font-size: 1.4rem; font-weight: 800; }
+    .split-chip .sc-lbl { font-size: .74rem; color: #666; margin-top: 2px; }
+    .split-chip.int { background: #eef6ff; border-color: #bedcff; }
+    .split-chip.int .sc-pct { color: #0057b8; }
+    .split-chip.ext { background: #f3f0ff; border-color: #c9baff; }
+    .split-chip.ext .sc-pct { color: #5b2d8e; }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      font-size: .76rem;
+      color: #aaa;
+      padding: 12px 0 4px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 820px) {
+      .recruiter-grid, .combined-strip { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════ HEADER ════════════════ -->
+<div class="header">
+  <div class="header-left">
+    <h1>AssistRx — TA Resume Review</h1>
+    <p>Leadership Report &nbsp;·&nbsp; YTD 2026 &nbsp;·&nbsp; Generated May 28, 2026</p>
+  </div>
+  <div class="header-badge">
+    <div class="big">97.0%</div>
+    <div class="lbl">Overall Review<br>Completion</div>
+  </div>
+</div>
+
+<!-- ════════════════ BODY ════════════════ -->
+<div class="body-wrap">
+
+  <!-- ── Combined KPIs ── -->
+  <div class="section-label">Combined Portfolio — All Recruiters</div>
+  <div class="combined-strip">
+    <div class="cstat">
+      <div class="num">165</div>
+      <div class="sub">Total Candidates</div>
+    </div>
+    <div class="cstat green">
+      <div class="num">97.0%</div>
+      <div class="sub">Resumes Reviewed<br><span style="color:#aaa;font-size:.73rem">160 of 165</span></div>
+    </div>
+    <div class="cstat green">
+      <div class="num">96.4%</div>
+      <div class="sub">Still at AssistRx<br><span style="color:#aaa;font-size:.73rem">159 of 165</span></div>
+    </div>
+    <div class="cstat red">
+      <div class="num">6</div>
+      <div class="sub">Term Matches Found<br><span style="color:#aaa;font-size:.73rem">across both pools</span></div>
+    </div>
+  </div>
+
+  <!-- ── Recruiter Side-by-Side ── -->
+  <div class="section-label">Recruiter Breakdown</div>
+  <div class="recruiter-grid">
+
+    <!-- ── TOMMY ── -->
+    <div class="recruiter-card tommy">
+      <div class="rc-header">
+        <div class="rc-avatar">TG</div>
+        <div class="rc-name">
+          <h2>Thomas Gardner</h2>
+          <p>YTD Hired Grid · Hub/Patient Access Roles</p>
+        </div>
+      </div>
+      <div class="rc-body">
+
+        <!-- Review progress -->
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Review Completion</span><span style="font-weight:700">97.4%</span></div>
+          <div class="prog-bg"><div class="prog-fill fill-blue" style="width:97.4%"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Retention Rate</span><span style="font-weight:700;color:#22a65a">95.7%</span></div>
+          <div class="prog-bg"><div class="prog-fill fill-green" style="width:95.7%"></div></div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="stat-row"><span class="label">Total Hires</span><span class="value blue">115</span></div>
+        <div class="stat-row"><span class="label">Resumes Reviewed</span><span class="value blue">112</span></div>
+        <div class="stat-row"><span class="label">Missing Resumes</span><span class="value amber">3</span></div>
+        <div class="stat-row"><span class="label">Still at AssistRx</span><span class="value green">110</span></div>
+        <div class="stat-row"><span class="label">Term Matches</span><span class="value red">5 &nbsp;<span style="font-weight:400;font-size:.78rem;color:#999">(all involuntary)</span></span></div>
+
+        <hr class="divider">
+
+        <!-- Internal vs External -->
+        <div class="section-label" style="margin-bottom:6px">Internal vs. External</div>
+        <div class="split-row">
+          <div class="split-chip int">
+            <div class="sc-pct">100%</div>
+            <div class="sc-lbl">Internal Hires<br>38 of 38</div>
+          </div>
+          <div class="split-chip ext">
+            <div class="sc-pct">93.5%</div>
+            <div class="sc-lbl">External Hires<br>72 of 77</div>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Fit breakdown -->
+        <div class="section-label" style="margin-bottom:6px">Candidate Fit Distribution</div>
+        <div class="fit-grid">
+          <div class="fit-chip strong"><div class="fc-num">40</div><div class="fc-lbl">★★★ Strong</div></div>
+          <div class="fit-chip good"  ><div class="fc-num">35</div><div class="fc-lbl">★★ Good</div></div>
+          <div class="fit-chip fair"  ><div class="fc-num">25</div><div class="fc-lbl">★ Fair</div></div>
+          <div class="fit-chip weak"  ><div class="fc-num">12</div><div class="fc-lbl">○ Developing</div></div>
+          <div class="fit-chip noresume"><div class="fc-num">3</div><div class="fc-lbl">No Resume</div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── YOLANDA ── -->
+    <div class="recruiter-card yolanda">
+      <div class="rc-header">
+        <div class="rc-avatar">YL</div>
+        <div class="rc-name">
+          <h2>Yolanda</h2>
+          <p>Pharm Tech Grid · Pharmacy Technician Roles</p>
+        </div>
+      </div>
+      <div class="rc-body">
+
+        <!-- Review progress -->
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Review Completion</span><span style="font-weight:700">96.0%</span></div>
+          <div class="prog-bg"><div class="prog-fill fill-purple" style="width:96.0%"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Confirmed Hire Retention</span><span style="font-weight:700;color:#22a65a">100%</span></div>
+          <div class="prog-bg"><div class="prog-fill fill-green" style="width:100%"></div></div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="stat-row"><span class="label">Total Candidates Reviewed</span><span class="value purple">50</span></div>
+        <div class="stat-row"><span class="label">Resumes Reviewed</span><span class="value purple">48</span></div>
+        <div class="stat-row"><span class="label">Missing / No Data</span><span class="value amber">2</span></div>
+        <div class="stat-row"><span class="label">Confirmed Hires</span><span class="value green">3</span></div>
+        <div class="stat-row"><span class="label">Confirmed Hires Still Here</span><span class="value green">3 of 3 &nbsp;<span style="font-weight:400;font-size:.78rem;color:#999">(100%)</span></span></div>
+        <div class="stat-row"><span class="label">Term Matches (candidates)</span><span class="value red">1 &nbsp;<span style="font-weight:400;font-size:.78rem;color:#999">(prior employee, not hire)</span></span></div>
+
+        <hr class="divider">
+
+        <!-- Confirmed hires -->
+        <div class="section-label" style="margin-bottom:6px">Confirmed Hires — All Retained ✓</div>
+        <div style="font-size:.82rem;color:#333;line-height:1.9">
+          &nbsp;✅&nbsp; Darlyn Grace Duran<br>
+          &nbsp;✅&nbsp; Jillian Pinnock<br>
+          &nbsp;✅&nbsp; Tanisha Ramirez
+        </div>
+
+        <hr class="divider">
+
+        <!-- Fit breakdown -->
+        <div class="section-label" style="margin-bottom:6px">Candidate Fit Distribution</div>
+        <div class="fit-grid">
+          <div class="fit-chip strong"><div class="fc-num">5</div><div class="fc-lbl">★★★ Strong</div></div>
+          <div class="fit-chip good"  ><div class="fc-num">12</div><div class="fc-lbl">★★ Good</div></div>
+          <div class="fit-chip fair"  ><div class="fc-num">20</div><div class="fc-lbl">★ Fair</div></div>
+          <div class="fit-chip weak"  ><div class="fc-num">8</div><div class="fc-lbl">○ Weak</div></div>
+          <div class="fit-chip noresume"><div class="fc-num">2</div><div class="fc-lbl">No Data</div></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /recruiter-grid -->
+
+  <!-- ── Termed Employees Table ── -->
+  <div class="termed-section">
+    <h3>⚠ Term File Matches — 6 Total</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Recruiter</th>
+          <th>Pool</th>
+          <th>Term Date</th>
+          <th>Term Type</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Odetta Daniels</td>
+          <td>Thomas Gardner</td>
+          <td><span class="badge badge-blue">YTD Hired Grid</span></td>
+          <td>2025</td>
+          <td><span class="badge badge-red">Involuntary</span></td>
+          <td>Termed</td>
+        </tr>
+        <tr>
+          <td>Eulanda Morgan</td>
+          <td>Thomas Gardner</td>
+          <td><span class="badge badge-blue">YTD Hired Grid</span></td>
+          <td>2025</td>
+          <td><span class="badge badge-red">Involuntary</span></td>
+          <td>Termed</td>
+        </tr>
+        <tr>
+          <td>Leon Evans</td>
+          <td>Thomas Gardner</td>
+          <td><span class="badge badge-blue">YTD Hired Grid</span></td>
+          <td>2025</td>
+          <td><span class="badge badge-red">Involuntary</span></td>
+          <td>Termed</td>
+        </tr>
+        <tr>
+          <td>Elisha Cook</td>
+          <td>Thomas Gardner</td>
+          <td><span class="badge badge-blue">YTD Hired Grid</span></td>
+          <td>2025</td>
+          <td><span class="badge badge-red">Involuntary</span></td>
+          <td>Termed</td>
+        </tr>
+        <tr>
+          <td>Alexis Ramos</td>
+          <td>Thomas Gardner</td>
+          <td><span class="badge badge-blue">YTD Hired Grid</span></td>
+          <td>2025</td>
+          <td><span class="badge badge-red">Involuntary</span></td>
+          <td>Termed</td>
+        </tr>
+        <tr>
+          <td>Marguerite Umraugh</td>
+          <td>Yolanda</td>
+          <td><span class="badge" style="background:#f3f0ff;color:#5b2d8e">Pharm Tech Grid</span></td>
+          <td>2025</td>
+          <td><span class="badge badge-gray">Prior Employee</span></td>
+          <td>Candidate (not confirmed hire)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:.76rem;color:#999;margin-top:12px;">* John and Hailey (TA temps, no longer at AssistRx) excluded from all reporting. All term matches for Tommy's hires are involuntary — zero voluntary attrition.</p>
+  </div>
+
+  <!-- ── Footer ── -->
+  <div class="footer">
+    AssistRx Talent Acquisition &nbsp;·&nbsp; Confidential — Internal Use Only &nbsp;·&nbsp; May 28, 2026
+  </div>
+
+</div><!-- /body-wrap -->
+</body>
+</html>
