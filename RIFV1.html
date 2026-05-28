@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RIF Status</title>
+<style>
+  :root {
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --ink: #1a1a1a;
+    --ink-muted: #6b6b6b;
+    --accent: #1f3a5f;
+    --tier1: #d9e8f5;
+    --tier1-deep: #4a7ba8;
+    --tier2: #e8f5d9;
+    --tier2-deep: #6b9a4e;
+    --tier3: #f5e8d9;
+    --tier3-deep: #b08454;
+    --status-notstarted: #e8e8e8;
+    --status-notstarted-ink: #595959;
+    --status-inprogress: #fff3c4;
+    --status-inprogress-ink: #8a6500;
+    --status-blocked: #ffd4d4;
+    --status-blocked-ink: #9c0006;
+    --status-complete: #c6efce;
+    --status-complete-ink: #006100;
+    --status-na: #e7e6e6;
+    --status-na-ink: #808080;
+    --border: #e5e1d8;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', 'Iowan Old Style', serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 32px 24px 80px;
+  }
+
+  .wrap { max-width: 1280px; margin: 0 auto; }
+
+  header {
+    margin-bottom: 32px;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 20px;
+  }
+  .eyebrow {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+  h1 {
+    margin: 0 0 6px;
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .sub {
+    color: var(--ink-muted);
+    font-size: 15px;
+    font-style: italic;
+    max-width: 720px;
+  }
+
+  .dashboard {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 20px;
+    margin-bottom: 36px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 22px;
+    box-shadow: var(--shadow);
+  }
+  .card h3 {
+    margin: 0 0 14px;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 600;
+  }
+
+  .req-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto 1fr;
+    gap: 12px;
+    align-items: center;
+  }
+  .req-row label {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .req-row input {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    border: 1px solid var(--border);
+    background: #fffdf2;
+    padding: 7px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+  }
+  .req-row input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .progress-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .progress-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 44px;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  .progress-bar {
+    height: 8px;
+    background: #f0ece2;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+  .progress-label { color: var(--ink-muted); }
+  .progress-count { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+
+  .tier {
+    margin-bottom: 36px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .tier-head {
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tier-1 .tier-head { background: linear-gradient(180deg, var(--tier1) 0%, var(--surface) 100%); }
+  .tier-2 .tier-head { background: linear-gradient(180deg, var(--tier2) 0%, var(--surface) 100%); }
+  .tier-3 .tier-head { background: linear-gradient(180deg, var(--tier3) 0%, var(--surface) 100%); }
+
+  .tier-eyebrow {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .tier-1 .tier-eyebrow { color: var(--tier1-deep); }
+  .tier-2 .tier-eyebrow { color: var(--tier2-deep); }
+  .tier-3 .tier-eyebrow { color: var(--tier3-deep); }
+
+  .tier-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 4px 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .tier-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 10px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+  }
+  .tier-progress-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(0,0,0,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+    max-width: 320px;
+  }
+  .tier-progress-fill { height: 100%; transition: width 0.3s ease; }
+  .tier-1 .tier-progress-fill { background: var(--tier1-deep); }
+  .tier-2 .tier-progress-fill { background: var(--tier2-deep); }
+  .tier-3 .tier-progress-fill { background: var(--tier3-deep); }
+
+  .scenario-block {
+    border-top: 1px solid var(--border);
+  }
+  .scenario-head {
+    padding: 16px 24px 8px;
+    background: #faf8f3;
+    border-bottom: 1px solid var(--border);
+  }
+  .scenario-label {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-weight: 600;
+  }
+  .scenario-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .steps { padding: 4px 0; }
+  .step {
+    display: grid;
+    grid-template-columns: 30px 1fr 150px 140px 130px;
+    gap: 14px;
+    padding: 14px 24px;
+    border-bottom: 1px solid #f0ece2;
+    align-items: start;
+  }
+  .step:last-child { border-bottom: none; }
+
+  /* Parent step distinction */
+  .step.parent {
+    background: #fafaf6;
+  }
+  .step.parent .step-text {
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .step.parent .step-num {
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  /* Sub-step indent + visual connector */
+  .step.substep {
+    padding-left: 60px;
+    background: #ffffff;
+    position: relative;
+  }
+  .step.substep::before {
+    content: "";
+    position: absolute;
+    left: 42px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e5e1d8;
+  }
+  .step.substep .step-num {
+    color: var(--ink-muted);
+    font-size: 11px;
+  }
+  .step.substep .step-text {
+    font-size: 14px;
+  }
+  /* Last sub-step in a group: stop the connector partway */
+  .step.substep.last-in-group::before {
+    bottom: 50%;
+  }
+
+  .step-num {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-variant-numeric: tabular-nums;
+    padding-top: 6px;
+  }
+  .step-text {
+    font-size: 15px;
+    line-height: 1.5;
+    padding-top: 4px;
+  }
+  .step-hint {
+    display: block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-style: italic;
+    margin-top: 3px;
+  }
+  .step-variant {
+    display: block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 4px;
+    padding-left: 10px;
+    border-left: 2px solid #d4d0c4;
+  }
+
+  select, .step input[type="text"] {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    padding: 6px 9px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: white;
+    width: 100%;
+  }
+  select:focus, .step input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  select.status-notstarted { background: var(--status-notstarted); color: var(--status-notstarted-ink); }
+  select.status-inprogress { background: var(--status-inprogress); color: var(--status-inprogress-ink); font-weight: 600; }
+  select.status-blocked    { background: var(--status-blocked);    color: var(--status-blocked-ink);    font-weight: 600; }
+  select.status-complete   { background: var(--status-complete);   color: var(--status-complete-ink);   font-weight: 600; }
+  select.status-na         { background: var(--status-na);         color: var(--status-na-ink);         font-style: italic; }
+
+  .step-notes-row {
+    grid-column: 1 / -1;
+    margin-top: 4px;
+    padding-left: 44px;
+    display: none;
+  }
+  .step.substep .step-notes-row { padding-left: 0; }
+  .step-notes-row.open { display: block; }
+  .step-notes-row textarea {
+    width: 100%;
+    min-height: 60px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    resize: vertical;
+    background: #fffdf6;
+  }
+  .step-notes-row textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .notes-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink-muted);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    padding: 4px 0;
+    text-decoration: underline;
+  }
+  .notes-toggle:hover { color: var(--accent); }
+  .notes-indicator {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-left: 4px;
+    visibility: hidden;
+  }
+  .notes-indicator.has-notes { visibility: visible; }
+
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .btn {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 16px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn:hover { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+  .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn-primary:hover { background: #142840; border-color: #142840; }
+
+  .save-status {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+
+  .step-header {
+    display: grid;
+    grid-template-columns: 30px 1fr 150px 140px 130px;
+    gap: 14px;
+    padding: 10px 24px;
+    background: #faf8f3;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    .dashboard { grid-template-columns: 1fr; }
+    .step, .step-header { grid-template-columns: 24px 1fr; }
+    .step-header .col-status, .step-header .col-owner, .step-header .col-target { display: none; }
+    .step > select, .step > input { grid-column: 2; }
+    .step.substep { padding-left: 36px; }
+    .step.substep::before { left: 20px; }
+  }
+
+  @media print {
+    body { background: white; padding: 12px; }
+    .toolbar, .notes-toggle { display: none; }
+    .step-notes-row { display: block !important; }
+    .card, .tier { box-shadow: none; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Internal · Workflow Tracker</div>
+    <h1>RIF Status</h1>
+    <div class="sub">Click any status, owner, or date cell to update. Notes expand below each step. Your changes save automatically to this browser.</div>
+  </header>
+
+  <div class="toolbar">
+    <div style="display: flex; gap: 8px;">
+      <button class="btn btn-primary" onclick="exportData()">Export JSON</button>
+      <button class="btn" onclick="importData()">Import JSON</button>
+      <button class="btn" onclick="window.print()">Print / PDF</button>
+      <button class="btn" onclick="resetAll()">Reset</button>
+    </div>
+    <div class="save-status" id="saveStatus">Saved · just now</div>
+  </div>
+
+  <div class="dashboard">
+    <div class="card">
+      <h3>Current Open REQs</h3>
+      <div class="req-row">
+        <label for="allotted">Allotted</label>
+        <input type="text" id="allotted" data-key="allotted" placeholder="—">
+        <label for="open">Open</label>
+        <input type="text" id="open" data-key="open" placeholder="—">
+      </div>
+    </div>
+    <div class="card">
+      <h3>Overall Progress</h3>
+      <div class="progress-summary" id="progressSummary"></div>
+    </div>
+  </div>
+
+  <div id="tiers"></div>
+
+  <input type="file" id="importFile" accept=".json" style="display:none">
+</div>
+
+<script>
+// Shared sub-steps that appear under each parent in Tier 2 scenarios
+const tier2SubStepDefs = [
+  { suffix: "comp",    text: "Compensation is confirmed with Lisa B" },
+  { suffix: "offer",   text: "Offer conversations occur",            defaultTarget: "6/1" },
+  { suffix: "adp",     text: "Offers are pushed out via ADP",        defaultTarget: "EOD 6/1" },
+  { suffix: "hris",    text: "Transfers are communicated to the HRIS team for system changes" }
+];
+
+function buildSubsteps(parentId) {
+  return tier2SubStepDefs.map(d => ({
+    id: `${parentId}-${d.suffix}`,
+    text: d.text,
+    defaultTarget: d.defaultTarget,
+    isSubstep: true
+  }));
+}
+
+const TIERS = [
+  {
+    id: "tier1",
+    eyebrow: "Tier 1",
+    title: "Implementation",
+    subtitle: "19 agents",
+    sequence: "Placements → Confirmation → Compensation → Letters → HRIS",
+    scenarios: [
+      {
+        id: "t1-main",
+        steps: [
+          { id: "t1-1", text: "Leadership recommended placements", hint: "Completed", defaultStatus: "Complete" },
+          { id: "t1-2", text: "Leadership has individual conversations to confirm transfer acceptance" },
+          { id: "t1-3", text: "Compensation is confirmed with Lisa B" },
+          { id: "t1-4", text: "Transfer letters are provided in ADP" },
+          { id: "t1-5", text: "Transfers are communicated to the HRIS team for system changes" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "tier2",
+    eyebrow: "Tier 2",
+    title: "Academy Placements",
+    subtitle: "29 agents · path branches on the 6 Novo Growth PAS roles",
+    sequence: "Complete only the scenario that applies",
+    scenarios: [
+      {
+        id: "t2-accepted",
+        label: "Scenario A",
+        title: "If Implementation roles ACCEPTED (6 Novo Growth PAS)",
+        steps: [
+          // Parent 1: Obesity
+          { id: "t2a-p1", text: "Academy moves into Novo Obesity positions", hint: "10 roles · new billable headcount", isParent: true },
+          ...buildSubsteps("t2a-p1"),
+          // Parent 2: Growth (combined: 5 backfills + 6 overhires)
+          { id: "t2a-p2", text: "Academy moves into Novo Growth positions", hint: "5 billable backfills · 6 overhires", isParent: true },
+          ...buildSubsteps("t2a-p2"),
+        ]
+      },
+      {
+        id: "t2-declined",
+        label: "Scenario B",
+        title: "If Implementation roles DECLINED (6 Novo Growth PAS)",
+        steps: [
+          { id: "t2d-p1", text: "Academy moves into Novo Obesity positions", hint: "10 roles · new billable headcount", isParent: true },
+          ...buildSubsteps("t2d-p1"),
+          { id: "t2d-p2", text: "Academy moves into Novo Growth positions", hint: "11 billable backfills", isParent: true },
+          ...buildSubsteps("t2d-p2"),
+        ]
+      }
+    ]
+  },
+  {
+    id: "tier3",
+    eyebrow: "Tier 3",
+    title: "Eylea & Madrigal Placements",
+    subtitle: "Direct placement using performance data and program complexity",
+    sequence: "Stack rank → Performance data → HR vetting → Direct placement → Communication → Comp → Letters → HRIS",
+    scenarios: [
+      {
+        id: "t3-main",
+        steps: [
+          { id: "t3-1", text: "Remaining programs are stack ranked by complexity and stability", hint: "In process", defaultStatus: "In Progress" },
+          { id: "t3-2", text: "Program leadership provides performance data — Eylea", hint: "Completed", defaultStatus: "Complete" },
+          { id: "t3-3", text: "Program leadership provides performance data — Madrigal", hint: "Providing by EOW" },
+          { id: "t3-4", text: "Recommendations are vetted by HR" },
+          { id: "t3-5", text: "Agents directly placed using recommendations, performance data, and program complexity/stability" },
+          { id: "t3-6", text: "Operations leadership communicates process to receiving programs and RIF agents" },
+          { id: "t3-7", text: "Compensation is confirmed with Lisa B" },
+          { id: "t3-8", text: "Transfer letters are provided in ADP" },
+          { id: "t3-9", text: "Transfers are communicated to the HRIS team for system changes" }
+        ]
+      }
+    ]
+  }
+];
+
+const STATUSES = ["Not Started", "In Progress", "Blocked", "Complete", "N/A"];
+const STATUS_CLASS = {
+  "Not Started": "status-notstarted",
+  "In Progress": "status-inprogress",
+  "Blocked": "status-blocked",
+  "Complete": "status-complete",
+  "N/A": "status-na"
+};
+
+let state = {};
+
+function persistState() {
+  document.getElementById("saveStatus").textContent = "Saved · just now";
+}
+
+function getStep(stepId) {
+  if (!state.steps) state.steps = {};
+  if (!state.steps[stepId]) state.steps[stepId] = { status: "Not Started", owner: "", target: "", notes: "" };
+  return state.steps[stepId];
+}
+
+function initDefaults() {
+  TIERS.forEach(tier => {
+    tier.scenarios.forEach(sc => {
+      sc.steps.forEach(step => {
+        const s = getStep(step.id);
+        if (step.defaultStatus && !s.status_seeded) {
+          s.status = step.defaultStatus;
+          s.status_seeded = true;
+        }
+        if (step.defaultTarget && !s.target_seeded) {
+          s.target = step.defaultTarget;
+          s.target_seeded = true;
+        }
+      });
+    });
+  });
+}
+
+function render() {
+  const root = document.getElementById("tiers");
+  root.innerHTML = "";
+  TIERS.forEach(tier => {
+    const tierEl = document.createElement("section");
+    tierEl.className = `tier tier-${tier.id.slice(-1)}`;
+    const allSteps = tier.scenarios.flatMap(s => s.steps);
+    const completed = allSteps.filter(st => getStep(st.id).status === "Complete").length;
+    const pct = allSteps.length ? Math.round((completed / allSteps.length) * 100) : 0;
+
+    tierEl.innerHTML = `
+      <div class="tier-head">
+        <div class="tier-eyebrow">${tier.eyebrow}</div>
+        <div class="tier-title">${tier.title}</div>
+        <div style="color: var(--ink-muted); font-size: 14px; font-style: italic;">${tier.subtitle}</div>
+        <div class="tier-meta">
+          <span style="font-weight: 600;">${completed}/${allSteps.length} complete</span>
+          <div class="tier-progress-bar"><div class="tier-progress-fill" style="width: ${pct}%"></div></div>
+          <span style="color: var(--ink-muted); font-variant-numeric: tabular-nums;">${pct}%</span>
+        </div>
+        <div style="margin-top: 8px; font-size: 12px; color: var(--ink-muted); font-family: 'Helvetica Neue', sans-serif;">${tier.sequence}</div>
+      </div>
+    `;
+
+    tier.scenarios.forEach(sc => {
+      const scWrap = document.createElement("div");
+      scWrap.className = "scenario-block";
+      if (sc.label) {
+        scWrap.innerHTML = `
+          <div class="scenario-head">
+            <div class="scenario-label">${sc.label}</div>
+            <div class="scenario-title">${sc.title}</div>
+          </div>
+        `;
+      }
+      const headerEl = document.createElement("div");
+      headerEl.className = "step-header";
+      headerEl.innerHTML = `
+        <div></div>
+        <div>Step</div>
+        <div class="col-status">Status</div>
+        <div class="col-owner">Owner</div>
+        <div class="col-target">Target Date</div>
+      `;
+      scWrap.appendChild(headerEl);
+
+      const stepsEl = document.createElement("div");
+      stepsEl.className = "steps";
+
+      // Number parents and substeps with hierarchy (1, 1.1, 1.2... 2, 2.1, ...)
+      let parentCount = 0;
+      let subCount = 0;
+      sc.steps.forEach((step, idx) => {
+        const isParent = !!step.isParent;
+        const isSubstep = !!step.isSubstep;
+        const isPlain = !isParent && !isSubstep;
+
+        let label;
+        if (isParent) {
+          parentCount++;
+          subCount = 0;
+          label = String(parentCount).padStart(2, '0');
+        } else if (isSubstep) {
+          subCount++;
+          label = `${parentCount}.${subCount}`;
+        } else {
+          parentCount++;
+          label = String(parentCount).padStart(2, '0');
+        }
+
+        // Check if this is the last substep of a parent group
+        const nextStep = sc.steps[idx + 1];
+        const isLastInGroup = isSubstep && (!nextStep || !nextStep.isSubstep);
+
+        const s = getStep(step.id);
+        const row = document.createElement("div");
+        const classes = ["step"];
+        if (isParent) classes.push("parent");
+        if (isSubstep) classes.push("substep");
+        if (isLastInGroup) classes.push("last-in-group");
+        row.className = classes.join(" ");
+
+        row.innerHTML = `
+          <div class="step-num">${label}</div>
+          <div>
+            <div class="step-text">${step.text}${step.hint ? `<span class="step-hint">${step.hint}</span>` : ""}</div>
+            <button class="notes-toggle" data-toggle="${step.id}">Notes<span class="notes-indicator ${s.notes ? 'has-notes' : ''}"></span></button>
+          </div>
+          <select data-step="${step.id}" data-field="status" class="${STATUS_CLASS[s.status] || 'status-notstarted'}">
+            ${STATUSES.map(st => `<option value="${st}" ${s.status === st ? 'selected' : ''}>${st}</option>`).join("")}
+          </select>
+          <input type="text" data-step="${step.id}" data-field="owner" value="${escapeHtml(s.owner)}" placeholder="—">
+          <input type="text" data-step="${step.id}" data-field="target" value="${escapeHtml(s.target)}" placeholder="—">
+          <div class="step-notes-row" id="notes-${step.id}">
+            <textarea data-step="${step.id}" data-field="notes" placeholder="Completion notes, blockers, decisions…">${escapeHtml(s.notes)}</textarea>
+          </div>
+        `;
+        stepsEl.appendChild(row);
+      });
+      scWrap.appendChild(stepsEl);
+      tierEl.appendChild(scWrap);
+    });
+
+    root.appendChild(tierEl);
+  });
+
+  renderSummary();
+  bindEvents();
+}
+
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderSummary() {
+  const allSteps = TIERS.flatMap(t => t.scenarios.flatMap(s => s.steps));
+  const counts = { "Not Started": 0, "In Progress": 0, "Blocked": 0, "Complete": 0, "N/A": 0 };
+  allSteps.forEach(st => { counts[getStep(st.id).status] = (counts[getStep(st.id).status] || 0) + 1; });
+  const total = allSteps.length;
+  const colors = {
+    "Not Started": "#bdbdbd",
+    "In Progress": "#e8c545",
+    "Blocked": "#d9534f",
+    "Complete": "#5cb85c",
+    "N/A": "#9e9e9e"
+  };
+  const html = STATUSES.map(s => {
+    const c = counts[s] || 0;
+    const pct = total ? (c / total) * 100 : 0;
+    return `
+      <div class="progress-row">
+        <span class="progress-label">${s}</span>
+        <div class="progress-bar"><div class="progress-fill" style="width: ${pct}%; background: ${colors[s]};"></div></div>
+        <span class="progress-count">${c}</span>
+      </div>
+    `;
+  }).join("");
+  document.getElementById("progressSummary").innerHTML = html;
+}
+
+function bindEvents() {
+  document.querySelectorAll('select[data-step], input[data-step], textarea[data-step]').forEach(el => {
+    el.addEventListener('change', handleChange);
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      el.addEventListener('input', handleChange);
+    }
+  });
+  document.querySelectorAll('.notes-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.toggle;
+      document.getElementById(`notes-${id}`).classList.toggle('open');
+    });
+  });
+  document.querySelectorAll('input[data-key]').forEach(el => {
+    el.value = state[el.dataset.key] || "";
+    el.addEventListener('input', e => { state[el.dataset.key] = e.target.value; persistState(); });
+  });
+}
+
+function handleChange(e) {
+  const el = e.target;
+  const stepId = el.dataset.step;
+  const field = el.dataset.field;
+  const s = getStep(stepId);
+  s[field] = el.value;
+  if (field === 'status') {
+    el.className = STATUS_CLASS[el.value] || 'status-notstarted';
+    renderSummary();
+    updateTierProgress();
+  }
+  if (field === 'notes') {
+    const indicator = document.querySelector(`.notes-toggle[data-toggle="${stepId}"] .notes-indicator`);
+    if (indicator) indicator.classList.toggle('has-notes', !!el.value);
+  }
+  persistState();
+}
+
+function updateTierProgress() {
+  TIERS.forEach(tier => {
+    const allSteps = tier.scenarios.flatMap(s => s.steps);
+    const completed = allSteps.filter(st => getStep(st.id).status === "Complete").length;
+    const pct = allSteps.length ? Math.round((completed / allSteps.length) * 100) : 0;
+    const tierEl = document.querySelector(`.tier-${tier.id.slice(-1)}`);
+    if (tierEl) {
+      const meta = tierEl.querySelector('.tier-meta');
+      meta.querySelector('span:first-child').textContent = `${completed}/${allSteps.length} complete`;
+      meta.querySelector('.tier-progress-fill').style.width = `${pct}%`;
+      meta.querySelector('span:last-child').textContent = `${pct}%`;
+    }
+  });
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `rif-status-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData() {
+  document.getElementById('importFile').click();
+}
+
+document.getElementById('importFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      state = JSON.parse(ev.target.result);
+      render();
+    } catch (err) { alert("Could not parse JSON: " + err.message); }
+  };
+  reader.readAsText(file);
+});
+
+function resetAll() {
+  if (!confirm("Reset all status, owners, dates, and notes? This can't be undone.")) return;
+  state = {};
+  initDefaults();
+  render();
+}
+
+initDefaults();
+render();
+</script>
+</body>
+</html>
