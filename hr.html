@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR Leaders Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f9fafb;color:#111;padding:1.5rem}
+h1{font-size:20px;font-weight:500;margin-bottom:4px;color:#111}
+.subtitle{font-size:13px;color:#64748b;margin-bottom:1.5rem}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
+.metric{background:#f1f5f9;border-radius:8px;padding:1rem;text-align:center}
+.metric-label{font-size:12px;color:#64748b;margin-bottom:4px}
+.metric-value{font-size:24px;font-weight:500;color:#111}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem}
+.chart-box{background:#fff;border:0.5px solid #e2e8f0;border-radius:12px;padding:1rem}
+.chart-label{font-size:12px;color:#64748b;margin-bottom:8px}
+.controls{display:flex;gap:8px;align-items:center;margin-bottom:1rem}
+.search-wrap{position:relative;flex:1}
+.search-wrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:16px;pointer-events:none}
+input[type=text]{width:100%;padding:8px 12px 8px 34px;font-size:13px;border-radius:8px;border:0.5px solid #cbd5e1;background:#fff;outline:none}
+input[type=text]:focus{border-color:#a5b4fc}
+.count{font-size:13px;color:#64748b;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:#fff;border:0.5px solid #e2e8f0;border-radius:12px;padding:1rem 1.25rem}
+.card:hover{border-color:#cbd5e1}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:6px;background:#eef2ff;color:#3730a3}
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+a{text-decoration:none}
+@media(max-width:600px){.metrics{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<h1>HR Leaders — FL / Orlando</h1>
+<p class="subtitle">10 human resources executives</p>
+
+<div class="metrics">
+  <div class="metric"><div class="metric-label">Total profiles</div><div class="metric-value" id="m-total">10</div></div>
+  <div class="metric"><div class="metric-label">C-suite / VP</div><div class="metric-value">8</div></div>
+  <div class="metric"><div class="metric-label">Avg experience</div><div class="metric-value">20 yrs</div></div>
+  <div class="metric"><div class="metric-label">With SPHR / PHR</div><div class="metric-value">7</div></div>
+</div>
+
+<div class="charts">
+  <div class="chart-box">
+    <div class="chart-label">Experience distribution</div>
+    <div style="position:relative;height:160px"><canvas id="expChart" role="img" aria-label="Bar chart of HR experience ranges">Experience distribution.</canvas></div>
+  </div>
+  <div class="chart-box">
+    <div class="chart-label">Top certifications</div>
+    <div style="position:relative;height:160px"><canvas id="certChart" role="img" aria-label="Bar chart of HR certifications held">Certifications held.</canvas></div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <i class="ti ti-search"></i>
+    <input type="text" id="search" placeholder="Search name, company, title, location…">
+  </div>
+  <span class="count" id="count">10 profiles</span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const profiles = [
+  {name:"Cheri D. Benedetti",title:"Chief Human Resources Officer",company:"CenterWell / The Villages Health",location:"Lady Lake, FL",yoe:19,li:"https://www.linkedin.com/in/cheribenedetti",certs:"SHRM-SCP",edu:"Saint Leo University, BS HR Management"},
+  {name:"Herna Quero",title:"Vice President of Human Resources",company:"K2 Medical Research",location:"Orlando, FL",yoe:15,li:"https://www.linkedin.com/in/herna-quero-sphr-ab83085a",certs:"SPHR",edu:"University of Central Florida, BS Hospitality Mgmt"},
+  {name:"Ty Ingle",title:"Strategic HR Executive",company:"Open / Seeking Role",location:"Orlando, FL",yoe:24,li:"https://www.linkedin.com/in/ty-ingle",certs:"Top Secret/SCI",edu:"Bellevue University, BS HR & Labor Relations"},
+  {name:"Richard Winters",title:"Director, HR Business Partner",company:"Millennium Physician Group",location:"Winter Garden, FL",yoe:16,li:"https://www.linkedin.com/in/richard-winters-people-professional",certs:"SPHR, SHRM-SCP",edu:"Florida International University, MBA"},
+  {name:"Elliott Willis",title:"Chief Human Resources Officer",company:"Watson Clinic LLP",location:"Lakeland / Orlando, FL",yoe:20,li:"https://www.linkedin.com/in/elliott-willis-jd-sphr-635231a3",certs:"JD, SPHR",edu:"Florida A&M University, Juris Doctor"},
+  {name:"Brandi Garrett",title:"Vice President of Human Resources",company:"Inspire Aesthetics Group",location:"Greater Orlando",yoe:22,li:"https://www.linkedin.com/in/brandigarretthr",certs:"PHR, SHRM-CP",edu:"Mississippi State University, BS Education"},
+  {name:"Joy Sylvester",title:"Vice President, Total Rewards",company:"Memorial Hermann Health System",location:"Orlando, FL",yoe:15,li:"https://www.linkedin.com/in/joysylvester",certs:"SPHR, FACHE",edu:"Villanova University, MS HR Development"},
+  {name:"Christy Pavel",title:"Chief People Officer",company:"Women's Care",location:"Orlando / Tampa, FL",yoe:29,li:"https://www.linkedin.com/in/christy-pavel-mba",certs:"MBA",edu:"Rollins College (Crummer), MBA"},
+  {name:"Ty Hubbard",title:"Fractional CPO / HR Consultant",company:"The HR Hub, LLC",location:"Greater Orlando",yoe:15,li:"https://www.linkedin.com/in/tysonhubbard",certs:"SPHR",edu:"William Woods University, MBA Health Admin"},
+  {name:"Shawnee De Anda",title:"Chief People Officer",company:"Thriveworks",location:"Orlando, FL",yoe:21,li:"https://www.linkedin.com/in/shawneeirmen",certs:"PHR, PRC",edu:"University of New Hampshire, HR Management"},
+];
+
+const avatarColors=[
+  {bg:"#eef2ff",fg:"#3730a3"},{bg:"#fdf4ff",fg:"#701a75"},{bg:"#f0fdf4",fg:"#166534"},
+  {bg:"#fff7ed",fg:"#9a3412"},{bg:"#eff6ff",fg:"#1e40af"},{bg:"#faf5ff",fg:"#6b21a8"}
+];
+
+function initials(n){return n.split(" ").filter(w=>w&&w[0]===w[0].toUpperCase()&&!/[,.(]/.test(w)).slice(0,2).map(w=>w[0]).join("")}
+
+function renderCards(list){
+  const g=document.getElementById("grid");
+  document.getElementById("count").textContent=list.length+" profile"+(list.length!==1?"s":"");
+  g.innerHTML="";
+  if(!list.length){g.innerHTML='<div style="font-size:14px;color:#64748b;grid-column:1/-1;text-align:center;padding:2rem">No profiles match.</div>';return;}
+  list.forEach((p,i)=>{
+    const ac=avatarColors[i%avatarColors.length];
+    const d=document.createElement("div");
+    d.className="card";
+    d.innerHTML=`
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <div class="avatar" style="background:${ac.bg};color:${ac.fg}">${initials(p.name)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+          <div style="font-size:12px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</div>
+        </div>
+        <span class="badge">HR</span>
+      </div>
+      <div style="margin-top:10px;border-top:0.5px solid #e2e8f0;padding-top:10px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b">
+          <i class="ti ti-building" style="font-size:14px"></i>
+          <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.company}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b">
+          <i class="ti ti-map-pin" style="font-size:14px"></i>${p.location}
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b">
+          <i class="ti ti-school" style="font-size:14px"></i>
+          <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.edu}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+          <span style="font-size:12px;color:#64748b"><i class="ti ti-briefcase" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>${p.yoe} yrs exp</span>
+          ${p.certs?`<span style="font-size:11px;color:#94a3b8">${p.certs}</span>`:''}
+          <a href="${p.li}" target="_blank" style="font-size:12px;color:#2563eb;display:flex;align-items:center;gap:3px">
+            <i class="ti ti-brand-linkedin" style="font-size:15px"></i>Profile
+          </a>
+        </div>
+      </div>`;
+    g.appendChild(d);
+  });
+}
+
+document.getElementById("search").addEventListener("input",function(){
+  const q=this.value.toLowerCase();
+  renderCards(profiles.filter(p=>!q||[p.name,p.company,p.title,p.location,p.certs,p.edu].some(s=>s.toLowerCase().includes(q))));
+});
+renderCards(profiles);
+
+new Chart(document.getElementById("expChart"),{
+  type:"bar",
+  data:{
+    labels:["10–15 yrs","15–20 yrs","20–25 yrs","25–30 yrs"],
+    datasets:[{data:[3,4,2,1],backgroundColor:"#a5b4fc",borderRadius:4,borderSkipped:false}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:"rgba(0,0,0,0.05)"},ticks:{font:{size:11},color:"#94a3b8"}},
+            y:{grid:{color:"rgba(0,0,0,0.05)"},ticks:{font:{size:11},color:"#94a3b8",stepSize:1}}}}
+});
+
+new Chart(document.getElementById("certChart"),{
+  type:"bar",
+  data:{
+    labels:["SPHR","PHR","SHRM-SCP","SHRM-CP","JD","FACHE"],
+    datasets:[{data:[4,2,2,1,1,1],backgroundColor:"#c4b5fd",borderRadius:4,borderSkipped:false}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,indexAxis:"y",plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:"rgba(0,0,0,0.05)"},ticks:{font:{size:11},color:"#94a3b8",stepSize:1}},
+            y:{grid:{display:false},ticks:{font:{size:11},color:"#94a3b8"}}}}
+});
+</script>
+</body>
+</html>

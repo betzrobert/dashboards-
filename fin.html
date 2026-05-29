@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance Leaders Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f9fafb;color:#111;padding:1.5rem}
+h1{font-size:20px;font-weight:500;margin-bottom:4px;color:#111}
+.subtitle{font-size:13px;color:#64748b;margin-bottom:1.5rem}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
+.metric{background:#f1f5f9;border-radius:8px;padding:1rem;text-align:center}
+.metric-label{font-size:12px;color:#64748b;margin-bottom:4px}
+.metric-value{font-size:24px;font-weight:500;color:#111}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem}
+.chart-box{background:#fff;border:0.5px solid #e2e8f0;border-radius:12px;padding:1rem}
+.chart-label{font-size:12px;color:#64748b;margin-bottom:8px}
+.controls{display:flex;gap:8px;align-items:center;margin-bottom:1rem}
+.search-wrap{position:relative;flex:1}
+.search-wrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:16px;pointer-events:none}
+input[type=text]{width:100%;padding:8px 12px 8px 34px;font-size:13px;border-radius:8px;border:0.5px solid #cbd5e1;background:#fff;outline:none}
+input[type=text]:focus{border-color:#6ee7b7}
+.count{font-size:13px;color:#64748b;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:#fff;border:0.5px solid #e2e8f0;border-radius:12px;padding:1rem 1.25rem}
+.card:hover{border-color:#cbd5e1}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:6px;background:#ecfdf5;color:#065f46}
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+a{text-decoration:none}
+@media(max-width:600px){.metrics{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<h1>Finance Leaders — FL / Orlando</h1>
+<p class="subtitle">10 finance executives</p>
+
+<div class="metrics">
+  <div class="metric"><div class="metric-label">Total profiles</div><div class="metric-value">10</div></div>
+  <div class="metric"><div class="metric-label">CFO / VP Finance</div><div class="metric-value">7</div></div>
+  <div class="metric"><div class="metric-label">Avg experience</div><div class="metric-value">21 yrs</div></div>
+  <div class="metric"><div class="metric-label">With CPA / CFA / CIA</div><div class="metric-value">4</div></div>
+</div>
+
+<div class="charts">
+  <div class="chart-box">
+    <div class="chart-label">Experience distribution</div>
+    <div style="position:relative;height:160px"><canvas id="expChart" role="img" aria-label="Bar chart of Finance experience ranges">Experience distribution.</canvas></div>
+  </div>
+  <div class="chart-box">
+    <div class="chart-label">Top certifications</div>
+    <div style="position:relative;height:160px"><canvas id="certChart" role="img" aria-label="Bar chart of Finance certifications held">Certifications held.</canvas></div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <i class="ti ti-search"></i>
+    <input type="text" id="search" placeholder="Search name, company, title, location…">
+  </div>
+  <span class="count" id="count">10 profiles</span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const profiles = [
+  {name:"Stephen S.",title:"VP Transformation / Operations",company:"Brink's Inc",location:"Greater Orlando",yoe:14,li:"https://www.linkedin.com/in/stephen-s-b242146",certs:"CIA",edu:"Syracuse University (Whitman), BS"},
+  {name:"Scott Vandeburgt",title:"Sr Director Finance & Accounting",company:"Con-Air Industries",location:"Port Orange, FL",yoe:24,li:"https://www.linkedin.com/in/scott-vandeburgt-b5b5b5",certs:"CFA",edu:"Northwestern (Kellogg), MBA Finance"},
+  {name:"Matthew Stover",title:"VP Finance & Accounting",company:"Lennar",location:"Winter Garden, FL",yoe:26,li:"https://www.linkedin.com/in/matthew-stover-42577118",certs:"",edu:"University of Michigan, MBA"},
+  {name:"Mark J. Pulaski",title:"SVP Business Intelligence & Asset Mgmt",company:"Distinctive Living / PROVISIO",location:"Greater Orlando",yoe:12,li:"https://www.linkedin.com/in/mark-pulaski",certs:"",edu:"Southern New Hampshire University, MS Finance"},
+  {name:"Juan Duque",title:"VP Finance / CFO",company:"Reworld Waste",location:"Orlando, FL",yoe:27,li:"https://www.linkedin.com/in/juan-c-duque",certs:"MBA, MSF",edu:"University of Miami, Executive MBA"},
+  {name:"Gary Hardey",title:"VP Finance / Controller / CFO",company:"Spectrum Medical Partners",location:"Greater Orlando",yoe:27,li:"https://www.linkedin.com/in/gary-hardey-74252130",certs:"",edu:"University of Colorado Boulder, MBA Finance"},
+  {name:"Fabio Pelho",title:"Head of FP&A",company:"AiFi Inc.",location:"Orlando, FL",yoe:19,li:"https://www.linkedin.com/in/fabiopelho",certs:"",edu:"Hult International Business School, MBA Finance"},
+  {name:"Carter Grant",title:"VP Finance / Corporate Controller",company:"EnsembleIQ",location:"Greater Orlando",yoe:16,li:"https://www.linkedin.com/in/carter-grant",certs:"CPA",edu:"William & Mary, MBA"},
+  {name:"Carl Perrone",title:"Strategic Finance",company:"VODA.ai",location:"Greater Orlando",yoe:16,li:"https://www.linkedin.com/in/carl-perrone",certs:"CPA, MBA",edu:"University of Central Florida, MBA"},
+  {name:"Andrew Fore",title:"Finance & Shared Services Leader",company:"Consulting / Open",location:"Greater Orlando",yoe:28,li:"https://www.linkedin.com/in/andrew-fore",certs:"",edu:"University of Central Florida, MBA"},
+];
+
+const avatarColors=[
+  {bg:"#ecfdf5",fg:"#065f46"},{bg:"#f0fdf4",fg:"#166534"},{bg:"#eff6ff",fg:"#1e40af"},
+  {bg:"#fff7ed",fg:"#9a3412"},{bg:"#faf5ff",fg:"#6b21a8"},{bg:"#f0fdfa",fg:"#134e4a"}
+];
+
+function initials(n){return n.split(" ").filter(w=>w&&w[0]===w[0].toUpperCase()&&!/[,.(]/.test(w)).slice(0,2).map(w=>w[0]).join("")}
+
+function renderCards(list){
+  const g=document.getElementById("grid");
+  document.getElementById("count").textContent=list.length+" profile"+(list.length!==1?"s":"");
+  g.innerHTML="";
+  if(!list.length){g.innerHTML='<div style="font-size:14px;color:#64748b;grid-column:1/-1;text-align:center;padding:2rem">No profiles match.</div>';return;}
+  list.forEach((p,i)=>{
+    const ac=avatarColors[i%avatarColors.length];
+    const d=document.createElement("div");
+    d.className="card";
+    d.innerHTML=`
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <div class="avatar" style="background:${ac.bg};color:${ac.fg}">${initials(p.name)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+          <div style="font-size:12px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</div>
+        </div>
+        <span class="badge">Finance</span>
+      </div>
+      <div style="margin-top:10px;border-top:0.5px solid #e2e8f0;padding-top:10px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b">
+          <i class="ti ti-building" style="font-size:14px"></i>
+          <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.company}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b">
+          <i class="ti ti-map-pin" style="font-size:14px"></i>${p.location}
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b">
+          <i class="ti ti-school" style="font-size:14px"></i>
+          <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.edu}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+          <span style="font-size:12px;color:#64748b"><i class="ti ti-briefcase" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>${p.yoe} yrs exp</span>
+          ${p.certs?`<span style="font-size:11px;color:#94a3b8">${p.certs}</span>`:''}
+          <a href="${p.li}" target="_blank" style="font-size:12px;color:#2563eb;display:flex;align-items:center;gap:3px">
+            <i class="ti ti-brand-linkedin" style="font-size:15px"></i>Profile
+          </a>
+        </div>
+      </div>`;
+    g.appendChild(d);
+  });
+}
+
+document.getElementById("search").addEventListener("input",function(){
+  const q=this.value.toLowerCase();
+  renderCards(profiles.filter(p=>!q||[p.name,p.company,p.title,p.location,p.certs,p.edu].some(s=>s.toLowerCase().includes(q))));
+});
+renderCards(profiles);
+
+new Chart(document.getElementById("expChart"),{
+  type:"bar",
+  data:{
+    labels:["10–15 yrs","15–20 yrs","20–25 yrs","25–30 yrs"],
+    datasets:[{data:[1,3,2,4],backgroundColor:"#6ee7b7",borderRadius:4,borderSkipped:false}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:"rgba(0,0,0,0.05)"},ticks:{font:{size:11},color:"#94a3b8"}},
+            y:{grid:{color:"rgba(0,0,0,0.05)"},ticks:{font:{size:11},color:"#94a3b8",stepSize:1}}}}
+});
+
+new Chart(document.getElementById("certChart"),{
+  type:"bar",
+  data:{
+    labels:["CPA","MBA","CFA","CIA","MSF"],
+    datasets:[{data:[2,3,1,1,1],backgroundColor:"#34d399",borderRadius:4,borderSkipped:false}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,indexAxis:"y",plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:"rgba(0,0,0,0.05)"},ticks:{font:{size:11},color:"#94a3b8",stepSize:1}},
+            y:{grid:{display:false},ticks:{font:{size:11},color:"#94a3b8"}}}}
+});
+</script>
+</body>
+</html>
