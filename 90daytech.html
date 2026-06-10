@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AssistRx 90-Day Onboarding — Technology Org</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
+:root{--navy:#1D3557;--green:#1D9E75;--gl:#e8f7f2;--amber:#E09B2F;--red:#D85A30;--rl:#fdf0eb;--purple:#7C3AED;--blue:#2563EB;--g50:#f8f9fb;--g100:#eef0f4;--g200:#dde1ea;--g400:#8b93a7;--g600:#4b5568;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--g50);color:#1a2233;}
+.hdr{background:var(--navy);padding:24px 36px 20px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.hdr h1{font-family:'DM Serif Display',serif;font-size:23px;color:#fff;line-height:1.1;}
+.hdr .sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px;}
+.badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 14px;font-size:11.5px;color:rgba(255,255,255,.85);font-weight:500;}
+.tabs{background:var(--navy);border-top:1px solid rgba(255,255,255,.1);display:flex;padding:0 36px;gap:2px;flex-wrap:wrap;}
+.tb{background:none;border:none;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;padding:11px 16px 9px;cursor:pointer;border-bottom:3px solid transparent;transition:.18s;white-space:nowrap;}
+.tb:hover{color:rgba(255,255,255,.85);}
+.tb.on{color:#fff;border-bottom-color:var(--green);}
+.pg{padding:24px 36px 48px;max-width:1440px;margin:0 auto;}
+.sec{display:none;}.sec.on{display:block;}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.r4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.r6{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:16px;}
+.full{margin-bottom:16px;}
+.card{background:#fff;border-radius:11px;border:1px solid var(--g100);box-shadow:0 1px 4px rgba(0,0,0,.04);overflow:hidden;}
+.ch{padding:14px 18px 11px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+.ct{font-size:12.5px;font-weight:600;color:var(--navy);}
+.tag{font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px;}
+.tg{background:var(--gl);color:var(--green);} .ta{background:#fef3e2;color:var(--amber);}
+.tr2{background:var(--rl);color:var(--red);} .tb2{background:#eff6ff;color:var(--blue);}
+.tp{background:#f5f3ff;color:var(--purple);} .tn{background:var(--g100);color:var(--navy);}
+.cb{padding:16px 18px;}
+.chart-box{position:relative;width:100%;}
+.kpi{background:#fff;border-radius:11px;padding:16px 18px 14px;border:1px solid var(--g100);box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.kl{font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--g400);margin-bottom:6px;}
+.kv{font-size:26px;font-weight:700;line-height:1;color:var(--navy);}
+.ks{font-size:11px;color:var(--g400);margin-top:4px;}
+.ft{width:100%;border-collapse:collapse;font-size:12px;}
+.ft th{background:var(--g50);color:var(--g400);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:8px 12px;text-align:left;border-bottom:1px solid var(--g200);}
+.ft th.r{text-align:right;} .ft td{padding:8px 12px;border-bottom:1px solid var(--g100);vertical-align:middle;}
+.ft tr:last-child td{border-bottom:none;} .ft tr:hover td{background:var(--g50);}
+.pill{display:inline-flex;padding:2px 8px;border-radius:10px;font-size:10.5px;font-weight:700;}
+.pg2{background:var(--gl);color:var(--green);} .pa{background:#fef3e2;color:var(--amber);} .pr{background:var(--rl);color:var(--red);}
+.co{border-left:4px solid var(--navy);border-radius:7px;padding:12px 16px;margin-bottom:10px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.co.cup{border-left-color:var(--green);background:linear-gradient(90deg,#f0fdf9,#fff 55%);}
+.co.cdn{border-left-color:var(--red);background:linear-gradient(90deg,#fef2ed,#fff 55%);}
+.co.cfl{border-left-color:var(--amber);background:linear-gradient(90deg,#fef9ef,#fff 55%);}
+.co .ct2{font-size:12px;font-weight:700;color:var(--navy);}
+.co p{font-size:11.5px;color:var(--g600);line-height:1.5;margin-top:3px;}
+.note{background:#fff8e6;border:1px solid #f5d585;border-radius:7px;padding:10px 14px;margin-bottom:14px;font-size:11.5px;color:var(--g600);line-height:1.5;}
+.slab{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--g400);margin-bottom:9px;margin-top:2px;}
+.leg{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+.ld{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:500;color:var(--g600);}
+.ld span{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.clr{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--g100);}
+.clr:last-child{border-bottom:none;} .cll{flex:1;font-size:11.5px;color:var(--g600);}
+.clb{width:70px;height:5px;background:var(--g100);border-radius:3px;overflow:hidden;}
+.clf{height:100%;border-radius:3px;} .cln{font-size:11.5px;font-weight:700;color:var(--navy);min-width:26px;text-align:right;}
+.clp{font-size:11px;font-weight:600;color:var(--red);min-width:34px;text-align:right;}
+@media(max-width:900px){.pg{padding:16px;}.hdr,.tabs{padding:0 16px;}.hdr{padding:16px 16px 14px;}.r2,.r3,.r4,.r6{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div><h1>Culture Amp 90-Day Onboarding &mdash; Technology Org</h1>
+  <div class="sub">AssistRx &middot; Tech departments only &middot; 09 Mar &ndash; 10 Jun 2026 &middot; 7 of 16 responded (43.8%)</div></div>
+  <div class="badge">Tech Look-Back</div>
+</header>
+<nav class="tabs">
+  <button class="tb on"  onclick="show('ov',this)">Overview</button>
+  <button class="tb" onclick="show('fac',this)">Factor Detail</button>
+  <button class="tb" onclick="show('qs',this)">Question Highlights</button>
+  <button class="tb" onclick="show('cl',this)">Checklist Gaps</button>
+  <button class="tb" onclick="show('ins',this)">Key Findings</button>
+</nav>
+<main class="pg">
+
+<!-- OVERVIEW -->
+<section id="ov" class="sec on">
+  <div class="note"><strong>Scope:</strong> Filtered to Allazo Technology, Architecture &amp; DevOps, Data &amp; Reporting, Development, Infrastructure &amp; Telecom, Internal Systems, Product, Project Management &amp; Quality/Release. Bars compare the Tech org (green) vs the AssistRx company benchmark (navy). With n=7, each respondent &asymp; 14 pts &mdash; treat as directional.</div>
+  <div class="r6" id="ovKPIs"></div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">Factor Score &mdash; Tech vs Company</span><span class="tag tg">% Favorable</span></div><div class="cb"><div class="chart-box" style="height:280px"><canvas id="ovFact"></canvas></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">Tech Sentiment Split by Factor</span><span class="tag tn">Fav / Neu / Unfav</span></div><div class="cb"><div class="chart-box" style="height:280px"><canvas id="ovSent"></canvas></div></div></div>
+  </div>
+  <div class="card full"><div class="ch"><span class="ct">Factor Score Table &mdash; Tech vs Company Benchmark</span></div><div class="cb" style="padding:0"><table class="ft" id="facTbl"></table></div></div>
+</section>
+
+<!-- FACTOR DETAIL -->
+<section id="fac" class="sec">
+  <div class="card full"><div class="ch"><span class="ct">All Factors &mdash; Tech vs Company</span><span class="tag tp">% Favorable</span></div><div class="cb"><div class="chart-box" style="height:300px"><canvas id="facBar"></canvas></div></div></div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">Gap vs Company (pts)</span><span class="tag tg">Tech &minus; Company</span></div><div class="cb"><div class="chart-box" style="height:300px"><canvas id="facGap"></canvas></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">Sentiment Composition by Factor</span><span class="tag tn">Share of responses</span></div><div class="cb"><div class="chart-box" style="height:300px"><canvas id="facStack"></canvas></div></div></div>
+  </div>
+</section>
+
+<!-- QUESTION HIGHLIGHTS -->
+<section id="qs" class="sec">
+  <div class="note"><strong>Question-level favorability.</strong> Wins are at/near 100%; focus items are the lowest scorers. Δ shown vs the company benchmark for the same question.</div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">Where Tech Is Thriving</span><span class="tag tg">&#9650; Wins</span></div><div class="cb" style="padding:14px 16px" id="winList"></div></div>
+    <div class="card"><div class="ch"><span class="ct">Where To Focus</span><span class="tag tr2">&#9660; Priority Gaps</span></div><div class="cb" style="padding:14px 16px" id="riskList"></div></div>
+  </div>
+  <div class="card full"><div class="ch"><span class="ct">All Questions &mdash; Tech Favorability vs Company</span><span class="tag tb2">% Favorable</span></div><div class="cb"><div class="chart-box" style="height:620px"><canvas id="qBar"></canvas></div></div></div>
+</section>
+
+<!-- CHECKLIST -->
+<section id="cl" class="sec">
+  <div class="note"><strong>Checklist gaps:</strong> share of tech hires who said an item was <strong>NOT</strong> yet covered or completed (count of 7). Right column compares to the company gap rate.</div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">Tech Checklist Gaps</span><span class="tag tr2">n=7</span></div><div class="cb" style="padding:14px 16px" id="clTech"></div></div>
+    <div class="card"><div class="ch"><span class="ct">Tech vs Company Gap Rate</span><span class="tag tn">% flagging item</span></div><div class="cb"><div class="chart-box" style="height:300px"><canvas id="clChart"></canvas></div></div></div>
+  </div>
+</section>
+
+<!-- KEY FINDINGS -->
+<section id="ins" class="sec">
+  <div class="slab">Strengths</div>
+  <div class="co cup"><div class="ct2">&#9650; Team &amp; Culture is the standout: 95.2% &mdash; +14.1 pts over the company</div><p>Every culture sub-item scores at or near 100%. "My team members and leaders have been supportive" and "I feel included at AssistRx" both hit 100%.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; Communication leads the company by +9.2 pts (90.5% vs 81.3%)</div><p>"Communication is clear from direct leadership" and "Direct leadership is easily accessible" both at 100%. Tech managers are visibly present.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; Relationships and environment are perfect scores</div><p>"Built strong relationships with my team," "appreciate the work environment," and "comfortable asking questions" all at 100% &mdash; well above company.</p></div>
+  <div class="slab" style="margin-top:18px">Watch Areas</div>
+  <div class="co cdn"><div class="ct2">&#9660; Development conversations are the #1 gap: 42.9% &mdash; &minus;16.8 pts vs company</div><p>Only 3 of 7 tech hires discussed development goals with their leader. This is the lowest single question in the tech dataset and a Very Strong driver of Overall.</p></div>
+  <div class="co cdn"><div class="ct2">&#9660; Onboarding readiness lags: resources sufficient &amp; "prepared me for my role" both at 57.1%</div><p>Roughly 4 of 7 felt set up. These pull Onboarding Experience down to 81.6% despite perfect relationship scores.</p></div>
+  <div class="co cfl"><div class="ct2">&#9679; Professional Development is the only factor below company (77.1% vs 77.2%)</div><p>Career-growth belief is solid, but "opportunities for advancement" (71.4%) and the development-goals conversation drag the factor.</p></div>
+  <div class="co cfl"><div class="ct2">&#9679; Top checklist gaps: tools/software, building access &amp; assigned help (each 50%)</div><p>Half of tech hires flagged at least one logistics gap. "Introduced to my team" was the one item nobody flagged (0%).</p></div>
+</section>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.tb').forEach(function(b){b.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+
+var GREEN='#1D9E75',AMBER='#E09B2F',RED='#D85A30',NAVY='#1D3557',BLUE='#2563EB',PURPLE='#7C3AED';
+
+// factor: name, tech score, company benchmark, fav/neu/unfav (tech), #questions
+var FAC=[
+  {nm:'Team & Culture',          s:95.2, b:81.2, fav:.95, neu:.00, unf:.05, q:3},
+  {nm:'Communication',           s:90.5, b:81.3, fav:.90, neu:.05, unf:.05, q:3},
+  {nm:'Job Satisfaction',        s:85.7, b:85.5, fav:.86, neu:.09, unf:.05, q:3},
+  {nm:'Overall',                 s:85.7, b:85.2, fav:.86, neu:.14, unf:.00, q:4},
+  {nm:'Onboarding Experience',   s:81.6, b:80.1, fav:.82, neu:.06, unf:.12, q:7},
+  {nm:'Professional Development',s:77.1, b:77.2, fav:.77, neu:.23, unf:.00, q:5},
+];
+
+// questions: text, factor, tech %, company %
+var Q=[
+  {t:'Built strong relationships with my team',                 f:'Onboarding Experience', s:100, b:81.7},
+  {t:'Appreciate the overall work environment',                 f:'Onboarding Experience', s:100, b:84.7},
+  {t:'Comfortable asking questions to leader & team',           f:'Onboarding Experience', s:100, b:90.1},
+  {t:'Onboarding experience was satisfactory',                  f:'Onboarding Experience', s:71.4, b:73.3},
+  {t:'Resources during onboarding were sufficient',             f:'Onboarding Experience', s:57.1, b:72.5},
+  {t:'Onboarding prepared me for my role',                      f:'Onboarding Experience', s:57.1, b:74.6},
+  {t:'Satisfied with my role & responsibilities',               f:'Onboarding Experience', s:85.7, b:83.2},
+  {t:'I feel I belong at AssistRx',                             f:'Overall', s:85.7, b:82.3},
+  {t:'Made the right decision to join AssistRx',                f:'Overall', s:85.7, b:85.4},
+  {t:'Would recommend AssistRx as a great place to work',       f:'Overall', s:85.7, b:85.4},
+  {t:'I am proud to work at AssistRx',                          f:'Overall', s:85.7, b:87.7},
+  {t:'Communication is clear from direct leadership',           f:'Communication', s:100, b:80.9},
+  {t:'Adequately informed about company updates',               f:'Communication', s:71.4, b:80.9},
+  {t:'Direct leadership is easily accessible',                  f:'Communication', s:100, b:82.3},
+  {t:'Confident in the challenges I face in my role',           f:'Job Satisfaction', s:85.7, b:82.4},
+  {t:'I find my job rewarding',                                 f:'Job Satisfaction', s:85.7, b:84.7},
+  {t:'I understand what is expected in my role',                f:'Job Satisfaction', s:85.7, b:89.3},
+  {t:'My role aligns with my career goals',                     f:'Professional Development', s:85.7, b:73.3},
+  {t:'Discussed development goals with my leader',              f:'Professional Development', s:42.9, b:59.7},
+  {t:'Encouraged to pursue career growth at AssistRx',          f:'Professional Development', s:85.7, b:75.4},
+  {t:'Professional development is important to me',             f:'Professional Development', s:100, b:96.2},
+  {t:'Opportunities for career advancement',                   f:'Professional Development', s:71.4, b:82.3},
+  {t:'Team members & leaders have been supportive',             f:'Team and Culture', s:100, b:88.5},
+  {t:'Work-life balance is supported',                          f:'Team and Culture', s:85.7, b:75.6},
+  {t:'I feel included at AssistRx',                             f:'Team and Culture', s:100, b:79.4},
+];
+
+// checklist: item, count NOT done (of 7), tech %, company %
+var CL=[
+  {i:'Tools/software for my work', n:2, p:50, co:45},
+  {i:'Building access ID card',    n:2, p:50, co:44},
+  {i:'Assigned a person to ask for help', n:2, p:50, co:53},
+  {i:'Aware of my direct leadership', n:1, p:25, co:45},
+  {i:'1:1 time with leadership',   n:1, p:25, co:65},
+  {i:'Access to work email',       n:1, p:25, co:39},
+  {i:'Introduced to my team',      n:0, p:0,  co:47},
+];
+
+function mkPill(v){var p=Math.round(v);var c=p>=80?'pg2':p>=70?'pa':'pr';return '<span class="pill '+c+'">'+p+'%</span>';}
+
+Chart.register(ChartDataLabels);
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+function mkBar(id,labels,datasets,opts){
+  var el=document.getElementById(id);if(!el)return;opts=opts||{};
+  new Chart(el,{type:'bar',data:{labels:labels,datasets:datasets},options:{responsive:true,maintainAspectRatio:false,indexAxis:opts.h?'y':'x',
+    plugins:{datalabels:{display:opts.dl!==false,color:opts.dlc||'#fff',font:{weight:'700',size:opts.dls||10},formatter:function(v){return v!=null?(opts.pct?Math.round(v)+'%':v):null;},anchor:opts.dla||'center',align:opts.dla||'center'},legend:{display:opts.leg!==false,position:'bottom',labels:{boxWidth:10,font:{size:10.5}}}},
+    scales:{x:{stacked:opts.st||false,ticks:{font:{size:opts.xs||10.5},maxRotation:opts.xr||0,autoSkip:false},grid:{display:false}},y:{stacked:opts.st||false,min:opts.ym,max:opts.yM,ticks:{callback:function(v){return opts.pct?v+'%':v;},font:{size:11}},grid:{color:'rgba(0,0,0,.05)'}}}}});
+}
+
+// ── KPIs
+document.getElementById('ovKPIs').innerHTML=
+  '<div class="kpi"><div class="kl">Overall Favorability</div><div class="kv" style="color:'+GREEN+'">85.7%</div><div class="ks">&#9650; +0.5 vs company</div></div>'+
+  '<div class="kpi"><div class="kl">Participation</div><div class="kv" style="color:'+NAVY+'">43.8%</div><div class="ks">7 of 16 responded</div></div>'+
+  '<div class="kpi"><div class="kl">Strongest Factor</div><div class="kv" style="color:'+GREEN+'">95.2%</div><div class="ks">Team &amp; Culture &#9650;+14.1</div></div>'+
+  '<div class="kpi"><div class="kl">Weakest Factor</div><div class="kv" style="color:'+AMBER+'">77.1%</div><div class="ks">Prof. Dev. &#9660;&minus;0.1</div></div>'+
+  '<div class="kpi"><div class="kl">Lowest Question</div><div class="kv" style="color:'+RED+'">42.9%</div><div class="ks">Dev. goals talk &#9660;&minus;16.8</div></div>'+
+  '<div class="kpi"><div class="kl">Top 100% Items</div><div class="kv" style="color:'+PURPLE+'">8</div><div class="ks">questions at full favorability</div></div>';
+
+// ── Overview factor bar: tech vs company
+mkBar('ovFact',FAC.map(function(f){return f.nm;}),[
+  {label:'Tech',data:FAC.map(function(f){return f.s;}),backgroundColor:GREEN,borderRadius:4},
+  {label:'Company',data:FAC.map(function(f){return f.b;}),backgroundColor:NAVY,borderRadius:4}
+],{ym:50,yM:100,pct:true,dls:9,xr:18,xs:9.5});
+
+// ── Overview sentiment split (counts of 7)
+(function(){
+  var el=document.getElementById('ovSent');
+  new Chart(el,{type:'bar',data:{labels:FAC.map(function(f){return f.nm;}),datasets:[
+    {label:'Favorable',data:FAC.map(function(f){return Math.round(f.fav*7);}),backgroundColor:GREEN,borderRadius:2},
+    {label:'Neutral',data:FAC.map(function(f){return Math.round(f.neu*7);}),backgroundColor:AMBER,borderRadius:2},
+    {label:'Unfavorable',data:FAC.map(function(f){return Math.round(f.unf*7);}),backgroundColor:RED,borderRadius:2}
+  ]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>0;},color:'#fff',font:{weight:'700',size:9},formatter:function(v){return v;},anchor:'center',align:'center'},legend:{position:'bottom',labels:{boxWidth:10,font:{size:10.5}}}},
+    scales:{x:{stacked:true,ticks:{font:{size:11}},grid:{color:'rgba(0,0,0,.05)'}},y:{stacked:true,ticks:{font:{size:10}},grid:{display:false}}}}});
+})();
+
+// ── Factor table
+(function(){
+  var html='<thead><tr><th>Factor</th><th class="r">Questions</th><th class="r">Tech</th><th class="r">Company</th><th class="r">Gap</th></tr></thead><tbody>';
+  FAC.forEach(function(f){
+    var g=(f.s-f.b);var gs=(g>=0?'+':'')+g.toFixed(1);
+    var gc=g>=0?GREEN:RED;
+    html+='<tr><td style="font-weight:700;color:var(--navy)">'+f.nm+'</td>'+
+      '<td class="r" style="color:var(--g400)">'+f.q+'</td>'+
+      '<td class="r">'+mkPill(f.s)+'</td>'+
+      '<td class="r">'+mkPill(f.b)+'</td>'+
+      '<td class="r" style="font-weight:700;color:'+gc+'">'+gs+'</td></tr>';
+  });
+  document.getElementById('facTbl').innerHTML=html+'</tbody>';
+})();
+
+// ── Factor detail bar
+mkBar('facBar',FAC.map(function(f){return f.nm;}),[
+  {label:'Tech',data:FAC.map(function(f){return f.s;}),backgroundColor:PURPLE,borderRadius:4},
+  {label:'Company',data:FAC.map(function(f){return f.b;}),backgroundColor:NAVY,borderRadius:4}
+],{ym:50,yM:100,pct:true,dls:10,xr:14,xs:10});
+
+// ── Gap chart
+mkBar('facGap',FAC.map(function(f){return f.nm;}),[
+  {label:'Gap vs Company',data:FAC.map(function(f){return +(f.s-f.b).toFixed(1);}),backgroundColor:FAC.map(function(f){return (f.s-f.b)>=0?GREEN:RED;}),borderRadius:4}
+],{h:true,leg:false,dlc:'#fff',dls:10,dla:'center'});
+
+// ── Factor stacked sentiment (%)
+(function(){
+  var el=document.getElementById('facStack');
+  new Chart(el,{type:'bar',data:{labels:FAC.map(function(f){return f.nm;}),datasets:[
+    {label:'Favorable',data:FAC.map(function(f){return Math.round(f.fav*100);}),backgroundColor:GREEN,borderRadius:2},
+    {label:'Neutral',data:FAC.map(function(f){return Math.round(f.neu*100);}),backgroundColor:AMBER,borderRadius:2},
+    {label:'Unfavorable',data:FAC.map(function(f){return Math.round(f.unf*100);}),backgroundColor:RED,borderRadius:2}
+  ]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>=8;},color:'#fff',font:{weight:'700',size:9},formatter:function(v){return v+'%';},anchor:'center',align:'center'},legend:{position:'bottom',labels:{boxWidth:10,font:{size:10.5}}}},
+    scales:{x:{stacked:true,max:100,ticks:{callback:function(v){return v+'%';},font:{size:11}},grid:{color:'rgba(0,0,0,.05)'}},y:{stacked:true,ticks:{font:{size:10}},grid:{display:false}}}}});
+})();
+
+// ── Question lists
+function qWidget(id,items){
+  var el=document.getElementById(id);if(!el)return;
+  el.innerHTML=items.map(function(q){
+    var d=(q.s-q.b);var ds=(d>=0?'+':'')+d.toFixed(1);var dc=d>=0?GREEN:RED;
+    return '<div class="clr"><div class="cll">'+q.t+'</div><div class="cln">'+q.s+'%</div><div class="clp" style="color:'+dc+'">'+ds+'</div></div>';
+  }).join('');
+}
+qWidget('winList',Q.filter(function(q){return q.s>=100;}).sort(function(a,b){return b.b-a.b;}));
+qWidget('riskList',Q.slice().sort(function(a,b){return a.s-b.s;}).slice(0,7));
+
+// ── All questions horizontal bar (sorted ascending)
+(function(){
+  var sorted=Q.slice().sort(function(a,b){return a.s-b.s;});
+  mkBar('qBar',sorted.map(function(q){return q.t;}),[
+    {label:'Tech',data:sorted.map(function(q){return q.s;}),backgroundColor:sorted.map(function(q){return q.s>=90?GREEN:q.s>=70?AMBER:RED;}),borderRadius:3},
+    {label:'Company',data:sorted.map(function(q){return q.b;}),backgroundColor:'rgba(29,53,87,.25)',borderRadius:3}
+  ],{h:true,pct:true,dls:9,dla:'end',dlc:'#1a2233',xs:10});
+})();
+
+// ── Checklist widget
+(function(){
+  var el=document.getElementById('clTech');var items=CL.slice().sort(function(a,b){return b.n-a.n;});
+  var max=Math.max.apply(null,items.map(function(x){return x.n;}))||1;
+  el.innerHTML=items.map(function(it){
+    return '<div class="clr"><div class="cll">'+it.i+'</div><div class="clb"><div class="clf" style="width:'+Math.round(it.n/max*100)+'%;background:'+RED+'"></div></div><div class="cln">'+it.n+'</div><div class="clp">'+it.p+'%</div></div>';
+  }).join('');
+})();
+
+// ── Checklist tech vs company
+(function(){
+  var items=CL.slice().sort(function(a,b){return b.p-a.p;});
+  mkBar('clChart',items.map(function(x){return x.i;}),[
+    {label:'Tech gap %',data:items.map(function(x){return x.p;}),backgroundColor:RED,borderRadius:4},
+    {label:'Company gap %',data:items.map(function(x){return x.co;}),backgroundColor:'rgba(29,53,87,.4)',borderRadius:4}
+  ],{h:true,pct:true,dls:9,dla:'center',dlc:'#fff',xs:9.5});
+})();
+</script>
+</body>
+</html>
