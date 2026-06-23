@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AssistRx — Hiring Rate Band Analysis · June 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:    #0D1B2A;
+    --navy-mid:#152338;
+    --slate:   #2C3E50;
+    --purple:  #7F77DD;
+    --purple-l:#EEEDFE;
+    --purple-d:#3C3489;
+    --teal:    #1D9E75;
+    --teal-l:  #E1F5EE;
+    --teal-d:  #0F6E56;
+    --blue:    #378ADD;
+    --blue-l:  #E6F1FB;
+    --blue-d:  #185FA5;
+    --coral:   #D85A30;
+    --coral-l: #FAECE7;
+    --coral-d: #993C1D;
+    --green:   #639922;
+    --green-l: #EAF3DE;
+    --green-d: #3B6D11;
+    --red:     #A32D2D;
+    --amber:   #854F0B;
+    --gray:    #888780;
+    --gray-l:  #F1EFE8;
+    --gray-mid:#B4B2A9;
+    --border:  rgba(255,255,255,0.08);
+    --border-card: rgba(255,255,255,0.12);
+    --text-primary: #F0EEE8;
+    --text-secondary: #9B9A94;
+    --text-muted: #6B6A66;
+    --surface:  #152338;
+    --surface-2:#1C2D42;
+    --surface-3:#233450;
+  }
+
+  body {
+    background: var(--navy);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy-mid);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 2.5rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .header-left h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+  .header-left p {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .header-badge {
+    background: var(--surface-3);
+    border: 1px solid var(--border-card);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .header-badge strong { color: var(--text-primary); }
+
+  /* ── PAGE WRAPPER ── */
+  .page { padding: 2rem 2.5rem; max-width: 1200px; margin: 0 auto; }
+
+  /* ── SECTION TITLES ── */
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+    margin-top: 2.5rem;
+  }
+  .section-eyebrow:first-child { margin-top: 0; }
+
+  /* ── METRIC GRID ── */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+  .metric {
+    background: var(--surface);
+    border: 1px solid var(--border-card);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+  }
+  .metric-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 5px; }
+  .metric-value { font-size: 26px; font-weight: 600; color: var(--text-primary); line-height: 1.1; }
+  .metric-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .metric-value.warn { color: var(--coral); }
+  .metric-value.amber { color: #EF9F27; }
+  .metric-value.good { color: var(--teal); }
+
+  /* ── ROLE CARDS GRID ── */
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 14px;
+    margin-bottom: 2rem;
+  }
+  .role-card {
+    background: var(--surface);
+    border: 1px solid var(--border-card);
+    border-radius: 12px;
+    padding: 1.1rem 1.2rem;
+    position: relative;
+  }
+  .role-pill {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+  }
+  .role-name { font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; }
+  .role-pct { font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 3px; }
+  .role-avg { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; }
+  .band-bar-bg { background: var(--surface-3); border-radius: 4px; height: 7px; overflow: hidden; margin-bottom: 4px; }
+  .band-bar-fill { height: 100%; border-radius: 4px; }
+  .band-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); margin-bottom: 12px; }
+  .stat-row { display: flex; justify-content: space-between; font-size: 11px; padding: 2px 0; border-top: 1px solid var(--border); margin-top: 2px; }
+  .stat-label { color: var(--text-secondary); }
+  .stat-val { font-weight: 600; color: var(--text-primary); }
+  .stat-val.danger { color: #E24B4A; }
+  .stat-val.warn { color: #EF9F27; }
+
+  /* ── CALLOUT GRID ── */
+  .callout-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 2rem;
+  }
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--border-card);
+    border-radius: 12px;
+    padding: 1.1rem 1.2rem;
+    border-left: 3px solid;
+  }
+  .callout-num { font-size: 32px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+  .callout-head { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+  .callout-body { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* ── CHART CARD ── */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border-card);
+    border-radius: 12px;
+    padding: 1.3rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; }
+  .chart-sub { font-size: 11px; color: var(--text-secondary); margin-bottom: 1rem; }
+  .legend { display: flex; gap: 18px; margin-bottom: 12px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-secondary); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .legend-line { width: 18px; height: 2px; flex-shrink: 0; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+  }
+
+  /* ── 2026 COMPARISON SECTION ── */
+  .compare-role {
+    background: var(--surface);
+    border: 1px solid var(--border-card);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .compare-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.85rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .compare-title { font-size: 14px; font-weight: 600; color: var(--text-primary); flex: 1; }
+  .delta-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .delta-neg { background: rgba(216,90,48,0.15); color: #F0805A; }
+  .delta-pos { background: rgba(29,158,117,0.15); color: #5DCAA5; }
+  .delta-flat { background: rgba(136,135,128,0.15); color: var(--gray-mid); }
+  .compare-body { display: grid; grid-template-columns: 1fr 1fr; }
+  .cohort-col { padding: 1rem 1.2rem; }
+  .cohort-col:first-child { border-right: 1px solid var(--border); }
+  .cohort-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+  }
+  .cohort-tag.new { background: rgba(127,119,221,0.2); color: #AFA9EC; }
+  .cohort-tag.prior { background: rgba(136,135,128,0.15); color: var(--gray-mid); }
+  .cohort-pct { font-size: 26px; font-weight: 700; line-height: 1; margin-bottom: 3px; }
+  .cohort-rate { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+
+  /* ── TOP SUMMARY BAR ── */
+  .summary-bar {
+    background: linear-gradient(135deg, var(--surface-3) 0%, var(--surface-2) 100%);
+    border: 1px solid var(--border-card);
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .summary-bar-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(216,90,48,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .summary-bar-text h3 { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .summary-bar-text p { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2.5rem;
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 1.25rem; }
+    .header { padding: 1.25rem; }
+    .compare-body { grid-template-columns: 1fr; }
+    .cohort-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <h1>AssistRx — Hiring rate band analysis</h1>
+    <p>Where are we hiring within pay bands? Active employees vs. June 2026 matrix · 5 frontline roles · contractors excluded</p>
+  </div>
+  <div class="header-badge">
+    <strong>Confidential</strong> · Internal use only · Jun 2026
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- ── OVERALL SUMMARY ── -->
+  <p class="section-eyebrow">Overall snapshot</p>
+
+  <div class="summary-bar">
+    <div class="summary-bar-icon">⚠</div>
+    <div class="summary-bar-text">
+      <h3>Roughly 2 in 3 active employees sit at or below the band midpoint</h3>
+      <p>Across all five frontline roles, the data confirms TA is consistently not reaching the top of the available talent pool. CSR and Pharmacy Technician are the most acute — both averaging below the 40th percentile. PAS has the most above-max employees (58), signaling a band calibration conversation is overdue.</p>
+    </div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="metric-label">Employees analyzed</div>
+      <div class="metric-value">1,239</div>
+      <div class="metric-sub">5 roles, paid only</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Avg band percentile</div>
+      <div class="metric-value amber">51.4%</div>
+      <div class="metric-sub">Across all 5 roles</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Below band minimum</div>
+      <div class="metric-value warn">58</div>
+      <div class="metric-sub">Mostly CSR</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Above band maximum</div>
+      <div class="metric-value amber">49</div>
+      <div class="metric-sub">PAS & ACE heavy</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">At or below midpoint</div>
+      <div class="metric-value warn">~68%</div>
+      <div class="metric-sub">Hiring below midpoint</div>
+    </div>
+  </div>
+
+  <!-- ── ROLE SCORECARDS ── -->
+  <p class="section-eyebrow">Avg band percentile by role</p>
+  <div class="role-grid">
+
+    <div class="role-card">
+      <span class="role-pill" style="background:rgba(216,90,48,0.18);color:#F0805A;">CSR</span>
+      <div class="role-name">Customer Service Representative</div>
+      <div class="role-pct" style="color:#D85A30;">33rd %ile</div>
+      <div class="role-avg">Avg $20.43/hr · Band $19.04–$23.27</div>
+      <div class="band-bar-bg"><div class="band-bar-fill" style="width:33%;background:#D85A30;"></div></div>
+      <div class="band-labels"><span>$19.04 min</span><span>mid $21.16</span><span>$23.27 max</span></div>
+      <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val danger">46</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 1 entry</span><span class="stat-val">61</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 2 developing</span><span class="stat-val">44</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 3+ qualified</span><span class="stat-val">13</span></div>
+      <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val">7</span></div>
+    </div>
+
+    <div class="role-card">
+      <span class="role-pill" style="background:rgba(29,158,117,0.18);color:#5DCAA5;">Pharm Tech</span>
+      <div class="role-name">Pharmacy Technician</div>
+      <div class="role-pct" style="color:#1D9E75;">37th %ile</div>
+      <div class="role-avg">Avg $22.84/hr · Band $21.00–$26.00</div>
+      <div class="band-bar-bg"><div class="band-bar-fill" style="width:37%;background:#1D9E75;"></div></div>
+      <div class="band-labels"><span>$21.00 min</span><span>mid $23.50</span><span>$26.00 max</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 1 entry</span><span class="stat-val">174</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 2 developing</span><span class="stat-val">20</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 3 specialty</span><span class="stat-val">8</span></div>
+      <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val">2</span></div>
+    </div>
+
+    <div class="role-card">
+      <span class="role-pill" style="background:rgba(127,119,221,0.2);color:#AFA9EC;">ACE</span>
+      <div class="role-name">Account Care Educator</div>
+      <div class="role-pct" style="color:#7F77DD;">44th %ile</div>
+      <div class="role-avg">Avg $25.71/hr · Band $23.40–$28.60</div>
+      <div class="band-bar-bg"><div class="band-bar-fill" style="width:44%;background:#7F77DD;"></div></div>
+      <div class="band-labels"><span>$23.40 min</span><span>mid $26.00</span><span>$28.60 max</span></div>
+      <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val danger">8</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 1 entry</span><span class="stat-val">18</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 2 developing</span><span class="stat-val">46</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 3 qualified</span><span class="stat-val">35</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 4 experienced</span><span class="stat-val">33</span></div>
+      <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val warn">14</span></div>
+    </div>
+
+    <div class="role-card">
+      <span class="role-pill" style="background:rgba(55,138,221,0.18);color:#85B7EB;">PAS</span>
+      <div class="role-name">Patient Access Specialist</div>
+      <div class="role-pct" style="color:#378ADD;">65th %ile</div>
+      <div class="role-avg">Avg $22.68/hr · Band $19.80–$24.20</div>
+      <div class="band-bar-bg"><div class="band-bar-fill" style="width:65%;background:#378ADD;"></div></div>
+      <div class="band-labels"><span>$19.80 min</span><span>mid $22.00</span><span>$24.20 max</span></div>
+      <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val danger">4</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 1–2</span><span class="stat-val">89</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 3 qualified</span><span class="stat-val">145</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 4 experienced</span><span class="stat-val">335</span></div>
+      <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val warn">58</span></div>
+    </div>
+
+    <div class="role-card">
+      <span class="role-pill" style="background:rgba(99,153,34,0.18);color:#97C459;">PCC</span>
+      <div class="role-name">Pharmacy Care Coordinator</div>
+      <div class="role-pct" style="color:#639922;">72nd %ile</div>
+      <div class="role-avg">Avg $22.06/hr · Band $19.04–$23.27</div>
+      <div class="band-bar-bg"><div class="band-bar-fill" style="width:72%;background:#639922;"></div></div>
+      <div class="band-labels"><span>$19.04 min</span><span>mid $21.16</span><span>$23.27 max</span></div>
+      <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val danger">3</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 1 entry</span><span class="stat-val">32</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 2 standard</span><span class="stat-val">4</span></div>
+      <div class="stat-row"><span class="stat-label">Tier 3 experienced</span><span class="stat-val">3</span></div>
+      <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val">3</span></div>
+    </div>
+
+  </div>
+
+  <!-- ── CALLOUTS ── -->
+  <p class="section-eyebrow">Key callouts</p>
+  <div class="callout-grid">
+    <div class="callout" style="border-color:#D85A30;">
+      <div class="callout-num" style="color:#D85A30;">46</div>
+      <div class="callout-head">CSRs below band minimum</div>
+      <div class="callout-body">27% of CSR headcount is paid below the $19.04 floor. The matrix flags this as an immediate attrition risk — practical floor should be $20.00.</div>
+    </div>
+    <div class="callout" style="border-color:#1D9E75;">
+      <div class="callout-num" style="color:#1D9E75;">85%</div>
+      <div class="callout-head">Pharm techs in Tier 1 entry</div>
+      <div class="callout-body">174 of 204 techs are in the lowest tier. Almost no credentialed mid or senior techs in pipeline. Compliance risk on KS/FL board licenses.</div>
+    </div>
+    <div class="callout" style="border-color:#378ADD;">
+      <div class="callout-num" style="color:#378ADD;">58</div>
+      <div class="callout-head">PAS employees above band max</div>
+      <div class="callout-body">9% of PAS headcount exceeds the new band ceiling. Band likely needs upward revision or pay compression will become a retention issue quickly.</div>
+    </div>
+    <div class="callout" style="border-color:#7F77DD;">
+      <div class="callout-num" style="color:#7F77DD;">~68%</div>
+      <div class="callout-head">Hiring at or below midpoint</div>
+      <div class="callout-body">Across all 5 roles, roughly 2 in 3 active employees sit below the band midpoint — confirming TA is not reaching the top of the talent pool.</div>
+    </div>
+  </div>
+
+  <!-- ── OVERALL CHART ── -->
+  <div class="chart-card">
+    <div class="chart-title">Avg hourly rate vs. band midpoint by role</div>
+    <div class="chart-sub">How close are we to the midpoint for each position?</div>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#378ADD;"></span>Avg hire rate</div>
+      <div class="legend-item"><span class="legend-line" style="background:#E24B4A;border-top:2px dashed #E24B4A;"></span>Band midpoint</div>
+    </div>
+    <div style="position:relative;width:100%;height:260px;">
+      <canvas id="bandChart" role="img" aria-label="Bar chart comparing average hourly hire rate to band midpoint across five roles">CSR avg $20.43 vs mid $21.16; PharmTech avg $22.84 vs mid $23.50; ACE avg $25.71 vs mid $26.00; PAS avg $22.68 vs mid $22.00; PCC avg $22.06 vs mid $21.16.</canvas>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── 2026 vs PRIOR ── -->
+  <p class="section-eyebrow">2026 hires vs. tenured employees</p>
+
+  <div class="summary-bar">
+    <div class="summary-bar-icon">📉</div>
+    <div class="summary-bar-text">
+      <h3>2026 hiring is coming in 5 points lower than the existing workforce on average</h3>
+      <p>PAS is the sharpest drop — 2026 hires at the 55th percentile vs. tenured staff at the 73rd. ACE shows a similar −8 point decline. PCC is the one bright spot, holding consistent between cohorts and above the midpoint for both.</p>
+    </div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="metric-label">2026 hires (5 roles)</div>
+      <div class="metric-value">531</div>
+      <div class="metric-sub">New this year</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Pre-2026 active</div>
+      <div class="metric-value">671</div>
+      <div class="metric-sub">Tenured staff</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">2026 avg percentile</div>
+      <div class="metric-value warn">46.8%</div>
+      <div class="metric-sub">vs 51.8% pre-2026</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Gap vs. tenured</div>
+      <div class="metric-value warn">−5.0 pts</div>
+      <div class="metric-sub">Trend is declining</div>
+    </div>
+  </div>
+
+  <!-- ── COHORT CHART ── -->
+  <div class="chart-card">
+    <div class="chart-title">Band percentile — 2026 hires vs. pre-2026 by role</div>
+    <div class="chart-sub">Both cohorts plotted against the 50th percentile (band midpoint)</div>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#7F77DD;"></span>2026 hires</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#4A4A48;"></span>Pre-2026</div>
+      <div class="legend-item"><span class="legend-line" style="background:#E24B4A;border-top:2px dashed #E24B4A;"></span>Band midpoint (50th)</div>
+    </div>
+    <div style="position:relative;width:100%;height:270px;">
+      <canvas id="cohortChart" role="img" aria-label="Grouped bar chart comparing 2026 hire percentiles to pre-2026 for all five roles">CSR 34 vs 32; ACE 37 vs 46; PAS 55 vs 73; PCC 72 vs 71; PharmTech 36 vs 39.</canvas>
+    </div>
+  </div>
+
+  <!-- ── ROLE BY ROLE COMPARISON ── -->
+  <p class="section-eyebrow" style="margin-top:1.5rem;">Role-by-role cohort detail</p>
+
+  <div class="compare-role">
+    <div class="compare-header">
+      <span class="role-pill" style="background:rgba(216,90,48,0.18);color:#F0805A;">CSR</span>
+      <div class="compare-title">Customer Service Representative</div>
+      <span class="delta-badge delta-pos">2026 +2.3 pts vs prior</span>
+    </div>
+    <div class="compare-body">
+      <div class="cohort-col">
+        <span class="cohort-tag new">2026 hires — 77 employees</span>
+        <div class="cohort-pct" style="color:#D85A30;">34th %ile</div>
+        <div class="cohort-rate">Avg $20.49/hr</div>
+        <div class="band-bar-bg"><div class="band-bar-fill" style="width:34%;background:#D85A30;"></div></div>
+        <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val danger">7</span></div>
+        <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val">1</span></div>
+      </div>
+      <div class="cohort-col">
+        <span class="cohort-tag prior">Pre-2026 — 94 employees</span>
+        <div class="cohort-pct" style="color:var(--gray-mid);">32nd %ile</div>
+        <div class="cohort-rate">Avg $20.39/hr</div>
+        <div class="band-bar-bg"><div class="band-bar-fill" style="width:32%;background:#4A4A48;"></div></div>
+        <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val danger">11</span></div>
+        <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val">6</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="compare-role">
+    <div class="compare-header">
+      <span class="role-pill" style="background:rgba(127,119,221,0.2);color:#AFA9EC;">ACE</span>
+      <div class="compare-title">Account Care Educator</div>
+      <span class="delta-badge delta-neg">2026 −8.4 pts vs prior</span>
+    </div>
+    <div class="compare-body">
+      <div class="cohort-col">
+        <span class="cohort-tag new">2026 hires — 22 employees</span>
+        <div class="cohort-pct" style="color:#7F77DD;">37th %ile</div>
+        <div class="cohort-rate">Avg $25.34/hr</div>
+        <div class="band-bar-bg"><div class="band-bar-fill" style="width:37%;background:#7F77DD;"></div></div>
+        <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val">0</span></div>
+        <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val">1</span></div>
+      </div>
+      <div class="cohort-col">
+        <span class="cohort-tag prior">Pre-2026 — 132 employees</span>
+        <div class="cohort-pct" style="color:var(--gray-mid);">46th %ile</div>
+        <div class="cohort-rate">Avg $25.77/hr</div>
+        <div class="band-bar-bg"><div class="band-bar-fill" style="width:46%;background:#4A4A48;"></div></div>
+        <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val danger">8</span></div>
+        <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val warn">12</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="compare-role">
+    <div class="compare-header">
+      <span class="role-pill" style="background:rgba(55,138,221,0.18);color:#85B7EB;">PAS</span>
+      <div class="compare-title">Patient Access Specialist</div>
+      <span class="delta-badge delta-neg">2026 −18.3 pts vs prior — largest gap</span>
+    </div>
+    <div class="compare-body">
+      <div class="cohort-col">
+        <span class="cohort-tag new">2026 hires — 263 employees</span>
+        <div class="cohort-pct" style="color:#378ADD;">55th %ile</div>
+        <div class="cohort-rate">Avg $22.21/hr</div>
+        <div class="band-bar-bg"><div class="band-bar-fill" style="width:55%;background:#378ADD;"></div></div>
+        <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val">1</span></div>
+        <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val warn">3</span></div>
+      </div>
+      <div class="cohort-col">
+        <span class="cohort-tag prior">Pre-2026 — 368 employees</span>
+        <div class="cohort-pct" style="color:var(--gray-mid);">73rd %ile</div>
+        <div class="cohort-rate">Avg $23.01/hr</div>
+        <div class="band-bar-bg"><div class="band-bar-fill" style="width:73%;background:#4A4A48;"></div></div>
+        <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val danger">3</span></div>
+        <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val warn">51</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="compare-role">
+    <div class="compare-header">
+      <span class="role-pill" style="background:rgba(99,153,34,0.18);color:#97C459;">PCC</span>
+      <div class="compare-title">Pharmacy Patient Care Coordinator</div>
+      <span class="delta-badge delta-flat">2026 +1.2 pts vs prior — stable</span>
+    </div>
+    <div class="compare-body">
+      <div class="cohort-col">
+        <span class="cohort-tag new">2026 hires — 24 employees</span>
+        <div class="cohort-pct" style="color:#639922;">72nd %ile</div>
+        <div class="cohort-rate">Avg $22.08/hr</div>
+        <div class="band-bar-bg"><div class="band-bar-fill" style="width:72%;background:#639922;"></div></div>
+        <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val">0</span></div>
+        <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val">1</span></div>
+      </div>
+      <div class="cohort-col">
+        <span class="cohort-tag prior">Pre-2026 — 18 employees</span>
+        <div class="cohort-pct" style="color:var(--gray-mid);">71st %ile</div>
+        <div class="cohort-rate">Avg $22.03/hr</div>
+        <div class="band-bar-bg"><div class="band-bar-fill" style="width:71%;background:#4A4A48;"></div></div>
+        <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val">0</span></div>
+        <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val">2</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="compare-role">
+    <div class="compare-header">
+      <span class="role-pill" style="background:rgba(29,158,117,0.18);color:#5DCAA5;">PT</span>
+      <div class="compare-title">Pharmacy Technician</div>
+      <span class="delta-badge delta-neg">2026 −2.6 pts vs prior</span>
+    </div>
+    <div class="compare-body">
+      <div class="cohort-col">
+        <span class="cohort-tag new">2026 hires — 145 employees</span>
+        <div class="cohort-pct" style="color:#1D9E75;">36th %ile</div>
+        <div class="cohort-rate">Avg $22.80/hr</div>
+        <div class="band-bar-bg"><div class="band-bar-fill" style="width:36%;background:#1D9E75;"></div></div>
+        <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val">0</span></div>
+        <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val">1</span></div>
+      </div>
+      <div class="cohort-col">
+        <span class="cohort-tag prior">Pre-2026 — 59 employees</span>
+        <div class="cohort-pct" style="color:var(--gray-mid);">39th %ile</div>
+        <div class="cohort-rate">Avg $22.93/hr</div>
+        <div class="band-bar-bg"><div class="band-bar-fill" style="width:39%;background:#4A4A48;"></div></div>
+        <div class="stat-row"><span class="stat-label">Below band min</span><span class="stat-val">0</span></div>
+        <div class="stat-row"><span class="stat-label">Above band max</span><span class="stat-val">1</span></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <span>AssistRx Talent Acquisition · Confidential — Internal Use Only · Jun 2026</span>
+  <span>Source: Active EE list + June 2026 Ops Hiring Rate Matrix · Contractors ($0 salary) excluded</span>
+</footer>
+
+<script>
+const chartDefaults = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { display: false } }
+};
+
+new Chart(document.getElementById('bandChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['CSR', 'Pharm Tech', 'ACE', 'PAS', 'PCC'],
+    datasets: [
+      {
+        label: 'Avg hire rate',
+        data: [20.43, 22.84, 25.71, 22.68, 22.06],
+        backgroundColor: '#378ADD',
+        borderRadius: 4,
+        barPercentage: 0.55
+      },
+      {
+        label: 'Band midpoint',
+        data: [21.155, 23.50, 26.00, 22.00, 21.155],
+        type: 'line',
+        borderColor: '#E24B4A',
+        borderDash: [5, 4],
+        borderWidth: 2,
+        pointRadius: 4,
+        pointBackgroundColor: '#E24B4A',
+        fill: false
+      }
+    ]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      y: {
+        min: 18, max: 28,
+        ticks: { callback: v => '$' + v, font: { size: 11 }, color: '#6B6A66' },
+        grid: { color: 'rgba(255,255,255,0.06)' }
+      },
+      x: {
+        ticks: { font: { size: 12 }, color: '#9B9A94' },
+        grid: { display: false }
+      }
+    },
+    plugins: {
+      ...chartDefaults.plugins,
+      tooltip: { callbacks: { label: c => ' $' + c.parsed.y.toFixed(2) + '/hr' } }
+    }
+  }
+});
+
+new Chart(document.getElementById('cohortChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['CSR', 'ACE', 'PAS', 'PCC', 'Pharm Tech'],
+    datasets: [
+      {
+        label: '2026 hires',
+        data: [34.2, 37.2, 54.8, 72.0, 36.0],
+        backgroundColor: '#7F77DD',
+        borderRadius: 4,
+        barPercentage: 0.7,
+        categoryPercentage: 0.75
+      },
+      {
+        label: 'Pre-2026',
+        data: [31.9, 45.6, 73.1, 70.8, 38.6],
+        backgroundColor: '#4A4A48',
+        borderRadius: 4,
+        barPercentage: 0.7,
+        categoryPercentage: 0.75
+      },
+      {
+        label: 'Band midpoint',
+        data: [50, 50, 50, 50, 50],
+        type: 'line',
+        borderColor: '#E24B4A',
+        borderDash: [5, 4],
+        borderWidth: 2,
+        pointRadius: 0,
+        fill: false
+      }
+    ]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      y: {
+        min: 0, max: 100,
+        ticks: { callback: v => v + '%', font: { size: 11 }, color: '#6B6A66' },
+        grid: { color: 'rgba(255,255,255,0.06)' }
+      },
+      x: {
+        ticks: { font: { size: 12 }, color: '#9B9A94' },
+        grid: { display: false }
+      }
+    },
+    plugins: {
+      ...chartDefaults.plugins,
+      tooltip: { callbacks: { label: c => ' ' + c.parsed.y.toFixed(1) + 'th %ile' } }
+    }
+  }
+});
+</script>
+</body>
+</html>
