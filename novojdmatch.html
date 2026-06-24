@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novo Nordisk Hires — Resume-to-JD Match</title>
+<style>
+  :root{
+    --bg:#eef1f4;
+    --card:#ffffff;
+    --ink:#1f2a37;
+    --muted:#6b7785;
+    --faint:#9aa6b2;
+    --line:#e3e8ee;
+    --navy-a:#152a52;
+    --navy-b:#2b4a86;
+    --blue:#2a5bb8;
+    --indigo-a:#3b3f8f;
+    --indigo-b:#5a52b5;
+    --green:#1f8a5b;
+    --red:#c0392b;
+    --amber:#c8851a;
+    --up:#1f8a5b;
+    --down:#c0392b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:28px 16px 48px;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+
+  /* Header */
+  .header{
+    background:linear-gradient(120deg,var(--navy-a),var(--navy-b));
+    border-radius:16px;
+    padding:30px 32px 26px;
+    color:#fff;
+    box-shadow:0 10px 30px rgba(21,42,82,.20);
+  }
+  .header h1{margin:0 0 4px;font-size:28px;font-weight:800;letter-spacing:-.5px;}
+  .header .sub{font-size:13px;color:rgba(255,255,255,.75);margin-bottom:20px;}
+  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:560px;}
+  .stat{
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:11px;
+    padding:14px 10px 12px;
+    text-align:center;
+  }
+  .stat .num{font-size:26px;font-weight:800;line-height:1;}
+  .stat .lbl{font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.72);margin-top:7px;line-height:1.35;}
+
+  /* KPI strip */
+  .kpi-row{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:0;
+    background:var(--card);
+    border-radius:14px;
+    margin-top:16px;
+    padding:20px 8px;
+    box-shadow:0 4px 16px rgba(31,42,55,.06);
+  }
+  .kpi{
+    text-align:center;
+    padding:4px 10px;
+    border-right:1px solid var(--line);
+  }
+  .kpi:last-child{border-right:none;}
+  .kpi .v{font-size:26px;font-weight:800;line-height:1;}
+  .kpi .v.blue{color:var(--blue);}
+  .kpi .v.green{color:var(--green);}
+  .kpi .v.red{color:var(--red);}
+  .kpi .v.navy{color:var(--navy-b);}
+  .kpi .v.amber{color:var(--amber);}
+  .kpi .k{font-size:12px;font-weight:700;margin-top:7px;}
+  .kpi .s{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.35;}
+
+  /* Eyebrow */
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint);margin:26px 0 12px;}
+
+  /* Match by position */
+  .pos-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .pos{
+    background:var(--card);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 4px 16px rgba(31,42,55,.06);
+  }
+  .pos-head{
+    padding:16px 20px;
+    color:#fff;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+  }
+  .pos-head.pas{background:linear-gradient(110deg,var(--indigo-a),var(--indigo-b));}
+  .pos-head.csr{background:linear-gradient(110deg,var(--blue),#3f7fd6);}
+  .pos-head .role{font-size:18px;font-weight:800;}
+  .pos-head .role span{display:block;font-size:11px;font-weight:500;opacity:.85;margin-top:2px;}
+  .pos-head .match{text-align:right;}
+  .pos-head .match .pct{font-size:24px;font-weight:800;line-height:1;}
+  .pos-head .match .cap{font-size:9px;letter-spacing:.6px;opacity:.85;margin-top:3px;}
+  .pos-body{padding:16px 20px 18px;}
+  .scored{font-size:12px;color:var(--muted);margin-bottom:10px;}
+  .scored b{color:var(--ink);}
+  .bar{height:8px;border-radius:6px;background:var(--line);overflow:hidden;margin-bottom:16px;}
+  .bar > i{display:block;height:100%;border-radius:6px;}
+  .bar.pas > i{width:62.7%;background:var(--indigo-b);}
+  .bar.csr > i{width:76.4%;background:var(--blue);}
+  .sw-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+  .sw{border:1px solid var(--line);border-radius:9px;padding:11px 8px;text-align:center;}
+  .sw .n{font-size:20px;font-weight:800;}
+  .sw .t{font-size:9.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-top:5px;}
+  .skill{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:5px 0;border-bottom:1px solid #f3f5f8;}
+  .skill:last-child{border-bottom:none;}
+  .skill .lab{display:flex;align-items:center;gap:7px;color:var(--ink);}
+  .skill .arrow{font-size:11px;}
+  .skill .arrow.up{color:var(--up);}
+  .skill .arrow.down{color:var(--down);}
+  .skill .val{font-weight:800;}
+  .skill .val.up{color:var(--up);}
+  .skill .val.down{color:var(--down);}
+
+  /* Novo programs */
+  .prog-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+  }
+  .prog{
+    background:var(--card);
+    border-radius:11px;
+    border-left:4px solid var(--red);
+    padding:16px 14px;
+    text-align:center;
+    box-shadow:0 4px 14px rgba(31,42,55,.05);
+  }
+  .prog .n{font-size:24px;font-weight:800;color:var(--red);}
+  .prog .t{font-size:12px;color:var(--muted);margin-top:5px;}
+
+  /* Call-outs */
+  .co-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .co{
+    background:var(--card);
+    border-radius:14px;
+    padding:20px 20px 22px;
+    border-top:4px solid var(--line);
+    box-shadow:0 4px 16px rgba(31,42,55,.06);
+  }
+  .co.a{border-top-color:var(--green);}
+  .co.b{border-top-color:var(--amber);}
+  .co.c{border-top-color:var(--green);}
+  .co .big{font-size:42px;font-weight:800;line-height:.95;}
+  .co.a .big{color:var(--green);}
+  .co.b .big{color:var(--amber);}
+  .co.c .big{color:var(--green);}
+  .co h4{margin:10px 0 8px;font-size:14.5px;font-weight:700;}
+  .co.a h4{color:var(--green);}
+  .co.b h4{color:var(--amber);}
+  .co.c h4{color:var(--green);}
+  .co p{margin:0;font-size:12.5px;line-height:1.55;color:var(--muted);}
+
+  .footnote{font-size:11px;color:var(--muted);line-height:1.6;margin-top:24px;padding:0 4px;}
+  .footnote .conf{display:block;margin-top:8px;color:var(--faint);font-size:10.5px;}
+
+  @media(max-width:720px){
+    .stat-row{grid-template-columns:repeat(2,1fr);max-width:none;}
+    .kpi-row{grid-template-columns:repeat(2,1fr);gap:14px 0;}
+    .kpi:nth-child(2){border-right:none;}
+    .pos-row{grid-template-columns:1fr;}
+    .prog-grid,.co-grid{grid-template-columns:1fr;}
+    .header h1{font-size:23px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Novo Nordisk Hires — Resume-to-JD Match</h1>
+    <div class="sub">2026 Novo Program Hires · PAS &amp; CSR · Referrals Excluded From Core Metrics</div>
+    <div class="stat-row">
+      <div class="stat"><div class="num">65.4%</div><div class="lbl">Overall<br>JD Match</div></div>
+      <div class="stat"><div class="num">174</div><div class="lbl">NOVO<br>Hires</div></div>
+      <div class="stat"><div class="num">156</div><div class="lbl">Resumes<br>Scored</div></div>
+      <div class="stat"><div class="num">98%</div><div class="lbl">Resume<br>Coverage</div></div>
+    </div>
+  </div>
+
+  <!-- KPI STRIP -->
+  <div class="kpi-row">
+    <div class="kpi"><div class="v blue">65.4%</div><div class="k">Overall JD Match</div><div class="s">vs 68.0% company-wide</div></div>
+    <div class="kpi"><div class="v green">49</div><div class="k">Strong Matches ≥80%</div><div class="s">31% of scored</div></div>
+    <div class="kpi"><div class="v red">39</div><div class="k">Weak Matches &lt;50%</div><div class="s">25% of scored</div></div>
+    <div class="kpi"><div class="v navy">80%</div><div class="k">of Hiring is PAS</div><div class="s">125 of 156 scored</div></div>
+    <div class="kpi"><div class="v amber">65.0%</div><div class="k">Referral JD Match</div><div class="s">14 referrals, tracked separately</div></div>
+  </div>
+
+  <!-- MATCH BY POSITION -->
+  <div class="eyebrow">Match by Position</div>
+  <div class="pos-row">
+
+    <div class="pos">
+      <div class="pos-head pas">
+        <div class="role">PAS<span>Patient Access Specialist</span></div>
+        <div class="match"><div class="pct">62.7%</div><div class="cap">JD MATCH</div></div>
+      </div>
+      <div class="pos-body">
+        <div class="scored"><b>125</b> resumes scored</div>
+        <div class="bar pas"><i></i></div>
+        <div class="sw-row">
+          <div class="sw"><div class="n">33</div><div class="t">Strong ≥80%</div></div>
+          <div class="sw"><div class="n">37</div><div class="t">Weak &lt;50%</div></div>
+        </div>
+        <div class="skill"><span class="lab"><span class="arrow up">▲</span>Communication / interpersonal skills</span><span class="val up">84%</span></div>
+        <div class="skill"><span class="lab"><span class="arrow up">▲</span>Healthcare industry exposure</span><span class="val up">77%</span></div>
+        <div class="skill"><span class="lab"><span class="arrow down">▼</span>Benefit investigation / reimbursement</span><span class="val down">37%</span></div>
+        <div class="skill"><span class="lab"><span class="arrow down">▼</span>Computer / MS Office skills</span><span class="val down">54%</span></div>
+      </div>
+    </div>
+
+    <div class="pos">
+      <div class="pos-head csr">
+        <div class="role">CSR<span>Customer Service Representative</span></div>
+        <div class="match"><div class="pct">76.4%</div><div class="cap">JD MATCH</div></div>
+      </div>
+      <div class="pos-body">
+        <div class="scored"><b>31</b> resumes scored</div>
+        <div class="bar csr"><i></i></div>
+        <div class="sw-row">
+          <div class="sw"><div class="n">16</div><div class="t">Strong ≥80%</div></div>
+          <div class="sw"><div class="n">2</div><div class="t">Weak &lt;50%</div></div>
+        </div>
+        <div class="skill"><span class="lab"><span class="arrow up">▲</span>Customer service / call center experience</span><span class="val up">87%</span></div>
+        <div class="skill"><span class="lab"><span class="arrow up">▲</span>Communication / interpersonal skills</span><span class="val up">84%</span></div>
+        <div class="skill"><span class="lab"><span class="arrow down">▼</span>Multi-year customer-facing experience</span><span class="val down">50%</span></div>
+        <div class="skill"><span class="lab"><span class="arrow down">▼</span>Data entry / documentation</span><span class="val down">63%</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- NOVO PROGRAMS -->
+  <div class="eyebrow">Novo Programs</div>
+  <div class="prog-grid">
+    <div class="prog"><div class="n">137</div><div class="t">Novo SuperBowl</div></div>
+    <div class="prog"><div class="n">15</div><div class="t">Novo Obesity</div></div>
+    <div class="prog"><div class="n">4</div><div class="t">Novo 5k Ramp up</div></div>
+    <div class="prog"><div class="n">3</div><div class="t">Novo MASH</div></div>
+    <div class="prog"><div class="n">1</div><div class="t">Novo - Rare</div></div>
+  </div>
+
+  <!-- KEY CALL-OUTS -->
+  <div class="eyebrow">📣 Key Call-Outs</div>
+  <div class="co-grid">
+    <div class="co b">
+      <div class="big">37%</div>
+      <h4>BI skill coverage in Novo PAS</h4>
+      <p>PAS hires average 37% on benefit investigation / reimbursement — the JD's top requirement and the engine of the Novo programs.</p>
+    </div>
+    <div class="co b">
+      <div class="big">25%</div>
+      <h4>weak fits in the Novo book</h4>
+      <p>39 of 156 hires match less than half their JD — the visible speed-vs-fit tradeoff of the SuperBowl ramp (137 hires).</p>
+    </div>
+    <div class="co c">
+      <div class="big">76.4%</div>
+      <h4>Novo CSR hires outperform</h4>
+      <p>CSR hires average 76.4% — above the company-wide CSR figure of 73.5% — showing the ramp can deliver strong fits.</p>
+    </div>
+  </div>
+
+  <!-- FOOTNOTE -->
+  <div class="footnote">
+    * Hires whose Product field references a Novo Nordisk program. Pharmacy Technician (single hire) excluded. Referrals (14) excluded from core metrics. Each resume scored against a weighted rubric built from its role's job description; Match % = share of weighted JD requirements evidenced in the resume. 22 previously excluded individuals remain excluded.
+    <span class="conf">AssistRx Talent Acquisition · Confidential — Internal Use Only · Jun 2026</span>
+  </div>
+
+</div>
+</body>
+</html>
