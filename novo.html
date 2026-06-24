@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AssistRx — NOVO Hires · 2026</title>
+<style>
+  :root{
+    --bg:#eef1f4;
+    --card:#ffffff;
+    --ink:#1f2a37;
+    --muted:#6b7785;
+    --faint:#9aa6b2;
+    --line:#e3e8ee;
+    --teal-deep:#0f3d4a;
+    --teal:#155e6b;
+    --teal-mid:#1f7e85;
+    --red:#c0392b;
+    --red-soft:#fde8e6;
+    --green:#1f8a5b;
+    --purple-a:#3a1c5e;
+    --purple-b:#7b2d8e;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:28px 16px 48px;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+
+  /* Header */
+  .header{
+    background:linear-gradient(120deg,var(--teal-deep),var(--teal-mid));
+    border-radius:16px;
+    padding:30px 32px 26px;
+    color:#fff;
+    box-shadow:0 10px 30px rgba(15,61,74,.18);
+  }
+  .header h1{
+    margin:0 0 4px;
+    font-size:30px;
+    font-weight:800;
+    letter-spacing:-.5px;
+  }
+  .header .sub{
+    font-size:13px;
+    color:rgba(255,255,255,.78);
+    margin-bottom:20px;
+  }
+  .stat-row{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:12px;
+  }
+  .stat{
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:11px;
+    padding:14px 10px 12px;
+    text-align:center;
+  }
+  .stat .num{font-size:26px;font-weight:800;line-height:1;}
+  .stat .lbl{
+    font-size:9.5px;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    color:rgba(255,255,255,.72);
+    margin-top:7px;
+    line-height:1.35;
+  }
+
+  /* Section eyebrow */
+  .eyebrow{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    color:var(--faint);
+    margin:26px 0 12px;
+  }
+
+  /* Voluntary call-out (purple) */
+  .callout-vol{
+    background:linear-gradient(110deg,var(--purple-a),var(--purple-b));
+    border-radius:14px;
+    padding:22px 26px;
+    color:#fff;
+    display:flex;
+    gap:20px;
+    align-items:flex-start;
+    box-shadow:0 8px 24px rgba(58,28,94,.22);
+  }
+  .callout-vol .big{font-size:46px;font-weight:800;line-height:.9;}
+  .callout-vol .body h3{margin:0 0 6px;font-size:17px;font-weight:700;}
+  .callout-vol .body p{margin:0;font-size:13px;line-height:1.55;color:rgba(255,255,255,.9);}
+
+  /* Two-up cards */
+  .two-up{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-top:16px;
+  }
+  .mini{
+    background:var(--card);
+    border-radius:14px;
+    padding:20px 22px;
+    box-shadow:0 4px 16px rgba(31,42,55,.06);
+  }
+  .mini.red{border-left:5px solid var(--red);}
+  .mini.green{border-left:5px solid var(--green);}
+  .mini .big{font-size:34px;font-weight:800;line-height:1;}
+  .mini.red .big{color:var(--red);}
+  .mini.green .big{color:var(--green);}
+  .mini h4{margin:8px 0 8px;font-size:14px;font-weight:700;}
+  .mini p{margin:0;font-size:12.5px;line-height:1.5;color:var(--muted);}
+
+  /* Detail panel */
+  .panel{
+    background:var(--card);
+    border-radius:14px;
+    padding:22px 22px 8px;
+    margin-top:14px;
+    box-shadow:0 4px 16px rgba(31,42,55,.06);
+  }
+  .panel-title{
+    font-size:17px;
+    font-weight:800;
+    margin:0 0 16px;
+  }
+  .reason-row{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .reason{
+    border:1px solid var(--line);
+    border-left:4px solid var(--red);
+    border-radius:9px;
+    padding:12px 8px;
+    text-align:center;
+  }
+  .reason .n{font-size:20px;font-weight:800;}
+  .reason .t{font-size:9.5px;color:var(--muted);margin-top:5px;line-height:1.3;}
+
+  table{width:100%;border-collapse:collapse;}
+  thead th{
+    text-align:left;
+    font-size:10px;
+    letter-spacing:.7px;
+    text-transform:uppercase;
+    color:var(--faint);
+    font-weight:700;
+    padding:6px 8px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  tbody td{
+    padding:11px 8px;
+    font-size:13px;
+    border-bottom:1px solid #f0f3f6;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  .pill{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:20px;
+  }
+  .pill.inv{background:var(--red-soft);color:var(--red);}
+  .pill.vol{background:#e8eef9;color:#2a5bb8;}
+  .reason-txt{font-weight:600;}
+  .reason-txt.inv{color:var(--red);}
+  .reason-txt.vol{color:#2a5bb8;}
+
+  .footnote{
+    font-size:11px;
+    color:var(--muted);
+    line-height:1.6;
+    margin-top:22px;
+    padding:0 4px;
+  }
+  .footnote .conf{
+    display:block;
+    margin-top:8px;
+    color:var(--faint);
+    font-size:10.5px;
+  }
+
+  @media(max-width:720px){
+    .stat-row{grid-template-columns:repeat(2,1fr);}
+    .two-up{grid-template-columns:1fr;}
+    .reason-row{grid-template-columns:repeat(3,1fr);}
+    .callout-vol{flex-direction:column;gap:10px;}
+    .header h1{font-size:24px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>AssistRx — NOVO Hires · 2026</h1>
+    <div class="sub">One-Page Summary · Novo-Product Hires Only · Source: Hired / Term lists</div>
+    <div class="stat-row">
+      <div class="stat"><div class="num">215</div><div class="lbl">NOVO<br>Hires</div></div>
+      <div class="stat"><div class="num">167</div><div class="lbl">Currently<br>Active</div></div>
+      <div class="stat"><div class="num">48</div><div class="lbl">2026<br>Terms</div></div>
+      <div class="stat"><div class="num">77.7%</div><div class="lbl">Retention<br>Rate</div></div>
+      <div class="stat"><div class="num">71</div><div class="lbl">Internal<br>Hires</div></div>
+    </div>
+  </div>
+
+  <!-- KEY CALL-OUTS -->
+  <div class="eyebrow">📣 Key Call-Outs</div>
+
+  <div class="callout-vol">
+    <div class="big">8</div>
+    <div class="body">
+      <h3>people chose to leave</h3>
+      <p>Of the 48 NOVO departures this year, 8 (16.7%) were voluntary — these people decided to walk away on their own, not let go. Top reasons they cited: Personal (2), Health/Medical (2), Work Life Balance (1), Working Conditions (1).</p>
+    </div>
+  </div>
+
+  <div class="two-up">
+    <div class="mini red">
+      <div class="big">39</div>
+      <h4>were let go</h4>
+      <p>81.2% of NOVO departures were involuntary terminations — outnumbering the people who chose to leave by nearly 4.9 to 1.</p>
+    </div>
+    <div class="mini green">
+      <div class="big">77.7%</div>
+      <h4>are still here</h4>
+      <p>167 of 215 NOVO hires remain active (71 internal · 144 external).</p>
+    </div>
+  </div>
+
+  <!-- TERMINATION DETAIL -->
+  <div class="eyebrow">2026 NOVO Termination Detail</div>
+
+  <div class="panel">
+    <h2 class="panel-title">⚠ 48 NOVO Terminations in 2026</h2>
+
+    <div class="reason-row">
+      <div class="reason"><div class="n">15</div><div class="t">Abandoned Job</div></div>
+      <div class="reason"><div class="n">8</div><div class="t">Attendance</div></div>
+      <div class="reason"><div class="n">6</div><div class="t">Performance</div></div>
+      <div class="reason"><div class="n">4</div><div class="t">Misconduct-Behavior</div></div>
+      <div class="reason"><div class="n">3</div><div class="t">Misconduct-Harassment/WPV</div></div>
+      <div class="reason"><div class="n">2</div><div class="t">Misconduct-Unprofessionalism</div></div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Term Date</th>
+          <th>Type</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>03/02/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+        <tr><td>03/05/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+        <tr><td>03/10/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Misconduct-Harassment/WPV</span></td></tr>
+        <tr><td>03/10/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Misconduct-Behavior</span></td></tr>
+        <tr><td>03/11/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Misconduct-Harassment/WPV</span></td></tr>
+        <tr><td>03/12/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Performance</span></td></tr>
+        <tr><td>03/12/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Performance</span></td></tr>
+        <tr><td>03/12/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Misconduct-Harassment/WPV</span></td></tr>
+        <tr><td>03/13/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Misconduct-Unprofessionalism</span></td></tr>
+        <tr><td>03/16/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Attendance</span></td></tr>
+        <tr><td>03/16/2026</td><td><span class="pill vol">Voluntary</span></td><td><span class="reason-txt vol">Working Conditions</span></td></tr>
+        <tr><td>03/16/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Attendance</span></td></tr>
+        <tr><td>03/24/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+        <tr><td>03/24/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+        <tr><td>03/25/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+        <tr><td>03/25/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Misconduct-Behavior</span></td></tr>
+        <tr><td>03/25/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Attendance</span></td></tr>
+        <tr><td>03/27/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Performance</span></td></tr>
+        <tr><td>03/30/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Performance</span></td></tr>
+        <tr><td>03/30/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Performance</span></td></tr>
+        <tr><td>03/31/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Misconduct-Unprofessionalism</span></td></tr>
+        <tr><td>03/31/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+        <tr><td>04/03/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+        <tr><td>04/06/2026</td><td><span class="pill vol">Voluntary</span></td><td><span class="reason-txt vol">Personal</span></td></tr>
+        <tr><td>04/06/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+        <tr><td>04/07/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Attendance</span></td></tr>
+        <tr><td>04/09/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Attendance</span></td></tr>
+        <tr><td>04/09/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Misconduct-Behavior</span></td></tr>
+        <tr><td>04/12/2026</td><td>—</td><td>—</td></tr>
+        <tr><td>04/13/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+        <tr><td>04/14/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+        <tr><td>04/14/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+        <tr><td>04/16/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+        <tr><td>04/16/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Misconduct-Behavior</span></td></tr>
+        <tr><td>04/21/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+        <tr><td>04/23/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Performance</span></td></tr>
+        <tr><td>04/23/2026</td><td><span class="pill vol">Voluntary</span></td><td><span class="reason-txt vol">Health/Medical</span></td></tr>
+        <tr><td>04/28/2026</td><td><span class="pill vol">Voluntary</span></td><td><span class="reason-txt vol">Health/Medical</span></td></tr>
+        <tr><td>05/04/2026</td><td><span class="pill vol">Voluntary</span></td><td><span class="reason-txt vol">Work Life Balance</span></td></tr>
+        <tr><td>05/07/2026</td><td><span class="pill vol">Voluntary</span></td><td><span class="reason-txt vol">Personal</span></td></tr>
+        <tr><td>05/11/2026</td><td><span class="pill vol">Voluntary</span></td><td><span class="reason-txt vol">Abandoned Job</span></td></tr>
+        <tr><td>05/11/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Attendance</span></td></tr>
+        <tr><td>05/13/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Misconduct-Work Avoidance</span></td></tr>
+        <tr><td>05/18/2026</td><td><span class="pill vol">Voluntary</span></td><td><span class="reason-txt vol">Job Satisfaction</span></td></tr>
+        <tr><td>05/22/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Attendance</span></td></tr>
+        <tr><td>05/22/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Attendance</span></td></tr>
+        <tr><td>05/28/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Eligibility/Work Authorization Expired</span></td></tr>
+        <tr><td>05/28/2026</td><td><span class="pill inv">Involuntary</span></td><td><span class="reason-txt inv">Abandoned Job</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FOOTNOTE -->
+  <div class="footnote">
+    * NOVO scope: 2026 hires whose Product contains "Novo" (Novo SuperBowl, Novo Obesity, Novo 5k Ramp Up, Novo MASH, CoA-Novo). A hire is counted as Terminated if matched (first + last name) in the 2026 Term List, otherwise Active. Includes all recruiters' Novo hires (recruiter detail intentionally omitted). Individual names omitted from this view.
+    <span class="conf">AssistRx Talent Acquisition · Confidential — Internal Use Only · Jun 2026</span>
+  </div>
+
+</div>
+</body>
+</html>
