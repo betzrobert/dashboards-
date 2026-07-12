@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AssistRx | Temporary &amp; Contingent Labor RFP Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root{
+    --teal-dark:#007178;      /* AssistRx primary: Dark Teal */
+    --teal-light:#00ae9a;     /* AssistRx secondary: Light Teal */
+    --blue-dark:#093e52;      /* AssistRx secondary: Dark Blue */
+    --blue-light:#ade2e3;     /* AssistRx secondary: Light Blue */
+    --gold:#ffc629;           /* AssistRx accent: Gold, accent only */
+    --gray-text:#414042;      /* AssistRx neutral: Dark Neutral Gray */
+    --gray-border:#D9D9D9;    /* AssistRx neutral: Light Neutral Gray */
+    --gray-bg:#F2F2F2;        /* AssistRx neutral: Lightest Neutral Gray */
+    --card:#FFFFFF;
+    --text-soft:#6E6E70;
+    --green:#1F9D55;
+    --green-bg:#E7F6ED;
+    --watch:#093e52;
+    --watch-bg:#DCF1F1;
+    --red:#B23A2E;
+    --red-bg:#FBEAE8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:var(--gray-bg);
+    color:var(--gray-text);
+  }
+  header{
+    background:linear-gradient(135deg, var(--blue-dark) 0%, #062633 100%);
+    color:#fff;
+    padding:28px 40px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .brand-mark{
+    width:36px;
+    height:36px;
+    flex-shrink:0;
+  }
+  .brand-text{
+    display:flex;
+    align-items:baseline;
+    gap:2px;
+  }
+  .brand-text .wordmark{
+    font-size:24px;
+    font-weight:400;
+    letter-spacing:.2px;
+    color:#fff;
+  }
+  .brand-text .wordmark b{
+    font-weight:700;
+    color:var(--teal-light);
+  }
+  .brand-sub{
+    margin:2px 0 0;
+    font-size:13px;
+    color:#BFE3E0;
+  }
+  .brand-col{
+    display:flex;
+    flex-direction:column;
+  }
+  .meta{
+    text-align:right;
+    font-size:13px;
+    color:#BFE3E0;
+    line-height:1.5;
+  }
+  .meta strong{color:#fff;}
+  main{
+    max-width:1200px;
+    margin:0 auto;
+    padding:32px 24px 60px;
+  }
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:16px;
+    margin-bottom:36px;
+  }
+  .stat-card{
+    background:var(--card);
+    border:1px solid var(--gray-border);
+    border-radius:12px;
+    padding:18px 16px;
+    text-align:center;
+  }
+  .stat-card .num{
+    font-size:28px;
+    font-weight:700;
+    color:var(--blue-dark);
+  }
+  .stat-card .label{
+    font-size:12.5px;
+    color:var(--text-soft);
+    margin-top:4px;
+  }
+  section{margin-bottom:44px;}
+  .section-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .section-title h2{
+    font-size:19px;
+    margin:0;
+    color:var(--blue-dark);
+    font-weight:700;
+  }
+  .section-title .pill{
+    font-size:12px;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:20px;
+  }
+  .pill.green{background:var(--green-bg); color:var(--green);}
+  .pill.red{background:var(--red-bg); color:var(--red);}
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:18px;
+  }
+  .vcard{
+    background:var(--card);
+    border:1px solid var(--gray-border);
+    border-radius:14px;
+    padding:18px 20px;
+    border-top:4px solid var(--teal-light);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .vcard.rejected{border-top-color:var(--red);}
+  .vcard .vname{
+    font-size:16px;
+    font-weight:700;
+    color:var(--blue-dark);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .rank-badge{
+    background:var(--teal-dark);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:20px;
+  }
+  .flag-badge{
+    font-size:11px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:20px;
+    background:var(--watch-bg);
+    color:var(--watch);
+    align-self:flex-start;
+  }
+  .metric-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:2px;
+  }
+  .metric{
+    background:var(--gray-bg);
+    border:1px solid var(--gray-border);
+    border-radius:8px;
+    padding:6px 10px;
+    font-size:12px;
+    color:var(--text-soft);
+  }
+  .metric b{color:var(--gray-text); font-size:13px;}
+  .vcard p{
+    font-size:13px;
+    line-height:1.55;
+    color:var(--text-soft);
+    margin:0;
+  }
+  .vcard p.reason{color:var(--gray-text);}
+  .why-not{
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--red);
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+  .chart-wrap{
+    background:var(--card);
+    border:1px solid var(--gray-border);
+    border-radius:14px;
+    padding:24px;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--card);
+    border:1px solid var(--gray-border);
+    border-radius:12px;
+    overflow:hidden;
+    font-size:13px;
+  }
+  thead th{
+    background:var(--blue-dark);
+    color:#fff;
+    text-align:left;
+    padding:10px 12px;
+    font-weight:700;
+    position:sticky;
+    top:0;
+  }
+  tbody td{
+    padding:10px 12px;
+    border-bottom:1px solid var(--gray-border);
+    color:var(--gray-text);
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#FAFCFC;}
+  .badge{
+    display:inline-block;
+    padding:2px 9px;
+    border-radius:20px;
+    font-size:11.5px;
+    font-weight:700;
+  }
+  .badge.yes{background:var(--green-bg); color:var(--green);}
+  .badge.no{background:var(--red-bg); color:var(--red);}
+  .badge.mid{background:var(--watch-bg); color:var(--watch);}
+  .table-wrap{overflow-x:auto;}
+  .legend{
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    margin:14px 0 0;
+    font-size:12px;
+    color:var(--text-soft);
+  }
+  .legend span{display:flex; align-items:center; gap:6px;}
+  .dot{width:10px; height:10px; border-radius:50%; display:inline-block;}
+  footer{
+    text-align:center;
+    padding:20px;
+    font-size:12px;
+    color:var(--text-soft);
+  }
+  @media (max-width:900px){
+    .stats{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="21" cy="7" r="3.4" fill="var(--gold)"></circle>
+      <rect x="14" y="13" width="12" height="23" rx="6" fill="var(--teal-light)"></rect>
+      <path d="M14 19 a6 6 0 0 1 12 0 v0 h-12 z" fill="var(--blue-light)"></path>
+    </svg>
+    <div class="brand-col">
+      <div class="brand-text">
+        <span class="wordmark">Assist<b>Rx</b></span>
+      </div>
+      <p class="brand-sub">Temporary &amp; Contingent Labor RFP</p>
+    </div>
+  </div>
+  <div class="meta">
+    Prepared for <strong>Jen Namanny</strong><br>
+    Shortlist due <strong>July 22, 2026</strong> &middot; Presentations week of <strong>August 3, 2026</strong>
+  </div>
+</header>
+
+<main>
+
+  <div class="stats">
+    <div class="stat-card"><div class="num">10</div><div class="label">Vendors Reviewed</div></div>
+    <div class="stat-card"><div class="num">5</div><div class="label">Shortlisted to Present</div></div>
+    <div class="stat-card"><div class="num">5</div><div class="label">Not Recommended</div></div>
+    <div class="stat-card"><div class="num">2</div><div class="label">Fail Mandatory REQ 023</div></div>
+    <div class="stat-card"><div class="num">1</div><div class="label">Conflict of Interest Flag</div></div>
+  </div>
+
+  <section>
+    <div class="section-title">
+      <h2>Recommended to Present</h2>
+      <span class="pill green">5 vendors</span>
+    </div>
+    <div class="cards" id="recommended-cards"></div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <h2>Fill Rate Comparison</h2>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="fillRateChart" height="110"></canvas>
+      <div class="legend">
+        <span><span class="dot" style="background:#00ae9a"></span> Shortlisted</span>
+        <span><span class="dot" style="background:#B23A2E"></span> Not recommended</span>
+        <span>Unmarked bars are blended, global or industry wide claims, not AssistRx specific figures</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <h2>Not Recommended</h2>
+      <span class="pill red">5 vendors</span>
+    </div>
+    <div class="cards" id="rejected-cards"></div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <h2>Full Vendor Comparison</h2>
+    </div>
+    <div class="table-wrap">
+      <table id="compare-table">
+        <thead>
+          <tr>
+            <th>Vendor</th>
+            <th>Status</th>
+            <th>Fill Rate</th>
+            <th>AssistRx Specific</th>
+            <th>Markup Range</th>
+            <th>Rebate Cap ($10M+)</th>
+            <th>Net 90 Accepted</th>
+            <th>SOC 2 Type II</th>
+            <th>60 Day Replacement</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  AssistRx Temporary &amp; Contingent Labor RFP &middot; Working dashboard built from vendor proposal review &middot; Draft date July 2026
+</footer>
+
+<script>
+const vendors = [
+  {
+    name:"CitiusTech",
+    status:"recommended",
+    rank:1,
+    flag:"Watch: attrition",
+    fillRate:87,
+    fillRateLabel:"87% overall / dashboard 50 of 97",
+    assistrxSpecific:"mid",
+    markup:"18 to 22%",
+    rebate:"4.5%",
+    net90:"yes",
+    soc2:"yes",
+    replacement:"yes",
+    reason:"Best headline metrics in the pool and the only vendor pitching full consolidation of all 177 current contingent FTEs. But 9 of 12 attrition and termination cases in their own AssistRx dashboard were coded performance driven, clustered in the exact delivery pods proposed as the foundation for expansion. Press them on retention before advancing."
+  },
+  {
+    name:"Neutrino Tech Systems",
+    status:"recommended",
+    rank:2,
+    flag:"Watch: unverified QA figure",
+    fillRate:83,
+    fillRateLabel:"83% (29 of 35, AssistRx)",
+    assistrxSpecific:"yes",
+    markup:"20 to 30%",
+    rebate:"7.0%",
+    net90:"mid",
+    soc2:"yes",
+    replacement:"yes",
+    reason:"Deepest healthcare and pharma fit (95% of client base), confirmed AssistRx specific fill rate and the most generous rebate structure in the pool. Hasn't disclosed revenue and wants to stay at Net 30. A cited 66.7% QA figure could not be traced to any source document and should be verified."
+  },
+  {
+    name:"Insight Global",
+    status:"recommended",
+    rank:3,
+    flag:"Watch: pending legal review",
+    fillRate:65,
+    fillRateLabel:"65% (95 of 146, AssistRx)",
+    assistrxSpecific:"yes",
+    markup:"45 to 65%",
+    rebate:"2.0%",
+    net90:"no",
+    soc2:"mid",
+    replacement:"mid",
+    reason:"Financially strongest vendor in the pool with real precedent running broader managed programs (Corteva, Shields Health and AdventHealth case studies). SOC 2 Type I only, thin rebate cap, declined Net 90, and BAA, NDA and Code of Conduct are all still pending legal review."
+  },
+  {
+    name:"IntelliPro Group",
+    status:"recommended",
+    rank:4,
+    flag:"Exploratory slot",
+    fillRate:26.83,
+    fillRateLabel:"26.83% global, blended",
+    assistrxSpecific:"no",
+    markup:"35 to 40%",
+    rebate:"2.0%",
+    net90:"mid",
+    soc2:"no",
+    replacement:"mid",
+    reason:"Strongest net new bidder, with the most detailed geographic rate card in the pool (onshore, nearshore and two offshore regions). Fill rate is a global blended figure, not AssistRx specific, and needs clarification. SOC 1 is still in progress."
+  },
+  {
+    name:"On Demand Group (ODG)",
+    status:"recommended",
+    rank:5,
+    flag:"Watch: coverage gaps",
+    fillRate:53,
+    fillRateLabel:"53% (52 of 98, AssistRx)",
+    assistrxSpecific:"yes",
+    markup:"17 to 85%",
+    rebate:"2.0%",
+    net90:"no",
+    soc2:"mid",
+    replacement:"no",
+    reason:"Included on the strength of a 5+ year incumbency and 200+ placements, giving us a low risk continuity option. But the lowest AssistRx specific fill rate among current vendors, no formal replacement guarantee for contract roles and a policy of not staffing Operations or Finance role families at all."
+  },
+  {
+    name:"ICON Consultants (QualStaff)",
+    status:"rejected",
+    fillRate:85,
+    fillRateLabel:"80 to 90% claimed, industry wide, not AssistRx verified",
+    assistrxSpecific:"no",
+    markup:"34% flat",
+    rebate:"1.5%",
+    net90:"yes",
+    soc2:"yes",
+    replacement:"mid",
+    reason:"Removed due to an unresolved conflict of interest. ICON owns QualStaff, AssistRx's MSP since 2018, which controls order routing, submittal review, billing reconciliation and compliance audits for every competing agency, including itself. QualStaff's own Q1 2026 stats show ICON with 0 placements out of 25 orders that quarter, directly contradicting ICON's own fill rate claim. No firewall or recusal process is proposed."
+  },
+  {
+    name:"TEKsystems",
+    status:"rejected",
+    fillRate:54.83,
+    fillRateLabel:"54.83% companywide, not AssistRx specific",
+    assistrxSpecific:"no",
+    markup:"45 to 70%",
+    rebate:"5.0%",
+    net90:"yes",
+    soc2:"yes",
+    replacement:"no",
+    reason:"Hard disqualifier: replacement guarantee window is only 5 days against the RFP's mandatory 60 day requirement (REQ 023). Also disclosed a prime vendor and subcontractor structure across sister OpCos (Aerotek, Aston Carter and Actalent) that raises accountability questions."
+  },
+  {
+    name:"TruBlue",
+    status:"rejected",
+    fillRate:0,
+    fillRateLabel:"No fill rate track record provided, only a 95% aspirational target",
+    assistrxSpecific:"no",
+    markup:"32 to 39%",
+    rebate:"0.75 to 1.25%",
+    net90:"no",
+    soc2:"no",
+    replacement:"no",
+    reason:"Same disqualifying gap as TEKsystems: only a 30 day replacement guarantee against the mandatory 60 day requirement. No real fill rate evidence was provided, they disclosed a net loss in FY2025 and they have no SOC 2 Type II."
+  },
+  {
+    name:"Volt Workforce Solutions",
+    status:"rejected",
+    fillRate:67,
+    fillRateLabel:"67% blended across 8 largest clients, not AssistRx specific",
+    assistrxSpecific:"no",
+    markup:"42% flat",
+    rebate:"1.5%",
+    net90:"no",
+    soc2:"yes",
+    replacement:"mid",
+    reason:"Weakest healthcare sector presence in the pool (12 of 1,000+ clients), a high flat markup and vague SLA commitments. Declined to commit to concrete service levels pre award."
+  },
+  {
+    name:"Jobility Talent Solutions",
+    status:"rejected",
+    fillRate:9.5,
+    fillRateLabel:"9.5%, not AssistRx specific, methodology undisclosed",
+    assistrxSpecific:"no",
+    markup:"27 to 50%",
+    rebate:"2.5%",
+    net90:"mid",
+    soc2:"no",
+    replacement:"mid",
+    reason:"Smallest vendor by far (275 employees, roughly $19M total revenue) and disclosed the lowest fill rate of any vendor, raising real capacity questions for a program of this scale. Financial statements would only be provided after winning the RFP."
+  }
+];
+
+function badge(val){
+  if(val === "yes") return '<span class="badge yes">Yes</span>';
+  if(val === "no") return '<span class="badge no">No</span>';
+  return '<span class="badge mid">Partial</span>';
+}
+
+const recWrap = document.getElementById('recommended-cards');
+const rejWrap = document.getElementById('rejected-cards');
+
+vendors.filter(v=>v.status==="recommended").sort((a,b)=>a.rank-b.rank).forEach(v=>{
+  recWrap.insertAdjacentHTML('beforeend', `
+    <div class="vcard">
+      <div class="vname">
+        <span>${v.name}</span>
+        <span class="rank-badge">#${v.rank}</span>
+      </div>
+      <div class="flag-badge">${v.flag}</div>
+      <div class="metric-row">
+        <div class="metric">Fill rate <b>${v.fillRateLabel}</b></div>
+        <div class="metric">Markup <b>${v.markup}</b></div>
+        <div class="metric">Rebate cap <b>${v.rebate}</b></div>
+      </div>
+      <p class="reason">${v.reason}</p>
+    </div>
+  `);
+});
+
+vendors.filter(v=>v.status==="rejected").forEach(v=>{
+  rejWrap.insertAdjacentHTML('beforeend', `
+    <div class="vcard rejected">
+      <div class="vname"><span>${v.name}</span></div>
+      <div class="why-not">Not recommended</div>
+      <div class="metric-row">
+        <div class="metric">Fill rate <b>${v.fillRateLabel}</b></div>
+        <div class="metric">Markup <b>${v.markup}</b></div>
+      </div>
+      <p class="reason">${v.reason}</p>
+    </div>
+  `);
+});
+
+const tbody = document.querySelector('#compare-table tbody');
+vendors.forEach(v=>{
+  tbody.insertAdjacentHTML('beforeend', `
+    <tr>
+      <td><strong>${v.name}</strong></td>
+      <td>${v.status === "recommended" ? '<span class="badge yes">Shortlisted</span>' : '<span class="badge no">Not recommended</span>'}</td>
+      <td>${v.fillRateLabel}</td>
+      <td>${badge(v.assistrxSpecific)}</td>
+      <td>${v.markup}</td>
+      <td>${v.rebate}</td>
+      <td>${badge(v.net90)}</td>
+      <td>${badge(v.soc2)}</td>
+      <td>${badge(v.replacement)}</td>
+    </tr>
+  `);
+});
+
+const ctx = document.getElementById('fillRateChart');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: vendors.map(v=>v.name),
+    datasets: [{
+      label: 'Disclosed fill rate (%)',
+      data: vendors.map(v=>v.fillRate),
+      backgroundColor: vendors.map(v=> v.status === "recommended" ? '#00ae9a' : '#B23A2E'),
+      borderRadius: 6,
+      borderSkipped:false
+    }]
+  },
+  options: {
+    responsive:true,
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        callbacks:{
+          label: (item)=> vendors[item.dataIndex].fillRateLabel
+        }
+      }
+    },
+    scales:{
+      y:{ beginAtZero:true, max:100, ticks:{ callback:(v)=> v + '%' } }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
