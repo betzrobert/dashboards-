@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AssistRx Onboarding — Combined Trend Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
+:root{--navy:#1D3557;--green:#1D9E75;--gl:#e8f7f2;--amber:#E09B2F;--red:#D85A30;--rl:#fdf0eb;--g50:#f8f9fb;--g100:#eef0f4;--g200:#dde1ea;--g400:#8b93a7;--g600:#4b5568;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--g50);color:#1a2233;}
+.hdr{background:var(--navy);padding:24px 36px 20px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.hdr h1{font-family:'DM Serif Display',serif;font-size:23px;color:#fff;line-height:1.1;}
+.hdr .sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px;}
+.badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 14px;font-size:11.5px;color:rgba(255,255,255,.85);font-weight:500;}
+.tabs{background:var(--navy);border-top:1px solid rgba(255,255,255,.1);display:flex;padding:0 36px;gap:2px;flex-wrap:wrap;}
+.tb{background:none;border:none;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;padding:11px 16px 9px;cursor:pointer;border-bottom:3px solid transparent;transition:.18s;white-space:nowrap;}
+.tb:hover{color:rgba(255,255,255,.85);}
+.tb.on{color:#fff;border-bottom-color:var(--green);}
+.pg{padding:24px 36px 48px;max-width:1440px;margin:0 auto;}
+.sec{display:none;}.sec.on{display:block;}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.r4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.r6{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:16px;}
+.full{margin-bottom:16px;}
+.card{background:#fff;border-radius:11px;border:1px solid var(--g100);box-shadow:0 1px 4px rgba(0,0,0,.04);overflow:hidden;}
+.ch{padding:14px 18px 11px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+.ct{font-size:12.5px;font-weight:600;color:var(--navy);}
+.tag{font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px;}
+.tg{background:var(--gl);color:var(--green);} .ta{background:#fef3e2;color:var(--amber);}
+.tr2{background:var(--rl);color:var(--red);} .tb2{background:#eff6ff;color:#2563EB;}
+.tp{background:#f5f3ff;color:#7C3AED;} .tn{background:var(--g100);color:var(--navy);}
+.cb{padding:16px 18px;}
+.chart-box{position:relative;width:100%;}
+.kpi{background:#fff;border-radius:11px;padding:16px 18px 14px;border:1px solid var(--g100);box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.kl{font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--g400);margin-bottom:6px;}
+.kv{font-size:26px;font-weight:700;line-height:1;color:var(--navy);}
+.ks{font-size:11px;color:var(--g400);margin-top:4px;}
+.ft{width:100%;border-collapse:collapse;font-size:12px;}
+.ft th{background:var(--g50);color:var(--g400);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:8px 12px;text-align:left;border-bottom:1px solid var(--g200);}
+.ft th.r{text-align:right;} .ft td{padding:8px 12px;border-bottom:1px solid var(--g100);vertical-align:middle;}
+.ft tr:last-child td{border-bottom:none;} .ft tr:hover td{background:var(--g50);}
+.pill{display:inline-flex;padding:2px 8px;border-radius:10px;font-size:10.5px;font-weight:700;}
+.pg2{background:var(--gl);color:var(--green);} .pa{background:#fef3e2;color:var(--amber);} .pr{background:var(--rl);color:var(--red);}
+.co{border-left:4px solid var(--navy);border-radius:7px;padding:12px 16px;margin-bottom:10px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.co.cup{border-left-color:var(--green);background:linear-gradient(90deg,#f0fdf9,#fff 55%);}
+.co.cdn{border-left-color:var(--red);background:linear-gradient(90deg,#fef2ed,#fff 55%);}
+.co.cfl{border-left-color:var(--amber);background:linear-gradient(90deg,#fef9ef,#fff 55%);}
+.co .ct2{font-size:12px;font-weight:700;color:var(--navy);}
+.co p{font-size:11.5px;color:var(--g600);line-height:1.5;margin-top:3px;}
+.note{background:#fff8e6;border:1px solid #f5d585;border-radius:7px;padding:10px 14px;margin-bottom:14px;font-size:11.5px;color:var(--g600);line-height:1.5;}
+.slab{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--g400);margin-bottom:9px;margin-top:2px;}
+.leg{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+.ld{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:500;color:var(--g600);}
+.ld span{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.clr{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--g100);}
+.clr:last-child{border-bottom:none;} .cll{flex:1;font-size:11.5px;color:var(--g600);}
+.clb{width:70px;height:5px;background:var(--g100);border-radius:3px;overflow:hidden;}
+.clf{height:100%;border-radius:3px;} .cln{font-size:11.5px;font-weight:700;color:var(--navy);min-width:26px;text-align:right;}
+.clp{font-size:11px;font-weight:600;color:var(--red);min-width:34px;text-align:right;}
+@media(max-width:900px){.pg{padding:16px;}.hdr,.tabs{padding:0 16px;}.hdr{padding:16px 16px 14px;}.r2,.r3,.r4,.r6{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div><h1>Culture Amp Onboarding &mdash; Combined Trend Dashboard</h1>
+  <div class="sub">AssistRx &middot; 6 Refreshes &middot; Dec 2025 &ndash; Jul 2026 &middot; All Waves &middot; 1,872 Total Responses</div></div>
+  <div class="badge">Latest: Jul 20, 2026</div>
+</header>
+<nav class="tabs">
+  <button class="tb on"  onclick="show('ov',this)">Overview</button>
+  <button class="tb" onclick="show('tr',this)">Trend Analysis</button>
+  <button class="tb" onclick="show('h30',this)">30-Day History</button>
+  <button class="tb" onclick="show('h60',this)">60-Day History</button>
+  <button class="tb" onclick="show('h90',this)">90-Day History</button>
+  <button class="tb" onclick="show('cl',this)">Checklist Gaps</button>
+  <button class="tb" onclick="show('lw',this)">Latest Wave</button>
+  <button class="tb" onclick="show('mgr',this)">Manager Heatmap</button>
+</nav>
+<main class="pg">
+
+<section id="ov" class="sec on">
+  <div class="leg">
+    <div class="ld"><span style="background:#1D9E75"></span>Wave 1 &mdash; Dec '25&ndash;Apr '26 (n=272/171/199)</div>
+    <div class="ld"><span style="background:#2563EB"></span>Wave 2 &mdash; Apr '26 Refresh (n=91/82/20)</div>
+    <div class="ld"><span style="background:#E09B2F"></span>Wave 3 &mdash; May '26 Refresh (n=87/115/93)</div>
+    <div class="ld"><span style="background:#D85A30"></span>Wave 4 &mdash; Jun '26 Refresh (n=50/130/145)</div>
+    <div class="ld"><span style="background:#0D9488"></span>Wave 5 &mdash; Jun '26 Refresh (n=44/59/46)</div>
+    <div class="ld"><span style="background:#7C3AED"></span>Wave 6 &mdash; Jul '26 Latest (n=13/90/165)</div>
+  </div>
+  <div class="r6" id="ovKPIs"></div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">30-Day Overall Score &mdash; All 6 Refreshes</span></div><div class="cb"><div class="chart-box" style="height:210px"><canvas id="ov30"></canvas></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">60-Day Overall Score &mdash; All 6 Refreshes</span></div><div class="cb"><div class="chart-box" style="height:210px"><canvas id="ov60"></canvas></div></div></div>
+  </div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">90-Day Overall Score &mdash; All 6 Refreshes</span><span class="tag ta">Wave 2 = 2025 cohort, n=20</span></div><div class="cb"><div class="chart-box" style="height:210px"><canvas id="ov90"></canvas></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">Overall Score &mdash; All Waves &times; Refreshes</span></div><div class="cb"><div class="chart-box" style="height:210px"><canvas id="ovGrp"></canvas></div></div></div>
+  </div>
+  <div class="card full"><div class="ch"><span class="ct">Master Factor Score Table &mdash; Every Factor &times; Every Refresh &times; Every Wave</span></div><div class="cb" style="padding:0"><table class="ft" id="masterTbl"></table></div></div>
+</section>
+
+<section id="tr" class="sec">
+  <div class="note"><strong>Note:</strong> Wave 2 90-Day used a 2025 cohort (n=20) &mdash; excluded from 90-Day trend callouts.</div>
+  <div class="slab">30-Day Trends</div>
+  <div class="co cup"><div class="ct2">&#9650; 30-Day Overall surged to 92.0% in Wave 4 &mdash; new all-time high (+8.1 pts vs Wave 1)</div><p>After dipping to 78.8% in Wave 2, the 30-day experience fully recovered and now exceeds any prior result. "Made the right decision" hit 94%, "Would recommend" 92%.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; 30-Day Onboarding Experience: 84.4% &rarr; 81.7% &rarr; 81.1% &rarr; 90.3%</div><p>After two refreshes of decline, a 9.2-point surge in Wave 4. "Accurate info during recruitment" jumped from 66% to 82%.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; 30-Day Team &amp; Culture: 85.7% &rarr; 80.6% &rarr; 81.6% &rarr; 91.3% &mdash; New high</div><p>"Team members and leaders supportive" hit 94% in Wave 4. All three sub-items exceed 88%.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; Training item recovering: 65% &rarr; 59% &rarr; 67% &rarr; 76%</div><p>"Efficient training on procedures" rose 17 points from its Wave 2 low.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; 30-Day Overall reaches its highest point yet: 83.9% &rarr; 78.8% &rarr; 83.5% &rarr; 92.0% &rarr; 96.2% &rarr; 97.4%</div><p>Fourth consecutive increase &mdash; now the strongest 30-day wave on record. Note Wave 6 is a small early cohort (n=13), so the reading is directional; it confirms the sustained upward trajectory rather than establishing a large-sample high.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; 30-Day Onboarding Experience keeps climbing: 81.1% &rarr; 90.3% &rarr; 94.3% &rarr; 98.1%</div><p>Three consecutive jumps to a new high. "Accurate info during recruitment," "supported in onboarding," and "provided benefits information" all reached 100% favorable in Wave 6 (n=13).</p></div>
+  <div class="slab" style="margin-top:18px">60-Day Trends</div>
+  <div class="co cdn"><div class="ct2">&#9660; 60-Day Onboarding Experience: 78.9% &rarr; 75.6% &rarr; 75.2% &rarr; 71.7% &mdash; Declined every refresh</div><p>"Role expectations communicated through onboarding" stuck at 63&ndash;66% across all waves. Has not responded to any intervention so far.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; 60-Day Overall recovers to a new high: 82.5% &rarr; 83.2% &rarr; 81.9% &rarr; 78.1% &rarr; 78.4% &rarr; 89.4%</div><p>After the Wave 4&ndash;5 dip, an 11.0-point rebound in Wave 6 (n=90) &mdash; the strongest 60-day Overall on record. Belonging and job-satisfaction sub-items recovered in tandem across the larger cohort.</p></div>
+  <div class="co cdn"><div class="ct2">&#9660; 60-Day Team &amp; Culture: 88.3% &rarr; 87.8% &rarr; 87.2% &rarr; 83.3% &mdash; Slow consistent erosion</div><p>5 points lower than Wave 1. "Felt welcomed since starting" dropped from 90% to 83%.</p></div>
+  <div class="co cfl"><div class="ct2">&#9679; "Discussed development goals" at 60-Day, still the stubborn item: 52% &rarr; 48% &rarr; 51% &rarr; 52.8% &rarr; 47.5% &rarr; ~63%</div><p>Wave 6 shows the first meaningful lift on the larger cohort, but development-goal conversations remain the softest sub-item within an otherwise strong 60-day picture. Worth continued attention even as the rest of the factor recovers.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; 60-Day Communication rebounds strongly: 77.6% &rarr; 75.1% &rarr; 70.1% &rarr; 82.6% &mdash; new high, reversing the Wave 5 dip</div><p>A 12.5-point single-wave recovery on the largest 60-day cohort to date (n=90). The Wave 5 low now reads as a small-sample trough rather than a sustained decline &mdash; Communication is at its best level across all six waves.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; 60-Day Onboarding Experience jumps off the floor: 75.2% &rarr; 71.7% &rarr; 71.6% &rarr; 86.7% &mdash; new high</div><p>After four flat-to-declining waves, a 15.1-point surge in Wave 6 (n=90). The factor that had been the 60-day dataset floor is now among its strongest &mdash; the single largest wave-over-wave move in the 60-day series.</p></div>
+  <div class="slab" style="margin-top:18px">90-Day Trends (Waves 1, 3, 4, 5, 6)</div>
+  <div class="co cfl"><div class="ct2">&#9679; 90-Day Overall steps down on the largest cohort: 81.9% &rarr; 85.5% &rarr; 84.0% &rarr; 89.1% &rarr; 82.3%</div><p>Wave 6 (n=165) is more than 3&times; the size of Wave 5 (n=46), so this is the most representative 90-day read to date. The step down from the small-sample Wave 5 peak largely reflects that shift to a fuller cohort; 82.3% is squarely in line with the Wave 1&ndash;4 range.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; 90-Day Job Satisfaction holds steady: 83.8% &rarr; 88.4% &rarr; 85.6% &rarr; 83.3% &rarr; 82.0%</div><p>By 90 days employees remain consistently clear on their roles and find meaning in their work. Stable across the larger Wave 6 cohort.</p></div>
+  <div class="co cfl"><div class="ct2">&#9679; "Onboarding prepared me for my role" recovers: 66% &rarr; 76% &rarr; 71.5% &rarr; 65.2% &rarr; 74.2%</div><p>Wave 6 (n=165) reverses the two-wave slide and returns this item near its Wave 3 level. Perceived role-readiness at 90 days is back in a healthy range on the largest cohort measured, though still a notch below the strongest factors.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; MAJOR REVERSAL: 90-Day "1:1 with direct leadership" gap drops sharply: 57% &rarr; 60% &rarr; 58% &rarr; 64% &rarr; 73% &rarr; 32%</div><p>The dataset&apos;s most persistent negative trend reverses hard in Wave 6. On the largest 90-day cohort measured (n=165), the share reporting no quality 1:1 time falls from nearly 3 in 4 to under 1 in 3 &mdash; the biggest single-wave improvement anywhere in the data. Worth confirming the gain holds as future waves land, but a clear and encouraging break in the trend.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; "Discussed development goals" at 90-Day improves: 54% &rarr; 54% &rarr; 57% &rarr; 64.4% in Wave 6</div><p>Now separately reported again, this item reaches its highest level in the 90-day series. Together with the sharp drop in the 1:1 gap, Wave 6 points to a genuine step forward in manager-coaching behaviors at the 90-day mark &mdash; a reversal of the prior systemic concern.</p></div>
+  <div class="card full" style="margin-top:18px"><div class="ch"><span class="ct">All Key Factor Trend Lines &mdash; All Refreshes</span></div><div class="cb"><div class="chart-box" style="height:300px"><canvas id="trendAll"></canvas></div></div></div>
+</section>
+
+<section id="h30" class="sec">
+  <div class="card full"><div class="ch"><span class="ct">30-Day All Factors &mdash; Across 6 Refreshes</span><span class="tag tg">% Favorable</span></div><div class="cb"><div class="chart-box" style="height:260px"><canvas id="c30all"></canvas></div></div></div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">30-Day Onboarding Experience Trend</span></div><div class="cb"><div class="chart-box" style="height:200px"><canvas id="c30onb"></canvas></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">30-Day Latest Sentiment Split (Wave 6, n=13)</span><span class="tag tr2">Jul '26</span></div><div class="cb"><div class="chart-box" style="height:200px"><canvas id="c30sent"></canvas></div></div></div>
+  </div>
+  <div class="card full"><div class="ch"><span class="ct">30-Day Participation &mdash; All Refreshes</span></div><div class="cb"><div class="chart-box" style="height:160px"><canvas id="c30part"></canvas></div></div></div>
+</section>
+
+<section id="h60" class="sec">
+  <div class="card full"><div class="ch"><span class="ct">60-Day All Factors &mdash; Across 6 Refreshes</span><span class="tag tb2">% Favorable</span></div><div class="cb"><div class="chart-box" style="height:280px"><canvas id="c60all"></canvas></div></div></div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">60-Day Onboarding Experience Trend</span><span class="tag tr2">Declining</span></div><div class="cb"><div class="chart-box" style="height:200px"><canvas id="c60onb"></canvas></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">60-Day Latest Sentiment Split (Wave 6, n=90)</span><span class="tag tr2">Jul '26</span></div><div class="cb"><div class="chart-box" style="height:200px"><canvas id="c60sent"></canvas></div></div></div>
+  </div>
+  <div class="card full"><div class="ch"><span class="ct">60-Day Participation &mdash; All Refreshes</span></div><div class="cb"><div class="chart-box" style="height:160px"><canvas id="c60part"></canvas></div></div></div>
+</section>
+
+<section id="h90" class="sec">
+  <div class="note"><strong>Wave 2 (Apr '26):</strong> 2025 cohort, n=20 &mdash; shown for completeness. Focus on Waves 1, 3, 4.</div>
+  <div class="card full"><div class="ch"><span class="ct">90-Day All Factors &mdash; Across 6 Refreshes</span><span class="tag tp">% Favorable</span></div><div class="cb"><div class="chart-box" style="height:280px"><canvas id="c90all"></canvas></div></div></div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">90-Day Onboarding Experience Trend</span></div><div class="cb"><div class="chart-box" style="height:200px"><canvas id="c90onb"></canvas></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">90-Day Latest Sentiment Split (Wave 6, n=165)</span><span class="tag tp">Jul '26</span></div><div class="cb"><div class="chart-box" style="height:200px"><canvas id="c90sent"></canvas></div></div></div>
+  </div>
+  <div class="card full"><div class="ch"><span class="ct">90-Day Participation &mdash; All Refreshes</span></div><div class="cb"><div class="chart-box" style="height:160px"><canvas id="c90part"></canvas></div></div></div>
+</section>
+
+<section id="cl" class="sec">
+  <div class="note"><strong>Checklist gaps:</strong> % who said item was NOT yet completed. "1:1 with leadership" is the #1 gap in every wave of every refresh. <strong>The 90-Day 1:1 gap has worsened in every single wave (57% &rarr; 60% &rarr; 58% &rarr; 64% &rarr; 73%)</strong> &mdash; now the most severe and consistent negative trend in the dataset.</div>
+  <div class="card full"><div class="ch"><span class="ct">1:1 with Leadership Gap Count &mdash; All Waves &times; All Refreshes</span><span class="tag tr2">Persistent #1 Gap</span></div><div class="cb"><div class="chart-box" style="height:220px"><canvas id="c1on1"></canvas></div></div></div>
+  <div class="r3">
+    <div class="card"><div class="ch"><span class="ct">30-Day Latest Checklist (Wave 6)</span><span class="tag tg">n=13</span></div><div class="cb" style="padding:14px 16px" id="clL30"></div></div>
+    <div class="card"><div class="ch"><span class="ct">60-Day Latest Checklist (Wave 6)</span><span class="tag tb2">n=90</span></div><div class="cb" style="padding:14px 16px" id="clL60"></div></div>
+    <div class="card"><div class="ch"><span class="ct">90-Day Latest Checklist (Wave 6)</span><span class="tag tp">n=165</span></div><div class="cb" style="padding:14px 16px" id="clL90"></div></div>
+  </div>
+  <div class="card full"><div class="ch"><span class="ct">1:1 Leadership &amp; Tools/Software Gap % Trend</span></div><div class="cb"><div class="chart-box" style="height:260px"><canvas id="clTrend"></canvas></div></div></div>
+</section>
+
+<section id="lw" class="sec">
+  <div class="note"><strong>Latest data window (Wave 6):</strong> 30-Day = Jun 19&ndash;Jul 20, 2026 (n=13) &middot; 60-Day = May 19&ndash;Jul 20, 2026 (n=90) &middot; 90-Day = Apr 19&ndash;Jul 20, 2026 (n=165). <em>The 90-day cohort (n=165) is the largest single wave in the dataset, giving the most statistically stable read to date.</em></div>
+  <div class="r6">
+    <div class="kpi"><div class="kl">30-Day Overall</div><div class="kv" style="color:#1D9E75">97.4%</div><div class="ks">&#9650; 1.2 pts vs Wave 5 &mdash; new high (n=13)</div></div>
+    <div class="kpi"><div class="kl">60-Day Overall</div><div class="kv" style="color:#1D9E75">89.4%</div><div class="ks">&#9650; 11.0 pts vs Wave 5 &mdash; new high</div></div>
+    <div class="kpi"><div class="kl">90-Day Overall</div><div class="kv" style="color:#E09B2F">82.3%</div><div class="ks">&#9660; 6.8 pts vs Wave 5 (n=165, largest cohort)</div></div>
+    <div class="kpi"><div class="kl">60-Day Communication</div><div class="kv" style="color:#1D9E75">82.6%</div><div class="ks">&#9650; 12.5 pts vs Wave 5 &mdash; strong recovery</div></div>
+    <div class="kpi"><div class="kl">60-Day Onboarding</div><div class="kv" style="color:#1D9E75">86.7%</div><div class="ks">&#9650; 15.1 pts vs Wave 5 &mdash; new high</div></div>
+    <div class="kpi"><div class="kl">90-Day 1:1 Gap</div><div class="kv" style="color:#1D9E75">32%</div><div class="ks">&#9660; from 73% &mdash; major improvement</div></div>
+  </div>
+  <div class="card full"><div class="ch"><span class="ct">Latest Wave &mdash; All Factors Across 30 / 60 / 90-Day</span></div><div class="cb"><div class="chart-box" style="height:280px"><canvas id="lwFact"></canvas></div></div></div>
+  <div class="card full"><div class="ch"><span class="ct">Latest Wave &mdash; Factor Comparison Table</span></div><div class="cb" style="padding:0"><table class="ft" id="lwTbl"></table></div></div>
+</section>
+
+<section id="mgr" class="sec">
+  <div class="note"><strong>Wave 6 Manager Heatmaps.</strong> This wave includes manager-level breakouts for all three surveys (30 / 60 / 90-Day), each a different cohort and department mix &mdash; manager names do not necessarily overlap between them. Focus on managers with n&#8805;2 for directional reliability; n=1 rows are shown for completeness only. Overall survey N: 30-Day = 13, 60-Day = 90, 90-Day = 165.</div>
+
+  <div class="slab">Key Findings &mdash; Wave 6</div>
+  <div class="co cup"><div class="ct2">&#9650; 90-Day coaching gap closes sharply this wave</div><p>On the largest 90-Day cohort to date (n=165), the "no quality 1:1 with my leader" gap fell from 73% to 32% and development-goal conversations rose to 64%. The manager-level heatmap below reflects that broader improvement, with many managers at or near 100% on Overall and Onboarding Experience.</p></div>
+  <div class="co cdn"><div class="ct2">&#9660; Ethan Johnson (n=3) &mdash; lowest 90-Day Onboarding Experience among n&#8805;3 managers: 33%</div><p>Overall 33% and "prepared me for my role" 0%. A role-clarity and preparation gap worth a direct coaching conversation.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; Evona Hoover (n=6) &mdash; 90-Day benchmark: 100% Overall, 93% Onboarding Experience</div><p>Among the strongest large-cohort profiles this wave &mdash; a model for the manager onboarding playbook.</p></div>
+  <div class="co cdn"><div class="ct2">&#9660; DaJah Armstrong (n=3) &mdash; lowest 60-Day Onboarding Experience among n&#8805;2 managers: 50%</div><p>Overall 100%. The clearest 60-Day coaching priority this wave.</p></div>
+
+  <div class="slab" style="margin-top:24px">30-Day Manager Heatmap &mdash; Wave 6</div>
+  <div class="note">Source: 30-Day Onboarding Survey spread by Manager, Jun 19 &ndash; Jul 20, 2026 (survey N=13). This is an early, small cohort &mdash; only <strong>one manager</strong> reached n&#8805;2, so these results are directional. The full roster (below) is shown for completeness.</div>
+  <div class="card full" style="margin-top:16px">
+    <div class="ch"><span class="ct">30-Day Manager Scores &mdash; Onboarding Experience (n&#8805;2 only)</span><span class="tag tg">% Favorable &mdash; Wave 6</span></div>
+    <div class="cb"><div class="chart-box" style="height:140px"><canvas id="mgr30OnbChart"></canvas></div></div>
+  </div>
+  <div class="card full">
+    <div class="ch"><span class="ct">30-Day Manager Scores &mdash; n&#8805;2 Respondents</span><span class="tag tn">30-Day Survey, Jun&ndash;Jul 2026</span></div>
+    <div class="cb" style="padding:0"><table class="ft" id="mgr30Table"></table></div>
+  </div>
+  <div class="card full" style="margin-top:16px">
+    <div class="ch"><span class="ct">30-Day All Managers with Responses &mdash; n&lt;2 shown as directional only</span><span class="tag tn">Sorted by Overall Score</span></div>
+    <div class="cb" style="padding:0"><table class="ft" id="mgr30FullTable"></table></div>
+  </div>
+
+  <div class="slab" style="margin-top:24px">60-Day Manager Heatmap &mdash; Wave 6</div>
+  <div class="note">Source: 60-Day Onboarding Survey spread by Manager, May 19 &ndash; Jul 20, 2026 (survey N=90). 17 managers reached n&#8805;2. A <strong>different cohort/department mix</strong> than the other heatmaps.</div>
+  <div class="card full" style="margin-top:16px">
+    <div class="ch"><span class="ct">60-Day Manager Scores &mdash; Onboarding Experience (n&#8805;2 only, sorted lowest to highest)</span><span class="tag tb2">% Favorable &mdash; Wave 6</span></div>
+    <div class="cb"><div class="chart-box" style="height:420px"><canvas id="mgr60OnbChart"></canvas></div></div>
+  </div>
+  <div class="card full">
+    <div class="ch"><span class="ct">60-Day All Manager Scores &mdash; n&#8805;2 Respondents</span><span class="tag tn">60-Day Survey, May&ndash;Jul 2026</span></div>
+    <div class="cb" style="padding:0"><table class="ft" id="mgr60Table"></table></div>
+  </div>
+  <div class="card full" style="margin-top:16px">
+    <div class="ch"><span class="ct">60-Day All Managers with Responses &mdash; n&lt;2 shown as directional only</span><span class="tag tn">Sorted by Overall Score</span></div>
+    <div class="cb" style="padding:0"><table class="ft" id="mgr60FullTable"></table></div>
+  </div>
+
+  <div class="slab" style="margin-top:24px">90-Day Manager Heatmap &mdash; Wave 6 (Latest)</div>
+  <div class="note">Source: 90-Day Onboarding Survey spread by Manager, Apr 19 &ndash; Jul 20, 2026 (survey N=165 &mdash; the largest single cohort in the dataset). 38 managers reached n&#8805;2. A <strong>different cohort/department mix</strong> than the 30- and 60-Day heatmaps.</div>
+  <div class="card full" style="margin-top:16px">
+    <div class="ch"><span class="ct">90-Day Manager Scores &mdash; Onboarding Experience (n&#8805;2 only, sorted lowest to highest)</span><span class="tag tp">% Favorable &mdash; Wave 6</span></div>
+    <div class="cb"><div class="chart-box" style="height:760px"><canvas id="mgr90OnbChart"></canvas></div></div>
+  </div>
+  <div class="card full">
+    <div class="ch"><span class="ct">90-Day All Manager Scores &mdash; n&#8805;2 Respondents</span><span class="tag tn">Wave 6, Apr&ndash;Jul 2026</span></div>
+    <div class="cb" style="padding:0"><table class="ft" id="mgr90Table"></table></div>
+  </div>
+  <div class="card full" style="margin-top:16px">
+    <div class="ch"><span class="ct">90-Day All Managers with Responses &mdash; n=1 shown as directional only</span><span class="tag tn">Sorted by Overall Score</span></div>
+    <div class="cb" style="padding:0"><table class="ft" id="mgr90FullTable"></table></div>
+  </div>
+</section>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.tb').forEach(function(b){b.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+
+const D30=[
+  {n:272,f:[{nm:"Onboarding Exp.",s:84.4,fav:.84,neu:.10,unf:.06,pop:270},{nm:"Overall",s:83.9,fav:.84,neu:.11,unf:.05,pop:272},{nm:"Job Satisfaction",s:78.2,fav:.78,neu:.14,unf:.08,pop:269},{nm:"Org. Alignment",s:83.4,fav:.83,neu:.12,unf:.05,pop:269},{nm:"Team & Culture",s:85.7,fav:.86,neu:.10,unf:.04,pop:272}],
+   cl:[{i:"1:1 Leadership",n:70,p:51},{i:"Assigned Help",n:50,p:36},{i:"Tools/Software",n:55,p:40},{i:"Intro to Team",n:49,p:36},{i:"Know Leadership",n:53,p:38},{i:"Building Access",n:38,p:28},{i:"Work Email",n:40,p:29}]},
+  {n:91, f:[{nm:"Onboarding Exp.",s:81.7,fav:.82,neu:.09,unf:.09,pop:90},{nm:"Overall",s:78.8,fav:.79,neu:.13,unf:.08,pop:91},{nm:"Job Satisfaction",s:76.9,fav:.77,neu:.12,unf:.11,pop:90},{nm:"Org. Alignment",s:80.2,fav:.80,neu:.12,unf:.08,pop:91},{nm:"Team & Culture",s:80.6,fav:.81,neu:.13,unf:.06,pop:91}],
+   cl:[{i:"1:1 Leadership",n:26,p:48},{i:"Assigned Help",n:22,p:41},{i:"Tools/Software",n:21,p:39},{i:"Intro to Team",n:22,p:41},{i:"Know Leadership",n:22,p:41},{i:"Building Access",n:14,p:26},{i:"Work Email",n:15,p:28}]},
+  {n:87, f:[{nm:"Onboarding Exp.",s:81.1,fav:.81,neu:.11,unf:.08,pop:86},{nm:"Overall",s:83.5,fav:.84,neu:.08,unf:.08,pop:87},{nm:"Job Satisfaction",s:78.8,fav:.79,neu:.11,unf:.10,pop:86},{nm:"Org. Alignment",s:84.5,fav:.84,neu:.09,unf:.07,pop:87},{nm:"Team & Culture",s:81.6,fav:.82,neu:.12,unf:.06,pop:87}],
+   cl:[{i:"1:1 Leadership",n:24,p:51},{i:"Assigned Help",n:21,p:45},{i:"Tools/Software",n:14,p:30},{i:"Intro to Team",n:19,p:40},{i:"Know Leadership",n:18,p:38},{i:"Building Access",n:11,p:23},{i:"Work Email",n:12,p:26}]},
+  {n:50, f:[{nm:"Onboarding Exp.",s:90.3,fav:.90,neu:.07,unf:.03,pop:49},{nm:"Overall",s:92.0,fav:.92,neu:.05,unf:.03,pop:50},{nm:"Job Satisfaction",s:84.0,fav:.84,neu:.08,unf:.08,pop:50},{nm:"Org. Alignment",s:89.5,fav:.90,neu:.06,unf:.04,pop:50},{nm:"Team & Culture",s:91.3,fav:.91,neu:.06,unf:.03,pop:50}],
+   cl:[{i:"1:1 Leadership",n:11,p:48},{i:"Assigned Help",n:9,p:39},{i:"Tools/Software",n:7,p:30},{i:"Intro to Team",n:10,p:43},{i:"Know Leadership",n:10,p:43},{i:"Building Access",n:8,p:35},{i:"Work Email",n:8,p:35}]},
+  {n:44, f:[{nm:"Onboarding Exp.",s:94.3,fav:.94,neu:.04,unf:.02,pop:44},{nm:"Overall",s:96.2,fav:.96,neu:.03,unf:.01,pop:44},{nm:"Job Satisfaction",s:86.4,fav:.86,neu:.08,unf:.06,pop:44},{nm:"Org. Alignment",s:93.2,fav:.93,neu:.05,unf:.02,pop:44},{nm:"Team & Culture",s:93.2,fav:.93,neu:.05,unf:.02,pop:44}],
+   cl:[{i:"1:1 Leadership",n:8,p:40},{i:"Assigned Help",n:7,p:35},{i:"Tools/Software",n:7,p:35},{i:"Intro to Team",n:6,p:30},{i:"Know Leadership",n:6,p:30},{i:"Building Access",n:7,p:35},{i:"Work Email",n:3,p:15}]},
+  {n:13, f:[{nm:"Onboarding Exp.",s:98.1,fav:.98,neu:.02,unf:0,pop:13},{nm:"Overall",s:97.4,fav:.97,neu:.03,unf:0,pop:13},{nm:"Job Satisfaction",s:88.5,fav:.88,neu:.12,unf:0,pop:13},{nm:"Org. Alignment",s:92.3,fav:.92,neu:.08,unf:0,pop:13},{nm:"Team & Culture",s:97.4,fav:.97,neu:.03,unf:0,pop:13}],
+   cl:[{i:"1:1 Leadership",n:1,p:8},{i:"Assigned Help",n:0,p:0},{i:"Tools/Software",n:0,p:0},{i:"Intro to Team",n:0,p:0},{i:"Know Leadership",n:0,p:0},{i:"Building Access",n:1,p:8},{i:"Work Email",n:0,p:0}]},
+];
+const D60=[
+  {n:171,f:[{nm:"Onboarding Exp.",s:78.9,fav:.79,neu:.14,unf:.07,pop:171},{nm:"Overall",s:82.5,fav:.83,neu:.14,unf:.03,pop:170},{nm:"Team & Culture",s:88.3,fav:.88,neu:.09,unf:.03,pop:171},{nm:"Job Satisfaction",s:77.2,fav:.77,neu:.17,unf:.06,pop:170},{nm:"Communication",s:75.7,fav:.76,neu:.15,unf:.09,pop:169},{nm:"Prof. Dev.",s:77.5,fav:.78,neu:.16,unf:.06,pop:167}],
+   cl:[{i:"1:1 Leadership",n:42,p:51},{i:"Assigned Help",n:29,p:35},{i:"Tools/Software",n:29,p:35},{i:"Intro to Team",n:23,p:28},{i:"Know Leadership",n:20,p:24},{i:"Building Access",n:22,p:27},{i:"Work Email",n:17,p:21}]},
+  {n:82, f:[{nm:"Onboarding Exp.",s:75.6,fav:.76,neu:.15,unf:.09,pop:82},{nm:"Overall",s:83.2,fav:.83,neu:.13,unf:.04,pop:82},{nm:"Team & Culture",s:87.8,fav:.88,neu:.10,unf:.02,pop:82},{nm:"Job Satisfaction",s:79.5,fav:.80,neu:.13,unf:.07,pop:81},{nm:"Communication",s:77.6,fav:.78,neu:.15,unf:.07,pop:82},{nm:"Prof. Dev.",s:76.5,fav:.77,neu:.17,unf:.06,pop:81}],
+   cl:[{i:"1:1 Leadership",n:13,p:35},{i:"Assigned Help",n:8,p:22},{i:"Tools/Software",n:12,p:32},{i:"Intro to Team",n:11,p:30},{i:"Know Leadership",n:11,p:30},{i:"Building Access",n:10,p:27},{i:"Work Email",n:7,p:19}]},
+  {n:115,f:[{nm:"Onboarding Exp.",s:75.2,fav:.75,neu:.16,unf:.09,pop:115},{nm:"Overall",s:81.9,fav:.82,neu:.12,unf:.06,pop:113},{nm:"Team & Culture",s:87.2,fav:.87,neu:.10,unf:.03,pop:115},{nm:"Job Satisfaction",s:78.9,fav:.79,neu:.13,unf:.08,pop:114},{nm:"Communication",s:77.7,fav:.78,neu:.14,unf:.08,pop:115},{nm:"Prof. Dev.",s:76.9,fav:.77,neu:.16,unf:.07,pop:114}],
+   cl:[{i:"1:1 Leadership",n:23,p:44},{i:"Assigned Help",n:16,p:31},{i:"Tools/Software",n:19,p:37},{i:"Intro to Team",n:17,p:33},{i:"Know Leadership",n:17,p:33},{i:"Building Access",n:15,p:29},{i:"Work Email",n:12,p:23}]},
+  {n:130,f:[{nm:"Onboarding Exp.",s:71.7,fav:.72,neu:.17,unf:.11,pop:130},{nm:"Overall",s:78.1,fav:.78,neu:.15,unf:.07,pop:128},{nm:"Team & Culture",s:83.3,fav:.83,neu:.12,unf:.05,pop:130},{nm:"Job Satisfaction",s:74.7,fav:.75,neu:.15,unf:.10,pop:129},{nm:"Communication",s:75.1,fav:.75,neu:.15,unf:.10,pop:130},{nm:"Prof. Dev.",s:76.2,fav:.76,neu:.17,unf:.07,pop:126}],
+   cl:[{i:"1:1 Leadership",n:25,p:41},{i:"Assigned Help",n:20,p:33},{i:"Tools/Software",n:22,p:36},{i:"Intro to Team",n:19,p:31},{i:"Know Leadership",n:19,p:31},{i:"Building Access",n:16,p:26},{i:"Work Email",n:13,p:21}]},
+  {n:59, f:[{nm:"Onboarding Exp.",s:71.6,fav:.72,neu:.12,unf:.16,pop:58},{nm:"Overall",s:78.4,fav:.78,neu:.18,unf:.04,pop:58},{nm:"Team & Culture",s:81.4,fav:.81,neu:.13,unf:.06,pop:59},{nm:"Job Satisfaction",s:72.9,fav:.73,neu:.15,unf:.12,pop:59},{nm:"Communication",s:70.1,fav:.70,neu:.15,unf:.15,pop:58},{nm:"Prof. Dev.",s:74.2,fav:.74,neu:.15,unf:.11,pop:59}],
+   cl:[{i:"1:1 Leadership",n:12,p:52},{i:"Assigned Help",n:8,p:35},{i:"Tools/Software",n:9,p:39},{i:"Intro to Team",n:4,p:17},{i:"Know Leadership",n:4,p:17},{i:"Building Access",n:4,p:17},{i:"Work Email",n:2,p:9}]},
+  {n:90, f:[{nm:"Onboarding Exp.",s:86.7,fav:.87,neu:.08,unf:.05,pop:90},{nm:"Overall",s:89.4,fav:.89,neu:.10,unf:.01,pop:90},{nm:"Team & Culture",s:91.1,fav:.91,neu:.06,unf:.03,pop:90},{nm:"Job Satisfaction",s:85.4,fav:.85,neu:.10,unf:.05,pop:89},{nm:"Communication",s:82.6,fav:.83,neu:.10,unf:.07,pop:90},{nm:"Prof. Dev.",s:85.4,fav:.85,neu:.11,unf:.04,pop:89}],
+   cl:[{i:"1:1 Leadership",n:22,p:24},{i:"Assigned Help",n:16,p:18},{i:"Tools/Software",n:14,p:16},{i:"Intro to Team",n:14,p:16},{i:"Know Leadership",n:18,p:20},{i:"Building Access",n:16,p:18},{i:"Work Email",n:15,p:17}]},
+];
+const D90=[
+  {n:199,flag:null,f:[{nm:"Onboarding Exp.",s:77.5,fav:.77,neu:.15,unf:.08,pop:197},{nm:"Overall",s:81.9,fav:.82,neu:.15,unf:.03,pop:196},{nm:"Communication",s:74.5,fav:.74,neu:.16,unf:.10,pop:196},{nm:"Job Satisfaction",s:83.8,fav:.84,neu:.12,unf:.04,pop:195},{nm:"Prof. Dev.",s:77.0,fav:.77,neu:.16,unf:.07,pop:193},{nm:"Team & Culture",s:81.4,fav:.81,neu:.12,unf:.07,pop:197}],
+   cl:[{i:"1:1 Leadership",n:47,p:57},{i:"Assigned Help",n:42,p:51},{i:"Tools/Software",n:39,p:47},{i:"Intro to Team",n:37,p:45},{i:"Know Leadership",n:37,p:45},{i:"Building Access",n:34,p:41},{i:"Work Email",n:32,p:39}]},
+  {n:20, flag:"2025 cohort",f:[{nm:"Onboarding Exp.",s:76.4,fav:.76,neu:.19,unf:.05,pop:20},{nm:"Overall",s:83.8,fav:.84,neu:.12,unf:.04,pop:20},{nm:"Communication",s:73.3,fav:.73,neu:.15,unf:.12,pop:20},{nm:"Job Satisfaction",s:78.3,fav:.78,neu:.19,unf:.03,pop:20},{nm:"Prof. Dev.",s:71.0,fav:.71,neu:.22,unf:.07,pop:20},{nm:"Team & Culture",s:86.7,fav:.87,neu:.11,unf:.02,pop:20}],
+   cl:[{i:"1:1 Leadership",n:6,p:60},{i:"Assigned Help",n:5,p:50},{i:"Tools/Software",n:3,p:30},{i:"Intro to Team",n:3,p:30},{i:"Know Leadership",n:4,p:40},{i:"Building Access",n:3,p:30},{i:"Work Email",n:4,p:40}]},
+  {n:93, flag:null,f:[{nm:"Onboarding Exp.",s:82.6,fav:.83,neu:.09,unf:.08,pop:92},{nm:"Overall",s:85.5,fav:.85,neu:.12,unf:.03,pop:93},{nm:"Communication",s:83.7,fav:.84,neu:.09,unf:.07,pop:92},{nm:"Job Satisfaction",s:88.4,fav:.88,neu:.07,unf:.05,pop:92},{nm:"Prof. Dev.",s:76.9,fav:.77,neu:.16,unf:.07,pop:91},{nm:"Team & Culture",s:83.9,fav:.84,neu:.10,unf:.06,pop:93}],
+   cl:[{i:"1:1 Leadership",n:23,p:58},{i:"Assigned Help",n:23,p:58},{i:"Tools/Software",n:17,p:43},{i:"Intro to Team",n:19,p:48},{i:"Know Leadership",n:19,p:48},{i:"Building Access",n:18,p:45},{i:"Work Email",n:16,p:40}]},
+  {n:145,flag:null,f:[{nm:"Onboarding Exp.",s:80.3,fav:.80,neu:.09,unf:.11,pop:144},{nm:"Overall",s:84.0,fav:.84,neu:.11,unf:.05,pop:145},{nm:"Communication",s:80.8,fav:.81,neu:.11,unf:.08,pop:144},{nm:"Job Satisfaction",s:85.6,fav:.86,neu:.08,unf:.06,pop:144},{nm:"Prof. Dev.",s:77.6,fav:.78,neu:.14,unf:.08,pop:143},{nm:"Team & Culture",s:81.1,fav:.81,neu:.11,unf:.08,pop:145}],
+   cl:[{i:"1:1 Leadership",n:42,p:64},{i:"Assigned Help",n:36,p:55},{i:"Tools/Software",n:31,p:47},{i:"Intro to Team",n:34,p:52},{i:"Know Leadership",n:30,p:45},{i:"Building Access",n:29,p:44},{i:"Work Email",n:26,p:39}]},
+  {n:46, flag:null,f:[{nm:"Onboarding Exp.",s:80.6,fav:.81,neu:.14,unf:.05,pop:45},{nm:"Overall",s:89.1,fav:.89,neu:.09,unf:.02,pop:46},{nm:"Communication",s:79.0,fav:.79,neu:.14,unf:.07,pop:46},{nm:"Job Satisfaction",s:83.3,fav:.83,neu:.13,unf:.04,pop:46},{nm:"Prof. Dev.",s:77.8,fav:.78,neu:.16,unf:.06,pop:46},{nm:"Team & Culture",s:89.1,fav:.89,neu:.08,unf:.03,pop:46}],
+   cl:[{i:"1:1 Leadership",n:19,p:73},{i:"Assigned Help",n:14,p:54},{i:"Tools/Software",n:14,p:54},{i:"Intro to Team",n:10,p:38},{i:"Know Leadership",n:11,p:42},{i:"Building Access",n:8,p:31},{i:"Work Email",n:11,p:42}]},
+  {n:165,flag:null,f:[{nm:"Onboarding Exp.",s:79.1,fav:.79,neu:.12,unf:.09,pop:161},{nm:"Overall",s:82.3,fav:.82,neu:.12,unf:.06,pop:164},{nm:"Communication",s:77.6,fav:.78,neu:.13,unf:.09,pop:162},{nm:"Job Satisfaction",s:82.0,fav:.82,neu:.11,unf:.07,pop:163},{nm:"Prof. Dev.",s:77.9,fav:.78,neu:.14,unf:.08,pop:162},{nm:"Team & Culture",s:78.7,fav:.79,neu:.13,unf:.08,pop:164}],
+   cl:[{i:"1:1 Leadership",n:52,p:32},{i:"Assigned Help",n:43,p:26},{i:"Tools/Software",n:33,p:20},{i:"Intro to Team",n:36,p:22},{i:"Know Leadership",n:30,p:18},{i:"Building Access",n:32,p:19},{i:"Work Email",n:29,p:18}]},
+];
+
+var WC=['#1D9E75','#2563EB','#E09B2F','#D85A30','#0D9488','#7C3AED'];
+var WL=["W1 Dec'25","W2 Apr'26","W3 May'26","W4 Jun'26","W5 Jun'26","W6 Jul'26"];
+var GREEN='#1D9E75',AMBER='#E09B2F',RED='#D85A30',NAVY='#1D3557';
+
+function getS(arr,nm){return arr.map(function(w){var f=w.f.find(function(x){return x.nm===nm;});return f?f.s:null;});}
+
+function mkPill(v){var p=Math.round(v);var c=p>=80?'pg2':p>=70?'pa':'pr';return '<span class="pill '+c+'">'+p+'%</span>';}
+
+function scoreBg(v){if(v>=80)return '#d1fae5';if(v>=65)return '#fef3e2';return '#fde8e8';}
+function scoreFg(v){if(v>=80)return '#065f46';if(v>=65)return '#92400e';return '#991b1b';}
+function mgrPill(v){if(v===null||v===undefined)return '<span style="color:#8b93a7">&#8212;</span>';return '<span style="display:inline-block;padding:2px 8px;border-radius:8px;font-size:10.5px;font-weight:700;background:'+scoreBg(v)+';color:'+scoreFg(v)+'">'+v.toFixed(0)+'%</span>';}
+
+function mkLine(id,labels,datasets,yMin,yMax){
+  var el=document.getElementById(id);if(!el)return;
+  new Chart(el,{type:'line',data:{labels:labels,datasets:datasets},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{datalabels:{display:true,color:function(ctx){return ctx.dataset.borderColor;},font:{weight:'700',size:10},formatter:function(v){return v?v.toFixed(1)+'%':null;},anchor:'top',align:'top',offset:4},legend:{position:'bottom',labels:{boxWidth:10,font:{size:10.5}}}},
+    scales:{x:{ticks:{font:{size:10.5}},grid:{display:false}},y:{min:yMin||50,max:yMax||100,ticks:{callback:function(v){return v+'%';},font:{size:11}},grid:{color:'rgba(0,0,0,.05)'}}}}});
+}
+function mkBar(id,labels,datasets,opts){
+  var el=document.getElementById(id);if(!el)return;
+  opts=opts||{};
+  new Chart(el,{type:'bar',data:{labels:labels,datasets:datasets},options:{responsive:true,maintainAspectRatio:false,indexAxis:opts.h?'y':'x',
+    plugins:{datalabels:{display:opts.dl!==false,color:'#fff',font:{weight:'700',size:opts.dls||10},formatter:function(v){return v!=null?(opts.pct?Math.round(v)+'%':v):null;},anchor:'center',align:'center'},legend:{position:'bottom',labels:{boxWidth:10,font:{size:10.5}}}},
+    scales:{x:{stacked:opts.st||false,ticks:{font:{size:opts.xs||10.5},maxRotation:opts.xr||0},grid:{display:false}},y:{stacked:opts.st||false,min:opts.ym,max:opts.yM,ticks:{callback:function(v){return opts.pct?v+'%':v;},font:{size:11}},grid:{color:'rgba(0,0,0,.05)'}}}}});
+}
+function mkSent(id,factors){
+  var el=document.getElementById(id);if(!el)return;
+  new Chart(el,{type:'bar',data:{labels:factors.map(function(f){return f.nm;}),datasets:[
+    {label:'Favorable',data:factors.map(function(f){return Math.round(f.fav*f.pop);}),backgroundColor:GREEN,borderRadius:2},
+    {label:'Neutral',data:factors.map(function(f){return Math.round(f.neu*f.pop);}),backgroundColor:AMBER,borderRadius:2},
+    {label:'Unfavorable',data:factors.map(function(f){return Math.round(f.unf*f.pop);}),backgroundColor:RED,borderRadius:2}
+  ]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>3;},color:'#fff',font:{weight:'700',size:9},formatter:function(v){return v;},anchor:'center',align:'center'},legend:{position:'bottom',labels:{boxWidth:10,font:{size:10.5}}}},
+    scales:{x:{stacked:true,ticks:{font:{size:11}},grid:{color:'rgba(0,0,0,.05)'}},y:{stacked:true,ticks:{font:{size:11}},grid:{display:false}}}}});
+}
+function mkPart(id,data){
+  mkBar(id,WL,[{label:'Submitted',data:data.map(function(w){return w.n;}),backgroundColor:WC,borderRadius:6}],{dl:true,dls:12});
+}
+function clWidget(id,items,color){
+  var el=document.getElementById(id);if(!el)return;
+  var max=Math.max.apply(null,items.map(function(x){return x.n;}));
+  el.innerHTML=items.slice().sort(function(a,b){return b.n-a.n;}).map(function(it){
+    return '<div class="clr"><div class="cll">'+it.i+'</div><div class="clb"><div class="clf" style="width:'+Math.round(it.n/max*100)+'%;background:'+color+'"></div></div><div class="cln">'+it.n+'</div><div class="clp">'+it.p+'%</div></div>';
+  }).join('');
+}
+
+Chart.register(ChartDataLabels);
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+// ── Overview KPIs
+var tot30=D30.reduce(function(s,w){return s+w.n;},0);
+var tot60=D60.reduce(function(s,w){return s+w.n;},0);
+var tot90=D90.reduce(function(s,w){return s+w.n;},0);
+document.getElementById('ovKPIs').innerHTML=
+  '<div class="kpi"><div class="kl">Total 30-Day</div><div class="kv" style="color:#1D9E75">'+tot30+'</div><div class="ks">6 refreshes</div></div>'+
+  '<div class="kpi"><div class="kl">Total 60-Day</div><div class="kv" style="color:#2563EB">'+tot60+'</div><div class="ks">6 refreshes</div></div>'+
+  '<div class="kpi"><div class="kl">Total 90-Day</div><div class="kv" style="color:#7C3AED">'+tot90+'</div><div class="ks">6 refreshes</div></div>'+
+  '<div class="kpi"><div class="kl">Grand Total</div><div class="kv" style="color:#E09B2F">'+(tot30+tot60+tot90)+'</div><div class="ks">all responses</div></div>'+
+  '<div class="kpi"><div class="kl">Latest 60-Day Overall</div><div class="kv" style="color:#1D9E75">89.4%</div><div class="ks">&#9650; Wave 6 &mdash; new high (+11.0)</div></div>'+
+  '<div class="kpi"><div class="kl">Latest 90-Day 1:1 Gap</div><div class="kv" style="color:#1D9E75">32%</div><div class="ks">&#9660; from 73% &mdash; major improvement</div></div>';
+
+// ── Overview sparklines
+mkLine('ov30',WL,[{label:'Overall',data:getS(D30,'Overall'),borderColor:NAVY,backgroundColor:'rgba(29,53,87,.06)',tension:.35,borderWidth:2.5,pointRadius:6,pointBackgroundColor:WC,pointBorderColor:'#fff',pointBorderWidth:2}],60,100);
+mkLine('ov60',WL,[{label:'Overall',data:getS(D60,'Overall'),borderColor:'#2563EB',backgroundColor:'rgba(37,99,235,.06)',tension:.35,borderWidth:2.5,pointRadius:6,pointBackgroundColor:WC,pointBorderColor:'#fff',pointBorderWidth:2}],60,100);
+mkLine('ov90',WL,[{label:'Overall',data:getS(D90,'Overall'),borderColor:'#7C3AED',backgroundColor:'rgba(124,58,237,.06)',tension:.35,borderWidth:2.5,pointRadius:6,pointBackgroundColor:WC,pointBorderColor:'#fff',pointBorderWidth:2}],60,100);
+mkBar('ovGrp',['30-Day','60-Day','90-Day'],WC.map(function(c,wi){return {label:['Wave 1','Wave 2','Wave 3','Wave 4','Wave 5','Wave 6'][wi],data:[D30,D60,D90].map(function(arr){return arr[wi]?arr[wi].f.find(function(f){return f.nm==='Overall';}).s:null;}),backgroundColor:c,borderRadius:4};}),{ym:60,yM:100,pct:true,dls:9});
+
+// ── Master table
+(function(){
+  var facts=['Onboarding Exp.','Overall','Job Satisfaction','Team & Culture','Org. Alignment','Communication','Prof. Dev.'];
+  var html='<thead><tr><th>Factor</th><th>Refresh</th><th class="r">30-Day</th><th class="r">60-Day</th><th class="r">90-Day</th></tr></thead><tbody>';
+  facts.forEach(function(fn){
+    [0,1,2,3,4,5].forEach(function(wi){
+      var s30=D30[wi]?D30[wi].f.find(function(f){return f.nm===fn;}):null; s30=s30?s30.s:null;
+      var s60=D60[wi]?D60[wi].f.find(function(f){return f.nm===fn;}):null; s60=s60?s60.s:null;
+      var s90=D90[wi]?D90[wi].f.find(function(f){return f.nm===fn;}):null; s90=s90?s90.s:null;
+      if(!s30&&!s60&&!s90)return;
+      var wflag=wi===1&&s90?'<span style="font-size:9px;background:#fff8e6;color:#b45309;border:1px solid #fde68a;padding:1px 5px;border-radius:6px;margin-left:4px">&#9888; n=20</span>':'';
+      html+='<tr>'+(wi===0?'<td rowspan="6" style="font-weight:700;color:var(--navy);border-right:2px solid var(--g200)">'+fn+'</td>':'')+
+        '<td style="font-size:10.5px;color:var(--g400)">'+["W1 Dec'25","W2 Apr'26","W3 May'26","W4 Jun'26","W5 Jun'26","W6 Jul'26"][wi]+'</td>'+
+        '<td class="r">'+(s30?mkPill(s30):'<span style="color:var(--g400)">&#8212;</span>')+'</td>'+
+        '<td class="r">'+(s60?mkPill(s60):'<span style="color:var(--g400)">&#8212;</span>')+'</td>'+
+        '<td class="r">'+(s90?mkPill(s90)+wflag:'<span style="color:var(--g400)">&#8212;</span>')+'</td></tr>';
+    });
+  });
+  document.getElementById('masterTbl').innerHTML=html+'</tbody>';
+})();
+
+// ── Trend All
+mkLine('trendAll',WL,[
+  {label:'30-Day Onboarding',data:getS(D30,'Onboarding Exp.'),borderColor:'#1D9E75',tension:.3,borderWidth:2,pointRadius:4,pointBackgroundColor:'#1D9E75',backgroundColor:'transparent'},
+  {label:'30-Day Overall',data:getS(D30,'Overall'),borderColor:'#1D3557',tension:.3,borderWidth:2,pointRadius:4,pointBackgroundColor:'#1D3557',backgroundColor:'transparent'},
+  {label:'60-Day Onboarding',data:getS(D60,'Onboarding Exp.'),borderColor:'#2563EB',tension:.3,borderWidth:2,pointRadius:4,pointBackgroundColor:'#2563EB',backgroundColor:'transparent'},
+  {label:'60-Day Overall',data:getS(D60,'Overall'),borderColor:'#7C3AED',tension:.3,borderWidth:2,pointRadius:4,pointBackgroundColor:'#7C3AED',backgroundColor:'transparent'},
+  {label:'90-Day Overall',data:getS(D90,'Overall'),borderColor:'#D85A30',tension:.3,borderWidth:2,pointRadius:4,pointBackgroundColor:'#D85A30',backgroundColor:'transparent'},
+  {label:'90-Day Job Sat.',data:getS(D90,'Job Satisfaction'),borderColor:'#E09B2F',borderDash:[4,3],tension:.3,borderWidth:1.5,pointRadius:3,pointBackgroundColor:'#E09B2F',backgroundColor:'transparent'}
+],60,100);
+
+// ── 30-Day history
+mkBar('c30all',WL,['Onboarding Exp.','Overall','Job Satisfaction','Org. Alignment','Team & Culture'].map(function(fn,fi){
+  return {label:fn,data:D30.map(function(w){var f=w.f.find(function(x){return x.nm===fn;});return f?f.s:null;}),backgroundColor:['#E09B2F','#1D3557','#2563EB','#7C3AED','#1D9E75'][fi],borderRadius:4};
+}),{ym:50,yM:100,pct:true,dls:9});
+mkLine('c30onb',WL,[{label:'Onboarding Exp.',data:getS(D30,'Onboarding Exp.'),borderColor:RED,backgroundColor:RED+'22',tension:.35,borderWidth:2.5,pointRadius:6,pointBackgroundColor:WC,pointBorderColor:'#fff',pointBorderWidth:2}],40,100);
+mkSent('c30sent',D30[5].f);
+mkPart('c30part',D30);
+
+// ── 60-Day history
+mkBar('c60all',WL,['Onboarding Exp.','Overall','Team & Culture','Job Satisfaction','Communication','Prof. Dev.'].map(function(fn,fi){
+  return {label:fn,data:D60.map(function(w){var f=w.f.find(function(x){return x.nm===fn;});return f?f.s:null;}),backgroundColor:['#E09B2F','#1D3557','#1D9E75','#2563EB','#7C3AED','#D85A30'][fi],borderRadius:4};
+}),{ym:50,yM:100,pct:true,dls:9});
+mkLine('c60onb',WL,[{label:'Onboarding Exp.',data:getS(D60,'Onboarding Exp.'),borderColor:RED,backgroundColor:RED+'22',tension:.35,borderWidth:2.5,pointRadius:6,pointBackgroundColor:WC,pointBorderColor:'#fff',pointBorderWidth:2}],40,100);
+mkSent('c60sent',D60[5].f);
+mkPart('c60part',D60);
+
+// ── 90-Day history
+mkBar('c90all',["W1 Dec'25","W2 Apr'26 ⚠","W3 May'26","W4 Jun'26","W5 Jun'26","W6 Jul'26"],['Onboarding Exp.','Overall','Communication','Job Satisfaction','Prof. Dev.','Team & Culture'].map(function(fn,fi){
+  return {label:fn,data:D90.map(function(w){var f=w.f.find(function(x){return x.nm===fn;});return f?f.s:null;}),backgroundColor:['#E09B2F','#1D3557','#7C3AED','#2563EB','#D85A30','#1D9E75'][fi],borderRadius:4};
+}),{ym:50,yM:100,pct:true,dls:9});
+mkLine('c90onb',WL,[{label:'Onboarding Exp.',data:getS(D90,'Onboarding Exp.'),borderColor:'#7C3AED',backgroundColor:'#7C3AED22',tension:.35,borderWidth:2.5,pointRadius:6,pointBackgroundColor:WC,pointBorderColor:'#fff',pointBorderWidth:2}],40,100);
+mkSent('c90sent',D90[5].f);
+mkPart('c90part',D90);
+
+// ── Checklist
+mkBar('c1on1',WL,[
+  {label:'30-Day',data:D30.map(function(w){return w.cl.find(function(c){return c.i.includes('1:1');}).n;}),backgroundColor:'#1D9E75',borderRadius:4},
+  {label:'60-Day',data:D60.map(function(w){return w.cl.find(function(c){return c.i.includes('1:1');}).n;}),backgroundColor:'#2563EB',borderRadius:4},
+  {label:'90-Day',data:D90.map(function(w){return w.cl.find(function(c){return c.i.includes('1:1');}).n;}),backgroundColor:'#D85A30',borderRadius:4}
+],{dl:true,dls:11});
+clWidget('clL30',D30[5].cl,'#0D9488');
+clWidget('clL60',D60[5].cl,'#0D9488');
+clWidget('clL90',D90[5].cl,'#0D9488');
+(function(){
+  var el=document.getElementById('clTrend');if(!el)return;
+  new Chart(el,{type:'line',data:{labels:WL,datasets:[
+    {label:'1:1 Leadership 30-Day',data:D30.map(function(w){return w.cl.find(function(c){return c.i.includes('1:1');}).p;}),borderColor:'#1D9E75',tension:.3,borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#1D9E75',backgroundColor:'transparent'},
+    {label:'1:1 Leadership 60-Day',data:D60.map(function(w){return w.cl.find(function(c){return c.i.includes('1:1');}).p;}),borderColor:'#2563EB',tension:.3,borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#2563EB',backgroundColor:'transparent'},
+    {label:'1:1 Leadership 90-Day',data:D90.map(function(w){return w.cl.find(function(c){return c.i.includes('1:1');}).p;}),borderColor:'#D85A30',tension:.3,borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#D85A30',backgroundColor:'transparent'},
+    {label:'Tools/Software 30-Day',data:D30.map(function(w){return w.cl.find(function(c){return c.i.includes('Tool');}).p;}),borderColor:'#1D9E75',borderDash:[5,3],tension:.3,borderWidth:1.5,pointRadius:3,pointBackgroundColor:'#1D9E75',backgroundColor:'transparent'},
+    {label:'Tools/Software 60-Day',data:D60.map(function(w){return w.cl.find(function(c){return c.i.includes('Tool');}).p;}),borderColor:'#2563EB',borderDash:[5,3],tension:.3,borderWidth:1.5,pointRadius:3,pointBackgroundColor:'#2563EB',backgroundColor:'transparent'},
+    {label:'Tools/Software 90-Day',data:D90.map(function(w){return w.cl.find(function(c){return c.i.includes('Tool');}).p;}),borderColor:'#D85A30',borderDash:[5,3],tension:.3,borderWidth:1.5,pointRadius:3,pointBackgroundColor:'#D85A30',backgroundColor:'transparent'}
+  ]},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{datalabels:{display:false},legend:{position:'bottom',labels:{boxWidth:10,font:{size:10.5}}}},
+    scales:{x:{ticks:{font:{size:10.5}},grid:{display:false}},y:{min:0,max:80,ticks:{callback:function(v){return v+'%';},font:{size:11}},grid:{color:'rgba(0,0,0,.05)'},title:{display:true,text:'% with gap',font:{size:10.5}}}}}});
+})();
+
+// ── Latest Wave
+mkBar('lwFact',['Onboarding Exp.','Overall','Job Satisfaction','Team & Culture','Communication','Prof. Dev.','Org. Alignment'],[
+  {label:'30-Day (n=13)', data:[98.1,97.4,88.5,97.4,null,null,92.3],backgroundColor:'#1D9E75',borderRadius:4},
+  {label:'60-Day (n=90)', data:[86.7,89.4,85.4,91.1,82.6,85.4,null],backgroundColor:'#2563EB',borderRadius:4},
+  {label:'90-Day (n=165)', data:[79.1,82.3,82.0,78.7,77.6,77.9,null],backgroundColor:'#7C3AED',borderRadius:4}
+],{ym:50,yM:100,pct:true,dls:9,xs:9,xr:35});
+(function(){
+  var allFn=['Onboarding Exp.','Overall','Job Satisfaction','Team & Culture','Communication','Prof. Dev.','Org. Alignment'];
+  var el=document.getElementById('lwTbl');if(!el)return;
+  var html='<thead><tr><th>Factor</th><th class="r">30-Day</th><th class="r">60-Day</th><th class="r">90-Day</th><th>Best Wave</th></tr></thead><tbody>';
+  allFn.forEach(function(fn){
+    var s30=D30[5].f.find(function(f){return f.nm===fn;}); s30=s30?s30.s:null;
+    var s60=D60[5].f.find(function(f){return f.nm===fn;}); s60=s60?s60.s:null;
+    var s90=D90[5].f.find(function(f){return f.nm===fn;}); s90=s90?s90.s:null;
+    if(!s30&&!s60&&!s90)return;
+    var vals=[s30,s60,s90].filter(Boolean);
+    var best=Math.max.apply(null,vals);
+    var bestW=s30===best?'30-Day':s60===best?'60-Day':'90-Day';
+    html+='<tr><td><strong>'+fn+'</strong></td><td class="r">'+(s30?mkPill(s30):'&#8212;')+'</td><td class="r">'+(s60?mkPill(s60):'&#8212;')+'</td><td class="r">'+(s90?mkPill(s90):'&#8212;')+'</td><td style="font-size:11px;font-weight:600;color:var(--navy)">'+bestW+'</td></tr>';
+  });
+  el.innerHTML=html+'</tbody>';
+})();
+
+// ── 30-Day Manager Heatmap (Wave 6)
+(function(){
+  var M = [
+    {nm:"Daniel DiGiorno", n:2, ov:100.0, onb:100.0, cm:null, js:50.0, pd:null, tc:100.0, prep:null, dev:null}
+  ];
+  var A = [
+    {nm:"Daniel DiGiorno", n:2, ov:100.0, onb:100.0},
+    {nm:"Alexah Torres", n:1, ov:100.0, onb:100.0},
+    {nm:"Arthur Gosnell", n:1, ov:100.0, onb:100.0},
+    {nm:"Colleen Davis", n:1, ov:100.0, onb:100.0},
+    {nm:"DaJah Armstrong", n:1, ov:100.0, onb:100.0},
+    {nm:"Dexter Brown", n:1, ov:100.0, onb:100.0},
+    {nm:"Kimberly Scott", n:1, ov:100.0, onb:100.0},
+    {nm:"Lidybeth Torres", n:1, ov:66.7, onb:100.0},
+    {nm:"Michael Bifulco", n:1, ov:100.0, onb:100.0},
+    {nm:"Minera Myers", n:1, ov:100.0, onb:100.0},
+    {nm:"Nicholas Talantis", n:1, ov:100.0, onb:75.0},
+    {nm:"Teresa Blixt", n:1, ov:100.0, onb:100.0},
+    {nm:"Amber Richards", n:0, ov:null, onb:null},
+    {nm:"Britney Harris", n:0, ov:null, onb:null},
+    {nm:"Christine Millsop", n:0, ov:null, onb:null},
+    {nm:"Elena Campos", n:0, ov:null, onb:null},
+    {nm:"Ericka Lankford", n:0, ov:null, onb:null},
+    {nm:"Felicia Santana", n:0, ov:null, onb:null},
+    {nm:"Frank Goldman", n:0, ov:null, onb:null},
+    {nm:"Iuliia Goncharova", n:0, ov:null, onb:null},
+    {nm:"Jarvis Coleman", n:0, ov:null, onb:null},
+    {nm:"John Wade", n:0, ov:null, onb:null},
+    {nm:"Jose De Jesus Medina", n:0, ov:null, onb:null},
+    {nm:"Lynsey Gulley", n:0, ov:null, onb:null},
+    {nm:"Tarquaisha Smith", n:0, ov:null, onb:null}
+  ];
+  var el=document.getElementById('mgr30OnbChart');
+  if(el){
+    var s=M.slice().sort(function(a,b){return a.onb-b.onb;});
+    new Chart(el,{type:'bar',data:{labels:s.map(function(m){return m.nm+' (n='+m.n+')';}),datasets:[{label:'Onboarding Experience %',data:s.map(function(m){return m.onb;}),backgroundColor:s.map(function(m){return m.onb>=80?'#1D9E75':m.onb>=65?'#E09B2F':'#D85A30';}),borderRadius:4}]},
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+        plugins:{datalabels:{display:true,color:'#fff',font:{weight:'700',size:10},formatter:function(v){return v!=null?Math.round(v)+'%':'';},anchor:'center',align:'center'},legend:{display:false}},
+        scales:{x:{min:0,max:100,ticks:{callback:function(v){return v+'%';},font:{size:10.5}},grid:{color:'rgba(0,0,0,.05)'}},y:{ticks:{font:{size:10.5}},grid:{display:false}}}}});
+  }
+  var tbl=document.getElementById('mgr30Table');
+  if(tbl){
+    var s2=M.slice().sort(function(a,b){return a.onb-b.onb;});
+    var html='<thead><tr><th>Manager</th><th class="r">n</th><th class="r">Overall</th><th class="r">Onboarding Exp.</th><th class="r">Communication</th><th class="r">Job Sat.</th><th class="r">Prof. Dev.</th><th class="r">Team &amp; Culture</th><th class="r">Prepared Me</th><th class="r">Dev Convos</th></tr></thead><tbody>';
+    s2.forEach(function(m){
+      html+='<tr><td><strong>'+m.nm+'</strong></td><td class="r" style="color:var(--navy);font-weight:700;font-size:11px">'+m.n+'</td>';
+      [m.ov,m.onb,m.cm,m.js,m.pd,m.tc,m.prep,m.dev].forEach(function(v){html+='<td class="r">'+mgrPill(v)+'</td>';});
+      html+='</tr>';
+    });
+    tbl.innerHTML=html+'</tbody>';
+  }
+  var ftbl=document.getElementById('mgr30FullTable');
+  if(ftbl){
+    var s3=A.slice().sort(function(a,b){return b.ov-a.ov||b.onb-a.onb;});
+    var h='<thead><tr><th>Manager</th><th class="r">n</th><th class="r">Overall</th><th class="r">Onboarding Exp.</th></tr></thead><tbody>';
+    s3.forEach(function(m){
+      var dim=m.n<2?'opacity:.65;':'';
+      var nStyle=m.n>=2?'color:var(--navy);font-weight:700':'color:var(--g400)';
+      h+='<tr style="'+dim+'"><td><strong>'+m.nm+'</strong>'+(m.n<2?' <span style="font-size:10px;color:var(--g400)">(directional)</span>':'')+'</td>';
+      h+='<td class="r" style="font-size:11px;'+nStyle+'">'+m.n+'</td>';
+      h+='<td class="r">'+mgrPill(m.ov)+'</td><td class="r">'+mgrPill(m.onb)+'</td></tr>';
+    });
+    ftbl.innerHTML=h+'</tbody>';
+  }
+})();
+
+// ── 60-Day Manager Heatmap (Wave 6)
+(function(){
+  var M = [
+    {nm:"Anquesha Brooks", n:9, ov:97.2, onb:75.0, cm:66.7, js:77.8, pd:88.9, tc:92.6, prep:null, dev:77.8},
+    {nm:"Natasha Doby", n:9, ov:97.2, onb:94.4, cm:100.0, js:92.5, pd:84.4, tc:100.0, prep:null, dev:50.0},
+    {nm:"Miranda Brower", n:5, ov:100.0, onb:95.0, cm:86.7, js:88.0, pd:100.0, tc:100.0, prep:null, dev:100.0},
+    {nm:"Christina Brewer", n:3, ov:50.0, onb:83.3, cm:55.6, js:73.3, pd:75.0, tc:66.7, prep:null, dev:66.7},
+    {nm:"DaJah Armstrong", n:3, ov:100.0, onb:50.0, cm:44.4, js:80.0, pd:91.7, tc:100.0, prep:null, dev:66.7},
+    {nm:"Alexah Torres", n:2, ov:87.5, onb:87.5, cm:100.0, js:60.0, pd:62.5, tc:100.0, prep:null, dev:0.0},
+    {nm:"Ariana Roundtree", n:2, ov:50.0, onb:87.5, cm:66.7, js:90.0, pd:62.5, tc:50.0, prep:null, dev:50.0},
+    {nm:"Daniel DiGiorno", n:2, ov:100.0, onb:75.0, cm:100.0, js:80.0, pd:87.5, tc:100.0, prep:null, dev:50.0},
+    {nm:"Danielle Bruce", n:2, ov:50.0, onb:50.0, cm:50.0, js:50.0, pd:50.0, tc:50.0, prep:null, dev:50.0},
+    {nm:"Dexter Brown", n:2, ov:100.0, onb:100.0, cm:100.0, js:90.0, pd:100.0, tc:100.0, prep:null, dev:100.0},
+    {nm:"Heidi Rosado", n:2, ov:100.0, onb:100.0, cm:100.0, js:100.0, pd:100.0, tc:100.0, prep:null, dev:100.0},
+    {nm:"John Wade", n:2, ov:50.0, onb:62.5, cm:83.3, js:70.0, pd:75.0, tc:100.0, prep:null, dev:50.0},
+    {nm:"Mark Melo", n:2, ov:75.0, onb:75.0, cm:33.3, js:80.0, pd:62.5, tc:66.7, prep:null, dev:50.0},
+    {nm:"Maureen Wiley", n:2, ov:100.0, onb:87.5, cm:100.0, js:100.0, pd:87.5, tc:100.0, prep:null, dev:50.0},
+    {nm:"Michael Bifulco", n:2, ov:100.0, onb:100.0, cm:100.0, js:100.0, pd:100.0, tc:100.0, prep:null, dev:100.0},
+    {nm:"Tanisha Samuels", n:2, ov:100.0, onb:100.0, cm:100.0, js:100.0, pd:100.0, tc:100.0, prep:null, dev:100.0},
+    {nm:"Vanessa Rivera", n:2, ov:100.0, onb:100.0, cm:83.3, js:90.0, pd:87.5, tc:100.0, prep:null, dev:50.0}
+  ];
+  var A = [
+    {nm:"Anquesha Brooks", n:9, ov:97.2, onb:75.0},
+    {nm:"Natasha Doby", n:9, ov:97.2, onb:94.4},
+    {nm:"Miranda Brower", n:5, ov:100.0, onb:95.0},
+    {nm:"Christina Brewer", n:3, ov:50.0, onb:83.3},
+    {nm:"DaJah Armstrong", n:3, ov:100.0, onb:50.0},
+    {nm:"Alexah Torres", n:2, ov:87.5, onb:87.5},
+    {nm:"Ariana Roundtree", n:2, ov:50.0, onb:87.5},
+    {nm:"Daniel DiGiorno", n:2, ov:100.0, onb:75.0},
+    {nm:"Danielle Bruce", n:2, ov:50.0, onb:50.0},
+    {nm:"Dexter Brown", n:2, ov:100.0, onb:100.0},
+    {nm:"Heidi Rosado", n:2, ov:100.0, onb:100.0},
+    {nm:"John Wade", n:2, ov:50.0, onb:62.5},
+    {nm:"Mark Melo", n:2, ov:75.0, onb:75.0},
+    {nm:"Maureen Wiley", n:2, ov:100.0, onb:87.5},
+    {nm:"Michael Bifulco", n:2, ov:100.0, onb:100.0},
+    {nm:"Tanisha Samuels", n:2, ov:100.0, onb:100.0},
+    {nm:"Vanessa Rivera", n:2, ov:100.0, onb:100.0},
+    {nm:"Amneris Coreano", n:1, ov:100.0, onb:100.0},
+    {nm:"Andrea Amezquita", n:1, ov:100.0, onb:100.0},
+    {nm:"Andrew Schumacher", n:1, ov:100.0, onb:100.0},
+    {nm:"Arthur Viley", n:1, ov:0.0, onb:50.0},
+    {nm:"Britney Harris", n:1, ov:100.0, onb:100.0},
+    {nm:"Christina Holmes", n:1, ov:100.0, onb:100.0},
+    {nm:"Coraly Rivera", n:1, ov:100.0, onb:75.0},
+    {nm:"Crystal Ewing", n:1, ov:100.0, onb:100.0},
+    {nm:"Denaya Reed", n:1, ov:100.0, onb:100.0},
+    {nm:"Donte Cone", n:1, ov:100.0, onb:100.0},
+    {nm:"Duane Bello", n:1, ov:100.0, onb:100.0},
+    {nm:"Elena Campos", n:1, ov:100.0, onb:75.0},
+    {nm:"Evona Hoover", n:1, ov:100.0, onb:100.0},
+    {nm:"Frank Goldman", n:1, ov:100.0, onb:100.0},
+    {nm:"Heather Cullen", n:1, ov:100.0, onb:100.0},
+    {nm:"Illona Wright", n:1, ov:100.0, onb:100.0},
+    {nm:"Jennifer Curtis", n:1, ov:0.0, onb:25.0},
+    {nm:"Jessica Creamer", n:1, ov:25.0, onb:100.0},
+    {nm:"Jinney Alcindor", n:1, ov:100.0, onb:100.0},
+    {nm:"Jose Valentin", n:1, ov:100.0, onb:100.0},
+    {nm:"Lisa Phauls", n:1, ov:100.0, onb:100.0},
+    {nm:"Marsha Simpson", n:1, ov:100.0, onb:100.0},
+    {nm:"Melissa Willey", n:1, ov:25.0, onb:0.0},
+    {nm:"Melody Derosear", n:1, ov:100.0, onb:75.0},
+    {nm:"Neelam Singh", n:1, ov:100.0, onb:100.0},
+    {nm:"Nereida Cereceda", n:1, ov:100.0, onb:100.0},
+    {nm:"Nicole Harrison", n:1, ov:100.0, onb:100.0},
+    {nm:"Nicole Wochaski", n:1, ov:100.0, onb:100.0},
+    {nm:"Pamela Gonzales", n:1, ov:75.0, onb:75.0},
+    {nm:"Renata Phillip", n:1, ov:100.0, onb:100.0},
+    {nm:"Riesha Sims", n:1, ov:100.0, onb:100.0},
+    {nm:"Ronald Romain", n:1, ov:100.0, onb:100.0},
+    {nm:"Sade Wallace", n:1, ov:100.0, onb:100.0},
+    {nm:"Samantha Gerlach", n:1, ov:100.0, onb:75.0},
+    {nm:"Sandy Thibodeaux", n:1, ov:100.0, onb:100.0},
+    {nm:"Sean Johnston", n:1, ov:100.0, onb:100.0},
+    {nm:"Taraphanie Gayot", n:1, ov:100.0, onb:100.0},
+    {nm:"Adam McAfee", n:0, ov:null, onb:null},
+    {nm:"Alessandro Sardone", n:0, ov:null, onb:null},
+    {nm:"Alex Markovich", n:0, ov:null, onb:null},
+    {nm:"Amanda Daniels", n:0, ov:null, onb:null},
+    {nm:"Ariana Prophete", n:0, ov:null, onb:null},
+    {nm:"Ashlee Burr", n:0, ov:null, onb:null},
+    {nm:"Brooke Daniels", n:0, ov:null, onb:null},
+    {nm:"Cassandra King", n:0, ov:null, onb:null},
+    {nm:"Catherine Taylor", n:0, ov:null, onb:null},
+    {nm:"Charmaine Addison", n:0, ov:null, onb:null},
+    {nm:"Christopher Sellers", n:0, ov:null, onb:null},
+    {nm:"Ciyanna Claiborne", n:0, ov:null, onb:null},
+    {nm:"Destiny Mack", n:0, ov:null, onb:null},
+    {nm:"Elizabeth Butler", n:0, ov:null, onb:null},
+    {nm:"Emie Wharton", n:0, ov:null, onb:null},
+    {nm:"Faith Clemons", n:0, ov:null, onb:null},
+    {nm:"Felicia McCauley", n:0, ov:null, onb:null},
+    {nm:"Felicia Santana", n:0, ov:null, onb:null},
+    {nm:"Gabriella Almulla", n:0, ov:null, onb:null},
+    {nm:"Glendora Smith", n:0, ov:null, onb:null},
+    {nm:"Hany Youssef", n:0, ov:null, onb:null},
+    {nm:"Henry Cooper", n:0, ov:null, onb:null},
+    {nm:"Isaias Perez", n:0, ov:null, onb:null},
+    {nm:"Jacqueline Britt", n:0, ov:null, onb:null},
+    {nm:"Jasmine Hart", n:0, ov:null, onb:null},
+    {nm:"Jeremy Jiraud", n:0, ov:null, onb:null},
+    {nm:"Joni Real", n:0, ov:null, onb:null},
+    {nm:"Juleim Pelayo Bazan", n:0, ov:null, onb:null},
+    {nm:"Kathleen Alvarez", n:0, ov:null, onb:null},
+    {nm:"Kathleen Brant", n:0, ov:null, onb:null},
+    {nm:"Kristen Orr", n:0, ov:null, onb:null},
+    {nm:"Lakieta Savage", n:0, ov:null, onb:null},
+    {nm:"Linda St. Charles", n:0, ov:null, onb:null},
+    {nm:"Lynsey Gulley", n:0, ov:null, onb:null},
+    {nm:"Mayar Lampkin", n:0, ov:null, onb:null},
+    {nm:"Melissa Welsh", n:0, ov:null, onb:null},
+    {nm:"Michael Zortman", n:0, ov:null, onb:null},
+    {nm:"Michelle Mullins", n:0, ov:null, onb:null},
+    {nm:"Moises Malave", n:0, ov:null, onb:null},
+    {nm:"Nicole Loeffler", n:0, ov:null, onb:null},
+    {nm:"Nicole Loper", n:0, ov:null, onb:null},
+    {nm:"Not Specified", n:0, ov:null, onb:null},
+    {nm:"Paula Petrovic", n:0, ov:null, onb:null},
+    {nm:"Rashonda Floyd", n:0, ov:null, onb:null},
+    {nm:"Reshawn Figueroa", n:0, ov:null, onb:null},
+    {nm:"Risha Javines", n:0, ov:null, onb:null},
+    {nm:"Rory Cathey", n:0, ov:null, onb:null},
+    {nm:"Santiago Murillo Castro", n:0, ov:null, onb:null},
+    {nm:"Serennah Thomas", n:0, ov:null, onb:null},
+    {nm:"ShaHaun McAfee", n:0, ov:null, onb:null},
+    {nm:"Tanis Henderson", n:0, ov:null, onb:null},
+    {nm:"Tarquaisha Smith", n:0, ov:null, onb:null},
+    {nm:"Teresa Blixt", n:0, ov:null, onb:null},
+    {nm:"Valerie Grant", n:0, ov:null, onb:null}
+  ];
+  var el=document.getElementById('mgr60OnbChart');
+  if(el){
+    var s=M.slice().sort(function(a,b){return a.onb-b.onb;});
+    new Chart(el,{type:'bar',data:{labels:s.map(function(m){return m.nm+' (n='+m.n+')';}),datasets:[{label:'Onboarding Experience %',data:s.map(function(m){return m.onb;}),backgroundColor:s.map(function(m){return m.onb>=80?'#1D9E75':m.onb>=65?'#E09B2F':'#D85A30';}),borderRadius:4}]},
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+        plugins:{datalabels:{display:true,color:'#fff',font:{weight:'700',size:10},formatter:function(v){return v!=null?Math.round(v)+'%':'';},anchor:'center',align:'center'},legend:{display:false}},
+        scales:{x:{min:0,max:100,ticks:{callback:function(v){return v+'%';},font:{size:10.5}},grid:{color:'rgba(0,0,0,.05)'}},y:{ticks:{font:{size:10.5}},grid:{display:false}}}}});
+  }
+  var tbl=document.getElementById('mgr60Table');
+  if(tbl){
+    var s2=M.slice().sort(function(a,b){return a.onb-b.onb;});
+    var html='<thead><tr><th>Manager</th><th class="r">n</th><th class="r">Overall</th><th class="r">Onboarding Exp.</th><th class="r">Communication</th><th class="r">Job Sat.</th><th class="r">Prof. Dev.</th><th class="r">Team &amp; Culture</th><th class="r">Prepared Me</th><th class="r">Dev Convos</th></tr></thead><tbody>';
+    s2.forEach(function(m){
+      html+='<tr><td><strong>'+m.nm+'</strong></td><td class="r" style="color:var(--navy);font-weight:700;font-size:11px">'+m.n+'</td>';
+      [m.ov,m.onb,m.cm,m.js,m.pd,m.tc,m.prep,m.dev].forEach(function(v){html+='<td class="r">'+mgrPill(v)+'</td>';});
+      html+='</tr>';
+    });
+    tbl.innerHTML=html+'</tbody>';
+  }
+  var ftbl=document.getElementById('mgr60FullTable');
+  if(ftbl){
+    var s3=A.slice().sort(function(a,b){return b.ov-a.ov||b.onb-a.onb;});
+    var h='<thead><tr><th>Manager</th><th class="r">n</th><th class="r">Overall</th><th class="r">Onboarding Exp.</th></tr></thead><tbody>';
+    s3.forEach(function(m){
+      var dim=m.n<2?'opacity:.65;':'';
+      var nStyle=m.n>=2?'color:var(--navy);font-weight:700':'color:var(--g400)';
+      h+='<tr style="'+dim+'"><td><strong>'+m.nm+'</strong>'+(m.n<2?' <span style="font-size:10px;color:var(--g400)">(directional)</span>':'')+'</td>';
+      h+='<td class="r" style="font-size:11px;'+nStyle+'">'+m.n+'</td>';
+      h+='<td class="r">'+mgrPill(m.ov)+'</td><td class="r">'+mgrPill(m.onb)+'</td></tr>';
+    });
+    ftbl.innerHTML=h+'</tbody>';
+  }
+})();
+
+// ── 90-Day Manager Heatmap (Wave 6)
+(function(){
+  var M = [
+    {nm:"Evona Hoover", n:6, ov:100.0, onb:92.9, cm:77.8, js:100.0, pd:90.0, tc:100.0, prep:83.3, dev:50.0},
+    {nm:"Natasha Doby", n:6, ov:83.3, onb:83.3, cm:83.3, js:83.3, pd:76.7, tc:83.3, prep:83.3, dev:66.7},
+    {nm:"Alexah Torres", n:5, ov:70.0, onb:57.1, cm:53.3, js:46.7, pd:80.0, tc:60.0, prep:60.0, dev:80.0},
+    {nm:"Natasha Zeigler", n:5, ov:75.0, onb:74.3, cm:93.3, js:80.0, pd:72.0, tc:66.7, prep:60.0, dev:40.0},
+    {nm:"Nicole Harrison", n:5, ov:100.0, onb:82.9, cm:100.0, js:100.0, pd:80.0, tc:86.7, prep:80.0, dev:20.0},
+    {nm:"Taraphanie Gayot", n:5, ov:85.0, onb:82.9, cm:100.0, js:86.7, pd:84.0, tc:73.3, prep:80.0, dev:80.0},
+    {nm:"Carol Perez", n:4, ov:100.0, onb:85.7, cm:91.7, js:100.0, pd:85.0, tc:83.3, prep:100.0, dev:75.0},
+    {nm:"DaJah Armstrong", n:4, ov:68.8, onb:61.9, cm:50.0, js:66.7, pd:60.0, tc:66.7, prep:25.0, dev:0.0},
+    {nm:"Moises Malave", n:4, ov:87.5, onb:78.6, cm:91.7, js:83.3, pd:85.0, tc:83.3, prep:75.0, dev:50.0},
+    {nm:"Pearlie Jones", n:4, ov:100.0, onb:71.4, cm:66.7, js:100.0, pd:90.0, tc:83.3, prep:50.0, dev:50.0},
+    {nm:"Renata Phillip", n:4, ov:87.5, onb:96.4, cm:100.0, js:100.0, pd:95.0, tc:83.3, prep:100.0, dev:75.0},
+    {nm:"Santiago Murillo Castro", n:4, ov:66.7, onb:50.0, cm:33.3, js:50.0, pd:55.0, tc:58.3, prep:50.0, dev:25.0},
+    {nm:"Sergine Rosiclair", n:4, ov:75.0, onb:71.4, cm:75.0, js:75.0, pd:73.3, tc:75.0, prep:75.0, dev:50.0},
+    {nm:"Andrew Schumacher", n:3, ov:83.3, onb:66.7, cm:55.6, js:66.7, pd:13.3, tc:66.7, prep:66.7, dev:0.0},
+    {nm:"Darvi Williams", n:3, ov:100.0, onb:95.2, cm:77.8, js:100.0, pd:100.0, tc:88.9, prep:100.0, dev:100.0},
+    {nm:"Denaya Reed", n:3, ov:100.0, onb:100.0, cm:100.0, js:100.0, pd:100.0, tc:88.9, prep:100.0, dev:100.0},
+    {nm:"Dexter Brown", n:3, ov:100.0, onb:100.0, cm:100.0, js:100.0, pd:100.0, tc:100.0, prep:100.0, dev:100.0},
+    {nm:"Elena Campos", n:3, ov:33.3, onb:42.9, cm:55.6, js:55.6, pd:46.7, tc:44.4, prep:33.3, dev:33.3},
+    {nm:"Ethan Johnson", n:3, ov:33.3, onb:33.3, cm:44.4, js:33.3, pd:46.7, tc:55.6, prep:0.0, dev:33.3},
+    {nm:"Joise Martinez Rivera", n:3, ov:66.7, onb:71.4, cm:66.7, js:66.7, pd:73.3, tc:66.7, prep:66.7, dev:66.7},
+    {nm:"Michael Stevens", n:3, ov:83.3, onb:78.6, cm:100.0, js:100.0, pd:80.0, tc:100.0, prep:50.0, dev:100.0},
+    {nm:"Renata McGovern", n:3, ov:100.0, onb:90.5, cm:66.7, js:100.0, pd:73.3, tc:88.9, prep:100.0, dev:33.3},
+    {nm:"Cassandra King", n:2, ov:100.0, onb:71.4, cm:100.0, js:83.3, pd:50.0, tc:66.7, prep:50.0, dev:0.0},
+    {nm:"Catherine Taylor", n:2, ov:50.0, onb:57.1, cm:0.0, js:33.3, pd:60.0, tc:66.7, prep:50.0, dev:50.0},
+    {nm:"Christina Brewer", n:2, ov:62.5, onb:71.4, cm:66.7, js:66.7, pd:90.0, tc:50.0, prep:100.0, dev:100.0},
+    {nm:"Christopher Sellers", n:2, ov:100.0, onb:100.0, cm:100.0, js:100.0, pd:90.0, tc:100.0, prep:100.0, dev:50.0},
+    {nm:"Danielle Bruce", n:2, ov:62.5, onb:71.4, cm:100.0, js:100.0, pd:100.0, tc:83.3, prep:50.0, dev:100.0},
+    {nm:"Emie Wharton", n:2, ov:100.0, onb:100.0, cm:100.0, js:100.0, pd:90.0, tc:100.0, prep:100.0, dev:100.0},
+    {nm:"Felicia Santana", n:2, ov:50.0, onb:64.3, cm:0.0, js:50.0, pd:60.0, tc:16.7, prep:100.0, dev:100.0},
+    {nm:"Heather Tomlinson", n:2, ov:100.0, onb:100.0, cm:100.0, js:100.0, pd:100.0, tc:100.0, prep:100.0, dev:100.0},
+    {nm:"Heidi Rosado", n:2, ov:100.0, onb:100.0, cm:100.0, js:100.0, pd:100.0, tc:100.0, prep:100.0, dev:100.0},
+    {nm:"Melody Derosear", n:2, ov:100.0, onb:100.0, cm:100.0, js:83.3, pd:70.0, tc:100.0, prep:100.0, dev:50.0},
+    {nm:"Patti VanVleck", n:2, ov:62.5, onb:57.1, cm:16.7, js:66.7, pd:70.0, tc:50.0, prep:50.0, dev:50.0},
+    {nm:"Ronald Romain", n:2, ov:100.0, onb:100.0, cm:100.0, js:100.0, pd:100.0, tc:100.0, prep:100.0, dev:100.0},
+    {nm:"Samira Vaziri", n:2, ov:100.0, onb:92.9, cm:100.0, js:100.0, pd:100.0, tc:100.0, prep:100.0, dev:100.0},
+    {nm:"Serennah Thomas", n:2, ov:100.0, onb:100.0, cm:100.0, js:100.0, pd:100.0, tc:100.0, prep:100.0, dev:100.0},
+    {nm:"Talaysia Pollock", n:2, ov:100.0, onb:85.7, cm:50.0, js:66.7, pd:70.0, tc:66.7, prep:100.0, dev:50.0},
+    {nm:"Traci Townsend", n:2, ov:50.0, onb:42.9, cm:50.0, js:50.0, pd:60.0, tc:33.3, prep:50.0, dev:50.0}
+  ];
+  var A = [
+    {nm:"Evona Hoover", n:6, ov:100.0, onb:92.9},
+    {nm:"Natasha Doby", n:6, ov:83.3, onb:83.3},
+    {nm:"Alexah Torres", n:5, ov:70.0, onb:57.1},
+    {nm:"Natasha Zeigler", n:5, ov:75.0, onb:74.3},
+    {nm:"Nicole Harrison", n:5, ov:100.0, onb:82.9},
+    {nm:"Taraphanie Gayot", n:5, ov:85.0, onb:82.9},
+    {nm:"Carol Perez", n:4, ov:100.0, onb:85.7},
+    {nm:"DaJah Armstrong", n:4, ov:68.8, onb:61.9},
+    {nm:"Moises Malave", n:4, ov:87.5, onb:78.6},
+    {nm:"Pearlie Jones", n:4, ov:100.0, onb:71.4},
+    {nm:"Renata Phillip", n:4, ov:87.5, onb:96.4},
+    {nm:"Santiago Murillo Castro", n:4, ov:66.7, onb:50.0},
+    {nm:"Sergine Rosiclair", n:4, ov:75.0, onb:71.4},
+    {nm:"Andrew Schumacher", n:3, ov:83.3, onb:66.7},
+    {nm:"Darvi Williams", n:3, ov:100.0, onb:95.2},
+    {nm:"Denaya Reed", n:3, ov:100.0, onb:100.0},
+    {nm:"Dexter Brown", n:3, ov:100.0, onb:100.0},
+    {nm:"Elena Campos", n:3, ov:33.3, onb:42.9},
+    {nm:"Ethan Johnson", n:3, ov:33.3, onb:33.3},
+    {nm:"Joise Martinez Rivera", n:3, ov:66.7, onb:71.4},
+    {nm:"Michael Stevens", n:3, ov:83.3, onb:78.6},
+    {nm:"Renata McGovern", n:3, ov:100.0, onb:90.5},
+    {nm:"Cassandra King", n:2, ov:100.0, onb:71.4},
+    {nm:"Catherine Taylor", n:2, ov:50.0, onb:57.1},
+    {nm:"Christina Brewer", n:2, ov:62.5, onb:71.4},
+    {nm:"Christopher Sellers", n:2, ov:100.0, onb:100.0},
+    {nm:"Danielle Bruce", n:2, ov:62.5, onb:71.4},
+    {nm:"Emie Wharton", n:2, ov:100.0, onb:100.0},
+    {nm:"Felicia Santana", n:2, ov:50.0, onb:64.3},
+    {nm:"Heather Tomlinson", n:2, ov:100.0, onb:100.0},
+    {nm:"Heidi Rosado", n:2, ov:100.0, onb:100.0},
+    {nm:"Melody Derosear", n:2, ov:100.0, onb:100.0},
+    {nm:"Patti VanVleck", n:2, ov:62.5, onb:57.1},
+    {nm:"Ronald Romain", n:2, ov:100.0, onb:100.0},
+    {nm:"Samira Vaziri", n:2, ov:100.0, onb:92.9},
+    {nm:"Serennah Thomas", n:2, ov:100.0, onb:100.0},
+    {nm:"Talaysia Pollock", n:2, ov:100.0, onb:85.7},
+    {nm:"Traci Townsend", n:2, ov:50.0, onb:42.9},
+    {nm:"Adam McAfee", n:1, ov:100.0, onb:100.0},
+    {nm:"Alex Markovich", n:1, ov:100.0, onb:100.0},
+    {nm:"Amanda Daniels", n:1, ov:100.0, onb:100.0},
+    {nm:"Amneris Coreano", n:1, ov:100.0, onb:100.0},
+    {nm:"Anais Bazan", n:1, ov:100.0, onb:100.0},
+    {nm:"Anthony Padilla", n:1, ov:100.0, onb:100.0},
+    {nm:"Arthur Viley", n:1, ov:0.0, onb:42.9},
+    {nm:"Brian Martin", n:1, ov:100.0, onb:100.0},
+    {nm:"Britney Harris", n:1, ov:100.0, onb:71.4},
+    {nm:"Charmaine Addison", n:1, ov:100.0, onb:100.0},
+    {nm:"Ciyanna Claiborne", n:1, ov:0.0, onb:14.3},
+    {nm:"Destiny Mack", n:1, ov:75.0, onb:85.7},
+    {nm:"Donte Cone", n:1, ov:100.0, onb:57.1},
+    {nm:"Hailey Dougherty", n:1, ov:0.0, onb:28.6},
+    {nm:"Heather Cullen", n:1, ov:100.0, onb:100.0},
+    {nm:"Jeremy Jiraud", n:1, ov:100.0, onb:100.0},
+    {nm:"Jessica Thomas", n:1, ov:100.0, onb:100.0},
+    {nm:"John Wade", n:1, ov:50.0, onb:100.0},
+    {nm:"Joni Real", n:1, ov:100.0, onb:100.0},
+    {nm:"Jose De Jesus Medina", n:1, ov:100.0, onb:100.0},
+    {nm:"Jose Melendez-Davila", n:1, ov:50.0, onb:100.0},
+    {nm:"Jose Valentin", n:1, ov:0.0, onb:0.0},
+    {nm:"Kathleen Alvarez", n:1, ov:100.0, onb:100.0},
+    {nm:"Kathleen Brant", n:1, ov:100.0, onb:100.0},
+    {nm:"Leah Tolbert", n:1, ov:50.0, onb:null},
+    {nm:"Mark Melo", n:1, ov:100.0, onb:85.7},
+    {nm:"Marsha Simpson", n:1, ov:50.0, onb:42.9},
+    {nm:"Maureen Wiley", n:1, ov:100.0, onb:100.0},
+    {nm:"Mayar Lampkin", n:1, ov:50.0, onb:42.9},
+    {nm:"Michael Schultz", n:1, ov:100.0, onb:100.0},
+    {nm:"Na'Toshia Robinson", n:1, ov:100.0, onb:100.0},
+    {nm:"Neelam Singh", n:1, ov:100.0, onb:71.4},
+    {nm:"Nicole Loeffler", n:1, ov:100.0, onb:100.0},
+    {nm:"Nicole Wochaski", n:1, ov:100.0, onb:100.0},
+    {nm:"Paula Petrovic", n:1, ov:0.0, onb:42.9},
+    {nm:"Riesha Sims", n:1, ov:100.0, onb:100.0},
+    {nm:"Ronald Chisolm Jr", n:1, ov:100.0, onb:100.0},
+    {nm:"Rut Cotto Carrucini", n:1, ov:100.0, onb:71.4},
+    {nm:"Shawn Purcell", n:1, ov:0.0, onb:42.9},
+    {nm:"Stephanie Santos", n:1, ov:100.0, onb:100.0},
+    {nm:"Suandianeliz Martinez", n:1, ov:75.0, onb:100.0},
+    {nm:"Tami Newman", n:1, ov:100.0, onb:100.0},
+    {nm:"Tanis Henderson", n:1, ov:100.0, onb:85.7},
+    {nm:"Tara Lennox", n:1, ov:100.0, onb:28.6},
+    {nm:"Teresa Blixt", n:1, ov:100.0, onb:100.0},
+    {nm:"Vanessa Rivera", n:1, ov:100.0, onb:85.7},
+    {nm:"Aillene Delarosa", n:0, ov:null, onb:null},
+    {nm:"Alessandro Sardone", n:0, ov:null, onb:null},
+    {nm:"Alexander Bisby", n:0, ov:null, onb:null},
+    {nm:"Alisha Rither", n:0, ov:null, onb:null},
+    {nm:"Amber Richards", n:0, ov:null, onb:null},
+    {nm:"Amy Wise", n:0, ov:null, onb:null},
+    {nm:"Andrea Amezquita", n:0, ov:null, onb:null},
+    {nm:"Andrew Burkards", n:0, ov:null, onb:null},
+    {nm:"Anquesha Brooks", n:0, ov:null, onb:null},
+    {nm:"Ariana Roundtree", n:0, ov:null, onb:null},
+    {nm:"Arthur Gosnell", n:0, ov:null, onb:null},
+    {nm:"Ashlee Burr", n:0, ov:null, onb:null},
+    {nm:"Beatrice Guerrier", n:0, ov:null, onb:null},
+    {nm:"Brooke Daniels", n:0, ov:null, onb:null},
+    {nm:"Coraly Rivera", n:0, ov:null, onb:null},
+    {nm:"Dana Waelder", n:0, ov:null, onb:null},
+    {nm:"Daniel DiGiorno", n:0, ov:null, onb:null},
+    {nm:"Denise Solla", n:0, ov:null, onb:null},
+    {nm:"Elisa Nieves", n:0, ov:null, onb:null},
+    {nm:"Elizabeth Butler", n:0, ov:null, onb:null},
+    {nm:"Elizabeth Godsey", n:0, ov:null, onb:null},
+    {nm:"Faith Clemons", n:0, ov:null, onb:null},
+    {nm:"Felicia McCauley", n:0, ov:null, onb:null},
+    {nm:"Frank Goldman", n:0, ov:null, onb:null},
+    {nm:"Gabriella Almulla", n:0, ov:null, onb:null},
+    {nm:"Giselle Fournier Quinones", n:0, ov:null, onb:null},
+    {nm:"Glendora Smith", n:0, ov:null, onb:null},
+    {nm:"Haley Estes", n:0, ov:null, onb:null},
+    {nm:"Hany Youssef", n:0, ov:null, onb:null},
+    {nm:"Illona Wright", n:0, ov:null, onb:null},
+    {nm:"Isaias Perez", n:0, ov:null, onb:null},
+    {nm:"Jasmine Hart", n:0, ov:null, onb:null},
+    {nm:"Jason Lackey", n:0, ov:null, onb:null},
+    {nm:"Jason Robinson", n:0, ov:null, onb:null},
+    {nm:"Jennifer Curtis", n:0, ov:null, onb:null},
+    {nm:"Jessica Creamer", n:0, ov:null, onb:null},
+    {nm:"Jinney Alcindor", n:0, ov:null, onb:null},
+    {nm:"Juleim Pelayo Bazan", n:0, ov:null, onb:null},
+    {nm:"Kathryn Meagley", n:0, ov:null, onb:null},
+    {nm:"Kevin Leung", n:0, ov:null, onb:null},
+    {nm:"Kristen Orr", n:0, ov:null, onb:null},
+    {nm:"Linda St. Charles", n:0, ov:null, onb:null},
+    {nm:"Lisa Phauls", n:0, ov:null, onb:null},
+    {nm:"Lynn Mettler", n:0, ov:null, onb:null},
+    {nm:"Lynsey Gulley", n:0, ov:null, onb:null},
+    {nm:"Madison Turner", n:0, ov:null, onb:null},
+    {nm:"Mandy Uphoff", n:0, ov:null, onb:null},
+    {nm:"Mark Brundege", n:0, ov:null, onb:null},
+    {nm:"Melissa Welsh", n:0, ov:null, onb:null},
+    {nm:"Michael Bifulco", n:0, ov:null, onb:null},
+    {nm:"Michelle Mullins", n:0, ov:null, onb:null},
+    {nm:"Minera Myers", n:0, ov:null, onb:null},
+    {nm:"Nadia Qureshi", n:0, ov:null, onb:null},
+    {nm:"Nicole Loper", n:0, ov:null, onb:null},
+    {nm:"Pamela Gonzales", n:0, ov:null, onb:null},
+    {nm:"Patrick Gallimore", n:0, ov:null, onb:null},
+    {nm:"Perla Sandberg", n:0, ov:null, onb:null},
+    {nm:"Philip Soptick", n:0, ov:null, onb:null},
+    {nm:"Phillip Gladney", n:0, ov:null, onb:null},
+    {nm:"Rashonda Floyd", n:0, ov:null, onb:null},
+    {nm:"Risha Javines", n:0, ov:null, onb:null},
+    {nm:"Sade Wallace", n:0, ov:null, onb:null},
+    {nm:"Sarah Smith", n:0, ov:null, onb:null},
+    {nm:"ShaHaun McAfee", n:0, ov:null, onb:null},
+    {nm:"Sharon Velez-Boodhan", n:0, ov:null, onb:null},
+    {nm:"Shastri Ramsook", n:0, ov:null, onb:null},
+    {nm:"Shelli Ray", n:0, ov:null, onb:null},
+    {nm:"Shelly Seibert", n:0, ov:null, onb:null},
+    {nm:"Stacey Little", n:0, ov:null, onb:null},
+    {nm:"Sumia Hasham", n:0, ov:null, onb:null},
+    {nm:"Tanisha Samuels", n:0, ov:null, onb:null},
+    {nm:"Tarquaisha Smith", n:0, ov:null, onb:null},
+    {nm:"Theresa Satter", n:0, ov:null, onb:null},
+    {nm:"Tressa Lewis", n:0, ov:null, onb:null},
+    {nm:"Valerie Grant", n:0, ov:null, onb:null},
+    {nm:"Virgen Fernandez", n:0, ov:null, onb:null},
+    {nm:"Will Stackpole", n:0, ov:null, onb:null},
+    {nm:"Yasmine McCalla", n:0, ov:null, onb:null}
+  ];
+  var el=document.getElementById('mgr90OnbChart');
+  if(el){
+    var s=M.slice().sort(function(a,b){return a.onb-b.onb;});
+    new Chart(el,{type:'bar',data:{labels:s.map(function(m){return m.nm+' (n='+m.n+')';}),datasets:[{label:'Onboarding Experience %',data:s.map(function(m){return m.onb;}),backgroundColor:s.map(function(m){return m.onb>=80?'#1D9E75':m.onb>=65?'#E09B2F':'#D85A30';}),borderRadius:4}]},
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+        plugins:{datalabels:{display:true,color:'#fff',font:{weight:'700',size:10},formatter:function(v){return v!=null?Math.round(v)+'%':'';},anchor:'center',align:'center'},legend:{display:false}},
+        scales:{x:{min:0,max:100,ticks:{callback:function(v){return v+'%';},font:{size:10.5}},grid:{color:'rgba(0,0,0,.05)'}},y:{ticks:{font:{size:10.5}},grid:{display:false}}}}});
+  }
+  var tbl=document.getElementById('mgr90Table');
+  if(tbl){
+    var s2=M.slice().sort(function(a,b){return a.onb-b.onb;});
+    var html='<thead><tr><th>Manager</th><th class="r">n</th><th class="r">Overall</th><th class="r">Onboarding Exp.</th><th class="r">Communication</th><th class="r">Job Sat.</th><th class="r">Prof. Dev.</th><th class="r">Team &amp; Culture</th><th class="r">Prepared Me</th><th class="r">Dev Convos</th></tr></thead><tbody>';
+    s2.forEach(function(m){
+      html+='<tr><td><strong>'+m.nm+'</strong></td><td class="r" style="color:var(--navy);font-weight:700;font-size:11px">'+m.n+'</td>';
+      [m.ov,m.onb,m.cm,m.js,m.pd,m.tc,m.prep,m.dev].forEach(function(v){html+='<td class="r">'+mgrPill(v)+'</td>';});
+      html+='</tr>';
+    });
+    tbl.innerHTML=html+'</tbody>';
+  }
+  var ftbl=document.getElementById('mgr90FullTable');
+  if(ftbl){
+    var s3=A.slice().sort(function(a,b){return b.ov-a.ov||b.onb-a.onb;});
+    var h='<thead><tr><th>Manager</th><th class="r">n</th><th class="r">Overall</th><th class="r">Onboarding Exp.</th></tr></thead><tbody>';
+    s3.forEach(function(m){
+      var dim=m.n<2?'opacity:.65;':'';
+      var nStyle=m.n>=2?'color:var(--navy);font-weight:700':'color:var(--g400)';
+      h+='<tr style="'+dim+'"><td><strong>'+m.nm+'</strong>'+(m.n<2?' <span style="font-size:10px;color:var(--g400)">(directional)</span>':'')+'</td>';
+      h+='<td class="r" style="font-size:11px;'+nStyle+'">'+m.n+'</td>';
+      h+='<td class="r">'+mgrPill(m.ov)+'</td><td class="r">'+mgrPill(m.onb)+'</td></tr>';
+    });
+    ftbl.innerHTML=h+'</tbody>';
+  }
+})();
+</script>
+</body>
+</html>
