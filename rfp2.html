@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AssistRx | Contingent Labor Savings Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#16294B;
+    --navy-deep:#0F1D38;
+    --teal:#00A6BE;
+    --teal-dark:#00869A;
+    --teal-wash:#E7F6F9;
+    --mist:#F4F7F9;
+    --line:#DCE5EC;
+    --ink:#1C2B42;
+    --slate:#54677D;
+    --amber:#8A6A00;
+    --amber-wash:#FBF3DC;
+    --white:#FFFFFF;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
+    background:var(--mist);
+    color:var(--ink);
+    font-size:15px;
+    line-height:1.5;
+  }
+  .num{font-variant-numeric:tabular-nums;}
+
+  /* ============ HEADER ============ */
+  header{
+    background:var(--navy);
+    color:var(--white);
+    padding:24px 48px 22px;
+  }
+  .header-inner{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;}
+  .wordmark{font-family:'Archivo',sans-serif;font-weight:800;font-size:26px;letter-spacing:-0.02em;}
+  .wordmark span{color:var(--teal);}
+  .header-title h1{
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:30px;letter-spacing:-0.015em;line-height:1.15;margin-top:10px;
+  }
+  .header-title .sub{color:#B9C6DA;font-size:14px;margin-top:8px;font-weight:500;}
+  .header-meta{text-align:right;color:#B9C6DA;font-size:13px;line-height:1.7;}
+  .header-meta strong{color:var(--white);font-weight:600;}
+
+  main{max-width:1400px;margin:0 auto;padding:32px 48px 56px;}
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:28px;align-items:start;}
+  .callout-rail{margin-top:28px;}
+  .callout-rail .card{padding:20px 22px 14px;}
+  .callout-rail h3{font-family:'Archivo',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:2px;}
+  .callout-rail .card-sub{margin-bottom:10px;}
+  .co-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12.5px;line-height:1.5;color:var(--slate);}
+  .co-item:last-of-type{border-bottom:none;}
+  .co-key{font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;color:var(--teal-dark);min-width:18px;padding-top:1px;}
+  .co-item strong{color:var(--navy);font-weight:600;}
+
+  section{margin-top:36px;}
+  .eyebrow{
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.12em;
+    text-transform:uppercase;color:var(--teal-dark);margin-bottom:6px;
+  }
+  .section-title{
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:21px;color:var(--navy);letter-spacing:-0.01em;
+  }
+  .section-note{color:var(--slate);font-size:14px;margin-top:4px;max-width:820px;}
+
+  /* ============ KPI STRIP ============ */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+  .kpi{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:18px 20px 16px;}
+  .kpi .v{font-family:'Archivo',sans-serif;font-weight:800;font-size:27px;color:var(--navy);letter-spacing:-0.02em;}
+  .kpi .l{font-size:12.5px;color:var(--slate);margin-top:4px;font-weight:500;line-height:1.35;}
+  .kpi.accent .v{color:var(--teal-dark);}
+
+  /* ============ SPEND + PRESENTERS GRID ============ */
+  .two-col{display:grid;grid-template-columns:1.15fr 1fr;gap:22px;align-items:start;}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:24px 26px;}
+  .card h3{font-family:'Archivo',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:2px;}
+  .card .card-sub{font-size:13px;color:var(--slate);margin-bottom:16px;}
+
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  thead th{
+    text-align:left;font-family:'Archivo',sans-serif;font-weight:700;font-size:11.5px;
+    letter-spacing:0.08em;text-transform:uppercase;color:var(--slate);
+    padding:0 10px 9px;border-bottom:2px solid var(--navy);
+  }
+  thead th.r, td.r{text-align:right;}
+  tbody td{padding:11px 10px;border-bottom:1px solid var(--line);color:var(--ink);}
+  tbody tr.total td{
+    border-bottom:none;border-top:2px solid var(--navy);
+    font-weight:700;color:var(--navy);background:var(--teal-wash);
+  }
+  tbody tr.total td:first-child{border-radius:0 0 0 8px;}
+  tbody tr.total td:last-child{border-radius:0 0 8px 0;}
+
+  .presenter{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:11px 4px;border-bottom:1px solid var(--line);
+  }
+  .presenter:last-of-type{border-bottom:none;}
+  .presenter .name{font-weight:600;color:var(--navy);font-size:14px;}
+  .presenter .role{font-size:12.5px;color:var(--slate);flex:1;}
+  .fill{
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:12.5px;color:var(--teal-dark);
+    background:var(--teal-wash);border-radius:20px;padding:3px 11px;white-space:nowrap;
+  }
+  .fill.low{color:var(--amber);background:var(--amber-wash);}
+
+  .conc-row{display:flex;align-items:baseline;gap:16px;padding:9px 0;border-bottom:1px solid var(--line);}
+  .conc-row:last-of-type{border-bottom:none;padding-bottom:2px;}
+  .conc-row .v{
+    font-family:'Archivo',sans-serif;font-weight:800;font-size:24px;color:var(--teal-dark);
+    letter-spacing:-0.02em;min-width:74px;
+  }
+  .conc-row .l{font-size:13px;color:var(--slate);line-height:1.45;}
+  .conc-row .l strong{color:var(--navy);font-weight:600;}
+
+  /* ============ AGENCY BREAKDOWN ============ */
+  .agency-card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:24px 26px 18px;}
+  .agency-head{
+    display:grid;grid-template-columns:230px 1fr 60px 120px;gap:14px;align-items:center;
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:11.5px;letter-spacing:0.08em;
+    text-transform:uppercase;color:var(--slate);padding:0 4px 9px;border-bottom:2px solid var(--navy);
+  }
+  .agency-row{
+    display:grid;grid-template-columns:230px 1fr 60px 120px;gap:14px;align-items:center;
+    padding:9px 4px;border-bottom:1px solid var(--line);font-size:13.5px;
+  }
+  .agency-row:last-of-type{border-bottom:none;}
+  .agency-row .a-name{font-weight:600;color:var(--navy);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .chip{
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:10px;letter-spacing:0.07em;
+    border-radius:4px;padding:2px 7px;white-space:nowrap;
+  }
+  .chip.finalist{color:var(--teal-dark);background:var(--teal-wash);}
+  .chip.outside{color:var(--amber);background:var(--amber-wash);}
+  .chip.c1099{color:var(--slate);background:var(--mist);border:1px solid var(--line);}
+  .a-bar-track{height:12px;background:var(--mist);border-radius:6px;overflow:hidden;}
+  .a-bar{height:100%;background:linear-gradient(90deg,var(--teal) 0%,var(--teal-dark) 100%);border-radius:6px;}
+  .a-bar.muted{background:#B9C6D3;}
+  .a-ct{text-align:right;color:var(--slate);font-weight:500;}
+  .a-spend{text-align:right;font-weight:600;color:var(--ink);}
+  .agency-total{
+    display:grid;grid-template-columns:230px 1fr 60px 120px;gap:14px;align-items:center;
+    padding:11px 4px 6px;margin-top:2px;border-top:2px solid var(--navy);
+    font-weight:700;color:var(--navy);font-size:14px;
+  }
+  .agency-total .a-ct,.agency-total .a-spend{color:var(--navy);font-weight:700;}
+
+  /* ============ SCENARIO EXPLORER ============ */
+  .scenario-wrap{background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .scenario-tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--mist);border-bottom:1px solid var(--line);}
+  .scenario-tab{
+    appearance:none;border:none;background:transparent;cursor:pointer;
+    padding:18px 16px 16px;text-align:left;font-family:'Inter',sans-serif;
+    border-bottom:3px solid transparent;transition:background .2s,border-color .2s;
+    border-right:1px solid var(--line);
+  }
+  .scenario-tab:last-child{border-right:none;}
+  .scenario-tab .t-name{
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.06em;
+    text-transform:uppercase;color:var(--slate);
+  }
+  .scenario-tab .t-val{
+    font-family:'Archivo',sans-serif;font-weight:800;font-size:24px;color:var(--navy);
+    letter-spacing:-0.02em;margin-top:3px;
+  }
+  .scenario-tab .t-pct{font-size:12px;color:var(--slate);margin-top:2px;}
+  .scenario-tab:hover{background:var(--teal-wash);}
+  .scenario-tab:focus-visible{outline:3px solid var(--teal);outline-offset:-3px;}
+  .scenario-tab.active{background:var(--white);border-bottom-color:var(--teal);}
+  .scenario-tab.active .t-name{color:var(--teal-dark);}
+
+  .scenario-body{padding:26px 28px 24px;}
+  .headline-row{display:flex;align-items:baseline;gap:26px;flex-wrap:wrap;margin-bottom:22px;}
+  .headline-big{
+    font-family:'Archivo',sans-serif;font-weight:800;font-size:46px;color:var(--navy);
+    letter-spacing:-0.025em;line-height:1;
+  }
+  .headline-tag{font-size:13.5px;color:var(--slate);}
+  .headline-tag strong{color:var(--teal-dark);font-weight:700;}
+
+  .lever{margin-bottom:16px;}
+  .lever:last-child{margin-bottom:2px;}
+  .lever-top{display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-bottom:5px;}
+  .lever-name{font-weight:600;font-size:14px;color:var(--navy);}
+  .lever-detail{font-size:12.5px;color:var(--slate);}
+  .lever-val{font-family:'Archivo',sans-serif;font-weight:700;font-size:15px;color:var(--teal-dark);white-space:nowrap;}
+  .bar-track{height:14px;background:var(--mist);border-radius:7px;overflow:hidden;}
+  .bar{
+    height:100%;background:linear-gradient(90deg,var(--teal) 0%,var(--teal-dark) 100%);
+    border-radius:7px;width:0;transition:width .55s cubic-bezier(.22,.8,.3,1);
+  }
+  .bar.zero{background:repeating-linear-gradient(45deg,#E4EBF0,#E4EBF0 5px,#F0F4F7 5px,#F0F4F7 10px);}
+  .lever.dim .lever-name,.lever.dim .lever-val{color:#9AA9BB;}
+
+  .stack-bar{display:flex;height:32px;border-radius:8px;overflow:hidden;margin-bottom:20px;}
+  .seg{height:100%;}
+
+  /* ============ SAVINGS OPPORTUNITY OUTSIDE OF RFP ============ */
+  .opp-stats{display:flex;gap:26px;flex-wrap:wrap;margin-bottom:16px;}
+  .opp-stat .v{font-family:'Archivo',sans-serif;font-weight:800;font-size:22px;color:var(--navy);letter-spacing:-0.02em;}
+  .opp-stat .v.hl{color:var(--teal-dark);}
+  .opp-stat .l{font-size:12px;color:var(--slate);margin-top:2px;}
+  .opp-head,.opp-row,.opp-total{
+    display:grid;grid-template-columns:14px 148px 1fr 45px 118px 118px 52px;gap:12px;align-items:center;
+  }
+  .opp-head{
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:11.5px;letter-spacing:0.08em;
+    text-transform:uppercase;color:var(--slate);padding:0 4px 9px;border-bottom:2px solid var(--navy);
+  }
+  .opp-row{padding:10px 4px;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .opp-row:last-of-type{border-bottom:none;}
+  .dot{width:12px;height:12px;border-radius:3px;}
+  .opp-row .o-name{font-weight:600;color:var(--navy);}
+  .opp-row .o-desc{font-size:12.5px;color:var(--slate);}
+  .o-ct{text-align:right;color:var(--slate);font-weight:500;}
+  .o-spend{text-align:right;font-weight:500;color:var(--ink);}
+  .o-sav{text-align:right;font-weight:700;color:var(--teal-dark);}
+  .o-rate{text-align:right;font-family:'Archivo',sans-serif;font-weight:700;font-size:12.5px;color:var(--slate);}
+  .opp-total{
+    padding:11px 4px 6px;margin-top:2px;border-top:2px solid var(--navy);
+    font-weight:700;color:var(--navy);font-size:14px;
+  }
+  .opp-total .o-ct,.opp-total .o-spend,.opp-total .o-rate{color:var(--navy);font-weight:700;}
+  .opp-total .o-sav{color:var(--teal-dark);font-weight:800;}
+
+  /* ============ FOOTNOTES ============ */
+  .notes{background:var(--navy);color:#C6D2E4;border-radius:12px;padding:26px 28px;font-size:13.5px;}
+  .notes h3{font-family:'Archivo',sans-serif;font-weight:700;font-size:15px;color:var(--white);margin-bottom:12px;}
+  .note-item{display:flex;gap:12px;padding:7px 0;line-height:1.55;}
+  .note-key{
+    font-family:'Archivo',sans-serif;font-weight:700;color:var(--teal);
+    font-size:12px;letter-spacing:0.06em;min-width:14px;
+  }
+  .note-item strong{color:var(--white);font-weight:600;}
+
+  footer{
+    max-width:1400px;margin:0 auto;padding:0 48px 40px;color:#8FA0B4;font-size:12px;
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+
+  @media (max-width:1120px){
+    .layout{grid-template-columns:1fr;}
+    .callout-rail{margin-top:0;}
+  }
+  @media (max-width:920px){
+    header,main{padding-left:22px;padding-right:22px;}
+    .kpis{grid-template-columns:repeat(2,1fr);}
+    .two-col{grid-template-columns:1fr;}
+    .header-meta{text-align:left;}
+    .headline-big{font-size:36px;}
+    footer{padding-left:22px;padding-right:22px;}
+    .agency-head{display:none;}
+    .agency-row,.agency-total{grid-template-columns:1fr 70px;grid-template-areas:"name spend" "bar bar";row-gap:6px;}
+    .agency-row .a-name,.agency-total .a-name{grid-area:name;}
+    .agency-row .a-bar-track{grid-area:bar;}
+    .agency-row .a-ct,.agency-total .a-ct{display:none;}
+    .agency-row .a-spend,.agency-total .a-spend{grid-area:spend;}
+    .opp-head{display:none;}
+    .opp-row,.opp-total{grid-template-columns:14px 1fr 110px;grid-template-areas:"dot name sav" "dot desc desc";row-gap:3px;}
+    .opp-row .dot,.opp-total .dot{grid-area:dot;}
+    .opp-row .o-name,.opp-total .o-name{grid-area:name;}
+    .opp-row .o-desc{grid-area:desc;}
+    .opp-row .o-ct,.opp-total .o-ct,.opp-row .o-rate,.opp-total .o-rate,.opp-row .o-spend,.opp-total .o-spend{display:none;}
+    .opp-row .o-sav,.opp-total .o-sav{grid-area:sav;}
+    .scenario-tabs{grid-template-columns:1fr;}
+    .scenario-tab{border-right:none;border-bottom:1px solid var(--line);}
+    .scenario-tab.active{border-bottom:3px solid var(--teal);}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .bar{transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-title">
+      <h1 style="margin-top:0;font-size:26px;">Contingent Labor Program — Savings Dashboard</h1>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="layout">
+<div class="content-col">
+
+  <!-- KPI STRIP -->
+  <section style="margin-top:28px;">
+    <div class="eyebrow">Workforce Context</div>
+    <h2 class="section-title" style="margin-bottom:14px;">The contingent workforce in five numbers</h2>
+    <div class="kpis">
+      <div class="kpi"><div class="v num">2,760</div><div class="l">Annual employees</div></div>
+      <div class="kpi"><div class="v num">310</div><div class="l">Contingent workers (301 temp + 9 direct 1099)</div></div>
+      <div class="kpi"><div class="v num">10%</div><div class="l">Of total workforce is contingent</div></div>
+      <div class="kpi accent"><div class="v num">$32.6M</div><div class="l">Annual run-rate spend</div></div>
+      <div class="kpi"><div class="v num">$105.2K</div><div class="l">Average annual spend per contingent seat</div></div>
+    </div>
+  </section>
+
+  <!-- SPEND + PRESENTERS -->
+  <section>
+    <div class="two-col">
+      <div class="card">
+        <h3>Current Annual Spend</h3>
+        <div class="card-sub">40 hours/week through 12 months, at current contractor count</div>
+        <table>
+          <thead>
+            <tr><th>Category</th><th class="r">Contractor Ct</th><th class="r">Annual Spend</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Contractor — 1099</td><td class="r num">9</td><td class="r num">$1,586,000</td></tr>
+            <tr><td>Contractor — Temporary Assoc</td><td class="r num">301</td><td class="r num">$31,040,443</td></tr>
+            <tr class="total"><td>Grand Total</td><td class="r num">310</td><td class="r num">$32,626,443</td></tr>
+          </tbody>
+        </table>
+        <div class="stack-bar" style="height:14px;margin:16px 0 8px;" aria-hidden="true">
+          <span class="seg" style="width:95%;background:#00A6BE;"></span>
+          <span class="seg" style="width:5%;background:#16294B;"></span>
+        </div>
+        <div style="font-size:12.5px;color:var(--slate);">Agency W-2 carries 95% of spend; the navy sliver is the direct-1099 exposure to migrate per the risk framework.</div>
+      </div>
+      <div class="card">
+        <h3>Concentration &amp; Exposure</h3>
+        <div class="card-sub">How the $32.6M run rate is positioned going into negotiations</div>
+        <div class="conc-row"><span class="v num">54%</span><span class="l"><strong>of spend sits in two vendors</strong> — RPh On the Go + On Demand Group, $17.5M combined</span></div>
+        <div class="conc-row"><span class="v num">60%</span><span class="l"><strong>of spend is already at the table</strong> — $19.6M across the four incumbent RFP finalists</span></div>
+        <div class="conc-row"><span class="v num">27%</span><span class="l"><strong>of spend has no negotiation path yet</strong> — RPh On the Go alone, outside the RFP pool</span></div>
+        <div class="conc-row"><span class="v num">5%</span><span class="l"><strong>is 1099</strong></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AGENCY BREAKDOWN -->
+  <section>
+    <div class="eyebrow">Spend by Agency</div>
+    <h2 class="section-title">Where the run rate sits today</h2>
+    <p class="section-note" style="margin-bottom:16px;">Two vendors — RPh On the Go and On Demand Group — hold $17.1M, 54% of total run-rate spend. RPh On the Go sits entirely outside the RFP pool. QualStaff has contracted to $749K from $3.77M in 2025 actuals, while CitiusTech has grown 4x. N/A and Independent together reconcile exactly to the 9 direct 1099s ($1,586,000).</p>
+    <div class="agency-card">
+      <div class="agency-head"><span>Agency</span><span>Share of run rate</span><span style="text-align:right;">Ct</span><span style="text-align:right;">Annual Spend</span></div>
+
+      <div class="agency-row"><span class="a-name">RPh On the Go <span class="chip outside">Outside RFP</span></span><span class="a-bar-track"><span class="a-bar" style="width:100%;display:block;"></span></span><span class="a-ct num">65</span><span class="a-spend num">$8,866,000</span></div>
+      <div class="agency-row"><span class="a-name">On Demand Group <span class="chip finalist">Finalist</span></span><span class="a-bar-track"><span class="a-bar" style="width:96.9%;display:block;"></span></span><span class="a-ct num">77</span><span class="a-spend num">$8,589,984</span></div>
+      <div class="agency-row"><span class="a-name">Insight Global <span class="chip finalist">Finalist</span></span><span class="a-bar-track"><span class="a-bar" style="width:48.6%;display:block;"></span></span><span class="a-ct num">33</span><span class="a-spend num">$4,310,155</span></div>
+      <div class="agency-row"><span class="a-name">CitiusTech <span class="chip finalist">Finalist</span></span><span class="a-bar-track"><span class="a-bar" style="width:47.8%;display:block;"></span></span><span class="a-ct num">56</span><span class="a-spend num">$4,234,880</span></div>
+      <div class="agency-row"><span class="a-name">Neutrino Tech Systems <span class="chip finalist">Finalist</span></span><span class="a-bar-track"><span class="a-bar" style="width:27.8%;display:block;"></span></span><span class="a-ct num">28</span><span class="a-spend num">$2,468,960</span></div>
+      <div class="agency-row"><span class="a-name">N/A <span class="chip c1099">Direct 1099</span></span><span class="a-bar-track"><span class="a-bar muted" style="width:13.2%;display:block;"></span></span><span class="a-ct num">4</span><span class="a-spend num">$1,170,000</span></div>
+      <div class="agency-row"><span class="a-name">FilAM</span><span class="a-bar-track"><span class="a-bar" style="width:11.6%;display:block;"></span></span><span class="a-ct num">25</span><span class="a-spend num">$1,029,600</span></div>
+      <div class="agency-row"><span class="a-name">QualStaff</span><span class="a-bar-track"><span class="a-bar" style="width:8.5%;display:block;"></span></span><span class="a-ct num">12</span><span class="a-spend num">$749,424</span></div>
+      <div class="agency-row"><span class="a-name">Beacon Hill Solutions Group</span><span class="a-bar-track"><span class="a-bar" style="width:5.0%;display:block;"></span></span><span class="a-ct num">2</span><span class="a-spend num">$445,120</span></div>
+      <div class="agency-row"><span class="a-name">Independent <span class="chip c1099">Direct 1099</span></span><span class="a-bar-track"><span class="a-bar muted" style="width:4.7%;display:block;"></span></span><span class="a-ct num">5</span><span class="a-spend num">$416,000</span></div>
+      <div class="agency-row"><span class="a-name">Robert Half</span><span class="a-bar-track"><span class="a-bar" style="width:1.6%;display:block;"></span></span><span class="a-ct num">1</span><span class="a-spend num">$142,480</span></div>
+      <div class="agency-row"><span class="a-name">AgileSol</span><span class="a-bar-track"><span class="a-bar" style="width:1.4%;display:block;"></span></span><span class="a-ct num">1</span><span class="a-spend num">$124,800</span></div>
+      <div class="agency-row"><span class="a-name">Creative Financial Staffing LLC</span><span class="a-bar-track"><span class="a-bar" style="width:0.9%;display:block;"></span></span><span class="a-ct num">1</span><span class="a-spend num">$79,040</span></div>
+
+      <div class="agency-total"><span class="a-name">Grand Total</span><span></span><span class="a-ct num">310</span><span class="a-spend num">$32,626,443</span></div>
+    </div>
+  </section>
+
+  <!-- SCENARIO EXPLORER -->
+  <section>
+    <div class="eyebrow">Projected Savings</div>
+    <h2 class="section-title">Three scenarios against the $32.6M run rate</h2>
+    <p class="section-note" style="margin-bottom:16px;">Levers are calibrated to the actual agency-level run rates above. Select a scenario to see how each lever contributes; compression and rebate assumptions per the negotiation benchmarks.</p>
+
+    <div class="scenario-wrap">
+      <div class="scenario-tabs" role="tablist" aria-label="Savings scenarios">
+        <button class="scenario-tab" role="tab" aria-selected="false" id="tab-0" onclick="setScenario(0)">
+          <div class="t-name">Conservative</div>
+          <div class="t-val num">~$800K</div>
+          <div class="t-pct">2.5% of run-rate spend</div>
+        </button>
+        <button class="scenario-tab active" role="tab" aria-selected="true" id="tab-1" onclick="setScenario(1)">
+          <div class="t-name">Base Case</div>
+          <div class="t-val num">~$1.38M</div>
+          <div class="t-pct">4.2% of run-rate spend</div>
+        </button>
+        <button class="scenario-tab" role="tab" aria-selected="false" id="tab-2" onclick="setScenario(2)">
+          <div class="t-name">Aggressive</div>
+          <div class="t-val num">~$2.93M</div>
+          <div class="t-pct">9.0% of run-rate spend</div>
+        </button>
+      </div>
+
+      <div class="scenario-body">
+        <div class="headline-row">
+          <div class="headline-big num" id="headline-total">~$1.38M</div>
+          <div class="headline-tag">annualized savings &nbsp;·&nbsp; <strong class="num" id="headline-pct">4.2%</strong> of spend &nbsp;·&nbsp; <strong class="num" id="headline-seat">≈ $4.5K</strong> per contingent seat per year</div>
+        </div>
+
+        <div class="lever" id="lever-0">
+          <div class="lever-top">
+            <div>
+              <span class="lever-name">On Demand Group — incumbent re-bid compression</span>
+            </div>
+            <div class="lever-val num" id="val-0"></div>
+          </div>
+          <div class="bar-track"><div class="bar" id="bar-0"></div></div>
+        </div>
+
+        <div class="lever" id="lever-1">
+          <div class="lever-top">
+            <div>
+              <span class="lever-name">RPh On the Go — benchmark &amp; renegotiate (own track)</span>
+            </div>
+            <div class="lever-val num" id="val-1"></div>
+          </div>
+          <div class="bar-track"><div class="bar" id="bar-1"></div></div>
+        </div>
+
+        <div class="lever" id="lever-2">
+          <div class="lever-top">
+            <div>
+              <span class="lever-name">CitiusTech — consolidation absorbs the tail</span>
+            </div>
+            <div class="lever-val num" id="val-2"></div>
+          </div>
+          <div class="bar-track"><div class="bar" id="bar-2"></div></div>
+        </div>
+
+        <div class="lever" id="lever-3">
+          <div class="lever-top">
+            <div>
+              <span class="lever-name">Neutrino + Insight Global — volume rebates</span>
+            </div>
+            <div class="lever-val num" id="val-3"></div>
+          </div>
+          <div class="bar-track"><div class="bar" id="bar-3"></div></div>
+        </div>
+
+        <div class="lever" id="lever-4">
+          <div class="lever-top">
+            <div>
+              <span class="lever-name">IntelliPro — nearshore rate card (pilot-contingent)</span>
+            </div>
+            <div class="lever-val num" id="val-4"></div>
+          </div>
+          <div class="bar-track"><div class="bar" id="bar-4"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAVINGS OPPORTUNITY OUTSIDE OF RFP -->
+  <section>
+    <div class="eyebrow">Beyond the Vendor Decision</div>
+    <h2 class="section-title">Savings Opportunity Outside Of RFP</h2>
+    <p class="section-note" style="margin-bottom:16px;">Seat-level review assigns an action to every one of the 310 contingent seats, with an estimated annual savings figure per action. These levers are independent of vendor selection.</p>
+    <div class="card">
+      <div class="opp-stats">
+        <div class="opp-stat"><div class="v hl num">$9.40M</div><div class="l">Estimated annual savings (29% of run rate)</div></div>
+        <div class="opp-stat"><div class="v num">184</div><div class="l">Seats actioned of 310</div></div>
+        <div class="opp-stat"><div class="v num">10% &rarr; ~6%</div><div class="l">Contingent workforce share if all 126 FTE conversions execute</div></div>
+      </div>
+
+      <div class="stack-bar" style="height:32px;margin-bottom:6px;" aria-hidden="true">
+        <span class="seg" style="width:77.1%;background:#16294B;"></span>
+        <span class="seg" style="width:11.4%;background:#00A6BE;"></span>
+        <span class="seg" style="width:3.8%;background:#66C6D6;"></span>
+        <span class="seg" style="width:7.7%;background:#7C93B5;"></span>
+      </div>
+      <div style="font-size:12px;color:var(--slate);margin-bottom:18px;">Composition of the $9.40M estimated savings by action</div>
+
+      <div class="opp-head"><span></span><span>Savings Opportunity</span><span>What it means</span><span style="text-align:right;">Ct</span><span style="text-align:right;">Annual Spend</span><span style="text-align:right;">Est. Ann Savings</span><span style="text-align:right;">Rate</span></div>
+
+      <div class="opp-row">
+        <span class="dot" style="background:#16294B;"></span>
+        <span class="o-name">Convert to FTE</span>
+        <span class="o-desc">Eliminate agency markup net of loaded benefits; negotiate conversion-fee relief in new MSAs</span>
+        <span class="o-ct num">126</span>
+        <span class="o-spend num">$18,037,136</span>
+        <span class="o-sav num">$7,248,116</span>
+        <span class="o-rate num">40%</span>
+      </div>
+      <div class="opp-row">
+        <span class="dot" style="background:#00A6BE;"></span>
+        <span class="o-name">Switch Agency</span>
+        <span class="o-desc">Move seats to preferred vendors at benchmark markups</span>
+        <span class="o-ct num">35</span>
+        <span class="o-spend num">$3,600,272</span>
+        <span class="o-sav num">$1,075,152</span>
+        <span class="o-rate num">30%</span>
+      </div>
+      <div class="opp-row">
+        <span class="dot" style="background:#66C6D6;"></span>
+        <span class="o-name">Renegotiate Rate</span>
+        <span class="o-desc">Keep the seat, reprice against category benchmarks</span>
+        <span class="o-ct num">17</span>
+        <span class="o-spend num">$2,041,915</span>
+        <span class="o-sav num">$358,800</span>
+        <span class="o-rate num">18%</span>
+      </div>
+      <div class="opp-row">
+        <span class="dot" style="background:#7C93B5;"></span>
+        <span class="o-name">Term / Reduce HC</span>
+        <span class="o-desc">Direct elimination &mdash; full seat cost comes out</span>
+        <span class="o-ct num">6</span>
+        <span class="o-spend num">$713,440</span>
+        <span class="o-sav num">$713,440</span>
+        <span class="o-rate num">100%</span>
+      </div>
+      <div class="opp-row">
+        <span class="dot" style="background:#D9E2EA;"></span>
+        <span class="o-name">No Change</span>
+        <span class="o-desc">Appropriately placed today &mdash; no action</span>
+        <span class="o-ct num">126</span>
+        <span class="o-spend num">$8,233,680</span>
+        <span class="o-sav num" style="color:var(--slate);font-weight:500;">&mdash;</span>
+        <span class="o-rate num">&mdash;</span>
+      </div>
+
+      <div class="opp-total"><span></span><span>Grand Total</span><span></span><span class="o-ct num">310</span><span class="o-spend num">$32,626,443</span><span class="o-sav num">$9,395,508</span><span class="o-rate num">29%</span></div>
+    </div>
+  </section>
+
+  <!-- FOOTNOTES -->
+  <section>
+    <div class="notes">
+      <h3>Some Things To Think About</h3>
+      <div class="note-item"><span class="note-key">1</span><div><strong>Run-rate basis.</strong> The $32.6M annualizes all 310 seats at 40 hrs/wk for a full year — 2.4x the $13.5M 2025 actual, which reflected ramp, turnover, and partial assignments. State the basis explicitly for Finance.</div></div>
+      <div class="note-item"><span class="note-key">2</span><div><strong>RPh On the Go is the largest vendor and sits outside the RFP.</strong> $8.87M and 65 seats today vs. $0.31M in 2025 actuals. Its savings line assumes benchmark renegotiation on a separate track — clinical/pharmacy staffing was not bid. Recommend adding it to the vendor strategy explicitly.</div></div>
+      <div class="note-item"><span class="note-key">3</span><div><strong>1099 migration is a compliance investment, not savings.</strong> N/A (4) + Independent (5) reconcile exactly to the $1.586M direct-1099 line. Moving them to agency W-2 or AOR adds a 10–20% platform fee — roughly $160K–$320K — per the risk framework. Footnote it separately.</div></div>
+      <div class="note-item"><span class="note-key">4</span><div><strong>IntelliPro upside is pilot-contingent.</strong> The 26.8% fill rate is a global blended figure, not AssistRx-specific, and no SOC 2 yet. Position the $785K as contingent on a successful pilot, not committed.</div></div>
+      <div class="note-item"><span class="note-key">5</span><div><strong>CitiusTech watch-out.</strong> 75% of attrition cases were performance terminations in key delivery pods — rework risk could erode consolidation savings. Negotiate replacement guarantees accordingly.</div></div>
+      <div class="note-item"><span class="note-key">6</span><div><strong>Soft savings not booked above.</strong> Reallocating requisitions from ODG (53% fill) toward CitiusTech (87%) and Neutrino (83%) cuts vacancy days, and adding a replacement guarantee where ODG has none avoids bad-start rework. Real, but qualitative.</div></div>
+      <div class="note-item"><span class="note-key">7</span><div><strong>Do not add the $9.40M to the RFP scenarios.</strong> Switch Agency and Renegotiate Rate overlap the compression and rebate levers above, and FTE conversion assumes markup elimination net of loaded benefits, before any conversion fees owed under current agreements. Present the two views side by side, with seat-level validation by Finance before committing a combined number.</div></div>
+    </div>
+  </section>
+
+</div>
+<aside class="callout-rail">
+  <div class="card">
+    <h3>Callouts</h3>
+    <div class="card-sub">Ten things this data says</div>
+    <div class="co-item"><span class="co-key num">1</span><div><strong>The program more than doubled without a strategy.</strong> The $32.6M run rate is 2.4x the $13.5M in 2025 actuals.</div></div>
+    <div class="co-item"><span class="co-key num">2</span><div><strong>310 seats at $105K each is 10% of the workforce.</strong> A workforce-strategy decision, not a procurement errand.</div></div>
+    <div class="co-item"><span class="co-key num">3</span><div><strong>The largest vendor was never bid.</strong> RPh On the Go: $8.87M, 27% of spend &mdash; needs its own negotiation track.</div></div>
+    <div class="co-item"><span class="co-key num">4</span><div><strong>54% of spend sits in two vendors.</strong> RPh On the Go + ODG hold $17.5M combined.</div></div>
+    <div class="co-item"><span class="co-key num">5</span><div><strong>ODG&rsquo;s negotiating window is now.</strong> 53% fill, no replacement guarantee, four competitors in the room the same week.</div></div>
+    <div class="co-item"><span class="co-key num">6</span><div><strong>60% of spend is already at the table.</strong> $19.6M sits with the four incumbent RFP finalists.</div></div>
+    <div class="co-item"><span class="co-key num">7</span><div><strong>The RFP is worth ~$1.38M a year, base case.</strong> Scaling from ~$800K conservative to ~$2.93M aggressive.</div></div>
+    <div class="co-item"><span class="co-key num">8</span><div><strong>The outside-RFP opportunity is ~7x the base case.</strong> $9.4M identified, with FTE conversion carrying $7.25M.</div></div>
+    <div class="co-item"><span class="co-key num">9</span><div><strong>Conversion-fee waivers may be the most valuable MSA term.</strong> They unlock the $7.25M FTE block affordably.</div></div>
+    <div class="co-item"><span class="co-key num">10</span><div><strong>$713K needs no negotiation at all.</strong> Six Term/Reduce HC seats are 100% savings, actionable this quarter.</div></div>
+  </div>
+</aside>
+</div>
+
+</main>
+
+<footer>
+  <span>AssistRx &nbsp;|&nbsp; Talent Acquisition &nbsp;|&nbsp; Contingent Labor Program</span>
+  <span>Internal working document — projections based on stated assumptions, subject to negotiation outcomes</span>
+</footer>
+
+<script>
+  var scenarios = [
+    {
+      total:"~$800K", pct:"2.5%", seat:"\u2248 $2.6K",
+      levers:[
+        {val:430, disp:"$430K"},
+        {val:266, disp:"$265K"},
+        {val:37,  disp:"$35K"},
+        {val:68,  disp:"$70K"},
+        {val:0,   disp:"\u2014"}
+      ]
+    },
+    {
+      total:"~$1.38M", pct:"4.2%", seat:"\u2248 $4.5K",
+      levers:[
+        {val:687, disp:"$685K"},
+        {val:443, disp:"$445K"},
+        {val:62,  disp:"$60K"},
+        {val:190, disp:"$190K"},
+        {val:0,   disp:"\u2014"}
+      ]
+    },
+    {
+      total:"~$2.93M", pct:"9.0%", seat:"\u2248 $9.5K",
+      levers:[
+        {val:1031, disp:"$1.03M"},
+        {val:709,  disp:"$710K"},
+        {val:98,   disp:"$100K"},
+        {val:312,  disp:"$310K"},
+        {val:784,  disp:"$785K"}
+      ]
+    }
+  ];
+  var MAX = 1031; /* largest single lever value across scenarios */
+
+  function setScenario(i){
+    var s = scenarios[i];
+    for(var t=0;t<3;t++){
+      var tab = document.getElementById("tab-"+t);
+      tab.classList.toggle("active", t===i);
+      tab.setAttribute("aria-selected", t===i ? "true" : "false");
+    }
+    document.getElementById("headline-total").textContent = s.total;
+    document.getElementById("headline-pct").textContent = s.pct;
+    document.getElementById("headline-seat").textContent = s.seat;
+    for(var k=0;k<5;k++){
+      var lv = s.levers[k];
+      document.getElementById("val-"+k).textContent = lv.disp;
+      var bar = document.getElementById("bar-"+k);
+      bar.style.width = (lv.val / MAX * 100) + "%";
+      bar.classList.toggle("zero", lv.val===0);
+      document.getElementById("lever-"+k).classList.toggle("dim", lv.val===0);
+    }
+  }
+  setScenario(1); /* default: base case */
+</script>
+
+</body>
+</html>
