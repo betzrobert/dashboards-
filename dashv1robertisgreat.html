@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AssistRx | Talent Acquisition Leadership Metrics</title>
+<style>
+:root{
+  --navy:#16294B;
+  --navy-deep:#0E1B33;
+  --teal:#00A6BE;
+  --teal-soft:#D6F1F5;
+  --ink:#132038;
+  --slate:#5F6F8C;
+  --line:#DCE3ED;
+  --paper:#F4F6FA;
+  --card:#FFFFFF;
+  --amber:#D98B2B;
+  --coral:#C13B4E;
+  --green:#2E8B6E;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Inter","Helvetica Neue",Arial,system-ui,sans-serif;
+  font-size:14px;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px 64px}
+
+/* ---------- masthead ---------- */
+.masthead{background:var(--navy);color:#fff;padding:22px 0 0}
+.masthead .wrap{padding-bottom:0}
+.mh-top{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px;justify-content:space-between}
+.brandmark{display:flex;align-items:center;gap:12px}
+.brandmark .rule{width:4px;height:44px;background:var(--teal);border-radius:2px}
+.eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);font-weight:600;margin:0 0 3px}
+h1{margin:0;font-size:23px;font-weight:650;letter-spacing:-.02em;line-height:1.15}
+.asof{font-size:11.5px;color:#A9BAD6;text-align:right;letter-spacing:.02em}
+.asof strong{color:#fff;font-weight:600}
+
+/* segmented control */
+.seg{display:inline-flex;background:rgba(255,255,255,.10);border-radius:7px;padding:3px;margin-top:14px}
+.seg button{
+  appearance:none;border:0;background:transparent;color:#C3D2E8;cursor:pointer;
+  font:inherit;font-size:12.5px;font-weight:550;padding:6px 15px;border-radius:5px;
+  transition:background .15s,color .15s;
+}
+.seg button:hover{color:#fff}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--navy)}
+.seg button:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+/* tabs */
+.tabs{display:flex;gap:2px;margin-top:20px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{
+  appearance:none;border:0;background:transparent;color:#A9BAD6;cursor:pointer;font:inherit;
+  font-size:13px;font-weight:550;padding:11px 16px;border-bottom:3px solid transparent;white-space:nowrap;
+}
+.tabs button:hover{color:#fff}
+.tabs button[aria-selected="true"]{color:#fff;border-bottom-color:var(--teal)}
+.tabs button:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+
+/* ---------- filter bar ---------- */
+.filterbar{
+  background:#fff;border-bottom:1px solid var(--line);padding:11px 0;
+  position:sticky;top:0;z-index:20;box-shadow:0 1px 3px rgba(19,32,56,.05);
+}
+.filterbar .wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-bottom:0}
+.fb-label{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--slate);font-weight:600}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;background:var(--teal-soft);color:var(--navy);
+  border:1px solid #A5DDE6;border-radius:99px;padding:4px 6px 4px 12px;font-size:12.5px;font-weight:550;
+}
+.chip span.k{color:var(--slate);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.chip button{
+  appearance:none;border:0;background:rgba(22,41,75,.10);color:var(--navy);cursor:pointer;
+  width:18px;height:18px;border-radius:50%;font-size:13px;line-height:1;display:grid;place-items:center;padding:0;
+}
+.chip button:hover{background:var(--navy);color:#fff}
+.fb-none{font-size:12.5px;color:var(--slate)}
+.clearall{
+  appearance:none;background:transparent;border:1px solid var(--line);border-radius:99px;
+  color:var(--slate);cursor:pointer;font:inherit;font-size:12px;padding:4px 12px;margin-left:auto;
+}
+.clearall:hover{border-color:var(--navy);color:var(--navy)}
+
+/* ---------- kpis ---------- */
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:22px 0 26px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 15px 13px;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--teal)}
+.kpi.warn::before{background:var(--amber)}
+.kpi.alert::before{background:var(--coral)}
+.kpi .k{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--slate);font-weight:600;line-height:1.3}
+.kpi .v{font-size:30px;font-weight:650;letter-spacing:-.03em;line-height:1.05;margin-top:7px;color:var(--navy)}
+.kpi .v small{font-size:15px;font-weight:600;letter-spacing:0}
+.kpi .s{font-size:11.5px;color:var(--slate);margin-top:3px}
+
+/* ---------- cards ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px 20px;margin-bottom:16px}
+.card h2{
+  margin:0;font-size:13px;font-weight:650;letter-spacing:.02em;color:var(--navy);
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+}
+.card h2 .hint{font-size:11.5px;font-weight:450;color:var(--slate);letter-spacing:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid2 .card{margin-bottom:0}
+.note{font-size:11.5px;color:var(--slate);margin:10px 0 0;line-height:1.5}
+
+/* ---------- hero spine ---------- */
+.spine-card{background:var(--navy);border:0;color:#fff;padding:20px 22px 16px}
+.spine-card h2{color:#fff}
+.spine-card h2 .hint{color:#A9BAD6}
+.spine-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:#C3D2E8;margin-top:2px}
+.spine-legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px}
+.spine-readout{
+  min-height:34px;margin-top:8px;font-size:12.5px;color:#C3D2E8;
+  border-top:1px solid rgba(255,255,255,.14);padding-top:9px;
+}
+.spine-readout b{color:#fff;font-weight:600}
+.spine-readout em{color:var(--teal);font-style:normal;font-weight:600}
+
+/* ---------- svg shared ---------- */
+svg{display:block;width:100%;height:auto;overflow:visible}
+.axis text{fill:var(--slate);font-size:10.5px}
+.axis line{stroke:var(--line)}
+.gl{stroke:var(--line);stroke-dasharray:2 3}
+.bar{cursor:pointer;transition:opacity .12s}
+.bar:hover{opacity:.75}
+.blabel{fill:var(--navy);font-size:11px;font-weight:600}
+.cat{fill:var(--ink);font-size:11.5px;cursor:pointer}
+.cat:hover{fill:var(--teal);text-decoration:underline}
+.cat.on{fill:var(--teal);font-weight:650}
+.dim{opacity:.28}
+
+/* ---------- tables ---------- */
+.tablewrap{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{text-align:left;padding:8px 11px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{
+  background:#F7F9FC;color:var(--navy);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  font-weight:650;position:sticky;top:0;cursor:pointer;user-select:none;
+}
+th:hover{color:var(--teal)}
+th.ar,td.ar{text-align:right}
+th .arrow{color:var(--teal);font-size:9px;margin-left:3px}
+tbody tr:hover{background:#F7FAFC}
+td.title{white-space:normal;min-width:210px;font-weight:550}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:99px;letter-spacing:.02em}
+.tag.b{background:var(--teal-soft);color:#046273}
+.tag.n{background:#EDF0F6;color:#3E4E6B}
+.pill{display:inline-block;font-size:11.5px;font-weight:650;padding:2px 9px;border-radius:5px;min-width:44px;text-align:right}
+.a1{background:#EAF6F1;color:#1F6B54}
+.a2{background:#FBF1E0;color:#8A5411}
+.a3{background:#FAE7EA;color:#8E2333}
+.linkish{color:var(--teal);cursor:pointer;font-weight:600}
+.linkish:hover{text-decoration:underline}
+.searchrow{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
+input[type=search]{
+  font:inherit;font-size:13px;padding:7px 12px;border:1px solid var(--line);border-radius:7px;
+  min-width:240px;color:var(--ink);background:#fff;
+}
+input[type=search]:focus{outline:2px solid var(--teal);outline-offset:-1px;border-color:var(--teal)}
+.count{font-size:12px;color:var(--slate)}
+.empty{padding:26px 4px;color:var(--slate);font-size:13px}
+
+/* ---------- misc ---------- */
+.legendrow{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--slate);margin-top:10px}
+.legendrow i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px}
+.subseg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;margin-left:auto}
+.subseg button{appearance:none;border:0;background:#fff;color:var(--slate);cursor:pointer;font:inherit;font-size:11.5px;font-weight:600;padding:5px 12px}
+.subseg button+button{border-left:1px solid var(--line)}
+.subseg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+footer{color:var(--slate);font-size:11.5px;text-align:center;padding-top:8px;line-height:1.6}
+[hidden]{display:none !important}
+@media (max-width:1080px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:760px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .grid2{grid-template-columns:1fr}
+  h1{font-size:19px}
+  .asof{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="mh-top">
+      <div class="brandmark">
+        <div class="rule"></div>
+        <div>
+          <p class="eyebrow">AssistRx &middot; Talent Acquisition</p>
+          <h1>Leadership Metrics Dashboard</h1>
+        </div>
+      </div>
+      <div class="asof">
+        Reporting as of <strong id="asof">—</strong><br>
+        Source: TA_Leadership_Metrics_Analysis.xlsx
+      </div>
+    </div>
+
+    <div class="seg" role="group" aria-label="Filter by billable classification">
+      <button data-bill="All" aria-pressed="true">All reqs</button>
+      <button data-bill="Billable" aria-pressed="false">Billable</button>
+      <button data-bill="Non-Billable" aria-pressed="false">Non-billable</button>
+    </div>
+
+    <nav class="tabs" role="tablist" aria-label="Views">
+      <button role="tab" data-tab="overview" aria-selected="true">Overview</button>
+      <button role="tab" data-tab="reqs" aria-selected="false">Open requisitions</button>
+      <button role="tab" data-tab="recruiter" aria-selected="false">Recruiter scorecard</button>
+      <button role="tab" data-tab="starts" aria-selected="false">Starts trend</button>
+      <button role="tab" data-tab="roles" aria-selected="false">Roles in market</button>
+    </nav>
+  </div>
+</header>
+
+<div class="filterbar">
+  <div class="wrap">
+    <span class="fb-label">Filters</span>
+    <div id="chips" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    <button class="clearall" id="clearall">Clear all</button>
+  </div>
+</div>
+
+<main class="wrap">
+  <section class="kpis" id="kpis"></section>
+
+  <!-- OVERVIEW -->
+  <div id="tab-overview">
+    <div class="card spine-card">
+      <h2>Every open requisition, placed by days in market
+        <span class="hint">One tick per req. Hover to read it, click to open the full record.</span>
+      </h2>
+      <div class="spine-legend">
+        <span><i style="background:#00A6BE"></i>Billable</span>
+        <span><i style="background:#7E8FAD"></i>Non-billable</span>
+        <span style="color:#8DA2C4">Taller tick = more positions on the req</span>
+      </div>
+      <div id="spine"></div>
+      <div class="spine-readout" id="spine-readout">Hover a tick for req details.</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>Aging profile <span class="hint">Click a bucket to filter the dashboard</span></h2>
+        <div id="aging"></div>
+        <p class="note" id="aging-note"></p>
+      </div>
+      <div class="card">
+        <h2>Open reqs by department <span class="hint">Click a department to filter</span></h2>
+        <div id="deptchart"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Load and aging by recruiter <span class="hint">Click a recruiter to filter</span></h2>
+      <div id="recbars"></div>
+      <div class="legendrow">
+        <span><i style="background:#00A6BE"></i>Billable open reqs</span>
+        <span><i style="background:#7E8FAD"></i>Non-billable open reqs</span>
+        <span><i style="background:#C13B4E"></i>Median days open (marker)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPEN REQS -->
+  <div id="tab-reqs" hidden>
+    <div class="card">
+      <h2>Open requisition detail <span class="hint">Click any column header to sort</span></h2>
+      <div class="searchrow">
+        <input type="search" id="q" placeholder="Search title, department, recruiter, req #" aria-label="Search open requisitions">
+        <span class="count" id="reqcount"></span>
+      </div>
+      <div class="tablewrap"><table id="reqtable">
+        <thead><tr>
+          <th data-sk="req">Req #</th>
+          <th data-sk="title">Job title</th>
+          <th data-sk="dept">Department</th>
+          <th data-sk="billable">Class</th>
+          <th data-sk="recruiter">Recruiter</th>
+          <th data-sk="hm">Hiring manager</th>
+          <th data-sk="loc">Location</th>
+          <th data-sk="pos" class="ar">Positions</th>
+          <th data-sk="created">Opened</th>
+          <th data-sk="days" class="ar">Days open</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- RECRUITER -->
+  <div id="tab-recruiter" hidden>
+    <div class="card">
+      <h2>Recruiter scorecard <span class="hint">Click a name to filter the dashboard to that desk</span></h2>
+      <div class="tablewrap"><table id="rectable">
+        <thead><tr>
+          <th data-sk="recruiter">Recruiter</th>
+          <th data-sk="bill" class="ar">Billable open</th>
+          <th data-sk="nonbill" class="ar">Non-billable open</th>
+          <th data-sk="open" class="ar">Total open reqs</th>
+          <th data-sk="pos" class="ar">Open positions</th>
+          <th data-sk="pctb" class="ar">% billable</th>
+          <th data-sk="med" class="ar">Median days open</th>
+          <th data-sk="old" class="ar">Reqs 60+ days</th>
+          <th data-sk="s4" class="ar">Starts last 4 wks</th>
+          <th data-sk="sytd" class="ar">Starts to date</th>
+          <th data-sk="sup" class="ar">Upcoming starts</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <p class="note">Starts include external hires and internal moves recorded in the closed trackers. Upcoming starts are confirmed start dates after the reporting date.</p>
+    </div>
+  </div>
+
+  <!-- STARTS -->
+  <div id="tab-starts" hidden>
+    <div class="card">
+      <h2>Starts by week <span class="hint">Week beginning Monday. Click a bar to read the week.</span>
+        <span class="subseg" id="startseg" role="group" aria-label="Start type">
+          <button data-st="all" aria-pressed="true">All starts</button>
+          <button data-st="ext" aria-pressed="false">External hires</button>
+          <button data-st="int" aria-pressed="false">Internal moves</button>
+        </span>
+      </h2>
+      <div id="wowchart"></div>
+      <div class="spine-readout" id="wow-readout" style="border-top-color:var(--line);color:var(--slate)">Hover or click a week for the breakdown.</div>
+      <div class="legendrow">
+        <span><i style="background:#00A6BE"></i>Billable</span>
+        <span><i style="background:#7E8FAD"></i>Non-billable</span>
+        <span><i style="background:#E4E9F1"></i>Scheduled (after reporting date)</span>
+      </div>
+      <p class="note">Start records are sourced from the Closed Tracker (June forward) and Internal Moves tabs, so weeks before May 2026 are sparse by data coverage rather than by performance.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h2>Starts to date by recruiter</h2>
+        <div id="startsrec"></div>
+      </div>
+      <div class="card">
+        <h2>Starts to date by department</h2>
+        <div id="startsdept"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROLES -->
+  <div id="tab-roles" hidden>
+    <div class="card">
+      <h2>Roles in market <span class="hint">Grouped by job title across the open portfolio</span></h2>
+      <div class="tablewrap"><table id="roletable">
+        <thead><tr>
+          <th data-sk="title">Job title</th>
+          <th data-sk="dept">Department</th>
+          <th data-sk="billable">Class</th>
+          <th data-sk="reqs" class="ar">Open reqs</th>
+          <th data-sk="pos" class="ar">Open positions</th>
+          <th data-sk="med" class="ar">Median days open</th>
+          <th data-sk="max" class="ar">Oldest req (days)</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <footer>
+    AssistRx Talent Acquisition &middot; figures reconcile to the source workbook pivots.<br>
+    Aging is measured from requisition creation date to the reporting date.
+  </footer>
+</main>
+
+<script>
+const DATA = {"as_of": "2026-07-31", "reqs": [{"req": "7115", "title": "Program Manager, Patient Solutions", "dept": "Patient Solutions", "recruiter": "Tommy Gardner", "billable": "Billable", "hm": "Henderson, Katina", "loc": "Maitland", "pos": 1, "created": "2025-12-11", "days": 232}, {"req": "8085", "title": "Manager, Software Engineering", "dept": "Development", "recruiter": "Sabrina Garcia", "billable": "Non-Billable", "hm": "Von Seggern, Tyler", "loc": "Remote-Florida", "pos": 1, "created": "2026-03-03", "days": 150}, {"req": "8230", "title": "Software Engineer III", "dept": "Development", "recruiter": "Sabrina Garcia", "billable": "Non-Billable", "hm": "Paynter, Michael", "loc": "Maitland", "pos": 1, "created": "2026-03-16", "days": 137}, {"req": "8357", "title": "Tech Lead", "dept": "Development", "recruiter": "Sabrina Garcia", "billable": "Non-Billable", "hm": "Loper, Nicole", "loc": "Remote-Florida", "pos": 1, "created": "2026-03-26", "days": 127}, {"req": "8365", "title": "Tech Lead", "dept": "Development", "recruiter": "Sabrina Garcia", "billable": "Non-Billable", "hm": "Loper, Nicole", "loc": "Maitland", "pos": 1, "created": "2026-03-27", "days": 126}, {"req": "8529", "title": "Product Business Analyst", "dept": "Product", "recruiter": "Robert Betz", "billable": "Non-Billable", "hm": "Purcell, Shawn", "loc": "Maitland; Overland Park; Southpark", "pos": 1, "created": "2026-04-16", "days": 106}, {"req": "8545", "title": "Vice President, Patient Solutions", "dept": "Executive Leadership", "recruiter": "John Sotero", "billable": "Non-Billable", "hm": "Lupo, Patrick", "loc": "Maitland", "pos": 1, "created": "2026-04-20", "days": 102}, {"req": "8709", "title": "Data Insights Analyst", "dept": "Data & Reporting", "recruiter": "Amar Sandhu", "billable": "Non-Billable", "hm": "Saucer, Mary", "loc": "Maitland", "pos": 1, "created": "2026-05-19", "days": 73}, {"req": "8740", "title": "Senior Manager, Product Marketing", "dept": "Marketing", "recruiter": "Tommy Gardner", "billable": "Non-Billable", "hm": "Romero, Lauren", "loc": "Remote-Arizona; Maitland; Overland Park; Southpark", "pos": 1, "created": "2026-05-26", "days": 66}, {"req": "8742", "title": "RFP/Proposal Writer", "dept": "Marketing", "recruiter": "Tommy Gardner", "billable": "Non-Billable", "hm": "Aviles, Leslie", "loc": "Maitland", "pos": 1, "created": "2026-05-26", "days": 66}, {"req": "8815", "title": "Program Manager, Patient Solutions", "dept": "Patient Solutions", "recruiter": "Donna Kemper", "billable": "Billable", "hm": "Campbell, Shaunte", "loc": "Southpark", "pos": 1, "created": "2026-06-08", "days": 53}, {"req": "8835", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Prophete, Ariana", "loc": "Maitland; Overland Park", "pos": 1, "created": "2026-06-11", "days": 50}, {"req": "8837", "title": "Manager, Marketing and Communications", "dept": "Marketing", "recruiter": "Tommy Gardner", "billable": "Non-Billable", "hm": "Richards, Amber", "loc": "Maitland", "pos": 1, "created": "2026-06-12", "days": 49}, {"req": "8840", "title": "Product Owner", "dept": "Product", "recruiter": "Robert Betz", "billable": "Non-Billable", "hm": "Purcell, Shawn", "loc": "Maitland", "pos": 1, "created": "2026-06-12", "days": 49}, {"req": "8841", "title": "Product Owner", "dept": "Product", "recruiter": "Robert Betz", "billable": "Non-Billable", "hm": "Purcell, Shawn", "loc": "Remote-Missouri", "pos": 1, "created": "2026-06-12", "days": 49}, {"req": "8896", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Qureshi, Nadia", "loc": "Arizona, Tempe", "pos": 1, "created": "2026-06-12", "days": 49}, {"req": "8900", "title": "Data Scientist, ITA", "dept": "Data & Reporting", "recruiter": "Robert Betz", "billable": "Non-Billable", "hm": "DiGiorno, Daniel", "loc": "Remote-Florida", "pos": 1, "created": "2026-06-15", "days": 46}, {"req": "8901", "title": "Data Scientist, ITA", "dept": "Data & Reporting", "recruiter": "Robert Betz", "billable": "Non-Billable", "hm": "DiGiorno, Daniel", "loc": "Remote-Florida", "pos": 1, "created": "2026-06-15", "days": 46}, {"req": "8902", "title": "Data Scientist, ITA", "dept": "Data & Reporting", "recruiter": "Robert Betz", "billable": "Non-Billable", "hm": "DiGiorno, Daniel", "loc": "Remote-Florida", "pos": 1, "created": "2026-06-15", "days": 46}, {"req": "8903", "title": "Salesforce Architect", "dept": "Architecture & DevOps", "recruiter": "Tommy Gardner", "billable": "Non-Billable", "hm": "Loper, Steven", "loc": "Maitland", "pos": 1, "created": "2026-06-15", "days": 46}, {"req": "8946", "title": "Supervisor, Patient Solutions", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Doby, Natasha", "loc": "Overland Park", "pos": 1, "created": "2026-06-16", "days": 45}, {"req": "8948", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Floyd, Rashonda", "loc": "Southpark", "pos": 1, "created": "2026-06-16", "days": 45}, {"req": "8949", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Floyd, Rashonda", "loc": "Maitland; Southpark", "pos": 1, "created": "2026-06-16", "days": 45}, {"req": "8950", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Floyd, Rashonda", "loc": "Maitland; Southpark", "pos": 1, "created": "2026-06-16", "days": 45}, {"req": "8952", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Floyd, Rashonda", "loc": "Maitland; Southpark", "pos": 1, "created": "2026-06-16", "days": 45}, {"req": "8960", "title": "Pharmacy Patient Care Coordinator", "dept": "ARx PS Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Ray, Shelli", "loc": "Overland Park", "pos": 1, "created": "2026-06-18", "days": 43}, {"req": "8970", "title": "Implementation Manager", "dept": "Project Management Org", "recruiter": "Tommy Gardner", "billable": "Non-Billable", "hm": "Commesso, Christa", "loc": "Remote-Florida", "pos": 1, "created": "2026-06-22", "days": 39}, {"req": "8972", "title": "Implementation Manager", "dept": "Project Management Org", "recruiter": "Tommy Gardner", "billable": "Non-Billable", "hm": "Waelder, Dana", "loc": "Remote-Florida", "pos": 1, "created": "2026-06-22", "days": 39}, {"req": "8973", "title": "Implementation Manager", "dept": "Project Management Org", "recruiter": "Tommy Gardner", "billable": "Non-Billable", "hm": "Davidson, Samantha", "loc": "Remote-Florida", "pos": 1, "created": "2026-06-22", "days": 39}, {"req": "8976", "title": "Pharmacy Patient Care Coordinator", "dept": "ARx PS Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Ray, Shelli", "loc": "Overland Park", "pos": 1, "created": "2026-06-22", "days": 39}, {"req": "8978", "title": "Telephony Systems Administrator", "dept": "Infrastructure & Telecom", "recruiter": "Sabrina Garcia", "billable": "Non-Billable", "hm": "Talantis, Nicholas", "loc": "Remote-Kansas", "pos": 1, "created": "2026-06-22", "days": 39}, {"req": "8984", "title": "Call Center Nurse", "dept": "Patient Solutions", "recruiter": "Donna Kemper", "billable": "Billable", "hm": "Hyman, Jason", "loc": "Overland Park", "pos": 1, "created": "2026-06-24", "days": 37}, {"req": "9001", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Donna Kemper", "billable": "Billable", "hm": "Rogers, Keivaughnna", "loc": "Overland Park", "pos": 1, "created": "2026-06-26", "days": 35}, {"req": "9003", "title": "Service Desk Technician II", "dept": "Internal Systems", "recruiter": "Sabrina Garcia", "billable": "Non-Billable", "hm": "Markovich, Alex", "loc": "Southpark", "pos": 1, "created": "2026-06-29", "days": 32}, {"req": "9015", "title": "Quality Control Process Writer", "dept": "Patient Solutions", "recruiter": "Donna Kemper", "billable": "Billable", "hm": "Jackson, Lisa", "loc": "Remote-Florida; Remote-Kansas", "pos": 1, "created": "2026-06-30", "days": 31}, {"req": "9016", "title": "Release Coordinator", "dept": "Quality & Release Mngmt", "recruiter": "Tommy Gardner", "billable": "Non-Billable", "hm": "Lopez, Derek", "loc": "Remote-Florida", "pos": 1, "created": "2026-06-30", "days": 31}, {"req": "9024", "title": "Pharmacy Patient Care Coordinator", "dept": "ARx PS Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Ray, Shelli", "loc": "Overland Park", "pos": 1, "created": "2026-07-02", "days": 29}, {"req": "9025", "title": "Pharmacy Patient Care Coordinator", "dept": "ARx PS Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Ray, Shelli", "loc": "Overland Park", "pos": 1, "created": "2026-07-02", "days": 29}, {"req": "9026", "title": "Pharmacy Patient Care Coordinator", "dept": "ARx PS Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Ray, Shelli", "loc": "Overland Park", "pos": 1, "created": "2026-07-02", "days": 29}, {"req": "9028", "title": "Pharmacy Technician", "dept": "CoAssist Pharmacy", "recruiter": "Yolanda Browne", "billable": "Billable", "hm": "Amezquita, Andrea", "loc": "CoAssist", "pos": 7, "created": "2026-07-06", "days": 25}, {"req": "9045", "title": "Account Care Educator", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Brower, Miranda", "loc": "Remote-Florida", "pos": 1, "created": "2026-07-06", "days": 25}, {"req": "9062", "title": "Bilingual Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "VanVleck, Patti", "loc": "Maitland", "pos": 1, "created": "2026-07-06", "days": 25}, {"req": "9067", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Tommy Gardner", "billable": "Billable", "hm": "Vaziri, Samira", "loc": "Maitland", "pos": 1, "created": "2026-07-06", "days": 25}, {"req": "9075", "title": "Manager, Implementation Analyst", "dept": "Project Management Org", "recruiter": "Robert Betz", "billable": "Non-Billable", "hm": "Bello, Duane", "loc": "Remote-Florida", "pos": 1, "created": "2026-07-07", "days": 24}, {"req": "9076", "title": "Implementation Analyst", "dept": "Project Management Org", "recruiter": "Robert Betz", "billable": "Non-Billable", "hm": "Nordin, Gina", "loc": "Remote-Florida", "pos": 1, "created": "2026-07-07", "days": 24}, {"req": "9077", "title": "Implementation Analyst", "dept": "Project Management Org", "recruiter": "Robert Betz", "billable": "Non-Billable", "hm": "Bello, Duane", "loc": "Remote-Florida", "pos": 1, "created": "2026-07-07", "days": 24}, {"req": "9078", "title": "Implementation Analyst", "dept": "Project Management Org", "recruiter": "Robert Betz", "billable": "Non-Billable", "hm": "Bello, Duane", "loc": "Remote-Florida", "pos": 1, "created": "2026-07-07", "days": 24}, {"req": "9082", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Donna Kemper", "billable": "Billable", "hm": "Millsop, Christine", "loc": "Overland Park", "pos": 1, "created": "2026-07-09", "days": 22}, {"req": "9086", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Roundtree, Ariana", "loc": "Southpark", "pos": 1, "created": "2026-07-10", "days": 21}, {"req": "9088", "title": "QA Lead Data & Reporting", "dept": "Quality & Release Mngmt", "recruiter": "Tommy Gardner", "billable": "Non-Billable", "hm": "Bhadra, Shreemaa", "loc": "Maitland; Overland Park; Southpark", "pos": 1, "created": "2026-07-12", "days": 19}, {"req": "9093", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Donna Kemper", "billable": "Billable", "hm": "Ray, Ashley", "loc": "Maitland; Overland Park; Southpark", "pos": 1, "created": "2026-07-13", "days": 18}, {"req": "9094", "title": "Senior Director, Strategic Account Management", "dept": "Account Management", "recruiter": "Robert Betz", "billable": "Non-Billable", "hm": "Harrell, Emily", "loc": "Maitland", "pos": 1, "created": "2026-07-13", "days": 18}, {"req": "9096", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Cereceda, Nereida", "loc": "Southpark", "pos": 1, "created": "2026-07-14", "days": 17}, {"req": "9097", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Tommy Gardner", "billable": "Billable", "hm": "Melendez-Davila, Jose", "loc": "Southpark", "pos": 1, "created": "2026-07-14", "days": 17}, {"req": "9098", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Lewis, Tressa", "loc": "Arizona, Tempe", "pos": 1, "created": "2026-07-14", "days": 17}, {"req": "9099", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Paul, Caulton", "loc": "Arizona, Tempe", "pos": 1, "created": "2026-07-14", "days": 17}, {"req": "9100", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Vaziri, Samira", "loc": "Arizona, Tempe", "pos": 1, "created": "2026-07-14", "days": 17}, {"req": "9101", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Williams, Darvi", "loc": "Arizona, Tempe", "pos": 1, "created": "2026-07-14", "days": 17}, {"req": "9102", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Satter, Theresa", "loc": "Arizona, Tempe", "pos": 1, "created": "2026-07-14", "days": 17}, {"req": "9108", "title": "Supervisor, Patient Solutions", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Ali, Adeel", "loc": "Maitland", "pos": 1, "created": "2026-07-14", "days": 17}, {"req": "9110", "title": "Pharmacy Patient Care Coordinator", "dept": "ARx PS Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Ray, Shelli", "loc": "Overland Park", "pos": 1, "created": "2026-07-14", "days": 17}, {"req": "9111", "title": "Pharmacy Patient Care Coordinator", "dept": "ARx PS Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Seibert, Shelly", "loc": "Overland Park", "pos": 1, "created": "2026-07-14", "days": 17}, {"req": "9112", "title": "Supervisor, Patient Solutions", "dept": "Patient Solutions", "recruiter": "Donna Kemper", "billable": "Billable", "hm": "Smith, Tarquaisha", "loc": "Southpark", "pos": 1, "created": "2026-07-15", "days": 16}, {"req": "9113", "title": "Bilingual Call Center Nurse", "dept": "Patient Solutions", "recruiter": "Donna Kemper", "billable": "Billable", "hm": "Smith, Tarquaisha", "loc": "Overland Park; Southpark", "pos": 1, "created": "2026-07-15", "days": 16}, {"req": "9114", "title": "Bilingual Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Claiborne, Ciyanna", "loc": "Overland Park; Southpark", "pos": 1, "created": "2026-07-15", "days": 16}, {"req": "9115", "title": "Procurement Specialist", "dept": "Product", "recruiter": "Tommy Gardner", "billable": "Non-Billable", "hm": "Namanny, Jennifer", "loc": "Des Moines, IA", "pos": 1, "created": "2026-07-17", "days": 14}, {"req": "9116", "title": "Salesforce Administrator II", "dept": "Development", "recruiter": "Robert Betz", "billable": "Non-Billable", "hm": "Vijayakumar, Vaishnavi", "loc": "Maitland", "pos": 1, "created": "2026-07-17", "days": 14}, {"req": "9120", "title": "Pharmacy Patient Care Coordinator", "dept": "ARx PS Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Brewer, Christina", "loc": "Overland Park", "pos": 1, "created": "2026-07-20", "days": 11}, {"req": "9121", "title": "Pharmacy Technician", "dept": "ARx PS Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "King, Cassandra", "loc": "Overland Park", "pos": 1, "created": "2026-07-20", "days": 11}, {"req": "9122", "title": "Pharmacy Patient Care Coordinator", "dept": "ARx PS Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Sellers, Christopher", "loc": "Overland Park", "pos": 1, "created": "2026-07-20", "days": 11}, {"req": "9123", "title": "Pharmacy Patient Care Coordinator", "dept": "ARx PS Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Brewer, Christina", "loc": "Overland Park", "pos": 1, "created": "2026-07-20", "days": 11}, {"req": "9124", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "VanVleck, Patti", "loc": "Overland Park", "pos": 1, "created": "2026-07-20", "days": 11}, {"req": "9127", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Tommy Gardner", "billable": "Billable", "hm": "Zeigler, Natasha", "loc": "Arizona, Tempe; Maitland", "pos": 1, "created": "2026-07-20", "days": 11}, {"req": "9130", "title": "Pharmacy Technician", "dept": "CoAssist Pharmacy", "recruiter": "Yolanda Browne", "billable": "Billable", "hm": "Alvarez, Kathleen", "loc": "CoAssist", "pos": 1, "created": "2026-07-21", "days": 10}, {"req": "9134", "title": "Manager, Pharmacovigilance", "dept": "Patient Solutions", "recruiter": "Tommy Gardner", "billable": "Billable", "hm": "Goldman, Frank", "loc": "Remote-Florida; Maitland; Southpark", "pos": 1, "created": "2026-07-22", "days": 9}, {"req": "9136", "title": "Pharmacy Technician", "dept": "CoAssist Pharmacy", "recruiter": "Yolanda Browne", "billable": "Billable", "hm": "Martinez Rivera, Joise", "loc": "CoAssist", "pos": 1, "created": "2026-07-22", "days": 9}, {"req": "9141", "title": "Pharmacist", "dept": "CoAssist Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Romain, Ronald", "loc": "Remote-Florida", "pos": 1, "created": "2026-07-22", "days": 9}, {"req": "9142", "title": "Pharmacist", "dept": "CoAssist Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Romain, Ronald", "loc": "Remote-Florida", "pos": 1, "created": "2026-07-22", "days": 9}, {"req": "9143", "title": "Pharmacist", "dept": "CoAssist Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Romain, Ronald", "loc": "Remote-Florida", "pos": 1, "created": "2026-07-22", "days": 9}, {"req": "9144", "title": "Pharmacist", "dept": "CoAssist Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Romain, Ronald", "loc": "CoAssist", "pos": 1, "created": "2026-07-22", "days": 9}, {"req": "9145", "title": "Advance Academy Associate", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Sandberg, Perla", "loc": "Arizona, Tempe", "pos": 1, "created": "2026-07-23", "days": 8}, {"req": "9149", "title": "Service Desk Coordinator", "dept": "Internal Systems", "recruiter": "Sabrina Garcia", "billable": "Non-Billable", "hm": "Markovich, Alex", "loc": "Maitland", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9150", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Hailey Dougherty", "billable": "Billable", "hm": null, "loc": "Arizona, Tempe; CoAssist; Maitland; Overland Park; Southpark", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9151", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Hailey Dougherty", "billable": "Billable", "hm": null, "loc": "Arizona, Tempe; Overland Park; Southpark", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9152", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Medina, Julissa", "loc": "Arizona, Tempe; Maitland", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9153", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Wallace, Sade", "loc": "Arizona, Tempe; Maitland", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9154", "title": "Salesforce Developer I", "dept": "Development", "recruiter": "Amar Sandhu", "billable": "Non-Billable", "hm": "Addagalla, Kavita", "loc": "Remote-Florida; Maitland", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9156", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Petrovic, Paula", "loc": "Arizona, Tempe; Southpark", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9158", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Petrovic, Paula", "loc": "Arizona, Tempe; Southpark", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9159", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Petrovic, Paula", "loc": "Arizona, Tempe; Southpark", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9160", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Petrovic, Paula", "loc": "Arizona, Tempe; Southpark", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9161", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Petrovic, Paula", "loc": "Arizona, Tempe; Southpark", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9162", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Petrovic, Paula", "loc": "Arizona, Tempe; Southpark", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9163", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Petrovic, Paula", "loc": "Arizona, Tempe; Southpark", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9164", "title": "Team Lead, Patient Solutions", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Petrovic, Paula", "loc": "Arizona, Tempe; Southpark", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9165", "title": "Team Lead, Patient Solutions", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Petrovic, Paula", "loc": "Arizona, Tempe; Southpark", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9166", "title": "Program Manager, Patient Solutions", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Hasham, Sumia", "loc": "Maitland", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9167", "title": "Senior Implementation Analyst", "dept": "Project Management Org", "recruiter": "Tommy Gardner", "billable": "Non-Billable", "hm": "Nordin, Gina", "loc": "Remote-Florida; Maitland", "pos": 1, "created": "2026-07-24", "days": 7}, {"req": "9168", "title": "Pharmacy Patient Care Coordinator", "dept": "ARx PS Pharmacy", "recruiter": "Sabrina Garcia", "billable": "Billable", "hm": "Melo, Mark", "loc": "Overland Park", "pos": 1, "created": "2026-07-27", "days": 4}, {"req": "9169", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Thibodeaux, Sandy", "loc": "Southpark", "pos": 1, "created": "2026-07-27", "days": 4}, {"req": "9170", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Delarosa, Aillene", "loc": "Arizona, Tempe; Maitland", "pos": 1, "created": "2026-07-27", "days": 4}, {"req": "9171", "title": "Customer Service Representative", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Jiraud, Jeremy", "loc": "Arizona, Tempe; Maitland", "pos": 1, "created": "2026-07-27", "days": 4}, {"req": "9172", "title": "Data Engineer I", "dept": "Enterprise Data", "recruiter": "Amar Sandhu", "billable": "Non-Billable", "hm": "Lackey, Jason", "loc": "Remote-California", "pos": 1, "created": "2026-07-27", "days": 4}, {"req": "9173", "title": "Account Care Educator", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Sims, Riesha", "loc": "Overland Park", "pos": 1, "created": "2026-07-27", "days": 4}, {"req": "9174", "title": "Salesforce Technical Lead, Experience Cloud", "dept": "Development", "recruiter": "Amar Sandhu", "billable": "Non-Billable", "hm": "Addagalla, Kavita", "loc": "Remote-Florida; Maitland", "pos": 1, "created": "2026-07-27", "days": 4}, {"req": "9176", "title": "Field Support Specialist", "dept": "Patient Solutions", "recruiter": "Makensie Frank", "billable": "Billable", "hm": "Delarosa, Aillene", "loc": "Arizona, Tempe; Maitland", "pos": 1, "created": "2026-07-28", "days": 3}, {"req": "9177", "title": "Account Care Educator", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Lager, Nicholas", "loc": "Southpark", "pos": 1, "created": "2026-07-28", "days": 3}, {"req": "9181", "title": "Pharmacy Technician", "dept": "CoAssist Pharmacy", "recruiter": "Yolanda Browne", "billable": "Billable", "hm": "Woods, Tina", "loc": "CoAssist", "pos": 1, "created": "2026-07-29", "days": 2}, {"req": "9182", "title": "Pharmacy Technician", "dept": "CoAssist Pharmacy", "recruiter": "Yolanda Browne", "billable": "Billable", "hm": "Woods, Tina", "loc": "CoAssist", "pos": 1, "created": "2026-07-29", "days": 2}, {"req": "9183", "title": "Learning Specialist", "dept": "Human Resources", "recruiter": "John Sotero", "billable": "Non-Billable", "hm": "Wyatt, Abigail", "loc": "Arizona, Tempe", "pos": 1, "created": "2026-07-29", "days": 2}, {"req": "9184", "title": "Pharmacy Technician", "dept": "CoAssist Pharmacy", "recruiter": "Yolanda Browne", "billable": "Billable", "hm": "Woods, Tina", "loc": "CoAssist", "pos": 1, "created": "2026-07-29", "days": 2}, {"req": "9185", "title": "Patient Access Specialist", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Samuels, Tanisha", "loc": "Southpark", "pos": 1, "created": "2026-07-30", "days": 1}, {"req": "9186", "title": "Pharmacy Technician", "dept": "CoAssist Pharmacy", "recruiter": "Yolanda Browne", "billable": "Billable", "hm": "Brown, Dexter", "loc": "Southpark", "pos": 1, "created": "2026-07-30", "days": 1}, {"req": "9187", "title": "Pharmacy Technician", "dept": "CoAssist Pharmacy", "recruiter": "Yolanda Browne", "billable": "Billable", "hm": "Gulley, Lynsey", "loc": "CoAssist", "pos": 1, "created": "2026-07-30", "days": 1}, {"req": "9188", "title": "Senior Director, Data Insights Analyst (DIA) ", "dept": "Data & Reporting", "recruiter": "John Sotero", "billable": "Non-Billable", "hm": "DiGiorno, Daniel", "loc": "Remote-Florida; Maitland", "pos": 1, "created": "2026-07-30", "days": 1}, {"req": "9189", "title": "Team Lead, Patient Solutions", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "McGovern, Renata", "loc": "Remote-Arizona", "pos": 1, "created": "2026-07-31", "days": 0}, {"req": "9191", "title": "Advance Academy Associate", "dept": "Patient Solutions", "recruiter": "Jake Pullis", "billable": "Billable", "hm": "Sandberg, Perla", "loc": "Remote-Arizona", "pos": 1, "created": "2026-07-31", "days": 0}, {"req": "9193", "title": "Pharmacy Technician", "dept": "CoAssist Pharmacy", "recruiter": "Yolanda Browne", "billable": "Billable", "hm": "Miller, Gina Marie", "loc": "CoAssist", "pos": 1, "created": "2026-07-31", "days": 0}, {"req": "9194", "title": "Pharmacy Technician", "dept": "CoAssist Pharmacy", "recruiter": "Yolanda Browne", "billable": "Billable", "hm": "Gulley, Lynsey", "loc": "CoAssist", "pos": 1, "created": "2026-07-31", "days": 0}], "starts": [{"req": "8646", "recruiter": "John Sotero", "dept": "Commercial Operations", "billable": "Non-Billable", "week": "2026-06-01", "date": "2026-06-01", "source": "Closed Tracker since June"}, {"req": "8649", "recruiter": "John Sotero", "dept": "Commercial Operations", "billable": "Non-Billable", "week": "2026-06-01", "date": "2026-06-01", "source": "Closed Tracker since June"}, {"req": "8276", "recruiter": "Amar Sandhu", "dept": "Finance", "billable": "Non-Billable", "week": "2026-06-01", "date": "2026-06-01", "source": "Closed Tracker since June"}, {"req": "7794", "recruiter": "Tommy Gardner", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-01", "date": "2026-06-01", "source": "Closed Tracker since June"}, {"req": "8356", "recruiter": "Amar Sandhu", "dept": "Data & Reporting", "billable": "Non-Billable", "week": "2026-06-01", "date": "2026-06-01", "source": "Closed Tracker since June"}, {"req": "8640", "recruiter": "Tommy Gardner", "dept": "Human Resources", "billable": "Non-Billable", "week": "2026-06-01", "date": "2026-06-01", "source": "Closed Tracker since June"}, {"req": "8535", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8500", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8674", "recruiter": "Robert Betz", "dept": "Project Management Org", "billable": "Non-Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8665", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8672", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8591", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8050", "recruiter": "Sabrina Garcia", "dept": "Infrastructure & Telecom", "billable": "Non-Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8675", "recruiter": "Tommy Gardner", "dept": "Marketing", "billable": "Non-Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8682", "recruiter": "John Sotero", "dept": "Commercial Operations", "billable": "Non-Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8517", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8704", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8711", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8597", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8687", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8637", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8557", "recruiter": "Amar Sandhu", "dept": "Finance", "billable": "Non-Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8400", "recruiter": "Tommy Gardner", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8706", "recruiter": "Amar Sandhu", "dept": "Finance", "billable": "Non-Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8677", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8336", "recruiter": "Robert Betz", "dept": "Product", "billable": "Non-Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8622", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8729", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8676", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8631", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8667", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8648", "recruiter": "Tommy Gardner", "dept": "Product", "billable": "Non-Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8643", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Closed Tracker since June"}, {"req": "8586", "recruiter": "Tommy Gardner", "dept": "Human Resources", "billable": "Non-Billable", "week": "2026-06-15", "date": "2026-06-15", "source": "Closed Tracker since June"}, {"req": "8707", "recruiter": "Amar Sandhu", "dept": "Data & Reporting", "billable": "Non-Billable", "week": "2026-06-15", "date": "2026-06-15", "source": "Closed Tracker since June"}, {"req": "8360", "recruiter": "Robert Betz", "dept": "Product", "billable": "Non-Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8705", "recruiter": "Amar Sandhu", "dept": "Data & Reporting", "billable": "Non-Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8720", "recruiter": "Amar Sandhu", "dept": "Data & Reporting", "billable": "Non-Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8725", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8734", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8721", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8735", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8722", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8739", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8756", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8753", "recruiter": "Amar Sandhu", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "7966", "recruiter": "Amar Sandhu", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8755", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8766", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8783", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8737", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8724", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8726", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8736", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8732", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8794", "recruiter": "Robert Betz", "dept": "Account Management", "billable": "Non-Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8493", "recruiter": "Amar Sandhu", "dept": "Enterprise Data", "billable": "Non-Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8671", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8730", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8731", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8733", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8798", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8723", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8799", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8805", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8717", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8823", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8825", "recruiter": "Tommy Gardner", "dept": "Marketing", "billable": "Non-Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8290", "recruiter": "Sabrina Garcia", "dept": "Development", "billable": "Non-Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8820", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8744", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8678", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8358", "recruiter": "Sabrina Garcia", "dept": "Development", "billable": "Non-Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Closed Tracker since June"}, {"req": "8917", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8919", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8920", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8924", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8929", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8930", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8934", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8938", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8931", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8928", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8918", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8944", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8932", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8936", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8943", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8940", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8916", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8933", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8939", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-24", "source": "Closed Tracker since June"}, {"req": "8457", "recruiter": "Robert Betz", "dept": "Product", "billable": "Non-Billable", "week": "2026-06-29", "date": "2026-06-29", "source": "Closed Tracker since June"}, {"req": "8708", "recruiter": "Amar Sandhu", "dept": "Data & Reporting", "billable": "Non-Billable", "week": "2026-06-29", "date": "2026-06-29", "source": "Closed Tracker since June"}, {"req": "8921", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-29", "date": "2026-06-29", "source": "Closed Tracker since June"}, {"req": "8922", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-29", "date": "2026-06-29", "source": "Closed Tracker since June"}, {"req": "8925", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-29", "date": "2026-06-29", "source": "Closed Tracker since June"}, {"req": "8927", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-29", "date": "2026-06-29", "source": "Closed Tracker since June"}, {"req": "8915", "recruiter": "Hailey Dougherty", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-29", "date": "2026-06-29", "source": "Closed Tracker since June"}, {"req": "8832", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8833", "recruiter": "Robert Betz", "dept": "Account Management", "billable": "Non-Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8834", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8669", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8821", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8754", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "7963", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8906", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8907", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8954", "recruiter": "Robert Betz", "dept": "Allazo Technology", "billable": "Non-Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8908", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8683", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8819", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8814", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8958", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8980", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8847", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8848", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8846", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8880", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8910", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8958", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8853", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8634", "recruiter": "Tommy Gardner", "dept": "Sales Operations", "billable": "Non-Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8855", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8986", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8987", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8988", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8849", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8852", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8856", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8881", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8854", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8831", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8909", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-07", "source": "Closed Tracker since June"}, {"req": "8818", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8866", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8865", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8883", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8851", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Closed Tracker since June"}, {"req": "8989", "recruiter": "Amar Sandhu", "dept": "Enterprise Data", "billable": "Non-Billable", "week": "2026-07-13", "date": "2026-07-13", "source": "Closed Tracker since June"}, {"req": "7961", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8964", "recruiter": "Robert Betz", "dept": "Project Management Org", "billable": "Non-Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8898", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8994", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "9000", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8998", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8997", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "9002", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8999", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "9014", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "9004", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8980", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8887", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8683", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8896", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8863", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8877", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8876", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8881", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8874", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8864", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8882", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8955", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8860", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "9047", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8975", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8758", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8746", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "9018", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "9020", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8995", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "9049", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8713", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8959", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8982", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "9046", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8983", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Closed Tracker since June"}, {"req": "8904", "recruiter": "Robert Betz", "dept": "Data & Reporting", "billable": "Non-Billable", "week": "2026-07-27", "date": "2026-07-27", "source": "Closed Tracker since June"}, {"req": "8990", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9012", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9013", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9033", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9032", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9034", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9050", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9066", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9063", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9065", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9064", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9052", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9036", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9030", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9095", "recruiter": "Robert Betz", "dept": "Allazo Technology", "billable": "Non-Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9035", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9037", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9054", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9029", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9079", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9053", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9048", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "8870", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9059", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9027", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "8703", "recruiter": "Amar Sandhu", "dept": "Data & Reporting", "billable": "Non-Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9107", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9074", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "8993", "recruiter": "John Sotero", "dept": "Human Resources", "billable": "Non-Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9060", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "8899", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9017", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9046", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "8962", "recruiter": "Tommy Gardner", "dept": "Architecture & DevOps", "billable": "Non-Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "8885", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9072", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9031", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9023", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9022", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "8782", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9131", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "8879", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "8890", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9139", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9069", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9085", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "8960", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "8961", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9122", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9073", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9128", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9125", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9142", "recruiter": "Sabrina Garcia", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9096", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "8842", "recruiter": "Robert Betz", "dept": "Product", "billable": "Non-Billable", "week": "2026-08-10", "date": "2026-08-10", "source": "Closed Tracker since June"}, {"req": "9056", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9132", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9137", "recruiter": "Robert Betz", "dept": "Development", "billable": "Non-Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9043", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9129", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9148", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9155", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "8313", "recruiter": "Tommy Gardner", "dept": "Architecture & DevOps", "billable": "Non-Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "8787", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9061", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9175", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "8960", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Closed Tracker since June"}, {"req": "9133", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9180", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9181", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9184", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "8829", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9190", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9192", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9146", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9193", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9119", "recruiter": "Amar Sandhu", "dept": "Development", "billable": "Non-Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9187", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "9186", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Closed Tracker since June"}, {"req": "8839", "recruiter": "Robert Betz", "dept": "Infrastructure & Telecom", "billable": "Non-Billable", "week": "2026-08-31", "date": "2026-08-31", "source": "Closed Tracker since June"}, {"req": "9071", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-31", "date": "2026-08-31", "source": "Closed Tracker since June"}, {"req": "9157", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-31", "date": "2026-08-31", "source": "Closed Tracker since June"}, {"req": "9126", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-31", "date": "2026-08-31", "source": "Closed Tracker since June"}, {"req": "9070", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-31", "date": "2026-08-31", "source": "Closed Tracker since June"}, {"req": "9065", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-31", "date": "2026-08-31", "source": "Closed Tracker since June"}, {"req": "9068", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-31", "date": "2026-08-31", "source": "Closed Tracker since June"}, {"req": "8658", "recruiter": "Sabrina Garcia", "dept": "Infrastructure & Telecom", "billable": "Non-Billable", "week": "2026-03-02", "date": "2026-03-02", "source": "Internal Moves Closed"}, {"req": "7633", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-04-27", "date": "2026-04-27", "source": "Internal Moves Closed"}, {"req": "7248", "recruiter": "Donna Kemper", "dept": "Facilities & Admin", "billable": "Non-Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8531", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "7450", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "7633", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8588", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8035", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8507", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8596", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8594", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8595", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8616", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8613", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8614", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8513", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8593", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8610", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8611", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8419", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8420", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8633", "recruiter": "Tommy Gardner", "dept": "Sales Operations", "billable": "Non-Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8608", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8664", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8636", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8686", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8542", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8700", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-11", "date": "2026-05-11", "source": "Internal Moves Closed"}, {"req": "8506", "recruiter": "Tommy Gardner", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-25", "date": "2026-05-25", "source": "Internal Moves Closed"}, {"req": "8416", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-25", "date": "2026-05-25", "source": "Internal Moves Closed"}, {"req": "8268", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-25", "date": "2026-05-25", "source": "Internal Moves Closed"}, {"req": "8615", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-05-25", "date": "2026-05-25", "source": "Internal Moves Closed"}, {"req": "8659", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-25", "date": "2026-05-25", "source": "Internal Moves Closed"}, {"req": "8421", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-25", "date": "2026-05-25", "source": "Internal Moves Closed"}, {"req": "8666", "recruiter": "Donna Kemper", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-05-25", "date": "2026-05-25", "source": "Internal Moves Closed"}, {"req": "8366", "recruiter": "Robert Betz", "dept": "Project Management Org", "billable": "Non-Billable", "week": "2026-05-25", "date": "2026-05-26", "source": "Internal Moves Closed"}, {"req": "8670", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-25", "date": "2026-05-25", "source": "Internal Moves Closed"}, {"req": "8690", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-25", "date": "2026-05-25", "source": "Internal Moves Closed"}, {"req": "8359", "recruiter": "Robert Betz", "dept": "Project Management Org", "billable": "Non-Billable", "week": "2026-05-25", "date": "2026-05-25", "source": "Internal Moves Closed"}, {"req": "8301", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-25", "date": "2026-05-25", "source": "Internal Moves Closed"}, {"req": "8778", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-25", "date": "2026-05-25", "source": "Internal Moves Closed"}, {"req": "8685", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-05-25", "date": "2026-05-25", "source": "Internal Moves Closed"}, {"req": "8647", "recruiter": "Tommy Gardner", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8523", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8632", "recruiter": "Tommy Gardner", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8712", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8691", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8653", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8558", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8657", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8781", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8693", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8784", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8655", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8785", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8656", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8791", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8527", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8654", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8770", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8767", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8777", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8768", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8769", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8774", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8775", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8771", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8773", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8298", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-08", "date": "2026-06-08", "source": "Internal Moves Closed"}, {"req": "8688", "recruiter": "Amar Sandhu", "dept": "Legal & Compliance", "billable": "Non-Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Internal Moves Closed"}, {"req": "8604", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Internal Moves Closed"}, {"req": "8802", "recruiter": "Tommy Gardner", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Internal Moves Closed"}, {"req": "8813", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Internal Moves Closed"}, {"req": "8750", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Internal Moves Closed"}, {"req": "8811", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Internal Moves Closed"}, {"req": "8809", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Internal Moves Closed"}, {"req": "8810", "recruiter": "Tommy Gardner", "dept": "Marketing", "billable": "Non-Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Internal Moves Closed"}, {"req": "8710", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Internal Moves Closed"}, {"req": "8905", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-06-22", "date": "2026-06-22", "source": "Internal Moves Closed"}, {"req": "8049", "recruiter": "Sabrina Garcia", "dept": "Infrastructure & Telecom", "billable": "Non-Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Internal Moves Closed"}, {"req": "8953", "recruiter": "Sabrina Garcia", "dept": "Infrastructure & Telecom", "billable": "Non-Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Internal Moves Closed"}, {"req": "8958", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Internal Moves Closed"}, {"req": "8801", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Internal Moves Closed"}, {"req": "8991", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Internal Moves Closed"}, {"req": "8800", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Internal Moves Closed"}, {"req": "8981", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Internal Moves Closed"}, {"req": "9044", "recruiter": "Tommy Gardner", "dept": "Business Development", "billable": "Non-Billable", "week": "2026-07-06", "date": "2026-07-06", "source": "Internal Moves Closed"}, {"req": "8836", "recruiter": "Sabrina Garcia", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "8968", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "9057", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "8977", "recruiter": "Sabrina Garcia", "dept": "ARx PS Pharmacy", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "8985", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "9084", "recruiter": "John Sotero", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "8996", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "9051", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "9106", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "8992", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "9019", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "9109", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "8945", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "9089", "recruiter": "John Sotero", "dept": "Commercial Operations", "billable": "Non-Billable", "week": "2026-07-20", "date": "2026-07-20", "source": "Internal Moves Closed"}, {"req": "9090", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Internal Moves Closed"}, {"req": "9140", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Internal Moves Closed"}, {"req": "8971", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Internal Moves Closed"}, {"req": "9087", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Internal Moves Closed"}, {"req": "9138", "recruiter": "Jake Pullis", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Internal Moves Closed"}, {"req": "8947", "recruiter": "Makensie Frank", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-03", "date": "2026-08-03", "source": "Internal Moves Closed"}, {"req": "9135", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Internal Moves Closed"}, {"req": "9147", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Internal Moves Closed"}, {"req": "9081", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Internal Moves Closed"}, {"req": "9105", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-31", "date": "2026-08-31", "source": "Internal Moves Closed"}, {"req": "9091", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-31", "date": "2026-08-31", "source": "Internal Moves Closed"}, {"req": "9092", "recruiter": "Donna Kemper", "dept": "Patient Solutions", "billable": "Billable", "week": "2026-08-31", "date": "2026-08-31", "source": "Internal Moves Closed"}, {"req": "9182", "recruiter": "Yolanda Browne", "dept": "CoAssist Pharmacy", "billable": "Billable", "week": "2026-08-17", "date": "2026-08-17", "source": "Internal Moves Closed"}], "titles": [{"title": "Customer Service Representative", "dept": "Patient Solutions", "billable": "Billable", "reqs": 19, "pos": 18}, {"title": "Patient Access Specialist", "dept": "Patient Solutions", "billable": "Billable", "reqs": 16, "pos": 15}, {"title": "Pharmacy Patient Care Coordinator", "dept": "ARx PS Pharmacy", "billable": "Billable", "reqs": 11, "pos": 11}, {"title": "Pharmacy Technician", "dept": "CoAssist Pharmacy", "billable": "Billable", "reqs": 10, "pos": 16}, {"title": "Pharmacist", "dept": "CoAssist Pharmacy", "billable": "Billable", "reqs": 4, "pos": 4}, {"title": "Program Manager, Patient Solutions", "dept": "Patient Solutions", "billable": "Billable", "reqs": 3, "pos": 3}, {"title": "Data Scientist, ITA", "dept": "Data & Reporting", "billable": "Non-Billable", "reqs": 3, "pos": 3}, {"title": "Supervisor, Patient Solutions", "dept": "Patient Solutions", "billable": "Billable", "reqs": 3, "pos": 3}, {"title": "Implementation Manager", "dept": "Project Management Org", "billable": "Non-Billable", "reqs": 3, "pos": 3}, {"title": "Account Care Educator", "dept": "Patient Solutions", "billable": "Billable", "reqs": 3, "pos": 3}, {"title": "Implementation Analyst", "dept": "Project Management Org", "billable": "Non-Billable", "reqs": 3, "pos": 3}, {"title": "Team Lead, Patient Solutions", "dept": "Patient Solutions", "billable": "Billable", "reqs": 3, "pos": 3}, {"title": "Tech Lead", "dept": "Development", "billable": "Non-Billable", "reqs": 2, "pos": 2}, {"title": "Product Owner", "dept": "Product", "billable": "Non-Billable", "reqs": 2, "pos": 2}, {"title": "Bilingual Patient Access Specialist", "dept": "Patient Solutions", "billable": "Billable", "reqs": 2, "pos": 2}, {"title": "Advance Academy Associate", "dept": "Patient Solutions", "billable": "Billable", "reqs": 2, "pos": 2}, {"title": "Manager, Software Engineering", "dept": "Development", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Software Engineer III", "dept": "Development", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Product Business Analyst", "dept": "Product", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Vice President, Patient Solutions", "dept": "Executive Leadership", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Data Insights Analyst", "dept": "Data & Reporting", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Senior Manager, Product Marketing", "dept": "Marketing", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "RFP/Proposal Writer", "dept": "Marketing", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Manager, Marketing and Communications", "dept": "Marketing", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Salesforce Architect", "dept": "Architecture & DevOps", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Telephony Systems Administrator", "dept": "Infrastructure & Telecom", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Call Center Nurse", "dept": "Patient Solutions", "billable": "Billable", "reqs": 1, "pos": 1}, {"title": "Service Desk Technician II", "dept": "Internal Systems", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Quality Control Process Writer", "dept": "Patient Solutions", "billable": "Billable", "reqs": 1, "pos": 1}, {"title": "Release Coordinator", "dept": "Quality & Release Mngmt", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Manager, Implementation Analyst", "dept": "Project Management Org", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "QA Lead Data & Reporting", "dept": "Quality & Release Mngmt", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Senior Director, Strategic Account Management", "dept": "Account Management", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Bilingual Call Center Nurse", "dept": "Patient Solutions", "billable": "Billable", "reqs": 1, "pos": 1}, {"title": "Procurement Specialist", "dept": "Product", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Salesforce Administrator II", "dept": "Development", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Pharmacy Technician", "dept": "ARx PS Pharmacy", "billable": "Billable", "reqs": 1, "pos": 1}, {"title": "Manager, Pharmacovigilance", "dept": "Patient Solutions", "billable": "Billable", "reqs": 1, "pos": 1}, {"title": "Service Desk Coordinator", "dept": "Internal Systems", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Salesforce Developer I", "dept": "Development", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Senior Implementation Analyst", "dept": "Project Management Org", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Data Engineer I", "dept": "Enterprise Data", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Salesforce Technical Lead, Experience Cloud", "dept": "Development", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Field Support Specialist", "dept": "Patient Solutions", "billable": "Billable", "reqs": 1, "pos": 1}, {"title": "Learning Specialist", "dept": "Human Resources", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Senior Director, Data Insights Analyst (DIA) ", "dept": "Data & Reporting", "billable": "Non-Billable", "reqs": 1, "pos": 1}, {"title": "Total", "dept": null, "billable": null, "reqs": 119, "pos": 123}]};
+const NAVY="#16294B", TEAL="#00A6BE", SLATE2="#7E8FAD", CORAL="#C13B4E", AMBER="#D98B2B", GREEN="#2E8B6E";
+const AS_OF = DATA.as_of;
+
+const state = {bill:"All", rec:null, dept:null, bucket:null, tab:"overview", q:"",
+  sortReq:{k:"days",d:-1}, sortRec:{k:"open",d:-1}, sortRole:{k:"reqs",d:-1}, st:"all"};
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtDate = iso => {
+  if(!iso) return "—";
+  const [y,m,d] = iso.split("-");
+  return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+m-1]+" "+(+d)+", "+y;
+};
+const shortDate = iso => { const [y,m,d]=iso.split("-"); return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+m-1]+" "+(+d); };
+const median = a => { if(!a.length) return null; const s=[...a].sort((x,y)=>x-y), h=s.length>>1;
+  return s.length%2 ? s[h] : Math.round((s[h-1]+s[h])/2); };
+const uniq = a => [...new Set(a)];
+const BUCKETS = [
+  {k:"0-30",   label:"0 – 30 days",  test:d=>d<=30,          color:GREEN, cls:"a1"},
+  {k:"31-60",  label:"31 – 60 days", test:d=>d>30&&d<=60,    color:TEAL,  cls:"a1"},
+  {k:"61-90",  label:"61 – 90 days", test:d=>d>60&&d<=90,    color:AMBER, cls:"a2"},
+  {k:"90+",    label:"Over 90 days", test:d=>d>90,           color:CORAL, cls:"a3"}
+];
+const bucketOf = d => (BUCKETS.find(b=>b.test(d))||BUCKETS[0]).k;
+const ageCls  = d => (BUCKETS.find(b=>b.test(d))||BUCKETS[0]).cls;
+
+/* ---------- filtering ---------- */
+function reqsFiltered(ignore){
+  ignore = ignore || {};
+  return DATA.reqs.filter(r =>
+    (ignore.bill   || state.bill==="All" || r.billable===state.bill) &&
+    (ignore.rec    || !state.rec  || r.recruiter===state.rec) &&
+    (ignore.dept   || !state.dept || r.dept===state.dept) &&
+    (ignore.bucket || !state.bucket || bucketOf(r.days)===state.bucket)
+  );
+}
+function startsFiltered(){
+  return DATA.starts.filter(s =>
+    (state.bill==="All" || s.billable===state.bill) &&
+    (!state.rec  || s.recruiter===state.rec) &&
+    (!state.dept || s.dept===state.dept) &&
+    (state.st==="all" || (state.st==="int") === (s.source==="Internal Moves Closed"))
+  );
+}
+const isPast = s => s.date <= AS_OF;
+function weekList(){
+  const w = uniq(DATA.starts.map(s=>s.week)).filter(x=>x>="2026-05-04").sort();
+  const out=[], d=new Date(w[0]+"T00:00:00"), end=new Date(w[w.length-1]+"T00:00:00");
+  while(d<=end){ out.push(d.toISOString().slice(0,10)); d.setDate(d.getDate()+7); }
+  return out;
+}
+
+/* ---------- KPIs ---------- */
+function renderKpis(){
+  const r = reqsFiltered(), s = startsFiltered();
+  const past = s.filter(isPast), up = s.filter(x=>!isPast(x));
+  const d = new Date(AS_OF+"T00:00:00"); d.setDate(d.getDate()-27);
+  const cut = d.toISOString().slice(0,10);
+  const last4 = past.filter(x=>x.date>=cut).length;
+  const bill = r.filter(x=>x.billable==="Billable").length;
+  const pct = r.length ? Math.round(bill/r.length*100) : 0;
+  const med = median(r.map(x=>x.days));
+  const old = r.filter(x=>x.days>60).length;
+  const oldCls = old===0 ? "" : (old/Math.max(r.length,1) > .15 ? "alert" : "warn");
+  const k = [
+    {k:"Open requisitions", v:r.length, s:uniq(r.map(x=>x.recruiter)).length+" recruiters &middot; "+uniq(r.map(x=>x.dept)).length+" departments"},
+    {k:"Open positions", v:r.reduce((a,x)=>a+(+x.pos||1),0), s:"Seats to fill across open reqs"},
+    {k:"Billable mix", v:pct+"<small>%</small>", s:bill+" billable &middot; "+(r.length-bill)+" non-billable"},
+    {k:"Median days open", v:med==null?"—":med, s:"Average "+(r.length?Math.round(r.reduce((a,x)=>a+x.days,0)/r.length):0)+" days"},
+    {k:"Reqs aging 60+ days", v:old, s:(r.length?Math.round(old/r.length*100):0)+"% of the open book", cls:oldCls},
+    {k:"Starts, last 4 weeks", v:last4, s:up.length+" more scheduled ahead"}
+  ];
+  $("#kpis").innerHTML = k.map(x=>
+    `<div class="kpi ${x.cls||""}"><div class="k">${x.k}</div><div class="v num">${x.v}</div><div class="s">${x.s}</div></div>`
+  ).join("");
+}
+
+/* ---------- chips ---------- */
+function renderChips(){
+  const c = [];
+  if(state.bill!=="All") c.push(["Class", state.bill, "bill"]);
+  if(state.rec)    c.push(["Recruiter", state.rec, "rec"]);
+  if(state.dept)   c.push(["Department", state.dept, "dept"]);
+  if(state.bucket) c.push(["Aging", BUCKETS.find(b=>b.k===state.bucket).label, "bucket"]);
+  $("#chips").innerHTML = c.length
+    ? c.map(([k,v,key])=>`<span class="chip"><span class="k">${k}</span>${esc(v)}<button data-clear="${key}" aria-label="Remove ${esc(k)} filter">&times;</button></span>`).join("")
+    : `<span class="fb-none">Showing the full open book. Click any chart element or recruiter name to filter.</span>`;
+  $("#clearall").hidden = !c.length;
+}
+
+/* ---------- hero: aging spine ---------- */
+function renderSpine(){
+  const r = reqsFiltered();
+  const W=1200, H=210, L=8, R=8, base=H-42;
+  const maxD = Math.max(60, ...DATA.reqs.map(x=>x.days));
+  const x = d => L + (d/maxD)*(W-L-R);
+  const maxPos = Math.max(1, ...DATA.reqs.map(x=>+x.pos||1));
+  const bandW = 4;
+  // jitter overlapping ticks upward so density is readable
+  const slots = {};
+  const ticks = [...r].sort((a,b)=>a.days-b.days).map(q=>{
+    const px = Math.round(x(q.days)/bandW);
+    slots[px] = (slots[px]||0)+1;
+    return {q, cx:x(q.days), stack:slots[px]-1};
+  });
+  const hMax = 92;
+  let g = "";
+  // gridlines at bucket edges
+  [30,60,90].forEach(d=>{
+    g += `<line class="gl" x1="${x(d)}" y1="14" x2="${x(d)}" y2="${base}" stroke="rgba(255,255,255,.22)"/>`
+      +  `<text x="${x(d)+5}" y="26" fill="#8DA2C4" font-size="10.5">${d}d</text>`;
+  });
+  g += `<line x1="${L}" y1="${base}" x2="${W-R}" y2="${base}" stroke="rgba(255,255,255,.35)"/>`;
+  ticks.forEach(t=>{
+    const h = 14 + ((+t.q.pos||1)/maxPos)*hMax;
+    const y = base - h - t.stack*3;
+    g += `<rect class="tick" x="${(t.cx-1.6).toFixed(1)}" y="${y.toFixed(1)}" width="3.2" height="${h.toFixed(1)}" rx="1.4"
+      fill="${t.q.billable==="Billable"?TEAL:SLATE2}" opacity=".92"
+      data-req="${esc(t.q.req)}" style="cursor:pointer"></rect>`;
+  });
+  // axis ticks
+  for(let d=0; d<=maxD; d+=30){
+    g += `<text x="${x(d)}" y="${base+18}" fill="#8DA2C4" font-size="10.5" text-anchor="middle">${d}</text>`;
+  }
+  g += `<text x="${W-R}" y="${base+34}" fill="#8DA2C4" font-size="10.5" text-anchor="end">days since requisition opened &rarr;</text>`;
+  $("#spine").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Distribution of open requisitions by days open">${g}</svg>`;
+
+  const byReq = Object.fromEntries(DATA.reqs.map(x=>[x.req,x]));
+  const read = $("#spine-readout");
+  $("#spine").querySelectorAll(".tick").forEach(el=>{
+    const q = byReq[el.dataset.req];
+    const show = () => read.innerHTML =
+      `<b>${esc(q.title)}</b> &middot; req ${esc(q.req)} &middot; ${esc(q.dept)} &middot; ${esc(q.recruiter)}`
+      + ` &middot; <em>${q.days} days open</em> &middot; ${q.pos} position${q.pos>1?"s":""} &middot; opened ${fmtDate(q.created)} &middot; ${esc(q.loc||"—")}`;
+    el.addEventListener("mouseenter", show);
+    el.addEventListener("focus", show);
+    el.addEventListener("click", ()=>{ state.q=q.req; go("reqs"); });
+  });
+  $("#spine").onmouseleave = () => { read.textContent = "Hover a tick for req details."; };
+}
+
+/* ---------- aging buckets ---------- */
+function renderAging(){
+  const r = reqsFiltered({bucket:true});
+  const counts = BUCKETS.map(b=>({...b, n:r.filter(x=>b.test(x.days)).length}));
+  const tot = counts.reduce((a,x)=>a+x.n,0) || 1;
+  const W=560, H=200, L=92, T=8, RB=46, base=H-26;
+  const max = Math.max(1,...counts.map(c=>c.n));
+  const bh = (base-T)/counts.length - 10;
+  let g = "";
+  counts.forEach((c,i)=>{
+    const y = T + i*((base-T)/counts.length);
+    const w = (c.n/max)*(W-L-RB);
+    const on = state.bucket===c.k, off = state.bucket && !on;
+    g += `<text class="cat ${on?"on":""}" x="${L-10}" y="${y+bh/2+4}" text-anchor="end" data-bucket="${c.k}">${c.label}</text>`
+      +  `<rect class="bar ${off?"dim":""}" x="${L}" y="${y}" width="${Math.max(w,1.5)}" height="${bh}" rx="3" fill="${c.color}" data-bucket="${c.k}"></rect>`
+      +  `<text class="blabel ${off?"dim":""}" x="${L+Math.max(w,1.5)+8}" y="${y+bh/2+4}">${c.n}<tspan fill="#5F6F8C" font-weight="500"> &middot; ${Math.round(c.n/tot*100)}%</tspan></text>`;
+  });
+  $("#aging").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Open requisitions by aging bucket">${g}</svg>`;
+  const oldn = r.filter(x=>x.days>60).length;
+  const oldest = r.length ? r.reduce((a,x)=>x.days>a.days?x:a) : null;
+  $("#aging-note").innerHTML = oldest
+    ? `${oldn} req${oldn===1?"":"s"} past 60 days. Oldest is <span class="linkish" data-openreq="${esc(oldest.req)}">${esc(oldest.title)}</span> at ${oldest.days} days (${esc(oldest.dept)}, ${esc(oldest.recruiter)}).`
+    : "No requisitions match the current filters.";
+}
+
+/* ---------- department chart ---------- */
+function renderDept(){
+  const r = reqsFiltered({dept:true});
+  const map = {};
+  r.forEach(x=>{ (map[x.dept] = map[x.dept] || {b:0,n:0,t:0}); map[x.dept][x.billable==="Billable"?"b":"n"]++; map[x.dept].t++; });
+  const rows = Object.entries(map).sort((a,b)=>b[1].t-a[1].t);
+  const W=560, L=150, RB=44, T=6, rowH=20, H=T+rows.length*rowH+18;
+  const max = Math.max(1,...rows.map(x=>x[1].t));
+  let g="";
+  rows.forEach(([d,v],i)=>{
+    const y=T+i*rowH, bh=rowH-7, sc=(W-L-RB)/max;
+    const on = state.dept===d, off = state.dept && !on;
+    g += `<text class="cat ${on?"on":""}" x="${L-9}" y="${y+bh/2+4}" text-anchor="end" data-dept="${esc(d)}">${esc(d.length>22?d.slice(0,21)+"\u2026":d)}</text>`
+      +  `<rect class="bar ${off?"dim":""}" x="${L}" y="${y}" width="${Math.max(v.b*sc,0)}" height="${bh}" fill="${TEAL}" data-dept="${esc(d)}"></rect>`
+      +  `<rect class="bar ${off?"dim":""}" x="${L+v.b*sc}" y="${y}" width="${Math.max(v.n*sc,0)}" height="${bh}" fill="${SLATE2}" data-dept="${esc(d)}"></rect>`
+      +  `<text class="blabel ${off?"dim":""}" x="${L+v.t*sc+7}" y="${y+bh/2+4}">${v.t}</text>`;
+  });
+  $("#deptchart").innerHTML = rows.length
+    ? `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Open requisitions by department">${g}</svg>`
+    : `<div class="empty">No requisitions match the current filters.</div>`;
+}
+
+/* ---------- recruiter bars ---------- */
+function renderRecBars(){
+  const r = reqsFiltered({rec:true});
+  const names = uniq(DATA.reqs.map(x=>x.recruiter)).sort();
+  const rows = names.map(n=>{
+    const mine = r.filter(x=>x.recruiter===n);
+    return {n, b:mine.filter(x=>x.billable==="Billable").length,
+            nb:mine.filter(x=>x.billable!=="Billable").length,
+            t:mine.length, med:median(mine.map(x=>x.days))};
+  }).filter(x=>x.t>0).sort((a,b)=>b.t-a.t);
+  const W=1200, L=160, RB=120, T=6, rowH=27, H=T+rows.length*rowH+22;
+  const max = Math.max(1,...rows.map(x=>x.t));
+  const medMax = Math.max(30,...rows.map(x=>x.med||0));
+  const sc = (W-L-RB)/max;
+  let g="";
+  rows.forEach((v,i)=>{
+    const y=T+i*rowH, bh=rowH-11;
+    const on = state.rec===v.n, off = state.rec && !on;
+    g += `<text class="cat ${on?"on":""}" x="${L-10}" y="${y+bh/2+4}" text-anchor="end" data-rec="${esc(v.n)}">${esc(v.n)}</text>`
+      +  `<rect class="bar ${off?"dim":""}" x="${L}" y="${y}" width="${v.b*sc}" height="${bh}" fill="${TEAL}" data-rec="${esc(v.n)}"></rect>`
+      +  `<rect class="bar ${off?"dim":""}" x="${L+v.b*sc}" y="${y}" width="${v.nb*sc}" height="${bh}" fill="${SLATE2}" data-rec="${esc(v.n)}"></rect>`
+      +  `<text class="blabel ${off?"dim":""}" x="${L+v.t*sc+8}" y="${y+bh/2+4}">${v.t}</text>`;
+    if(v.med!=null){
+      const mx = L + (v.med/medMax)*(W-L-RB);
+      g += `<line x1="${mx}" y1="${y-2}" x2="${mx}" y2="${y+bh+2}" stroke="${CORAL}" stroke-width="2"/>`
+        +  `<text x="${W-RB+42}" y="${y+bh/2+4}" fill="${CORAL}" font-size="11" font-weight="600" text-anchor="end">${v.med}d med</text>`;
+    }
+  });
+  $("#recbars").innerHTML = rows.length
+    ? `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Open requisition load and median aging by recruiter">${g}</svg>`
+    : `<div class="empty">No requisitions match the current filters.</div>`;
+}
+
+/* ---------- req table ---------- */
+function renderReqTable(){
+  let r = reqsFiltered();
+  const q = state.q.trim().toLowerCase();
+  if(q) r = r.filter(x=>[x.req,x.title,x.dept,x.recruiter,x.hm,x.loc].join(" ").toLowerCase().includes(q));
+  const {k,d} = state.sortReq;
+  r = [...r].sort((a,b)=>{
+    let A=a[k], B=b[k];
+    if(k==="req"){A=+A;B=+B}
+    if(typeof A==="string"){A=A.toLowerCase();B=String(B||"").toLowerCase()}
+    return A<B?-1*d : A>B?1*d : 0;
+  });
+  $("#reqcount").textContent = r.length+" of "+DATA.reqs.length+" open requisitions"
+    + (r.length?" \u00b7 "+r.reduce((a,x)=>a+(+x.pos||1),0)+" positions":"");
+  $("#reqtable tbody").innerHTML = r.length ? r.map(x=>`<tr>
+    <td class="num">${esc(x.req)}</td>
+    <td class="title">${esc(x.title)}</td>
+    <td><span class="linkish" data-dept="${esc(x.dept)}">${esc(x.dept)}</span></td>
+    <td><span class="tag ${x.billable==="Billable"?"b":"n"}">${x.billable==="Billable"?"Billable":"Non-bill"}</span></td>
+    <td><span class="linkish" data-rec="${esc(x.recruiter)}">${esc(x.recruiter)}</span></td>
+    <td>${esc(x.hm||"—")}</td>
+    <td>${esc(x.loc||"—")}</td>
+    <td class="ar num">${x.pos}</td>
+    <td class="num">${fmtDate(x.created)}</td>
+    <td class="ar"><span class="pill num ${ageCls(x.days)}">${x.days}</span></td>
+  </tr>`).join("") : `<tr><td colspan="10" class="empty">Nothing matches these filters. Clear a filter or change the search.</td></tr>`;
+  markSort("#reqtable", state.sortReq);
+}
+
+/* ---------- recruiter table ---------- */
+function renderRecTable(){
+  const r = reqsFiltered({rec:true}), s = startsFiltered();
+  const d = new Date(AS_OF+"T00:00:00"); d.setDate(d.getDate()-27);
+  const cut = d.toISOString().slice(0,10);
+  const names = uniq([...DATA.reqs.map(x=>x.recruiter), ...DATA.starts.map(x=>x.recruiter)]).sort();
+  let rows = names.map(n=>{
+    const mine = r.filter(x=>x.recruiter===n), ms = s.filter(x=>x.recruiter===n);
+    const past = ms.filter(isPast);
+    return {recruiter:n,
+      bill:mine.filter(x=>x.billable==="Billable").length,
+      nonbill:mine.filter(x=>x.billable!=="Billable").length,
+      open:mine.length,
+      pos:mine.reduce((a,x)=>a+(+x.pos||1),0),
+      pctb:mine.length?Math.round(mine.filter(x=>x.billable==="Billable").length/mine.length*100):null,
+      med:median(mine.map(x=>x.days)),
+      old:mine.filter(x=>x.days>60).length,
+      s4:past.filter(x=>x.date>=cut).length,
+      sytd:past.length,
+      sup:ms.length-past.length};
+  }).filter(x=>x.open||x.sytd||x.sup);
+  const {k,dir} = {k:state.sortRec.k, dir:state.sortRec.d};
+  rows.sort((a,b)=>{
+    let A=a[k]??-1, B=b[k]??-1;
+    if(typeof A==="string"){A=A.toLowerCase();B=String(B).toLowerCase()}
+    return A<B?-dir : A>B?dir : 0;
+  });
+  const T = rows.reduce((a,x)=>({bill:a.bill+x.bill, nonbill:a.nonbill+x.nonbill, open:a.open+x.open,
+    pos:a.pos+x.pos, old:a.old+x.old, s4:a.s4+x.s4, sytd:a.sytd+x.sytd, sup:a.sup+x.sup}),
+    {bill:0,nonbill:0,open:0,pos:0,old:0,s4:0,sytd:0,sup:0});
+  $("#rectable tbody").innerHTML = rows.map(x=>{
+    const on = state.rec===x.recruiter;
+    return `<tr${on?' style="background:#EAF7FA"':''}>
+      <td><span class="linkish" data-rec="${esc(x.recruiter)}">${esc(x.recruiter)}</span></td>
+      <td class="ar num">${x.bill}</td><td class="ar num">${x.nonbill}</td>
+      <td class="ar num"><b>${x.open}</b></td><td class="ar num">${x.pos}</td>
+      <td class="ar num">${x.pctb==null?"—":x.pctb+"%"}</td>
+      <td class="ar">${x.med==null?"—":`<span class="pill num ${ageCls(x.med)}">${x.med}</span>`}</td>
+      <td class="ar num">${x.old||"—"}</td>
+      <td class="ar num">${x.s4||"—"}</td><td class="ar num">${x.sytd||"—"}</td><td class="ar num">${x.sup||"—"}</td>
+    </tr>`;}).join("")
+    + `<tr style="background:#F7F9FC;font-weight:650">
+      <td>Total</td><td class="ar num">${T.bill}</td><td class="ar num">${T.nonbill}</td>
+      <td class="ar num">${T.open}</td><td class="ar num">${T.pos}</td>
+      <td class="ar num">${T.open?Math.round(T.bill/T.open*100)+"%":"—"}</td>
+      <td class="ar num">${median(r.map(x=>x.days))??"—"}</td>
+      <td class="ar num">${T.old}</td><td class="ar num">${T.s4}</td><td class="ar num">${T.sytd}</td><td class="ar num">${T.sup}</td></tr>`;
+  markSort("#rectable", state.sortRec);
+}
+
+/* ---------- WoW chart ---------- */
+function renderWow(){
+  const s = startsFiltered(), weeks = weekList();
+  const series = weeks.map(w=>{
+    const ws = s.filter(x=>x.week===w);
+    return {w, b:ws.filter(x=>x.billable==="Billable").length,
+            n:ws.filter(x=>x.billable!=="Billable").length,
+            t:ws.length, future:w>AS_OF};
+  });
+  const W=1200, H=260, L=40, R=14, T=18, base=H-46;
+  const max = Math.max(4,...series.map(x=>x.t));
+  const bw = (W-L-R)/series.length;
+  const y = v => base - (v/max)*(base-T);
+  let g="";
+  for(let i=0;i<=4;i++){
+    const v = Math.round(max*i/4), yy=y(v);
+    g += `<line class="gl" x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}"/>`
+      +  `<text x="${L-8}" y="${yy+4}" fill="#5F6F8C" font-size="10.5" text-anchor="end">${v}</text>`;
+  }
+  series.forEach((d,i)=>{
+    const x0 = L+i*bw+bw*0.16, w = bw*0.68;
+    const hb = base-y(d.b), hn = base-y(d.b+d.n)-(base-y(d.b));
+    const fb = d.future ? "#E4E9F1" : TEAL, fn = d.future ? "#EFF2F7" : SLATE2;
+    g += `<g class="bar" data-week="${d.w}">
+      <rect x="${x0}" y="${T-14}" width="${w}" height="${base-T+14}" fill="transparent"></rect>
+      <rect x="${x0}" y="${base-hb}" width="${w}" height="${hb}" fill="${fb}"></rect>
+      <rect x="${x0}" y="${base-hb-hn}" width="${w}" height="${hn}" fill="${fn}"></rect>
+      ${d.t?`<text x="${x0+w/2}" y="${base-hb-hn-6}" fill="${d.future?"#9AA9C0":NAVY}" font-size="11" font-weight="650" text-anchor="middle">${d.t}</text>`:""}
+    </g>`;
+    if(i%2===0 || bw>52)
+      g += `<text x="${x0+w/2}" y="${base+16}" fill="#5F6F8C" font-size="10" text-anchor="middle">${shortDate(d.w)}</text>`;
+  });
+  const ax = L + ((weeks.filter(w=>w<=AS_OF).length)*bw);
+  g += `<line x1="${ax}" y1="${T-14}" x2="${ax}" y2="${base}" stroke="${CORAL}" stroke-width="1.5" stroke-dasharray="4 3"/>`
+    +  `<text x="${ax-6}" y="${T-4}" fill="${CORAL}" font-size="10.5" font-weight="600" text-anchor="end">reporting date</text>`
+    +  `<line x1="${L}" y1="${base}" x2="${W-R}" y2="${base}" stroke="#DCE3ED"/>`
+    +  `<text x="${L}" y="${base+34}" fill="#5F6F8C" font-size="10.5">week beginning Monday</text>`;
+  $("#wowchart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Starts by week">${g}</svg>`;
+
+  const read = $("#wow-readout");
+  const byW = Object.fromEntries(series.map(x=>[x.w,x]));
+  $("#wowchart").querySelectorAll("g.bar").forEach(el=>{
+    const d = byW[el.dataset.week], i = weeks.indexOf(d.w), prev = i>0 ? byW[weeks[i-1]].t : null;
+    const delta = prev==null ? "" : (d.t-prev>0?"+":"")+(d.t-prev)+" week over week";
+    const show = () => read.innerHTML = `<b style="color:${NAVY}">Week of ${fmtDate(d.w)}</b> &middot; ${d.t} start${d.t===1?"":"s"}`
+      + ` &middot; ${d.b} billable, ${d.n} non-billable${delta?" &middot; "+delta:""}${d.future?" &middot; scheduled":""}`;
+    el.addEventListener("mouseenter", show);
+    el.addEventListener("click", show);
+  });
+
+  bars("#startsrec", tally(s.filter(isPast),"recruiter"), "rec");
+  bars("#startsdept", tally(s.filter(isPast),"dept"), "dept");
+}
+function tally(arr,key){
+  const m={}; arr.forEach(x=>{ const k=x[key]||"Unmapped"; m[k]=(m[k]||{b:0,n:0,t:0}); m[k][x.billable==="Billable"?"b":"n"]++; m[k].t++; });
+  return Object.entries(m).sort((a,b)=>b[1].t-a[1].t);
+}
+function bars(sel, rows, attr){
+  const W=560, L=150, RB=40, T=6, rowH=21, H=T+Math.max(rows.length,1)*rowH+10;
+  const max = Math.max(1,...rows.map(x=>x[1].t)), sc=(W-L-RB)/max;
+  let g="";
+  rows.forEach(([k,v],i)=>{
+    const y=T+i*rowH, bh=rowH-8;
+    g += `<text class="cat" x="${L-9}" y="${y+bh/2+4}" text-anchor="end" data-${attr}="${esc(k)}">${esc(k.length>22?k.slice(0,21)+"\u2026":k)}</text>`
+      +  `<rect class="bar" x="${L}" y="${y}" width="${v.b*sc}" height="${bh}" fill="${TEAL}" data-${attr}="${esc(k)}"></rect>`
+      +  `<rect class="bar" x="${L+v.b*sc}" y="${y}" width="${v.n*sc}" height="${bh}" fill="${SLATE2}" data-${attr}="${esc(k)}"></rect>`
+      +  `<text class="blabel" x="${L+v.t*sc+7}" y="${y+bh/2+4}">${v.t}</text>`;
+  });
+  $(sel).innerHTML = rows.length ? `<svg viewBox="0 0 ${W} ${H}">${g}</svg>` : `<div class="empty">No starts match these filters.</div>`;
+}
+
+/* ---------- roles table ---------- */
+function renderRoles(){
+  const r = reqsFiltered();
+  const m={};
+  r.forEach(x=>{
+    const k = x.title+"||"+x.dept;
+    m[k] = m[k] || {title:x.title, dept:x.dept, billable:x.billable, reqs:0, pos:0, days:[]};
+    m[k].reqs++; m[k].pos += (+x.pos||1); m[k].days.push(x.days);
+  });
+  let rows = Object.values(m).map(x=>({...x, med:median(x.days), max:Math.max(...x.days)}));
+  const {k,d} = state.sortRole;
+  rows.sort((a,b)=>{
+    let A=a[k],B=b[k];
+    if(typeof A==="string"){A=A.toLowerCase();B=String(B).toLowerCase()}
+    return A<B?-d : A>B?d : 0;
+  });
+  $("#roletable tbody").innerHTML = rows.length ? rows.map(x=>`<tr>
+    <td class="title">${esc(x.title)}</td>
+    <td><span class="linkish" data-dept="${esc(x.dept)}">${esc(x.dept)}</span></td>
+    <td><span class="tag ${x.billable==="Billable"?"b":"n"}">${x.billable==="Billable"?"Billable":"Non-bill"}</span></td>
+    <td class="ar num"><b>${x.reqs}</b></td><td class="ar num">${x.pos}</td>
+    <td class="ar"><span class="pill num ${ageCls(x.med)}">${x.med}</span></td>
+    <td class="ar num">${x.max}</td>
+  </tr>`).join("") : `<tr><td colspan="7" class="empty">Nothing matches these filters.</td></tr>`;
+  markSort("#roletable", state.sortRole);
+}
+
+function markSort(sel, s){
+  document.querySelectorAll(sel+" th").forEach(th=>{
+    th.querySelector(".arrow")?.remove();
+    if(th.dataset.sk===s.k){
+      const a=document.createElement("span"); a.className="arrow"; a.textContent = s.d===1?"\u25B2":"\u25BC";
+      th.appendChild(a);
+    }
+  });
+}
+
+/* ---------- render + nav ---------- */
+function render(){
+  renderChips(); renderKpis();
+  if(state.tab==="overview"){ renderSpine(); renderAging(); renderDept(); renderRecBars(); }
+  if(state.tab==="reqs")     { $("#q").value = state.q; renderReqTable(); }
+  if(state.tab==="recruiter"){ renderRecTable(); }
+  if(state.tab==="starts")   { renderWow(); }
+  if(state.tab==="roles")    { renderRoles(); }
+}
+function go(tab){
+  state.tab = tab;
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected", String(b.dataset.tab===tab)));
+  ["overview","reqs","recruiter","starts","roles"].forEach(t=>{ $("#tab-"+t).hidden = (t!==tab); });
+  render();
+}
+
+/* ---------- events ---------- */
+document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>go(b.dataset.tab)));
+document.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{
+  state.bill = b.dataset.bill;
+  document.querySelectorAll(".seg button").forEach(o=>o.setAttribute("aria-pressed", String(o===b)));
+  render();
+}));
+document.querySelectorAll("#startseg button").forEach(b=>b.addEventListener("click",()=>{
+  state.st = b.dataset.st;
+  document.querySelectorAll("#startseg button").forEach(o=>o.setAttribute("aria-pressed", String(o===b)));
+  render();
+}));
+$("#clearall").addEventListener("click",()=>{
+  state.rec=null; state.dept=null; state.bucket=null; state.bill="All"; state.q="";
+  document.querySelectorAll(".seg button").forEach(o=>o.setAttribute("aria-pressed", String(o.dataset.bill==="All")));
+  render();
+});
+$("#chips").addEventListener("click",e=>{
+  const k = e.target.dataset.clear; if(!k) return;
+  if(k==="bill"){ state.bill="All"; document.querySelectorAll(".seg button").forEach(o=>o.setAttribute("aria-pressed", String(o.dataset.bill==="All"))); }
+  else if(k==="rec") state.rec=null;
+  else if(k==="dept") state.dept=null;
+  else if(k==="bucket") state.bucket=null;
+  render();
+});
+document.body.addEventListener("click",e=>{
+  const t = e.target.closest("[data-rec],[data-dept],[data-bucket],[data-openreq]");
+  if(!t) return;
+  if(t.dataset.openreq){ state.q=t.dataset.openreq; go("reqs"); return; }
+  if(t.dataset.rec)    state.rec    = state.rec===t.dataset.rec ? null : t.dataset.rec;
+  if(t.dataset.dept)   state.dept   = state.dept===t.dataset.dept ? null : t.dataset.dept;
+  if(t.dataset.bucket) state.bucket = state.bucket===t.dataset.bucket ? null : t.dataset.bucket;
+  render();
+});
+["#reqtable","#rectable","#roletable"].forEach(sel=>{
+  document.querySelector(sel).querySelectorAll("th").forEach(th=>th.addEventListener("click",()=>{
+    const s = sel==="#reqtable" ? state.sortReq : sel==="#rectable" ? state.sortRec : state.sortRole;
+    if(s.k===th.dataset.sk) s.d *= -1; else { s.k = th.dataset.sk; s.d = ["req","title","dept","recruiter","hm","loc","billable"].includes(s.k) ? 1 : -1; }
+    render();
+  }));
+});
+$("#q").addEventListener("input",e=>{ state.q = e.target.value; renderReqTable(); renderKpis(); });
+
+$("#asof").textContent = fmtDate(AS_OF);
+go("overview");
+</script>
+</body>
+</html>
