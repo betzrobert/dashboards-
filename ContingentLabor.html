@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AssistRx Recruiting Supplier Dashboard</title>
+<style>
+  :root {
+    --navy:#16294B; --navy-deep:#0C1830; --teal:#00A6BE; --teal-dark:#007D8F;
+    --amber:#C87A18; --red:#B0343C; --ink:#1B2436; --mute:#67748C;
+    --line:#DFE5EE; --canvas:#F4F6FA; --card:#FFFFFF; --grey:#AEB8C8;
+    --sans:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--sans);
+       font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 28px 72px}
+
+  header{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-deep) 100%);color:#fff;
+         padding:38px 0 34px;border-bottom:4px solid var(--teal)}
+  .hgrid{max-width:1240px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;
+         align-items:flex-end;gap:32px;flex-wrap:wrap}
+  .eyebrow{font:600 11px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;
+           color:var(--teal);margin:0 0 12px}
+  header h1{margin:0;font-size:33px;line-height:1.15;font-weight:650;letter-spacing:-.02em;max-width:22ch}
+  header p.sub{margin:12px 0 0;color:#B9C4D8;max-width:60ch;font-size:14.5px}
+  .stamp{font:500 12px/1.7 var(--mono);color:#8FA0BC;text-align:right;white-space:nowrap}
+  .stamp b{color:#fff;font-weight:600}
+
+  section{margin-top:44px}
+  section:first-of-type{margin-top:38px}
+  .shead{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--navy);
+         padding-bottom:9px;margin-bottom:22px;flex-wrap:wrap}
+  .shead h2{margin:0;font-size:19px;font-weight:650;letter-spacing:-.01em;color:var(--navy)}
+  .shead .sn{font:600 10.5px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--teal-dark)}
+  .shead p{margin:0;font-size:13px;color:var(--mute);margin-left:auto}
+
+  .rail{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  .fcard{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--teal);
+         display:flex;flex-direction:column;transition:box-shadow .18s,transform .18s}
+  .fcard:hover{box-shadow:0 8px 26px rgba(22,41,75,.13);transform:translateY(-2px)}
+  .fcard.new{border-top-color:var(--amber);background:#FFFDF8}
+  .fslot{background:var(--navy);color:#fff;padding:11px 15px;display:flex;align-items:baseline;gap:8px}
+  .fcard.new .fslot{background:#7A4A0E}
+  .fday{font:700 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
+  .fcard.new .fday{color:#F0C177}
+  .fdate{font-size:14px;font-weight:600}
+  .ftime{font:500 11.5px/1 var(--mono);color:#AEBBD2;margin-left:auto}
+  .fcard.new .ftime{color:#E4CBA6}
+  .fbody{padding:15px 15px 13px;display:flex;flex-direction:column;flex:1}
+  .fhead{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:13px}
+  .fhead h3{margin:0;font-size:15.5px;font-weight:650;letter-spacing:-.01em;color:var(--navy)}
+  .pill{font:700 9px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:4px 6px;
+        border-radius:2px;white-space:nowrap}
+  .pill.inc{background:#E4F6F9;color:var(--teal-dark)}
+  .pill.new{background:var(--amber);color:#fff}
+  .fmetas{padding-bottom:12px;border-bottom:1px solid var(--line);display:grid;gap:9px}
+  .fmeta span{display:block;font:600 9.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+              color:var(--mute);margin-bottom:3px}
+  .fmeta b{font-size:13.5px;font-weight:650;color:var(--ink)}
+  .fcard.new .fmeta b{color:var(--amber)}
+  .fnote{font-size:12.5px;color:var(--mute);margin:11px 0 0;flex:1}
+  .ftier{display:flex;align-items:center;gap:8px;margin-top:13px;padding-top:11px;
+         border-top:1px dashed var(--line)}
+  .ftier span{font:600 9.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+  .ftier em{font-style:normal;font-size:12.5px;color:var(--navy);font-weight:600;
+            background:#EDF1F7;padding:3px 8px;border-radius:2px}
+
+  .callout{margin-top:16px;background:#FFFDF8;border:1px solid #EBD9BC;border-left:3px solid var(--amber);
+           padding:15px 18px;font-size:13.5px}
+  .callout b{color:#7A4A0E}
+  .callout.teal{background:#F4FBFD;border-color:#C4E6EE;border-left-color:var(--teal)}
+  .callout.teal b{color:var(--teal-dark)}
+  .callout.lead{margin:0 0 20px}
+  .clabel{display:inline-block;font:700 9.5px/1 var(--mono);letter-spacing:.14em;
+          text-transform:uppercase;color:var(--teal-dark);background:#DCF1F6;padding:5px 8px;
+          border-radius:2px;margin-right:9px;vertical-align:2px}
+
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line)}
+  th{background:var(--navy);color:#fff;font:600 10.5px/1.3 var(--mono);letter-spacing:.1em;
+     text-transform:uppercase;text-align:left;padding:11px 13px;white-space:nowrap}
+  th.num,td.num{text-align:right}
+  td{padding:11px 13px;border-top:1px solid var(--line);vertical-align:middle;font-size:13.5px}
+  tbody tr:hover{background:#F7F9FC}
+  tr.is-fin{background:#F2FAFC}
+  tr.is-fin:hover{background:#E8F5F9}
+  tr.is-fin td:first-child{box-shadow:inset 3px 0 0 var(--teal)}
+  tr.is-1099 .vname{color:var(--mute)}
+  .vname{font-weight:600;color:var(--navy)}
+  td.num{font-variant-numeric:tabular-nums}
+  td.fee{font-family:var(--mono);font-size:12.5px;font-weight:600}
+  td.small{font-size:12.5px;color:var(--mute);font-weight:500}
+  td.ct{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--mute)}
+  td.money{font-weight:650;font-size:14px;color:var(--navy);white-space:nowrap}
+  td.rate{font-weight:600;font-size:13.5px;color:var(--ink);white-space:nowrap}
+  td.delta{color:var(--navy);font-weight:700}
+  .prem{display:inline-block;font:700 11.5px/1 var(--sans);padding:5px 9px;border-radius:11px;
+        min-width:44px;text-align:center}
+  .prem.cool{background:#E4F6F9;color:var(--teal-dark)}
+  .prem.hot{background:#FBEED6;color:#8A5410}
+  .barcell{width:44%;padding-right:22px}
+  .track{height:11px;background:#EDF1F6;border-radius:6px;overflow:hidden}
+  .track i{display:block;height:100%;border-radius:6px}
+  .barteal{background:linear-gradient(90deg,#3FAFC4 0%,var(--teal-dark) 100%)}
+  .bar1099{background:var(--grey)}
+  tr.total td{border-top:2px solid var(--navy);background:#F7F9FC;font-weight:700;
+              padding-top:13px;padding-bottom:13px}
+  tr.total .vname{font-size:14.5px}
+  tr.total .money{font-size:15.5px}
+  tr.total:hover{background:#F7F9FC}
+  .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--teal);
+       vertical-align:middle;margin-left:5px}
+  .flags{white-space:normal}
+  .tag{display:inline-block;font:600 9.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+       padding:4px 6px;border-radius:2px;margin:0 3px 0 3px;white-space:nowrap;vertical-align:middle}
+  .tag.fin{background:#E4F6F9;color:var(--teal-dark)}
+  .tag.risk{background:#FBE9EA;color:var(--red)}
+  .tag.watch{background:#FDF3E3;color:#7A4A0E}
+  .tag.ok{background:#EDF1F7;color:var(--mute)}
+  .flags .tag{margin:0 4px 4px 0}
+
+  .dlist{list-style:none;margin:0;padding:18px 22px;columns:2;column-gap:28px;
+         background:var(--card);border:1px solid var(--line)}
+  .dlist li{break-inside:avoid;padding:8px 0;border-bottom:1px solid var(--line)}
+  .dname{display:block;font-weight:600;color:var(--navy);font-size:13.5px}
+  .dmeta{display:block;font:500 11.5px/1.5 var(--mono);color:var(--mute)}
+
+  .filters{display:flex;gap:7px;margin-left:auto}
+  .fbtn{font:600 10.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;padding:8px 12px;
+        border:1px solid var(--line);background:var(--card);color:var(--mute);cursor:pointer;
+        border-radius:2px;transition:all .15s}
+  .fbtn:hover{border-color:var(--teal);color:var(--teal-dark)}
+  .fbtn.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .fbtn:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+  .rsub{margin:-6px 0 16px;font-size:13.5px;color:var(--mute);max-width:78ch}
+
+  @media (max-width:1100px){.rail{grid-template-columns:repeat(2,1fr)} .barcell{width:30%}}
+  @media (max-width:700px){
+    .wrap,.hgrid{padding-left:16px;padding-right:16px}
+    header h1{font-size:25px}
+    .rail{grid-template-columns:1fr}
+    .dlist{columns:1}
+    .stamp{text-align:left}
+    .shead p,.filters{margin-left:0}
+    .tscroll{overflow-x:auto}
+    .tscroll table{min-width:720px}
+  }
+  @media print{body{background:#fff} .fcard:hover{transform:none;box-shadow:none} .filters{display:none}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hgrid">
+    <div>
+      <p class="eyebrow">Talent Acquisition &middot; Supplier Governance</p>
+      <h1>Recruiting &amp; Contingent Labor Supplier Landscape</h1>
+      <p class="sub">Run rate through December, agreement inventory, and the five finalists
+      presenting for Tier 1 and Tier 2 selection in the week of August 10.</p>
+    </div>
+    <div class="stamp">
+      Prepared <b>Aug 3, 2026</b><br>
+      Run rate <b>310 contractors &middot; $32,626,443</b><br>
+      Agreements <b>30 records &middot; 25 suppliers</b>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <div class="shead">
+    <span class="sn">01</span>
+    <h2>Final RFP presentations, week of August 10</h2>
+    <p>Four incumbents and one net new supplier</p>
+  </div>
+  <div class="rail">
+      <article class="fcard">
+        <div class="fslot"><span class="fday">Mon</span><span class="fdate">Aug 10</span><span class="ftime">12:30 PM</span></div>
+        <div class="fbody">
+          <div class="fhead"><h3>Neutrino Group</h3><span class="pill inc">Incumbent</span></div>
+          <div class="fmetas"><div class="fmeta"><span>Fee basis</span><b>SOW</b></div><div class="fmeta"><span>Agreement through</span><b>Not on file</b></div></div>
+          <p class="fnote">IT services &middot; Contracted and active supplier</p>
+          <div class="ftier"><span>Tier</span><em>To be assigned</em></div>
+        </div>
+      </article>
+      <article class="fcard new">
+        <div class="fslot"><span class="fday">Tue</span><span class="fdate">Aug 11</span><span class="ftime">12:00 PM</span></div>
+        <div class="fbody">
+          <div class="fhead"><h3>IntelliPro Group</h3><span class="pill new">Net new</span></div>
+          <div class="fmetas"><div class="fmeta"><span>Relationship</span><b>None on record</b></div><div class="fmeta"><span>Agreement</span><b>None on file</b></div></div>
+          <p class="fnote">No MSA, no fee agreement, no AssistRx footprint. Full diligence required: contract and rate negotiation, insurance, security and privacy review.</p>
+          <div class="ftier"><span>Tier</span><em>To be assigned</em></div>
+        </div>
+      </article>
+      <article class="fcard">
+        <div class="fslot"><span class="fday">Wed</span><span class="fdate">Aug 12</span><span class="ftime">11:00 AM</span></div>
+        <div class="fbody">
+          <div class="fhead"><h3>Insight Global</h3><span class="pill inc">Incumbent</span></div>
+          <div class="fmetas"><div class="fmeta"><span>Fee basis</span><b>SOW</b></div><div class="fmeta"><span>Agreement through</span><b>Feb 4, 2027</b></div></div>
+          <p class="fnote">Staffing / recruiting &middot; Contracted and active supplier</p>
+          <div class="ftier"><span>Tier</span><em>To be assigned</em></div>
+        </div>
+      </article>
+      <article class="fcard">
+        <div class="fslot"><span class="fday">Fri</span><span class="fdate">Aug 14</span><span class="ftime">9:00 AM</span></div>
+        <div class="fbody">
+          <div class="fhead"><h3>Citius Tech</h3><span class="pill inc">Incumbent</span></div>
+          <div class="fmetas"><div class="fmeta"><span>Fee basis</span><b>SOW</b></div><div class="fmeta"><span>Agreement through</span><b>Not on file</b></div></div>
+          <p class="fnote">IT services &middot; Contracted and active supplier</p>
+          <div class="ftier"><span>Tier</span><em>To be assigned</em></div>
+        </div>
+      </article>
+      <article class="fcard">
+        <div class="fslot"><span class="fday">Fri</span><span class="fdate">Aug 14</span><span class="ftime">3:00 PM</span></div>
+        <div class="fbody">
+          <div class="fhead"><h3>On-Demand Group</h3><span class="pill inc">Incumbent</span></div>
+          <div class="fmetas"><div class="fmeta"><span>Fee basis</span><b>SOW</b></div><div class="fmeta"><span>Agreement through</span><b>Not on file</b></div></div>
+          <p class="fnote">Staffing / recruiting &middot; Contracted and active supplier</p>
+          <div class="ftier"><span>Tier</span><em>To be assigned</em></div>
+        </div>
+      </article>
+  </div>
+  <div class="callout">
+    <b>IntelliPro Group would be net new.</b> IntelliPro does not appear anywhere in the agreement
+    inventory or the run rate: no MSA, no fee agreement, no contractors on assignment, and no prior
+    relationship with AssistRx. Every other finalist is already contracted and billing. If IntelliPro
+    advances to either tier, the award is contingent on a full onboarding path, which means MSA and fee
+    schedule negotiation, insurance and W-9 collection, security and privacy review, and Evisort filing
+    before the first requisition is released. Budget lead time accordingly rather than assuming a day
+    one start.
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="sn">02</span>
+    <h2>Contingent labor run rate through December</h2>
+    <p>Annualized, 310 contractors on assignment</p>
+  </div>
+  <div class="tscroll">
+  <table>
+    <thead><tr>
+      <th>Agency</th><th>Share of run rate</th><th class="num">CT</th><th class="num">Annual spend</th>
+    </tr></thead>
+    <tbody>
+      <tr class="">
+        <td class="vname">RPh On the Go <span class="tag watch">Outside RFP</span></td>
+        <td class="barcell"><div class="track"><i class="barteal" style="width:100.0%"></i></div></td>
+        <td class="num ct">65</td>
+        <td class="num money">$8,866,000</td>
+      </tr>
+      <tr class="is-fin">
+        <td class="vname">On Demand Group <span class="tag fin">Finalist</span></td>
+        <td class="barcell"><div class="track"><i class="barteal" style="width:96.9%"></i></div></td>
+        <td class="num ct">77</td>
+        <td class="num money">$8,589,984</td>
+      </tr>
+      <tr class="is-fin">
+        <td class="vname">Insight Global <span class="tag fin">Finalist</span></td>
+        <td class="barcell"><div class="track"><i class="barteal" style="width:48.6%"></i></div></td>
+        <td class="num ct">33</td>
+        <td class="num money">$4,310,155</td>
+      </tr>
+      <tr class="is-fin">
+        <td class="vname">CitiusTech <span class="tag fin">Finalist</span></td>
+        <td class="barcell"><div class="track"><i class="barteal" style="width:47.8%"></i></div></td>
+        <td class="num ct">56</td>
+        <td class="num money">$4,234,880</td>
+      </tr>
+      <tr class="is-fin">
+        <td class="vname">Neutrino Tech Systems <span class="tag fin">Finalist</span></td>
+        <td class="barcell"><div class="track"><i class="barteal" style="width:27.8%"></i></div></td>
+        <td class="num ct">28</td>
+        <td class="num money">$2,468,960</td>
+      </tr>
+      <tr class="is-1099">
+        <td class="vname">N/A <span class="tag ok">Direct 1099</span></td>
+        <td class="barcell"><div class="track"><i class="bar1099" style="width:13.2%"></i></div></td>
+        <td class="num ct">4</td>
+        <td class="num money">$1,170,000</td>
+      </tr>
+      <tr class="">
+        <td class="vname">FilAM </td>
+        <td class="barcell"><div class="track"><i class="barteal" style="width:11.6%"></i></div></td>
+        <td class="num ct">25</td>
+        <td class="num money">$1,029,600</td>
+      </tr>
+      <tr class="">
+        <td class="vname">QualStaff </td>
+        <td class="barcell"><div class="track"><i class="barteal" style="width:8.5%"></i></div></td>
+        <td class="num ct">12</td>
+        <td class="num money">$749,424</td>
+      </tr>
+      <tr class="">
+        <td class="vname">Beacon Hill Solutions Group </td>
+        <td class="barcell"><div class="track"><i class="barteal" style="width:5.0%"></i></div></td>
+        <td class="num ct">2</td>
+        <td class="num money">$445,120</td>
+      </tr>
+      <tr class="is-1099">
+        <td class="vname">Independent <span class="tag ok">Direct 1099</span></td>
+        <td class="barcell"><div class="track"><i class="bar1099" style="width:4.7%"></i></div></td>
+        <td class="num ct">5</td>
+        <td class="num money">$416,000</td>
+      </tr>
+      <tr class="">
+        <td class="vname">Robert Half </td>
+        <td class="barcell"><div class="track"><i class="barteal" style="width:1.6%"></i></div></td>
+        <td class="num ct">1</td>
+        <td class="num money">$142,480</td>
+      </tr>
+      <tr class="">
+        <td class="vname">AgileSol </td>
+        <td class="barcell"><div class="track"><i class="barteal" style="width:1.4%"></i></div></td>
+        <td class="num ct">1</td>
+        <td class="num money">$124,800</td>
+      </tr>
+      <tr class="">
+        <td class="vname">Creative Financial Staffing LLC </td>
+        <td class="barcell"><div class="track"><i class="barteal" style="width:0.9%"></i></div></td>
+        <td class="num ct">1</td>
+        <td class="num money">$79,040</td>
+      </tr>
+      <tr class="total">
+        <td class="vname">Grand total</td>
+        <td></td>
+        <td class="num ct">310</td>
+        <td class="num money">$32,626,443</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="callout teal">
+    <b>The four incumbent finalists carry $19,603,979 of run rate, or 60 percent,
+    across 194 of 310 contractors.</b> RPh On the Go is the single largest agency at
+    27 percent of run rate and sits outside this RFP, so a tier award does not
+    address it. 9 contractors totaling $1,586,000 are engaged as direct 1099 rather than through
+    any agency.
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="sn">03</span>
+    <h2>Same roles, two prices</h2>
+    <p>ODG is On Demand Group</p>
+  </div>
+  <p class="rsub">Average hourly rates on current assignments, matched role for role across
+  39 comparable seats at each vendor.</p>
+  <div class="callout teal lead">
+    <span class="clabel">Renegotiate</span><b>ODG runs 34 percent above CitiusTech on
+    identical roles.</b> The spread is $49.33 against $36.74 average hourly, a
+    $12.59 per hour gap worth roughly $1.0M a year at full parity across
+    these 39 seats. This is the evidence base for the ODG re-bid, and even the aggressive 12
+    percent compression scenario is conservative against it.
+  </div>
+  <div class="tscroll">
+  <table>
+    <thead><tr>
+      <th>Role</th><th class="num">ODG CT</th><th class="num">ODG avg hrly</th>
+      <th class="num">CitiusTech CT</th><th class="num">CitiusTech avg hrly</th>
+      <th class="num">&#916; / hr</th><th class="num">ODG premium</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="vname">Salesforce Developer</td>
+        <td class="num ct">14</td>
+        <td class="num rate">$47.36</td>
+        <td class="num ct">12</td>
+        <td class="num rate">$39.00</td>
+        <td class="num rate delta">$8.36</td>
+        <td class="num"><span class="prem cool">21%</span></td>
+      </tr>
+      <tr>
+        <td class="vname">.NET / Frontend Developer</td>
+        <td class="num ct">10</td>
+        <td class="num rate">$45.10</td>
+        <td class="num ct">9</td>
+        <td class="num rate">$31.00</td>
+        <td class="num rate delta">$14.10</td>
+        <td class="num"><span class="prem hot">45%</span></td>
+      </tr>
+      <tr>
+        <td class="vname">Salesforce Admin</td>
+        <td class="num ct">9</td>
+        <td class="num rate">$50.20</td>
+        <td class="num ct">4</td>
+        <td class="num rate">$45.50</td>
+        <td class="num rate delta">$4.70</td>
+        <td class="num"><span class="prem cool">10%</span></td>
+      </tr>
+      <tr>
+        <td class="vname">Data Engineer</td>
+        <td class="num ct">1</td>
+        <td class="num rate">$40.00</td>
+        <td class="num ct">8</td>
+        <td class="num rate">$35.25</td>
+        <td class="num rate delta">$4.75</td>
+        <td class="num"><span class="prem cool">13%</span></td>
+      </tr>
+      <tr>
+        <td class="vname">Salesforce Tech Lead</td>
+        <td class="num ct">4</td>
+        <td class="num rate">$65.00</td>
+        <td class="num ct">5</td>
+        <td class="num rate">$38.00</td>
+        <td class="num rate delta">$27.00</td>
+        <td class="num"><span class="prem hot">71%</span></td>
+      </tr>
+      <tr>
+        <td class="vname">DevOps Engineer</td>
+        <td class="num ct">1</td>
+        <td class="num rate">$58.00</td>
+        <td class="num ct">1</td>
+        <td class="num rate">$32.00</td>
+        <td class="num rate delta">$26.00</td>
+        <td class="num"><span class="prem hot">81%</span></td>
+      </tr>
+      <tr class="total">
+        <td class="vname">Grand total</td>
+        <td class="num ct">39</td>
+        <td class="num rate">$49.33</td>
+        <td class="num ct">39</td>
+        <td class="num rate">$36.74</td>
+        <td class="num rate delta">$12.59</td>
+        <td class="num"><span class="prem hot">34%</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="sn">04</span>
+    <h2>Current vendors, contract status</h2>
+    <p>Suppliers with recorded activity in 2025 or 2026</p>
+  </div>
+  <div class="tscroll">
+  <table>
+    <thead><tr>
+      <th>Supplier</th><th>Category</th><th class="num">Fee basis</th>
+      <th class="num">Agreements</th>
+    </tr></thead>
+    <tbody>
+      <tr class="is-fin">
+        <td class="vname">On-Demand Services Group <span class="dot"></span></td>
+        <td class="small">Staffing / recruiting</td>
+        <td class="num fee">SOW</td>
+        <td class="num small">1</td>
+      </tr>
+      <tr class="">
+        <td class="vname">Qualstaff / Icon Information Consultants</td>
+        <td class="small">Staffing / recruiting</td>
+        <td class="num fee">40%</td>
+        <td class="num small">3</td>
+      </tr>
+      <tr class="is-fin">
+        <td class="vname">Citius Tech <span class="dot"></span></td>
+        <td class="small">IT services</td>
+        <td class="num fee">SOW</td>
+        <td class="num small">1</td>
+      </tr>
+      <tr class="">
+        <td class="vname">RPh on the Go</td>
+        <td class="small">Pharmacy staffing</td>
+        <td class="num fee">SOW</td>
+        <td class="num small">1</td>
+      </tr>
+      <tr class="is-fin">
+        <td class="vname">Neutrino Tech Systems <span class="dot"></span></td>
+        <td class="small">IT services</td>
+        <td class="num fee">SOW</td>
+        <td class="num small">2</td>
+      </tr>
+      <tr class="">
+        <td class="vname">Filam</td>
+        <td class="small">IT services</td>
+        <td class="num fee">SOW</td>
+        <td class="num small">1</td>
+      </tr>
+      <tr class="">
+        <td class="vname">Trouvex</td>
+        <td class="small">IT services</td>
+        <td class="num fee">SOW</td>
+        <td class="num small">1</td>
+      </tr>
+      <tr class="">
+        <td class="vname">Robert Half</td>
+        <td class="small">Staffing / recruiting</td>
+        <td class="num fee">20%</td>
+        <td class="num small">1</td>
+      </tr>
+      <tr class="">
+        <td class="vname">Blue Ocean Hire</td>
+        <td class="small">Staffing / recruiting</td>
+        <td class="num fee">25%</td>
+        <td class="num small">1</td>
+      </tr>
+      <tr class="is-fin">
+        <td class="vname">Insight Global <span class="dot"></span></td>
+        <td class="small">Staffing / recruiting</td>
+        <td class="num fee">SOW</td>
+        <td class="num small">1</td>
+      </tr>
+      <tr class="">
+        <td class="vname">Workable (ATS software)</td>
+        <td class="small">Technology</td>
+        <td class="num fee">SOW</td>
+        <td class="num small">1</td>
+      </tr>
+      <tr class="">
+        <td class="vname">GlobalLogic</td>
+        <td class="small">IT services</td>
+        <td class="num fee">SOW</td>
+        <td class="num small">1</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="sn">05</span>
+    <h2>Current vendors on paper, no recent activity</h2>
+    <p>13 suppliers, candidates for consolidation or sunset</p>
+  </div>
+  <ul class="dlist">
+      <li>
+        <span class="dname">Algoworks</span>
+        <span class="dmeta">SOW fee basis &middot; 2 agreements &middot; effective 2026</span>
+      </li>
+      <li>
+        <span class="dname">Ascendo Resources</span>
+        <span class="dmeta">15% fee basis &middot; 1 agreement &middot; effective 2017</span>
+      </li>
+      <li>
+        <span class="dname">Beacon Hill Staffing Group</span>
+        <span class="dmeta">25% fee basis &middot; 1 agreement &middot; effective 2021</span>
+      </li>
+      <li>
+        <span class="dname">Hobson Associates</span>
+        <span class="dmeta">25% fee basis &middot; 1 agreement &middot; effective 2017</span>
+      </li>
+      <li>
+        <span class="dname">ISGF LLC</span>
+        <span class="dmeta">5% fee basis &middot; 1 agreement &middot; effective 2014 &middot; expired 2015</span>
+      </li>
+      <li>
+        <span class="dname">Market Share Solutions</span>
+        <span class="dmeta">15% fee basis &middot; 1 agreement &middot; effective 2014</span>
+      </li>
+      <li>
+        <span class="dname">Protiviti</span>
+        <span class="dmeta">SOW fee basis &middot; 1 agreement &middot; effective 2019</span>
+      </li>
+      <li>
+        <span class="dname">Soliant Health</span>
+        <span class="dmeta">SOW fee basis &middot; 1 agreement &middot; effective 2020</span>
+      </li>
+      <li>
+        <span class="dname">TEKsystems</span>
+        <span class="dmeta">15% fee basis &middot; 1 agreement &middot; effective 2015</span>
+      </li>
+      <li>
+        <span class="dname">Tech USA</span>
+        <span class="dmeta">15% fee basis &middot; 1 agreement &middot; effective 2012</span>
+      </li>
+      <li>
+        <span class="dname">Tews Company</span>
+        <span class="dmeta">16% fee basis &middot; 1 agreement &middot; effective 2015</span>
+      </li>
+      <li>
+        <span class="dname">Two Labs Holdings</span>
+        <span class="dmeta">SOW fee basis &middot; 1 agreement &middot; effective 2023</span>
+      </li>
+      <li>
+        <span class="dname">Veredus Corporation</span>
+        <span class="dmeta">15% fee basis &middot; 2 agreements &middot; effective 2016</span>
+      </li>
+  </ul>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="sn">06</span>
+    <h2>Full agreement inventory</h2>
+    <div class="filters">
+      <button class="fbtn on" data-f="all">All 30</button>
+      <button class="fbtn" data-f="finalist">Finalists</button>
+      <button class="fbtn" data-f="active">Active</button>
+      <button class="fbtn" data-f="dormant">Dormant</button>
+    </div>
+  </div>
+  <div class="tscroll">
+  <table id="inv">
+    <thead><tr><th>Supplier</th><th>Contract type</th><th class="num">Fee</th></tr></thead>
+    <tbody>
+      <tr data-tags="dormant">
+        <td class="vname">Algoworks</td>
+        <td class="small">Master Services Agreement; Services Agreement</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Algoworks</td>
+        <td class="small">Statement Of Work</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Ascendo Resources</td>
+        <td class="small">Direct Hire Fee Agreement</td>
+        <td class="num fee">15%</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Beacon Hill Staffing Group</td>
+        <td class="small">Services Agreement</td>
+        <td class="num fee">25%</td>
+      </tr>
+      <tr data-tags="active">
+        <td class="vname">Blue Ocean Hire</td>
+        <td class="small">Direct Hire Agreement</td>
+        <td class="num fee">25%</td>
+      </tr>
+      <tr data-tags="finalist active">
+        <td class="vname">Citius Tech <span class="dot"></span></td>
+        <td class="small">Services Agreement</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="active">
+        <td class="vname">Filam</td>
+        <td class="small">&ndash;</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="active">
+        <td class="vname">GlobalLogic</td>
+        <td class="small">MSA</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Hobson Associates</td>
+        <td class="small">Recruiting Services Agreement</td>
+        <td class="num fee">25%</td>
+      </tr>
+      <tr data-tags="finalist active">
+        <td class="vname">Insight Global <span class="dot"></span></td>
+        <td class="small">Services Agreement</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">ISGF LLC</td>
+        <td class="small">Services Agreement</td>
+        <td class="num fee">5%</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Market Share Solutions</td>
+        <td class="small">Recruiting Fee Agreement</td>
+        <td class="num fee">15%</td>
+      </tr>
+      <tr data-tags="finalist active">
+        <td class="vname">Neutrino Tech Systems <span class="dot"></span></td>
+        <td class="small">MSA</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="finalist dormant">
+        <td class="vname">Neutrino Tech Systems <span class="dot"></span></td>
+        <td class="small">Schedule; Statement Of Work</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="finalist active">
+        <td class="vname">On-Demand Services Group <span class="dot"></span></td>
+        <td class="small">Consulting Agreement; Services Agreement</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Protiviti</td>
+        <td class="small">Master Services Agreement; Services Agreement</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="active">
+        <td class="vname">Qualstaff / Icon Information Consultants</td>
+        <td class="small">Resource Management Agreement</td>
+        <td class="num fee">40%</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Qualstaff / Icon Information Consultants</td>
+        <td class="small">Management Agreement</td>
+        <td class="num fee">40%</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Qualstaff / Icon Information Consultants</td>
+        <td class="small">Master Services Agreement; Services Agreement</td>
+        <td class="num fee">40%</td>
+      </tr>
+      <tr data-tags="active">
+        <td class="vname">Robert Half</td>
+        <td class="small">Customer Agreement</td>
+        <td class="num fee">20%</td>
+      </tr>
+      <tr data-tags="active">
+        <td class="vname">RPh on the Go</td>
+        <td class="small">&ndash;</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Soliant Health</td>
+        <td class="small">Services Agreement</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Tech USA</td>
+        <td class="small">Terms And Conditions</td>
+        <td class="num fee">15%</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">TEKsystems</td>
+        <td class="small">Direct Placement Agreement</td>
+        <td class="num fee">15%</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Tews Company</td>
+        <td class="small">Client Agreement</td>
+        <td class="num fee">16%</td>
+      </tr>
+      <tr data-tags="active">
+        <td class="vname">Trouvex</td>
+        <td class="small">&ndash;</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Two Labs Holdings</td>
+        <td class="small">MSA</td>
+        <td class="num fee">SOW</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Veredus Corporation</td>
+        <td class="small">Staffing Service Agreement</td>
+        <td class="num fee">15%</td>
+      </tr>
+      <tr data-tags="dormant">
+        <td class="vname">Veredus Corporation</td>
+        <td class="small">Services Agreement</td>
+        <td class="num fee">15%</td>
+      </tr>
+      <tr data-tags="active">
+        <td class="vname">Workable (ATS software)</td>
+        <td class="small">Order Form</td>
+        <td class="num fee">SOW</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+</div>
+
+<script>
+  document.querySelectorAll('.fbtn').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.fbtn').forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      var f = b.dataset.f;
+      document.querySelectorAll('#inv tbody tr').forEach(function (tr) {
+        tr.style.display = (f === 'all' || tr.dataset.tags.split(' ').indexOf(f) > -1) ? '' : 'none';
+      });
+    });
+  });
+</script>
+</body>
+</html>
