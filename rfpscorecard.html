@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AssistRx RFP Finalist Scorecard</title>
+<style>
+  :root{
+    --navy:#16294B; --navy-deep:#0C1830; --teal:#00A6BE; --teal-dark:#007D8F;
+    --amber:#C87A18; --red:#B0343C; --green:#2E7D5B; --ink:#1B2436; --mute:#67748C;
+    --line:#DFE5EE; --canvas:#F4F6FA; --card:#FFFFFF;
+    --sans:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--sans);
+       font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px 72px}
+
+  header{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-deep) 100%);color:#fff;
+         padding:34px 0 30px;border-bottom:4px solid var(--teal)}
+  .hgrid{max-width:1120px;margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;
+         align-items:flex-end;gap:32px;flex-wrap:wrap}
+  .eyebrow{font:600 11px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;
+           color:var(--teal);margin:0 0 11px}
+  header h1{margin:0;font-size:30px;line-height:1.15;font-weight:650;letter-spacing:-.02em}
+  header p.sub{margin:11px 0 0;color:#B9C4D8;max-width:62ch;font-size:14px}
+  .who{display:flex;gap:10px;align-items:flex-end}
+  .who label{display:block;font:600 9.5px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;
+             color:#8FA0BC;margin-bottom:6px}
+  .who input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#fff;
+             font-family:var(--sans);font-size:13.5px;padding:8px 10px;border-radius:2px;width:170px}
+  .who input::placeholder{color:#7E8DA8}
+  .who input:focus{outline:2px solid var(--teal);outline-offset:1px}
+
+  /* vendor tabs */
+  .tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);
+        border-bottom:1px solid var(--line)}
+  .tab{background:var(--card);border:0;border-top:3px solid transparent;padding:14px 14px 12px;
+       text-align:left;cursor:pointer;font-family:var(--sans);transition:background .15s}
+  .tab:hover{background:#F7F9FC}
+  .tab .tslot{font:600 9.5px/1 var(--mono);letter-spacing:.11em;text-transform:uppercase;
+              color:var(--mute);display:block;margin-bottom:6px}
+  .tab .tname{font-size:14.5px;font-weight:650;color:var(--navy);display:block;letter-spacing:-.01em}
+  .tab .tscore{font:600 11.5px/1 var(--mono);color:var(--mute);display:block;margin-top:6px}
+  .tab.on{border-top-color:var(--teal);background:#F2FAFC}
+  .tab.on .tslot{color:var(--teal-dark)}
+  .tab.new.on{border-top-color:var(--amber);background:#FFFDF8}
+  .tab.scored .tscore{color:var(--teal-dark)}
+  .tab:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+
+  section{margin-top:34px}
+  .shead{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--navy);
+         padding-bottom:9px;margin-bottom:20px;flex-wrap:wrap}
+  .shead h2{margin:0;font-size:18.5px;font-weight:650;letter-spacing:-.01em;color:var(--navy)}
+  .shead .sn{font:600 10.5px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;
+             color:var(--teal-dark)}
+  .shead p{margin:0;font-size:13px;color:var(--mute);margin-left:auto}
+
+  /* live score bar */
+  .live{display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;
+        background:var(--navy);color:#fff;padding:18px 24px;margin-top:26px}
+  .live .lv{font:600 10px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;
+            color:#8FA0BC;margin-bottom:7px;display:block}
+  .live .big{font-size:34px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums;
+             line-height:1}
+  .live .big small{font-size:16px;font-weight:500;color:#8FA0BC;letter-spacing:0}
+  .gauge{height:12px;background:rgba(255,255,255,.14);border-radius:6px;overflow:hidden;position:relative}
+  .gauge i{display:block;height:100%;width:0;border-radius:6px;background:var(--teal);
+           transition:width .25s ease}
+  .gmarks{display:flex;justify-content:space-between;font:500 10px/1 var(--mono);color:#7E8DA8;
+          margin-top:7px}
+  .band{font:700 10.5px/1 var(--mono);letter-spacing:.11em;text-transform:uppercase;padding:8px 12px;
+        border-radius:2px;white-space:nowrap;background:rgba(255,255,255,.12);color:#B9C4D8}
+  .band.t1{background:#0E6B52;color:#fff}
+  .band.t2{background:var(--teal-dark);color:#fff}
+  .band.no{background:#7A2429;color:#fff}
+
+  /* criteria */
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line)}
+  th{background:var(--navy);color:#fff;font:600 10.5px/1.3 var(--mono);letter-spacing:.1em;
+     text-transform:uppercase;text-align:left;padding:11px 14px}
+  th.c{text-align:center;width:52px}
+  th.w{text-align:right;width:66px}
+  td{padding:14px;border-top:1px solid var(--line);vertical-align:top}
+  tbody tr:hover{background:#FBFCFE}
+  .cname{font-size:14.5px;font-weight:650;color:var(--navy);letter-spacing:-.01em}
+  .chint{font-size:12.5px;color:var(--mute);margin-top:4px;max-width:52ch}
+  .wcell{text-align:right;font:700 14px/1 var(--mono);color:var(--teal-dark);
+         font-variant-numeric:tabular-nums;padding-top:16px}
+  .scell{text-align:center;padding-top:12px}
+  .scell input{position:absolute;opacity:0;width:0;height:0}
+  .scell label{display:block;width:34px;height:34px;line-height:32px;margin:0 auto;
+               border:1px solid var(--line);border-radius:2px;font-size:14px;font-weight:600;
+               color:var(--mute);cursor:pointer;transition:all .12s;background:var(--card)}
+  .scell label:hover{border-color:var(--teal);color:var(--teal-dark)}
+  .scell input:checked + label{background:var(--navy);border-color:var(--navy);color:#fff}
+  .scell input:focus-visible + label{outline:2px solid var(--teal);outline-offset:2px}
+  .notes{width:100%;margin-top:11px;border:1px solid var(--line);border-radius:2px;padding:8px 10px;
+         font-family:var(--sans);font-size:13px;color:var(--ink);resize:vertical;min-height:38px;
+         background:#FCFDFE}
+  .notes:focus{outline:2px solid var(--teal);outline-offset:0;background:#fff}
+  .notes::placeholder{color:#A9B4C6}
+  tr.total td{border-top:2px solid var(--navy);background:#F7F9FC;font-weight:700}
+  tr.total:hover{background:#F7F9FC}
+  .tlabel{font-size:14.5px;font-weight:650;color:var(--navy)}
+  .tval{text-align:right;font:700 15px/1 var(--mono);color:var(--navy);padding-top:15px}
+
+  /* scale key */
+  .key{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);
+       border:1px solid var(--line);margin-top:16px}
+  .key div{background:var(--card);padding:12px 14px}
+  .key b{display:block;font:700 15px/1 var(--mono);color:var(--navy);margin-bottom:5px}
+  .key span{font-size:12.5px;color:var(--mute);line-height:1.4;display:block}
+
+  /* tier pick */
+  .tier{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--teal);
+        padding:20px 24px;margin-top:16px}
+  .tier h3{margin:0 0 4px;font-size:15.5px;color:var(--navy);font-weight:650}
+  .tier p.th{margin:0 0 15px;font-size:13px;color:var(--mute)}
+  .picks{display:flex;gap:10px;flex-wrap:wrap}
+  .picks input{position:absolute;opacity:0;width:0;height:0}
+  .picks label{border:1px solid var(--line);border-radius:2px;padding:11px 18px;cursor:pointer;
+               font-size:13.5px;font-weight:600;color:var(--mute);transition:all .12s;background:var(--card)}
+  .picks label:hover{border-color:var(--teal);color:var(--teal-dark)}
+  .picks input:checked + label{background:var(--navy);border-color:var(--navy);color:#fff}
+  .picks input:focus-visible + label{outline:2px solid var(--teal);outline-offset:2px}
+
+  /* comparison */
+  .cmp td{vertical-align:middle;padding:12px 14px}
+  .cmp .rank{font:700 13px/1 var(--mono);color:var(--mute);width:34px}
+  .cmp .cbar{width:38%}
+  .cmp .track{height:11px;background:#EDF1F6;border-radius:6px;overflow:hidden}
+  .cmp .track i{display:block;height:100%;border-radius:6px;
+                background:linear-gradient(90deg,#3FAFC4 0%,var(--teal-dark) 100%)}
+  .cmp .sc{text-align:right;font:700 15px/1 var(--mono);color:var(--navy);width:82px}
+  .cmp .pk{text-align:right;width:150px}
+  .pill{display:inline-block;font:700 9.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;
+        padding:5px 8px;border-radius:2px;white-space:nowrap}
+  .pill.t1{background:#DFF0E8;color:#1D6047}
+  .pill.t2{background:#E4F6F9;color:var(--teal-dark)}
+  .pill.no{background:#FBE9EA;color:var(--red)}
+  .pill.none{background:#EDF1F7;color:var(--mute)}
+  .pill.new{background:var(--amber);color:#fff}
+  .empty{color:#A9B4C6;font-size:13px;font-style:italic}
+
+  .callout{margin-top:16px;background:#FFFDF8;border:1px solid #EBD9BC;border-left:3px solid var(--amber);
+           padding:15px 18px;font-size:13.5px}
+  .callout b{color:#7A4A0E}
+
+  .bar{display:flex;gap:10px;margin-top:26px;align-items:center;flex-wrap:wrap}
+  .btn{font:600 10.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;padding:11px 16px;
+       border:1px solid var(--navy);background:var(--navy);color:#fff;cursor:pointer;border-radius:2px;
+       transition:all .15s}
+  .btn:hover{background:var(--navy-deep)}
+  .btn.ghost{background:var(--card);color:var(--mute);border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--teal);color:var(--teal-dark);background:var(--card)}
+  .btn:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  .hint{font-size:12.5px;color:var(--mute)}
+
+  @media (max-width:900px){
+    .tabs{grid-template-columns:repeat(2,1fr)}
+    .key{grid-template-columns:repeat(2,1fr)}
+    .live{grid-template-columns:1fr;gap:14px}
+    .tscroll{overflow-x:auto}
+    .tscroll table{min-width:720px}
+  }
+  @media (max-width:700px){
+    .wrap,.hgrid{padding-left:16px;padding-right:16px}
+    header h1{font-size:24px}
+    .who input{width:140px}
+    .shead p{margin-left:0}
+  }
+  @media print{
+    body{background:#fff}
+    .tabs,.bar,.hint{display:none}
+    .live{background:#fff;color:var(--ink);border:2px solid var(--navy)}
+    .live .lv,.live .big small,.gmarks{color:var(--mute)}
+    .gauge{background:#EDF1F6}
+    section{break-inside:avoid}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hgrid">
+    <div>
+      <p class="eyebrow">Talent Acquisition &middot; Contingent Labor RFP</p>
+      <h1>Finalist Presentation Scorecard</h1>
+      <p class="sub">Weighted evaluation for the five finalists presenting the week of August 10.
+      Score each criterion one through five, then record a tier recommendation.</p>
+    </div>
+    <div class="who">
+      <div>
+        <label for="ev">Evaluator</label>
+        <input id="ev" type="text" placeholder="Your name">
+      </div>
+      <div>
+        <label for="rl">Role</label>
+        <input id="rl" type="text" placeholder="Panel role">
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="tabs" id="tabs"></div>
+
+<div class="wrap">
+
+  <div class="live">
+    <div>
+      <span class="lv">Weighted score</span>
+      <span class="big" id="bigScore">0.00<small> / 5.00</small></span>
+    </div>
+    <div>
+      <div class="gauge"><i id="gauge"></i></div>
+      <div class="gmarks"><span>1.00</span><span>2.00</span><span>3.00 meets</span><span>4.00 tier 1 band</span><span>5.00</span></div>
+    </div>
+    <div><span class="band" id="band">Not scored</span></div>
+  </div>
+
+  <div id="newFlag"></div>
+
+  <section>
+    <div class="shead">
+      <span class="sn">01</span>
+      <h2>Weighted criteria</h2>
+      <p id="whoNow">Scoring: none selected</p>
+    </div>
+    <div class="tscroll">
+    <table>
+      <thead><tr>
+        <th>Criterion</th><th class="w">Weight</th>
+        <th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th><th class="c">5</th>
+        <th class="w">Weighted</th>
+      </tr></thead>
+      <tbody id="crit"></tbody>
+      <tfoot>
+        <tr class="total">
+          <td class="tlabel">Total</td>
+          <td class="wcell">100%</td>
+          <td colspan="5"></td>
+          <td class="tval" id="footTotal">0.00</td>
+        </tr>
+      </tfoot>
+    </table>
+    </div>
+
+    <div class="key">
+      <div><b>1</b><span>Does not meet the requirement</span></div>
+      <div><b>2</b><span>Partially meets, material gaps</span></div>
+      <div><b>3</b><span>Meets the requirement</span></div>
+      <div><b>4</b><span>Strong, above requirement</span></div>
+      <div><b>5</b><span>Exceptional, clear differentiator</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead">
+      <span class="sn">02</span>
+      <h2>Tier recommendation</h2>
+      <p>Score bands are guidance, not a rule</p>
+    </div>
+    <div class="tier">
+      <h3>Where does this vendor land</h3>
+      <p class="th">Guidance: 4.00 and above supports Tier 1, 3.25 to 3.99 supports Tier 2, below 3.25
+      is not recommended. Override the band if the presentation warrants it and say why below.</p>
+      <div class="picks" id="picks"></div>
+      <textarea class="notes" id="tierNote" rows="3"
+        placeholder="Rationale, conditions of award, or follow up needed before a decision"></textarea>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead">
+      <span class="sn">03</span>
+      <h2>Panel comparison</h2>
+      <p>Updates as you score each vendor</p>
+    </div>
+    <div class="tscroll">
+    <table class="cmp">
+      <thead><tr>
+        <th>Vendor</th><th>Relative score</th><th class="w">Score</th><th class="w">Recommendation</th>
+      </tr></thead>
+      <tbody id="cmpBody"></tbody>
+    </table>
+    </div>
+  </section>
+
+  <div class="bar">
+    <button class="btn" onclick="window.print()">Print or save as PDF</button>
+    <button class="btn ghost" id="copyBtn">Copy summary</button>
+    <button class="btn ghost" id="clearBtn">Clear this vendor</button>
+    <span class="hint">Scores live in this browser tab only. Print or copy before closing.</span>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var VENDORS = [
+    { id: 'neu', name: 'Neutrino Group',  slot: 'Mon Aug 10, 12:30 PM', isNew: false },
+    { id: 'ipg', name: 'IntelliPro Group', slot: 'Tue Aug 11, 12:00 PM', isNew: true },
+    { id: 'ing', name: 'Insight Global',  slot: 'Wed Aug 12, 11:00 AM', isNew: false },
+    { id: 'cit', name: 'Citius Tech',     slot: 'Fri Aug 14, 9:00 AM',  isNew: false },
+    { id: 'odg', name: 'On-Demand Group', slot: 'Fri Aug 14, 3:00 PM',  isNew: false }
+  ];
+
+  var CRITERIA = [
+    { id: 'rate', w: 0.25, name: 'Rate competitiveness and fee structure',
+      hint: 'Bill rates against the matched role benchmark, markup transparency, and willingness to compress. ODG currently runs 34 percent above CitiusTech on identical roles.' },
+    { id: 'del',  w: 0.20, name: 'Delivery performance and speed to fill',
+      hint: 'Time to first submittal, submittal to interview ratio, and fill rate on comparable requisitions.' },
+    { id: 'qual', w: 0.20, name: 'Candidate quality and retention',
+      hint: 'Assignment completion, attrition on assignment, and replacement or rework history.' },
+    { id: 'dom',  w: 0.15, name: 'Domain expertise',
+      hint: 'Specialty pharmacy, patient access, and healthcare technology depth, plus Salesforce and .NET bench strength.' },
+    { id: 'acct', w: 0.10, name: 'Account management and responsiveness',
+      hint: 'Named team, escalation path, reporting cadence, and a single point of accountability.' },
+    { id: 'comp', w: 0.10, name: 'Contract, compliance, and onboarding readiness',
+      hint: 'MSA and rate card status, insurance, background and security requirements, and realistic time to first placement.' }
+  ];
+
+  var PICKS = [
+    { v: 'tier1', label: 'Tier 1' },
+    { v: 'tier2', label: 'Tier 2' },
+    { v: 'hold',  label: 'Hold, needs follow up' },
+    { v: 'no',    label: 'Not recommended' }
+  ];
+
+  // NodeList.forEach is missing in older engines, so iterate through a real array
+  function each(list, fn) {
+    var arr = Array.prototype.slice.call(list);
+    for (var i = 0; i < arr.length; i++) { fn(arr[i], i); }
+  }
+
+  var state = {};
+  VENDORS.forEach(function (v) {
+    state[v.id] = { scores: {}, notes: {}, pick: '', tierNote: '' };
+  });
+  var current = VENDORS[0].id;
+
+  var el = {
+    tabs: document.getElementById('tabs'),
+    crit: document.getElementById('crit'),
+    picks: document.getElementById('picks'),
+    big: document.getElementById('bigScore'),
+    gauge: document.getElementById('gauge'),
+    band: document.getElementById('band'),
+    foot: document.getElementById('footTotal'),
+    whoNow: document.getElementById('whoNow'),
+    cmp: document.getElementById('cmpBody'),
+    tierNote: document.getElementById('tierNote'),
+    newFlag: document.getElementById('newFlag')
+  };
+
+  function vendor(id) {
+    for (var i = 0; i < VENDORS.length; i++) { if (VENDORS[i].id === id) return VENDORS[i]; }
+    return null;
+  }
+
+  // weighted score over the criteria actually scored, rescaled to the full weight
+  function score(id) {
+    var s = state[id].scores, tot = 0, wsum = 0;
+    CRITERIA.forEach(function (c) {
+      if (s[c.id]) { tot += s[c.id] * c.w; wsum += c.w; }
+    });
+    return { val: wsum ? tot / wsum : 0, done: wsum, complete: wsum > 0.999 };
+  }
+
+  function bandFor(v) {
+    if (v >= 4) return { cls: 't1', txt: 'Tier 1 band' };
+    if (v >= 3.25) return { cls: 't2', txt: 'Tier 2 band' };
+    return { cls: 'no', txt: 'Below Tier 2' };
+  }
+
+  function buildTabs() {
+    el.tabs.innerHTML = '';
+    VENDORS.forEach(function (v) {
+      var s = score(v.id);
+      var b = document.createElement('button');
+      b.className = 'tab' + (v.id === current ? ' on' : '') + (v.isNew ? ' new' : '') +
+                    (s.done ? ' scored' : '');
+      b.type = 'button';
+      b.innerHTML = '<span class="tslot">' + v.slot + '</span>' +
+                    '<span class="tname">' + v.name + '</span>' +
+                    '<span class="tscore">' + (s.done ? s.val.toFixed(2) + ' / 5.00' : 'Not scored') +
+                    '</span>';
+      b.onclick = function () { current = v.id; render(); };
+      el.tabs.appendChild(b);
+    });
+  }
+
+  function buildCriteria() {
+    el.crit.innerHTML = '';
+    var st = state[current];
+    CRITERIA.forEach(function (c) {
+      var tr = document.createElement('tr');
+      var cells = '<td><div class="cname">' + c.name + '</div>' +
+                  '<div class="chint">' + c.hint + '</div>' +
+                  '<textarea class="notes" rows="1" data-note="' + c.id +
+                  '" placeholder="Evidence from the presentation">' +
+                  (st.notes[c.id] || '') + '</textarea></td>' +
+                  '<td class="wcell">' + (c.w * 100).toFixed(0) + '%</td>';
+      for (var n = 1; n <= 5; n++) {
+        var nm = 'sc_' + current + '_' + c.id;
+        var idAttr = nm + '_' + n;
+        cells += '<td class="scell">' +
+                 '<input type="radio" name="' + nm + '" id="' + idAttr + '" value="' + n + '"' +
+                 (st.scores[c.id] === n ? ' checked' : '') + '>' +
+                 '<label for="' + idAttr + '">' + n + '</label></td>';
+      }
+      var wv = st.scores[c.id] ? (st.scores[c.id] * c.w).toFixed(2) : '&ndash;';
+      cells += '<td class="tval">' + wv + '</td>';
+      tr.innerHTML = cells;
+      el.crit.appendChild(tr);
+    });
+
+    each(el.crit.querySelectorAll('input[type=radio]'), function (r) {
+      r.onchange = function () {
+        var cid = r.name.split('_')[2];
+        state[current].scores[cid] = parseInt(r.value, 10);
+        render();
+      };
+    });
+    each(el.crit.querySelectorAll('textarea[data-note]'), function (t) {
+      var key = t.getAttribute('data-note');
+      t.oninput = function () { state[current].notes[key] = t.value; };
+    });
+  }
+
+  function buildPicks() {
+    el.picks.innerHTML = '';
+    PICKS.forEach(function (p) {
+      var idAttr = 'pk_' + current + '_' + p.v;
+      var span = document.createElement('span');
+      span.innerHTML = '<input type="radio" name="pk_' + current + '" id="' + idAttr + '" value="' +
+                       p.v + '"' + (state[current].pick === p.v ? ' checked' : '') + '>' +
+                       '<label for="' + idAttr + '">' + p.label + '</label>';
+      el.picks.appendChild(span);
+    });
+    each(el.picks.querySelectorAll('input'), function (r) {
+      r.onchange = function () { state[current].pick = r.value; render(); };
+    });
+  }
+
+  function buildLive() {
+    var v = vendor(current), s = score(current);
+    el.big.innerHTML = s.val.toFixed(2) + '<small> / 5.00</small>';
+    el.foot.innerHTML = s.done ? s.val.toFixed(2) : '0.00';
+    el.gauge.style.width = s.done ? ((s.val - 1) / 4 * 100).toFixed(1) + '%' : '0%';
+    if (!s.done) {
+      el.band.className = 'band';
+      el.band.textContent = 'Not scored';
+    } else {
+      var b = bandFor(s.val);
+      el.band.className = 'band ' + b.cls;
+      el.band.textContent = b.txt + (s.complete ? '' : ' (partial)');
+    }
+    el.whoNow.textContent = 'Scoring: ' + v.name + ', ' + v.slot;
+    el.newFlag.innerHTML = v.isNew
+      ? '<div class="callout"><b>IntelliPro Group is net new.</b> No MSA, no negotiated rate card, ' +
+        'and no prior AssistRx assignments, so there is no delivery history to score against. ' +
+        'Weigh criterion six on realistic time to first placement, and treat delivery and quality ' +
+        'scores as claims to be referenced rather than observed performance.</div>'
+      : '';
+  }
+
+  function buildCmp() {
+    var rows = VENDORS.map(function (v) {
+      return { v: v, s: score(v.id), pick: state[v.id].pick };
+    });
+    var scored = rows.filter(function (r) { return r.s.done; });
+    var max = scored.length ? Math.max.apply(null, scored.map(function (r) { return r.s.val; })) : 5;
+    rows.sort(function (a, b) { return b.s.val - a.s.val; });
+
+    var pillMap = {
+      tier1: '<span class="pill t1">Tier 1</span>',
+      tier2: '<span class="pill t2">Tier 2</span>',
+      hold:  '<span class="pill none">Hold</span>',
+      no:    '<span class="pill no">Not recommended</span>',
+      '':    '<span class="pill none">Pending</span>'
+    };
+
+    el.cmp.innerHTML = '';
+    rows.forEach(function (r, i) {
+      var tr = document.createElement('tr');
+      var w = r.s.done && max ? (r.s.val / max * 100).toFixed(1) : 0;
+      tr.innerHTML =
+        '<td><span class="rank">' + (r.s.done ? (i + 1) : '&ndash;') + '</span>' +
+        '<span class="cname" style="display:inline">' + r.v.name + '</span>' +
+        (r.v.isNew ? ' <span class="pill new">Net new</span>' : '') + '</td>' +
+        '<td class="cbar">' + (r.s.done
+            ? '<div class="track"><i style="width:' + w + '%"></i></div>'
+            : '<span class="empty">Awaiting presentation</span>') + '</td>' +
+        '<td class="sc">' + (r.s.done ? r.s.val.toFixed(2) : '&ndash;') + '</td>' +
+        '<td class="pk">' + pillMap[r.pick] + '</td>';
+      el.cmp.appendChild(tr);
+    });
+  }
+
+  function render() {
+    buildTabs();
+    buildCriteria();
+    buildPicks();
+    buildLive();
+    buildCmp();
+    el.tierNote.value = state[current].tierNote || '';
+  }
+
+  el.tierNote.oninput = function () { state[current].tierNote = el.tierNote.value; };
+
+  document.getElementById('clearBtn').onclick = function () {
+    state[current] = { scores: {}, notes: {}, pick: '', tierNote: '' };
+    render();
+  };
+
+  document.getElementById('copyBtn').onclick = function () {
+    var lines = ['AssistRx Contingent Labor RFP, finalist scorecard'];
+    var ev = document.getElementById('ev').value, rl = document.getElementById('rl').value;
+    if (ev || rl) lines.push('Evaluator: ' + ev + (rl ? ' (' + rl + ')' : ''));
+    lines.push('');
+    VENDORS.forEach(function (v) {
+      var s = score(v.id), st = state[v.id];
+      lines.push(v.name + '  ' + v.slot);
+      lines.push('  Weighted score: ' + (s.done ? s.val.toFixed(2) + ' / 5.00' +
+                 (s.complete ? '' : ' (partial)') : 'not scored'));
+      CRITERIA.forEach(function (c) {
+        if (st.scores[c.id]) {
+          lines.push('  ' + c.name + ': ' + st.scores[c.id] + '/5' +
+                     (st.notes[c.id] ? '  ' + st.notes[c.id] : ''));
+        }
+      });
+      if (st.pick) {
+        var lbl = PICKS.filter(function (p) { return p.v === st.pick; })[0].label;
+        lines.push('  Recommendation: ' + lbl);
+      }
+      if (st.tierNote) lines.push('  Rationale: ' + st.tierNote);
+      lines.push('');
+    });
+    var txt = lines.join('\n');
+    var ta = document.createElement('textarea');
+    ta.value = txt;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    var b = document.getElementById('copyBtn'), old = b.textContent;
+    b.textContent = 'Copied';
+    setTimeout(function () { b.textContent = old; }, 1600);
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
