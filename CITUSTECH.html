@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CT Resource Workforce &amp; Cost Optimization Dashboard | AssistRx</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root{
+    --navy:#0b2545;
+    --navy-dark:#071a33;
+    --orange:#f5821f;
+    --orange-dark:#d9690a;
+    --teal:#1a8fa3;
+    --bg:#f4f6f9;
+    --card:#ffffff;
+    --text:#1c2b3a;
+    --muted:#66788f;
+    --border:#e3e8ef;
+    --good:#1a9c5b;
+    --bad:#d9483c;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+  }
+  header{
+    background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);
+    color:#fff;
+    padding:22px 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:4px solid var(--orange);
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand-mark{
+    width:42px;height:42px;border-radius:10px;
+    background:var(--orange);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:18px;color:var(--navy-dark);
+  }
+  .brand-name{font-size:20px;font-weight:700;letter-spacing:0.3px;}
+  .brand-sub{font-size:12px;color:#b9c6da;margin-top:1px;}
+  header h1{font-size:16px;margin:0;font-weight:600;text-align:right;}
+  header .meta{font-size:12px;color:#b9c6da;text-align:right;margin-top:3px;}
+  main{padding:24px 32px 60px;max-width:1440px;margin:0 auto;}
+
+  .section-title{
+    font-size:14px;text-transform:uppercase;letter-spacing:0.6px;
+    color:var(--muted);font-weight:700;margin:32px 0 14px;
+  }
+  .section-title:first-child{margin-top:0;}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
+  .kpi{
+    background:var(--card);border:1px solid var(--border);border-radius:12px;
+    padding:18px 18px 16px;box-shadow:0 1px 2px rgba(15,35,60,0.04);
+  }
+  .kpi .label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;}
+  .kpi .value{font-size:26px;font-weight:800;color:var(--navy);margin-top:8px;}
+  .kpi .sub{font-size:12px;margin-top:6px;color:var(--muted);}
+  .kpi .sub.good{color:var(--good);font-weight:700;}
+
+  .grid-2{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;}
+  .card{
+    background:var(--card);border:1px solid var(--border);border-radius:12px;
+    padding:18px 20px;box-shadow:0 1px 2px rgba(15,35,60,0.04);
+  }
+  .card h3{margin:0 0 4px;font-size:14px;color:var(--navy);}
+  .card p.desc{margin:0 0 12px;font-size:12px;color:var(--muted);}
+
+  .simulator{
+    background:linear-gradient(135deg,#0f2f57,#123763);
+    color:#fff;border-radius:12px;padding:20px 24px;margin-top:16px;
+    display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between;
+  }
+  .simulator .sim-left{flex:1;min-width:260px;}
+  .simulator h3{margin:0 0 4px;font-size:15px;}
+  .simulator p{margin:0;font-size:12px;color:#c6d3e6;}
+  .slider-wrap{display:flex;align-items:center;gap:12px;min-width:320px;}
+  .slider-wrap input[type=range]{flex:1;accent-color:var(--orange);height:6px;}
+  .slider-val{
+    background:var(--orange);color:#1c1200;font-weight:800;border-radius:8px;
+    padding:8px 14px;font-size:18px;min-width:64px;text-align:center;
+  }
+  .sim-stats{display:flex;gap:24px;flex-wrap:wrap;}
+  .sim-stat .n{font-size:22px;font-weight:800;}
+  .sim-stat .l{font-size:11px;color:#c6d3e6;text-transform:uppercase;letter-spacing:0.4px;}
+
+  .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+  .filters input[type=text]{
+    padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;
+    min-width:220px;
+  }
+  .chip{
+    padding:7px 14px;border-radius:999px;border:1px solid var(--border);background:#fff;
+    font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;
+  }
+  .chip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .chip:hover{border-color:var(--navy);}
+  .count-badge{margin-left:auto;font-size:12px;color:var(--muted);}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{
+    text-align:left;padding:10px 12px;background:#f0f3f8;color:var(--navy);
+    font-weight:700;cursor:pointer;user-select:none;white-space:nowrap;
+    border-bottom:2px solid var(--border);
+  }
+  th:hover{background:#e6ebf3;}
+  th .arrow{font-size:10px;color:var(--muted);margin-left:3px;}
+  td{padding:9px 12px;border-bottom:1px solid var(--border);white-space:nowrap;}
+  tr:hover td{background:#f8fafc;}
+  .badge{
+    padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;
+    background:#eef1f6;color:#3a4a5e;
+  }
+  .badge.tl{background:#e6f0ff;color:#1350a3;}
+  .badge.sr{background:#e8f7ee;color:#178849;}
+  .badge.mid{background:#fff1e3;color:#c2660d;}
+  .badge.jr{background:#f3ecff;color:#6a3fc7;}
+  .badge.shadow{background:#f1f2f4;color:#5a6472;}
+  .badge.ai{background:#ffe9ec;color:#c22050;}
+  .savings-cell{color:var(--good);font-weight:700;}
+  .shadow-row td{color:#9aa5b1;}
+  .table-wrap{max-height:520px;overflow:auto;border:1px solid var(--border);border-radius:10px;}
+  .table-wrap table thead th{position:sticky;top:0;z-index:1;}
+
+  footer{
+    max-width:1440px;margin:0 auto;padding:0 32px 40px;color:var(--muted);font-size:11.5px;line-height:1.6;
+  }
+  footer b{color:var(--text);}
+
+  @media (max-width:1100px){
+    .kpi-grid{grid-template-columns:repeat(2,1fr);}
+    .grid-2{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark">Rx</div>
+    <div>
+      <div class="brand-name">AssistRx</div>
+      <div class="brand-sub">Talent Acquisition &amp; Vendor Management</div>
+    </div>
+  </div>
+  <div>
+    <h1>CT Resource Workforce &amp; Cost Optimization Dashboard</h1>
+    <div class="meta">Vendor: CT &nbsp;|&nbsp; Source: CT_AssistRx Resource List &nbsp;|&nbsp; Prepared for Executive Review</div>
+  </div>
+</header>
+
+<main>
+
+  <div class="section-title">Workforce &amp; Spend Overview</div>
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="label">Active Resources</div>
+      <div class="value" id="kpi-count">--</div>
+      <div class="sub" id="kpi-count-sub">Including unbilled shadow resources</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Current Monthly Spend</div>
+      <div class="value" id="kpi-current-spend">--</div>
+      <div class="sub">Est. at 173.3 billable hrs/mo per resource</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Avg. Bill Rate</div>
+      <div class="value" id="kpi-avg-rate">--</div>
+      <div class="sub">Billed resources only (excludes $0 shadow)</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Projected Monthly Spend</div>
+      <div class="value" id="kpi-proj-spend">--</div>
+      <div class="sub" id="kpi-proj-sub">At target reduction %</div>
+    </div>
+    <div class="kpi">
+      <div class="label">6-Month Cumulative Savings</div>
+      <div class="value" id="kpi-6mo-savings">--</div>
+      <div class="sub good" id="kpi-annual-run-rate">--</div>
+    </div>
+  </div>
+
+  <div class="simulator">
+    <div class="sim-left">
+      <h3>Bill Rate Reduction Simulator</h3>
+      <p>Drag to model any across-the-board bill rate reduction. Default is set to the proposed 10% target.</p>
+    </div>
+    <div class="slider-wrap">
+      <span style="font-size:12px;color:#c6d3e6;">0%</span>
+      <input type="range" id="reductionSlider" min="0" max="30" value="10" step="1">
+      <span style="font-size:12px;color:#c6d3e6;">30%</span>
+      <div class="slider-val" id="reductionLabel">10%</div>
+    </div>
+    <div class="sim-stats">
+      <div class="sim-stat"><div class="n" id="sim-monthly-savings">--</div><div class="l">Monthly Savings</div></div>
+      <div class="sim-stat"><div class="n" id="sim-6mo-savings">--</div><div class="l">6-Mo Savings</div></div>
+      <div class="sim-stat"><div class="n" id="sim-annual-savings">--</div><div class="l">Annualized Run-Rate</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">6-Month Spend Projection</div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Baseline vs. Reduced Bill Rate Spend</h3>
+      <p class="desc">Projected monthly spend over the next 6 months, assuming reduction applied from month 1</p>
+      <canvas id="projectionChart" height="130"></canvas>
+    </div>
+    <div class="card">
+      <h3>Cumulative Savings</h3>
+      <p class="desc">Running total of savings captured over the 6-month window</p>
+      <canvas id="cumulativeChart" height="130"></canvas>
+    </div>
+  </div>
+
+  <div class="section-title">Resource Roster</div>
+  <div class="card">
+    <div class="filters" id="filterChips">
+      <input type="text" id="searchBox" placeholder="Search name, title, or manager/team...">
+      <div class="chip active" data-type="All">All</div>
+      <div class="count-badge" id="rowCount"></div>
+    </div>
+    <div class="table-wrap">
+      <table id="rosterTable">
+        <thead>
+          <tr>
+            <th data-key="name">Name <span class="arrow"></span></th>
+            <th data-key="title">Title <span class="arrow"></span></th>
+            <th data-key="manager">Manager / Team <span class="arrow"></span></th>
+            <th data-key="location">Location <span class="arrow"></span></th>
+            <th data-key="start">Start <span class="arrow"></span></th>
+            <th data-key="rate">Current Rate <span class="arrow"></span></th>
+            <th data-key="reduced">Reduced Rate <span class="arrow"></span></th>
+            <th data-key="monthlySavings">Mo. Savings <span class="arrow"></span></th>
+          </tr>
+        </thead>
+        <tbody id="rosterBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <b>Assumptions:</b> Monthly spend is estimated using 173.3 billable hours per resource per month (40 hrs/week &times; 52 weeks &divide; 12 months). Shadow Resources are billed at $0/hr per the source roster and are included in headcount but contribute no spend or savings. The 10% target reduction is modeled as a flat, immediate reduction to hourly bill rates sustained across the 6-month window; it does not assume headcount changes. Use the simulator above to model alternative reduction scenarios.<br>
+  <b>Source:</b> CT_AssistRx Resource List (uploaded roster).
+</footer>
+
+<script>
+const contractors = [{"name":"Vinod Pendam","start":"3/9/25","manager":"Virat Shah (HUB I)","title":"Tech Lead","city":"Hyderabad","state":"Telangana","country":"India","rate":38.0},{"name":"Avinash Thallapaly","start":"3/9/25","manager":"Unassigned","title":"Mid lev Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":34.0},{"name":"Nageswarao Kancharla","start":"3/9/25","manager":"Unassigned","title":"Jr Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":30.0},{"name":"Uma Visweswara Prasad Muthyala","start":"3/9/25","manager":"Unassigned","title":"Jr Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":30.0},{"name":"Vamshi Krishna","start":"3/9/25","manager":"Unassigned","title":"Shadow Resource","city":"Hyderabad","state":"Telangana","country":"India","rate":0.0},{"name":"Swapna Reddy Konuganti","start":"6/2/26","manager":"Lester Garcia (Momentum)","title":"Tech Lead","city":"Hyderabad","state":"Telangana","country":"India","rate":38.0},{"name":"Neelima Chekuri","start":"7/21/25","manager":"Unassigned","title":"Mid lev Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":34.0},{"name":"Manisha Kunduru","start":"7/21/25","manager":"Unassigned","title":"Jr Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":30.0},{"name":"Radhika Annamneni","start":"7/21/25","manager":"Unassigned","title":"Jr Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":30.0},{"name":"Shushma Thota","start":"9/22/25","manager":"Unassigned","title":"Shadow Resource","city":"Hyderabad","state":"Telangana","country":"India","rate":0.0},{"name":"Anusha Gottipati","start":"7/21/25","manager":"Annette Jackson (SF HUB D)","title":"Tech Lead","city":"Hyderabad","state":"Telangana","country":"India","rate":38.0},{"name":"Laksham Dandu","start":"7/21/25","manager":"Unassigned","title":"Mid lev Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":34.0},{"name":"Shashank Soni","start":"7/21/25","manager":"Unassigned","title":"Jr Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":30.0},{"name":"Srikari Penumaka","start":"7/21/25","manager":"Unassigned","title":"Jr Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":30.0},{"name":"Sandhya Gaud","start":"12/29/25","manager":"Unassigned","title":"Shadow Resource","city":"Hyderabad","state":"Telangana","country":"India","rate":0.0},{"name":"Chandupriya Yalla","start":"5/11/25","manager":"HUB T","title":"Tech Lead/Sr Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":38.0},{"name":"Harneet Kaur","start":"5/11/25","manager":"Unassigned","title":"Mid lev Engg","city":"Delhi","state":"Delhi","country":"India","rate":34.0},{"name":"Babita Basavraj Kalshetti","start":"1/2/26","manager":"Mark Brundege (HUB X - Exp Cloud)","title":"Tech Lead","city":"Bangalore","state":"Karnataka","country":"India","rate":38.0},{"name":"Mohammad Iqbal","start":"9/29/26","manager":"Unassigned","title":"Mid lev Engg","city":"Pune","state":"Maharashtra","country":"India","rate":34.0},{"name":"Rishita Thooti","start":"9/29/26","manager":"Unassigned","title":"Jr Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":30.0},{"name":"Raghavendra Kumar","start":"9/29/26","manager":"Unassigned","title":"Shadow Resource","city":"Hyderabad","state":"Telangana","country":"India","rate":0.0},{"name":"Sai Kumar Korata","start":"5/6/26","manager":"Vaishnavi Vijayakumar (HUB C)","title":"Tech Lead","city":"Hyderabad","state":"Telangana","country":"India","rate":38.0},{"name":"Mohd Pasha","start":"6/16/26","manager":"Vaishnavi Vijayakumar (SF DevOps)","title":"Sr Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":35.0},{"name":"Zafar Ansari","start":"4/7/25","manager":"Carmelita Resh (Delivery/Execution teams)","title":"Tech Lead","city":"Mumbai","state":"Maharashtra","country":"India","rate":34.0},{"name":"Muhamed Azharudheen","start":"5/19/25","manager":"Unassigned","title":"Mid lev Engg","city":"Bangalore","state":"Karnataka","country":"India","rate":31.0},{"name":"Ahamed Khan","start":"5/19/25","manager":"Unassigned","title":"Jr Engg","city":"Bangalore","state":"Karnataka","country":"India","rate":28.0},{"name":"Swaynasu Rath","start":"5/19/25","manager":"Unassigned","title":"Jr Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":28.0},{"name":"Pooja Sharma","start":"1/5/26","manager":"Kevin Darty (Delivery/Execution teams)","title":"Tech Lead","city":"Gurugram","state":"Haryana","country":"India","rate":35.0},{"name":"Suriyakumar KR","start":"1/5/26","manager":"Unassigned","title":"Mid lev Engg","city":"Chennai","state":"Tamil Nadu","country":"India","rate":33.0},{"name":"Md aadil Mazz","start":"1/5/26","manager":"Unassigned","title":"Jr Engg","city":"Gurugram","state":"Haryana","country":"India","rate":30.0},{"name":"Sahbaz Khan","start":"1/5/26","manager":"Unassigned","title":"Jr Engg","city":"Pune","state":"Maharashtra","country":"India","rate":30.0},{"name":"Ajinkya Sawant","start":"1/5/26","manager":"Michael Paynter (Product team)","title":"Tech Lead/Sr Engg","city":"Mumbai","state":"Maharashtra","country":"India","rate":38.0},{"name":"Sai Teja Kothuru","start":"4/13/26","manager":"Balamurgan Sivakolunthu Vel (AI Product Team [Python + Adv SQL])","title":"Sr Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":38.0},{"name":"Aavishkar Mahajan","start":"8/11/25","manager":"Unassigned","title":"Tech Lead/Sr Engg","city":"Pune","state":"Maharashtra","country":"India","rate":40.0},{"name":"Aishwarya Kale","start":"10/13/25","manager":"Unassigned","title":"Jr Engg","city":"Pune","state":"Maharashtra","country":"India","rate":30.0},{"name":"Raveen Sharma","start":"10/29/25","manager":"Unassigned","title":"Sr Engg","city":"Gurugram","state":"Haryana","country":"India","rate":38.0},{"name":"Bala Chandar","start":"12/22/25","manager":"Unassigned","title":"Tech Lead/Sr Engg","city":"Chennai","state":"Tamil Nadu","country":"India","rate":44.0},{"name":"Amit Soni","start":"12/22/25","manager":"Unassigned","title":"Tech Lead/Sr Engg","city":"Bangalore","state":"Karnataka","country":"India","rate":40.0},{"name":"Rohan Phadatare","start":"2/2/26","manager":"Unassigned","title":"Mid lev Engg","city":"Mumbai","state":"Maharashtra","country":"India","rate":34.0},{"name":"Raj Ghate","start":"3/2/26","manager":"Unassigned","title":"Mid lev Engg","city":"Mumbai","state":"Maharashtra","country":"India","rate":34.0},{"name":"Ishita Mukherjee","start":"7/13/26","manager":"Unassigned","title":"AI Programmer Analyst","city":"Mumbai","state":"Maharashtra","country":"India","rate":35.0},{"name":"Pushkaraj Badbade","start":"9/15/25","manager":"Crystal Barancik (BI Team)","title":"Tech Lead/Sr Engg","city":"Mumbai","state":"Maharashtra","country":"India","rate":35.0},{"name":"Palani Kumar Pulicherla","start":"3/23/25","manager":"Michelle Mullin (Data Team)","title":"Tech Lead/Sr Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":38.0},{"name":"Neeharika Dhanalakota","start":"4/28/05","manager":"Unassigned","title":"Mid lev Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":34.0},{"name":"Veera Venkata Rama Krishna","start":"6/16/25","manager":"Unassigned","title":"Mid lev Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":34.0},{"name":"Sonali Salunkhe","start":"8/4/25","manager":"Unassigned","title":"Mid lev Engg","city":"Pune","state":"Maharashtra","country":"India","rate":34.0},{"name":"Amandeep Singh Bassi","start":"4/7/25","manager":"Masud Abedin/John Gravitte (Automation & Data Reporting QA)","title":"Mid lev Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":32.0},{"name":"Ratnababu Ravimekhala","start":"12/16/25","manager":"Unassigned","title":"Mid lev Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":32.0},{"name":"Pooja Maslekar","start":"12/29/25","manager":"Unassigned","title":"Tech Lead/Sr Engg","city":"Mumbai","state":"Maharashtra","country":"India","rate":38.0},{"name":"Rahul Palande","start":"1/26/26","manager":"Unassigned","title":"Mid lev Engg","city":"Mumbai","state":"Maharashtra","country":"India","rate":35.0},{"name":"Prem Suvarna","start":"2/16/26","manager":"Unassigned","title":"Mid lev Engg","city":"Mumbai","state":"Maharashtra","country":"India","rate":35.0},{"name":"Manikanta Vollumkondu","start":"5/28/26","manager":"Unassigned","title":"Mid lev Engg","city":"Chennai","state":"Tamil Nadu","country":"India","rate":32.0},{"name":"Ailineni, Sudhamshu","start":"6/24/26","manager":"Unassigned","title":"Mid lev Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":32.0},{"name":"Raja Ramesh Daddanala","start":"6/24/26","manager":"Unassigned","title":"Mid lev Engg","city":"Hyderabad","state":"Telangana","country":"India","rate":32.0},{"name":"Rithesh Kanchan","start":"11/13/25","manager":"Max Raes (DevOps)","title":"Mid lev Engg","city":"Bangalore","state":"Karnataka","country":"India","rate":32.0},{"name":"Owais Mirza","start":"2/9/26","manager":"Clifford Jones (ML Data Scientist)","title":"Jr Engg","city":"Pune","state":"Maharashtra","country":"India","rate":34.0}];
+
+const MONTHLY_HOURS = 173.33;
+const MONTHS = ["Month 1","Month 2","Month 3","Month 4","Month 5","Month 6"];
+const money = n => "$" + Math.round(n).toLocaleString("en-US");
+
+const TITLE_CLASS = {
+  "Tech Lead":"tl", "Tech Lead/Sr Engg":"tl", "Sr Engg":"sr",
+  "Mid lev Engg":"mid", "Jr Engg":"jr", "Shadow Resource":"shadow",
+  "AI Programmer Analyst":"ai"
+};
+
+let reductionPct = 10;
+let sortKey = "name", sortDir = 1;
+let activeType = "All";
+let searchTerm = "";
+
+function computed(){
+  return contractors.map(c => {
+    const monthly = c.rate * MONTHLY_HOURS;
+    const reducedRate = c.rate * (1 - reductionPct/100);
+    const reducedMonthly = reducedRate * MONTHLY_HOURS;
+    return {...c, location: c.city + ", " + c.state, monthly, reducedRate, reducedMonthly, monthlySavings: monthly - reducedMonthly};
+  });
+}
+
+function renderKPIs(rows){
+  const totalMonthly = rows.reduce((s,r)=>s+r.monthly,0);
+  const totalReducedMonthly = rows.reduce((s,r)=>s+r.reducedMonthly,0);
+  const totalMonthlySavings = totalMonthly - totalReducedMonthly;
+  const paid = rows.filter(r=>r.rate>0);
+  const avgRate = paid.reduce((s,r)=>s+r.rate,0)/paid.length;
+  const shadowCount = rows.length - paid.length;
+
+  document.getElementById("kpi-count").textContent = rows.length;
+  document.getElementById("kpi-count-sub").textContent = shadowCount + " unbilled shadow resource" + (shadowCount===1?"":"s") + " included";
+  document.getElementById("kpi-current-spend").textContent = money(totalMonthly);
+  document.getElementById("kpi-avg-rate").textContent = "$" + avgRate.toFixed(2) + "/hr";
+  document.getElementById("kpi-proj-spend").textContent = money(totalReducedMonthly);
+  document.getElementById("kpi-proj-sub").textContent = "At " + reductionPct + "% reduction target";
+  document.getElementById("kpi-6mo-savings").textContent = money(totalMonthlySavings*6);
+  document.getElementById("kpi-annual-run-rate").textContent = money(totalMonthlySavings*12) + " annualized run-rate";
+
+  document.getElementById("sim-monthly-savings").textContent = money(totalMonthlySavings);
+  document.getElementById("sim-6mo-savings").textContent = money(totalMonthlySavings*6);
+  document.getElementById("sim-annual-savings").textContent = money(totalMonthlySavings*12);
+
+  return {totalMonthly, totalReducedMonthly, totalMonthlySavings};
+}
+
+let projectionChart, cumulativeChart;
+
+function renderProjection(totals){
+  const baseline = MONTHS.map(()=>totals.totalMonthly);
+  const reduced = MONTHS.map(()=>totals.totalReducedMonthly);
+  const cumulative = MONTHS.map((_,i)=>(totals.totalMonthlySavings)*(i+1));
+
+  if(!projectionChart){
+    projectionChart = new Chart(document.getElementById('projectionChart'), {
+      type:'line',
+      data:{labels:MONTHS, datasets:[
+        {label:'Baseline Spend', data:baseline, borderColor:'#8592a6', backgroundColor:'rgba(133,146,166,0.08)', borderDash:[5,4], tension:0.2, pointRadius:3},
+        {label:'Reduced Spend', data:reduced, borderColor:'#f5821f', backgroundColor:'rgba(245,130,31,0.12)', fill:true, tension:0.2, pointRadius:3}
+      ]},
+      options:{responsive:true, plugins:{legend:{position:'bottom', labels:{boxWidth:12,font:{size:11}}}},
+        scales:{y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}}}}
+    });
+  } else {
+    projectionChart.data.datasets[0].data = baseline;
+    projectionChart.data.datasets[1].data = reduced;
+    projectionChart.update();
+  }
+
+  if(!cumulativeChart){
+    cumulativeChart = new Chart(document.getElementById('cumulativeChart'), {
+      type:'bar',
+      data:{labels:MONTHS, datasets:[{label:'Cumulative Savings', data:cumulative, backgroundColor:'#0b2545', borderRadius:6}]},
+      options:{responsive:true, plugins:{legend:{display:false}},
+        scales:{y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}}}}
+    });
+  } else {
+    cumulativeChart.data.datasets[0].data = cumulative;
+    cumulativeChart.update();
+  }
+}
+
+function filteredRows(rows){
+  return rows.filter(r=>{
+    if(activeType !== "All" && r.title !== activeType) return false;
+    if(searchTerm){
+      const s = searchTerm.toLowerCase();
+      if(!r.name.toLowerCase().includes(s) && !r.title.toLowerCase().includes(s) && !r.manager.toLowerCase().includes(s)) return false;
+    }
+    return true;
+  });
+}
+
+function sortRows(rows){
+  return [...rows].sort((a,b)=>{
+    let av=a[sortKey], bv=b[sortKey];
+    if(typeof av === "string"){ av=av.toLowerCase(); bv=bv.toLowerCase(); }
+    if(av<bv) return -1*sortDir;
+    if(av>bv) return 1*sortDir;
+    return 0;
+  });
+}
+
+function renderTable(rows){
+  const filtered = sortRows(filteredRows(rows));
+  document.getElementById("rowCount").textContent = filtered.length + " of " + rows.length + " resources";
+  const body = document.getElementById("rosterBody");
+  body.innerHTML = filtered.map(r => `
+    <tr class="${r.rate===0 ? 'shadow-row' : ''}">
+      <td>${r.name}</td>
+      <td><span class="badge ${TITLE_CLASS[r.title]||''}">${r.title}</span></td>
+      <td>${r.manager}</td>
+      <td>${r.location}</td>
+      <td>${r.start}</td>
+      <td>$${r.rate.toFixed(2)}</td>
+      <td>$${r.reducedRate.toFixed(2)}</td>
+      <td class="savings-cell">$${r.monthlySavings.toFixed(0)}/mo</td>
+    </tr>
+  `).join("");
+}
+
+function buildFilterChips(rows){
+  const titles = [...new Set(rows.map(r=>r.title))].sort();
+  const container = document.getElementById("filterChips");
+  titles.forEach(t=>{
+    const chip = document.createElement("div");
+    chip.className = "chip";
+    chip.dataset.type = t;
+    chip.textContent = t;
+    container.appendChild(chip);
+  });
+  container.querySelectorAll(".chip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      container.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+      chip.classList.add("active");
+      activeType = chip.dataset.type;
+      renderTable(computed());
+    });
+  });
+}
+
+function renderAll(){
+  const rows = computed();
+  const totals = renderKPIs(rows);
+  renderProjection(totals);
+  renderTable(rows);
+}
+
+document.getElementById("reductionSlider").addEventListener("input", e=>{
+  reductionPct = parseInt(e.target.value);
+  document.getElementById("reductionLabel").textContent = reductionPct + "%";
+  renderAll();
+});
+
+document.getElementById("searchBox").addEventListener("input", e=>{
+  searchTerm = e.target.value;
+  renderTable(computed());
+});
+
+document.querySelectorAll("#rosterTable th").forEach(th=>{
+  th.addEventListener("click", ()=>{
+    const key = th.dataset.key;
+    if(sortKey === key){ sortDir *= -1; } else { sortKey = key; sortDir = 1; }
+    document.querySelectorAll("#rosterTable th .arrow").forEach(a=>a.textContent="");
+    th.querySelector(".arrow").textContent = sortDir === 1 ? "▲" : "▼";
+    renderTable(computed());
+  });
+});
+
+buildFilterChips(computed());
+renderAll();
+</script>
+
+</body>
+</html>
