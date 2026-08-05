@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Senior Scrum Master — Candidate Grid</title>
+<style>
+  :root{
+    --navy:#093e52;
+    --teal:#007178;
+    --gold:#FFC629;
+    --ink:#0e2a33;
+    --paper:#f4f8f9;
+    --card:#ffffff;
+    --line:#e1e9eb;
+    --muted:#5c7480;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    font-family:'Segoe UI', Arial, sans-serif;
+    color:var(--ink);
+  }
+  .header{
+    background:linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+    color:#fff;
+    padding:36px 40px 30px;
+  }
+  .header .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    font-size:12px;
+    font-weight:700;
+    color:var(--gold);
+    margin:0 0 8px;
+  }
+  .header h1{
+    margin:0 0 6px;
+    font-size:28px;
+    font-weight:700;
+  }
+  .header p{
+    margin:0;
+    font-size:14px;
+    color:#cfe3e6;
+  }
+  .header .attribution{
+    margin-top:10px;
+    font-size:12px;
+    font-weight:600;
+    color:var(--gold);
+    letter-spacing:.02em;
+  }
+  .grid{
+    max-width:1200px;
+    margin:24px auto 60px;
+    padding:0 40px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+    gap:20px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    transition:box-shadow .15s ease, transform .15s ease;
+  }
+  .card:hover{
+    box-shadow:0 8px 22px rgba(9,62,82,0.14);
+    transform:translateY(-2px);
+  }
+  .card-top{
+    background:var(--navy);
+    padding:16px 18px;
+    border-bottom:3px solid var(--gold);
+  }
+  .card-top .name{
+    font-size:17px;
+    font-weight:700;
+    color:#fff;
+    margin:0 0 3px;
+  }
+  .card-top .role{
+    font-size:12.5px;
+    color:#bfe0e3;
+    margin:0;
+  }
+  .card-body{
+    padding:16px 18px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .field{
+    font-size:12px;
+  }
+  .field .label{
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-size:10.5px;
+    font-weight:700;
+    color:var(--teal);
+    display:block;
+    margin-bottom:4px;
+  }
+  .field .value{
+    font-size:13px;
+    color:var(--ink);
+  }
+  .badges{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .badge{
+    font-size:10.5px;
+    font-weight:600;
+    padding:3px 8px;
+    border-radius:20px;
+    background:#eaf4f4;
+    color:var(--teal);
+    border:1px solid #cfe4e4;
+  }
+  .badge.cert{
+    background:#fff5d6;
+    color:#8a6d0f;
+    border-color:#f0dd9c;
+  }
+  .card-footer{
+    padding:14px 18px;
+    border-top:1px solid var(--line);
+  }
+  .linkedin-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    background:var(--teal);
+    color:#fff;
+    text-decoration:none;
+    font-size:12.5px;
+    font-weight:700;
+    padding:9px 0;
+    border-radius:6px;
+    transition:background .15s ease;
+  }
+  .linkedin-btn:hover{
+    background:var(--navy);
+  }
+  .footer-note{
+    max-width:1200px;
+    margin:0 auto 50px;
+    padding:0 40px;
+    font-size:11.5px;
+    color:var(--muted);
+    line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <p class="eyebrow">Talent Acquisition · Sr Scrum Pipeline</p>
+  <h1>Senior Scrum Master — Candidate Grid</h1>
+  <p>8 candidates sourced · Greater Orlando market</p>
+  <p class="attribution">Created for Lynn Mettler by Robert Betz</p>
+</div>
+
+<div class="grid">
+
+  <div class="card">
+    <div class="card-top">
+      <p class="name">Kate I. Solomon</p>
+      <p class="role">IT Project Manager / Agile Coach · Citi</p>
+    </div>
+    <div class="card-body">
+      <div class="field"><span class="label">Location</span><span class="value">Orlando</span></div>
+      <div class="field"><span class="label">Certifications</span>
+        <div class="badges">
+          <span class="badge cert">CSM</span><span class="badge cert">PSM</span><span class="badge cert">SAFe 6 Agilist</span><span class="badge cert">SAFe CSPO/PM</span><span class="badge cert">DASSM</span><span class="badge cert">PMP</span>
+        </div>
+      </div>
+      <div class="field"><span class="label">Focus Areas</span>
+        <div class="badges">
+          <span class="badge">Agile Coaching</span><span class="badge">Agile Frameworks</span><span class="badge">Business Value Delivery</span><span class="badge">Agile Advocacy</span><span class="badge">Project Management</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="linkedin-btn" href="https://www.linkedin.com/in/kate-ifeany-solomon" target="_blank">View LinkedIn Profile ↗</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top">
+      <p class="name">Matheux Knight</p>
+      <p class="role">Delivery Lead · Holiday Inn Club Vacations</p>
+    </div>
+    <div class="card-body">
+      <div class="field"><span class="label">Location</span><span class="value">Maitland</span></div>
+      <div class="field"><span class="label">Focus Areas</span>
+        <div class="badges">
+          <span class="badge">Enterprise Delivery</span><span class="badge">Portfolio Management</span><span class="badge">Organizational Change</span><span class="badge">Agile Transformation</span><span class="badge">Delivery Leadership</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="linkedin-btn" href="https://www.linkedin.com/in/matheuxknight" target="_blank">View LinkedIn Profile ↗</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top">
+      <p class="name">G. Yvette Washington</p>
+      <p class="role">Senior Scrum Master · Centene Corporation</p>
+    </div>
+    <div class="card-body">
+      <div class="field"><span class="label">Location</span><span class="value">Greater Orlando</span></div>
+      <div class="field"><span class="label">Certifications</span>
+        <div class="badges">
+          <span class="badge cert">CSM</span><span class="badge cert">SSM</span><span class="badge cert">SAFe 5</span><span class="badge cert">RTE</span>
+        </div>
+      </div>
+      <div class="field"><span class="label">Focus Areas</span>
+        <div class="badges">
+          <span class="badge">Agile Coaching</span><span class="badge">Process Improvement</span><span class="badge">Change Agent</span><span class="badge">Release Train Engineering</span><span class="badge">Managed Care (Healthcare)</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="linkedin-btn" href="https://www.linkedin.com/in/gywash" target="_blank">View LinkedIn Profile ↗</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top">
+      <p class="name">Timothy Connors</p>
+      <p class="role">Sr. Specialist – Agile Delivery Manager · Main Digital</p>
+    </div>
+    <div class="card-body">
+      <div class="field"><span class="label">Location</span><span class="value">Kissimmee</span></div>
+      <div class="field"><span class="label">Focus Areas</span>
+        <div class="badges">
+          <span class="badge">Program Management</span><span class="badge">Product & Engineering Delivery</span><span class="badge">Delivery at Scale</span><span class="badge">Portfolio Planning</span><span class="badge">Delivery Predictability</span><span class="badge">Risk & Dependency Mgmt</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="linkedin-btn" href="https://www.linkedin.com/in/timothy-connors" target="_blank">View LinkedIn Profile ↗</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top">
+      <p class="name">David Vandenbelt</p>
+      <p class="role">Senior Scrum Master · Optomi</p>
+    </div>
+    <div class="card-body">
+      <div class="field"><span class="label">Location</span><span class="value">Greater Orlando</span></div>
+      <div class="field"><span class="label">Focus Areas</span>
+        <div class="badges">
+          <span class="badge">Agile Delivery Leadership</span><span class="badge">Technical Writing</span><span class="badge">Documentation Strategy</span><span class="badge">Engineering Collaboration</span><span class="badge">Senior Scrum Mastery</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="linkedin-btn" href="https://www.linkedin.com/in/davidvandenbelt" target="_blank">View LinkedIn Profile ↗</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top">
+      <p class="name">Brittney G.</p>
+      <p class="role">Scrum Master · BCforward</p>
+    </div>
+    <div class="card-body">
+      <div class="field"><span class="label">Location</span><span class="value">Greater Orlando</span></div>
+      <div class="field"><span class="label">Certifications</span>
+        <div class="badges">
+          <span class="badge cert">SAFe</span>
+        </div>
+      </div>
+      <div class="field"><span class="label">Focus Areas</span>
+        <div class="badges">
+          <span class="badge">Agile Delivery Leadership</span><span class="badge">Backlog Management</span><span class="badge">Roadmaps</span><span class="badge">Business Outcomes</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="linkedin-btn" href="https://www.linkedin.com/in/brittneygrieser" target="_blank">View LinkedIn Profile ↗</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top">
+      <p class="name">Lori Mullen</p>
+      <p class="role">Senior Scrum Master · ICF</p>
+    </div>
+    <div class="card-body">
+      <div class="field"><span class="label">Location</span><span class="value">Orlando</span></div>
+      <div class="field"><span class="label">Certifications</span>
+        <div class="badges">
+          <span class="badge cert">SPC</span><span class="badge cert">RTE</span><span class="badge cert">SASM</span><span class="badge cert">POPM</span><span class="badge cert">CSM</span><span class="badge cert">CSPO</span>
+        </div>
+      </div>
+      <div class="field"><span class="label">Focus Areas</span>
+        <div class="badges">
+          <span class="badge">Senior Scrum Mastery</span><span class="badge">SAFe Program Consulting</span><span class="badge">Release Train Engineering</span><span class="badge">Product Ownership</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="linkedin-btn" href="https://www.linkedin.com/in/lori-mullen-spc-rte-sasm-popm-csm-cspo" target="_blank">View LinkedIn Profile ↗</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top">
+      <p class="name">Chris Myers</p>
+      <p class="role">Scrum Master / Business Analyst · Hallmark – Healthcare Workforce Technology</p>
+    </div>
+    <div class="card-body">
+      <div class="field"><span class="label">Location</span><span class="value">Windermere</span></div>
+      <div class="field"><span class="label">Certifications</span>
+        <div class="badges">
+          <span class="badge cert">CSM</span>
+        </div>
+      </div>
+      <div class="field"><span class="label">Focus Areas</span>
+        <div class="badges">
+          <span class="badge">Agile Specialist</span><span class="badge">Business Analysis</span><span class="badge">Project Turnarounds</span><span class="badge">Efficiency Optimization</span><span class="badge">Team Productivity</span><span class="badge">Healthcare Workforce Tech</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="linkedin-btn" href="https://www.linkedin.com/in/chrismyers10" target="_blank">View LinkedIn Profile ↗</a>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
