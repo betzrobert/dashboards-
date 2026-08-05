@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ODG Contractor Workforce &amp; Cost Optimization Dashboard | AssistRx</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root{
+    --navy:#0b2545;
+    --navy-dark:#071a33;
+    --orange:#f5821f;
+    --orange-dark:#d9690a;
+    --teal:#1a8fa3;
+    --bg:#f4f6f9;
+    --card:#ffffff;
+    --text:#1c2b3a;
+    --muted:#66788f;
+    --border:#e3e8ef;
+    --good:#1a9c5b;
+    --bad:#d9483c;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+  }
+  header{
+    background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);
+    color:#fff;
+    padding:22px 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:4px solid var(--orange);
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand-mark{
+    width:42px;height:42px;border-radius:10px;
+    background:var(--orange);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:18px;color:var(--navy-dark);
+  }
+  .brand-name{font-size:20px;font-weight:700;letter-spacing:0.3px;}
+  .brand-sub{font-size:12px;color:#b9c6da;margin-top:1px;}
+  header h1{font-size:16px;margin:0;font-weight:600;text-align:right;}
+  header .meta{font-size:12px;color:#b9c6da;text-align:right;margin-top:3px;}
+  main{padding:24px 32px 60px;max-width:1440px;margin:0 auto;}
+
+  .section-title{
+    font-size:14px;text-transform:uppercase;letter-spacing:0.6px;
+    color:var(--muted);font-weight:700;margin:32px 0 14px;
+  }
+  .section-title:first-child{margin-top:0;}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
+  .kpi{
+    background:var(--card);border:1px solid var(--border);border-radius:12px;
+    padding:18px 18px 16px;box-shadow:0 1px 2px rgba(15,35,60,0.04);
+  }
+  .kpi .label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;}
+  .kpi .value{font-size:26px;font-weight:800;color:var(--navy);margin-top:8px;}
+  .kpi .sub{font-size:12px;margin-top:6px;color:var(--muted);}
+  .kpi .sub.good{color:var(--good);font-weight:700;}
+
+  .grid-2{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .card{
+    background:var(--card);border:1px solid var(--border);border-radius:12px;
+    padding:18px 20px;box-shadow:0 1px 2px rgba(15,35,60,0.04);
+  }
+  .card h3{margin:0 0 4px;font-size:14px;color:var(--navy);}
+  .card p.desc{margin:0 0 12px;font-size:12px;color:var(--muted);}
+
+  .simulator{
+    background:linear-gradient(135deg,#0f2f57,#123763);
+    color:#fff;border-radius:12px;padding:20px 24px;margin-top:16px;
+    display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between;
+  }
+  .simulator .sim-left{flex:1;min-width:260px;}
+  .simulator h3{margin:0 0 4px;font-size:15px;}
+  .simulator p{margin:0;font-size:12px;color:#c6d3e6;}
+  .slider-wrap{display:flex;align-items:center;gap:12px;min-width:320px;}
+  .slider-wrap input[type=range]{flex:1;accent-color:var(--orange);height:6px;}
+  .slider-val{
+    background:var(--orange);color:#1c1200;font-weight:800;border-radius:8px;
+    padding:8px 14px;font-size:18px;min-width:64px;text-align:center;
+  }
+  .sim-stats{display:flex;gap:24px;flex-wrap:wrap;}
+  .sim-stat .n{font-size:22px;font-weight:800;}
+  .sim-stat .l{font-size:11px;color:#c6d3e6;text-transform:uppercase;letter-spacing:0.4px;}
+
+  .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+  .filters input[type=text]{
+    padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;
+    min-width:220px;
+  }
+  .chip{
+    padding:7px 14px;border-radius:999px;border:1px solid var(--border);background:#fff;
+    font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;
+  }
+  .chip.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .chip:hover{border-color:var(--navy);}
+  .count-badge{margin-left:auto;font-size:12px;color:var(--muted);}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{
+    text-align:left;padding:10px 12px;background:#f0f3f8;color:var(--navy);
+    font-weight:700;cursor:pointer;user-select:none;white-space:nowrap;
+    border-bottom:2px solid var(--border);
+  }
+  th:hover{background:#e6ebf3;}
+  th .arrow{font-size:10px;color:var(--muted);margin-left:3px;}
+  td{padding:9px 12px;border-bottom:1px solid var(--border);white-space:nowrap;}
+  tr:hover td{background:#f8fafc;}
+  .badge{
+    padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;
+  }
+  .badge.Onshore{background:#e6f0ff;color:#1350a3;}
+  .badge.Nearshore{background:#e8f7ee;color:#178849;}
+  .badge.Offshore{background:#fff1e3;color:#c2660d;}
+  .savings-cell{color:var(--good);font-weight:700;}
+  .table-wrap{max-height:520px;overflow:auto;border:1px solid var(--border);border-radius:10px;}
+  .table-wrap table thead th{position:sticky;top:0;z-index:1;}
+
+  footer{
+    max-width:1440px;margin:0 auto;padding:0 32px 40px;color:var(--muted);font-size:11.5px;line-height:1.6;
+  }
+  footer b{color:var(--text);}
+
+  @media (max-width:1100px){
+    .kpi-grid{grid-template-columns:repeat(2,1fr);}
+    .grid-2, .grid-3{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark">Rx</div>
+    <div>
+      <div class="brand-name">AssistRx</div>
+      <div class="brand-sub">Talent Acquisition &amp; Vendor Management</div>
+    </div>
+  </div>
+  <div>
+    <h1>ODG Contractor Workforce &amp; Cost Optimization Dashboard</h1>
+    <div class="meta">Vendor: On-Demand Group (ODG) &nbsp;|&nbsp; Data as of Aug 4, 2026 &nbsp;|&nbsp; Prepared for Executive Review</div>
+  </div>
+</header>
+
+<main>
+
+  <div class="section-title">Workforce &amp; Spend Overview</div>
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="label">Active Contractors</div>
+      <div class="value" id="kpi-count">--</div>
+      <div class="sub">Across Onshore, Nearshore &amp; Offshore</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Current Monthly Spend</div>
+      <div class="value" id="kpi-current-spend">--</div>
+      <div class="sub">Est. at 173.3 billable hrs/mo per contractor</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Avg. Bill Rate</div>
+      <div class="value" id="kpi-avg-rate">--</div>
+      <div class="sub">Blended hourly rate, all engagement types</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Projected Monthly Spend</div>
+      <div class="value" id="kpi-proj-spend">--</div>
+      <div class="sub" id="kpi-proj-sub">At target reduction %</div>
+    </div>
+    <div class="kpi">
+      <div class="label">6-Month Cumulative Savings</div>
+      <div class="value" id="kpi-6mo-savings">--</div>
+      <div class="sub good" id="kpi-annual-run-rate">--</div>
+    </div>
+  </div>
+
+  <div class="simulator">
+    <div class="sim-left">
+      <h3>Bill Rate Reduction Simulator</h3>
+      <p>Drag to model any across-the-board bill rate reduction. Default is set to the proposed 10% target.</p>
+    </div>
+    <div class="slider-wrap">
+      <span style="font-size:12px;color:#c6d3e6;">0%</span>
+      <input type="range" id="reductionSlider" min="0" max="30" value="10" step="1">
+      <span style="font-size:12px;color:#c6d3e6;">30%</span>
+      <div class="slider-val" id="reductionLabel">10%</div>
+    </div>
+    <div class="sim-stats">
+      <div class="sim-stat"><div class="n" id="sim-monthly-savings">--</div><div class="l">Monthly Savings</div></div>
+      <div class="sim-stat"><div class="n" id="sim-6mo-savings">--</div><div class="l">6-Mo Savings</div></div>
+      <div class="sim-stat"><div class="n" id="sim-annual-savings">--</div><div class="l">Annualized Run-Rate</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">6-Month Spend Projection</div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Baseline vs. Reduced Bill Rate Spend</h3>
+      <p class="desc">Monthly spend, Aug 2026 &ndash; Jan 2027, assuming reduction applied from month 1</p>
+      <canvas id="projectionChart" height="130"></canvas>
+    </div>
+    <div class="card">
+      <h3>Cumulative Savings</h3>
+      <p class="desc">Running total of savings captured over the 6-month window</p>
+      <canvas id="cumulativeChart" height="130"></canvas>
+    </div>
+  </div>
+
+  <div class="section-title">Contractor Roster</div>
+  <div class="card">
+    <div class="filters">
+      <input type="text" id="searchBox" placeholder="Search name, title, or approver...">
+      <div class="chip active" data-type="All">All</div>
+      <div class="chip" data-type="Onshore">Onshore</div>
+      <div class="chip" data-type="Nearshore">Nearshore</div>
+      <div class="chip" data-type="Offshore">Offshore</div>
+      <div class="count-badge" id="rowCount"></div>
+    </div>
+    <div class="table-wrap">
+      <table id="rosterTable">
+        <thead>
+          <tr>
+            <th data-key="name">Candidate <span class="arrow"></span></th>
+            <th data-key="title">Job Title <span class="arrow"></span></th>
+            <th data-key="type">Type <span class="arrow"></span></th>
+            <th data-key="start">Start <span class="arrow"></span></th>
+            <th data-key="end">End <span class="arrow"></span></th>
+            <th data-key="rate">Current Rate <span class="arrow"></span></th>
+            <th data-key="reduced">Reduced Rate <span class="arrow"></span></th>
+            <th data-key="monthlySavings">Mo. Savings <span class="arrow"></span></th>
+            <th data-key="approver">Timesheet Approver <span class="arrow"></span></th>
+          </tr>
+        </thead>
+        <tbody id="rosterBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <b>Assumptions:</b> Monthly spend is estimated using 173.3 billable hours per contractor per month (40 hrs/week &times; 52 weeks &divide; 12 months), applied uniformly across all engagement types. Actual invoiced amounts will vary based on hours worked, holidays, and PTO. The 10% target reduction is modeled as a flat, immediate reduction to hourly bill rates sustained across the 6-month window (Aug 2026 &ndash; Jan 2027); it does not assume headcount changes. Use the simulator above to model alternative reduction scenarios.<br>
+  <b>Source:</b> On-Demand Group active consultant &amp; new-hire report, provided by Meredith Hastings (ODG), Aug 4, 2026.
+</footer>
+
+<script>
+const contractors = [{"start":"8/10/26","end":"2/12/27","name":"Frank LaTorre","title":"Implementation Analyst","type":"Onshore","rate":110.0,"approver":"Paul Spandiary"},{"start":"8/10/26","end":"2/12/27","name":"Gerardo Olguin","title":"QA Tester","type":"Nearshore","rate":32.0,"approver":"Adline Ugwu"},{"start":"8/3/26","end":"2/5/27","name":"Leland Johnson","title":"Data Analyst","type":"Onshore","rate":105.0,"approver":"Mike Zortman"},{"start":"7/27/26","end":"1/29/27","name":"Pedro Melissari","title":"Salesforce Developer - Jr.","type":"Nearshore","rate":42.0,"approver":"Mark Brundege"},{"start":"7/20/26","end":"1/22/27","name":"Shereeta Maxey","title":"Implementation Project Manager","type":"Onshore","rate":107.0,"approver":"Lucette Davidoff"},{"start":"7/13/26","end":"1/15/27","name":"Paula Senor","title":"QA Analyst - Master Data Management","type":"Nearshore","rate":40.0,"approver":"Shreemaa Bhadra"},{"start":"7/6/26","end":"1/8/27","name":"Eddie Rains","title":"Implementation Manager - Project Management","type":"Onshore","rate":120.0,"approver":"Samantha Davidson"},{"start":"6/30/26","end":"12/31/26","name":"Kerbie Benoit","title":"Scrum Master - Data and Reporting Team","type":"Onshore","rate":110.0,"approver":"Michelle Mullins"},{"start":"6/22/26","end":"12/25/26","name":"Emmanuel Obaze","title":"Scrum Master - Data and Reporting Team","type":"Onshore","rate":100.0,"approver":"Michelle Mullins"},{"start":"6/22/26","end":"12/25/26","name":"Kavita Addagalla","title":"Salesforce Software Engineering Manager","type":"Onshore","rate":125.0,"approver":"Vaishnavi Vijayakumar"},{"start":"6/22/26","end":"12/25/26","name":"Oscar Bejarano","title":"Senior DevOps Engineer","type":"Nearshore","rate":58.0,"approver":"Mark Brundege"},{"start":"6/15/26","end":"12/11/26","name":"Erubiel Nuncio","title":"Jr. Level Salesforce Developer","type":"Nearshore","rate":46.0,"approver":"Mark Brundege"},{"start":"6/8/26","end":"12/11/26","name":"Shari Varela","title":"Manual QA","type":"Nearshore","rate":32.0,"approver":"Sean Windberg"},{"start":"6/1/26","end":"12/4/26","name":"Denis Victor","title":"Data Engineer","type":"Nearshore","rate":40.0,"approver":"Dawn Koceja-Harrell"},{"start":"5/26/26","end":"11/27/26","name":"Jeffery Cooper","title":"Sr. Implementation Analyst","type":"Onshore","rate":115.0,"approver":"Duane Bello"},{"start":"5/26/26","end":"11/27/26","name":"Jose Ake","title":"Salesforce Tech Lead","type":"Nearshore","rate":66.0,"approver":"Vaishnavi Vijayakumar"},{"start":"5/18/26","end":"11/20/26","name":"Scott Sesker","title":"Implementation Manager","type":"Onshore","rate":120.0,"approver":"Hasan Mohajir"},{"start":"5/18/26","end":"11/20/26","name":"Jennifer Temblador","title":"Salesforce Pod Jr level","type":"Nearshore","rate":42.0,"approver":"Mark Brundege"},{"start":"3/23/26","end":"3/27/27","name":"Diego Lara","title":"Salesforce Pod Jr level","type":"Nearshore","rate":40.0,"approver":"Amitabh Misro"},{"start":"3/9/26","end":"2/7/27","name":"Edgar Gil","title":"Manual QA","type":"Nearshore","rate":39.5,"approver":"Richard Baker"},{"start":"2/23/26","end":"3/27/27","name":"Mateus Queiroz","title":"Salesforce Developer - Mid Level","type":"Nearshore","rate":48.0,"approver":"Virat Shah"},{"start":"1/26/26","end":"1/29/27","name":"Erik Margain","title":"Salesforce Developer - Mid Level","type":"Nearshore","rate":46.8,"approver":"Amitabh Misro"},{"start":"12/1/25","end":"12/4/26","name":"Brenda Sanchez","title":"Salesforce Tech Lead","type":"Nearshore","rate":62.0,"approver":"Amitabh Misro"},{"start":"12/1/25","end":"12/6/26","name":"Jarvis Mays","title":"Implementation Manager","type":"Onshore","rate":120.0,"approver":"Lucette Davidoff"},{"start":"11/24/25","end":"11/22/26","name":"Jose Espinoza","title":"Salesforce - QA","type":"Nearshore","rate":31.0,"approver":"Sean Windberg"},{"start":"11/17/25","end":"11/20/26","name":"Bruno Mercado","title":"Salesforce Admin","type":"Nearshore","rate":39.0,"approver":"Annette Jackson"},{"start":"11/3/25","end":"11/6/26","name":"Luis Gonzalez","title":"Salesforce Admin","type":"Nearshore","rate":45.0,"approver":"Annette Jackson"},{"start":"11/3/25","end":"11/13/26","name":"Roy Yung Kim","title":"Reporting Engineer","type":"Nearshore","rate":63.0,"approver":"Thomas Marano"},{"start":"11/3/25","end":"12/5/26","name":"Matthew Bekkum","title":"Data Systems Analyst","type":"Onshore","rate":115.0,"approver":"Mike Zortman"},{"start":"10/13/25","end":"10/18/26","name":"Diego Amaya","title":"Quality Assurance Analyst","type":"Nearshore","rate":32.0,"approver":"Kyle Uber"},{"start":"10/6/25","end":"9/11/26","name":"Stephen Russo","title":"Implementation Manager","type":"Onshore","rate":115.0,"approver":"Lucette Davidoff"},{"start":"10/6/25","end":"3/7/27","name":"Bernardo Cabrera","title":"Quality Assurance Analyst","type":"Nearshore","rate":32.0,"approver":"Olalekan Osaloni"},{"start":"9/22/25","end":"12/27/26","name":"Christian Laroze-Cervetti","title":"Salesforce Administrator - Mid Level","type":"Nearshore","rate":51.0,"approver":"Annette Jackson"},{"start":"9/2/25","end":"9/6/26","name":"Shane Kussatz","title":"Implementation Analyst","type":"Onshore","rate":108.0,"approver":"Gina Nordin"},{"start":"8/18/25","end":"2/7/27","name":"Julio Aguilar","title":"Quality Assurance Analyst","type":"Nearshore","rate":32.0,"approver":"Olalekan Osaloni"},{"start":"8/11/25","end":"2/7/27","name":"Shamed Rizo","title":"Quality Assurance Analyst","type":"Nearshore","rate":32.0,"approver":"Philip Becker"},{"start":"8/11/25","end":"2/7/27","name":"Gustavo Hernandez","title":"Quality Assurance Analyst","type":"Nearshore","rate":32.0,"approver":"Sean Windberg"},{"start":"5/19/25","end":"2/14/27","name":"Marcelo Ares","title":"QA Automation Engineer","type":"Nearshore","rate":34.0,"approver":"Nageswararao Mothukuri"},{"start":"3/10/25","end":"2/7/27","name":"Adriana Alcala","title":"QA Analyst","type":"Nearshore","rate":32.0,"approver":"Che Moran"},{"start":"3/3/25","end":"2/7/27","name":"Brayan Castaneda","title":"Quality Assurance Analyst","type":"Nearshore","rate":30.0,"approver":"Tyler Johnson"},{"start":"3/3/25","end":"3/27/27","name":"Luis Perez","title":"Salesforce Mid Level","type":"Nearshore","rate":47.0,"approver":"Virat Shah"},{"start":"1/27/25","end":"1/31/27","name":"Jean De Vera","title":".Jr .NET Developer","type":"Offshore","rate":33.3,"approver":"Kevin Darty"},{"start":"11/4/24","end":"10/16/26","name":"Omar Banda","title":"Product Owner","type":"Nearshore","rate":45.0,"approver":"Alex Crittenden"},{"start":"10/21/24","end":"2/7/27","name":"Luis Fernando Diaz","title":"Manual QA Testers","type":"Nearshore","rate":32.0,"approver":"Shreemaa Bhadra"},{"start":"10/21/24","end":"2/7/27","name":"Oscar Madariaga","title":"Manual QA Testers","type":"Nearshore","rate":32.0,"approver":"Che Moran"},{"start":"10/21/24","end":"2/7/27","name":"Fernando Valdes Martinez","title":"Manual QA Testers","type":"Nearshore","rate":29.0,"approver":"Tyler Johnson"},{"start":"10/21/24","end":"2/7/27","name":"Cesar Emanuel Rincon","title":"Manual QA Testers","type":"Nearshore","rate":30.0,"approver":"Shreemaa Bhadra"},{"start":"10/21/24","end":"2/7/27","name":"Genesis Morin","title":"Manual QA Testers","type":"Nearshore","rate":35.0,"approver":"Sean Windberg"},{"start":"8/19/24","end":"12/31/26","name":"Alvaro Bello","title":"New Pod - Salesforce Jr. Developer","type":"Nearshore","rate":50.0,"approver":"Mark Brundege"},{"start":"7/22/24","end":"1/31/27","name":"Ivan Camacho","title":"Mid Level Salesforce Developer","type":"Nearshore","rate":55.0,"approver":"Amitabh Misro"},{"start":"7/22/24","end":"1/31/27","name":"Abrahan Martinez","title":"Salesforce Mid Level Developer","type":"Nearshore","rate":54.0,"approver":"Virat Shah"},{"start":"7/8/24","end":"1/17/27","name":"Ohtokani Serbulo","title":"Salesforce Lead","type":"Nearshore","rate":62.0,"approver":"Annette Jackson"},{"start":"6/17/24","end":"12/20/26","name":"Daniel Penaloza","title":"Salesforce Sr. Level Developer","type":"Nearshore","rate":62.0,"approver":"Virat Shah"},{"start":"6/17/24","end":"12/27/26","name":"Lester Garcia","title":"Salesforce Lead","type":"Nearshore","rate":70.0,"approver":"Virat Shah"},{"start":"5/6/24","end":"11/6/26","name":"Daniel Martinez Cruz","title":"Salesforce - Mid Level","type":"Nearshore","rate":48.6,"approver":"Annette Jackson"},{"start":"4/22/24","end":"12/31/26","name":"Cesar Javier Susano","title":"NOC Analyst","type":"Nearshore","rate":54.0,"approver":"Brian Tait"},{"start":"3/4/24","end":"3/27/27","name":"Jorge Luis Garcia","title":"Salesforce Pod Jr. Level","type":"Nearshore","rate":42.3,"approver":"Annette Jackson"},{"start":"2/5/24","end":"2/7/27","name":"Almie Manzano","title":"Quality Assurance","type":"Offshore","rate":33.0,"approver":"Kyle Uber"},{"start":"12/18/23","end":"1/8/27","name":"Fernando Soto","title":"Implementation Analyst","type":"Nearshore","rate":45.1,"approver":"Mark Krueger"},{"start":"12/11/23","end":"2/7/27","name":"Omar Centeno","title":"Manual QA","type":"Nearshore","rate":33.0,"approver":"Sean Windberg"},{"start":"10/9/23","end":"11/15/26","name":"Felix Jacob Borlongan","title":"Mid-level .Net/Angular Developer","type":"Offshore","rate":44.1,"approver":"Tyler VonSeggern"},{"start":"9/5/23","end":"2/7/27","name":"Josue Valdez","title":"Manual QA Tester","type":"Nearshore","rate":32.0,"approver":"Kyle Uber"},{"start":"6/19/23","end":"2/7/27","name":"Abelardo Canche","title":"Manual QA Tester","type":"Nearshore","rate":33.0,"approver":"Shreemaa Bhadra"},{"start":"6/7/23","end":"1/31/27","name":"Edwin Santos Jr.","title":"Jr. Level Developer","type":"Offshore","rate":31.5,"approver":"Kevin Darty"},{"start":"6/7/23","end":"1/31/27","name":"Roland Seda","title":"Jr. Level Developer","type":"Offshore","rate":31.5,"approver":"Kevin Darty"},{"start":"6/1/23","end":"1/31/27","name":"Aldrel Cruz","title":".Net Developer","type":"Offshore","rate":67.5,"approver":"Kevin Darty"},{"start":"5/1/23","end":"3/7/27","name":"Jessica Quesada Delgado","title":"Mid-Level Frontend Developer","type":"Nearshore","rate":36.0,"approver":"Benjamin Blood"},{"start":"12/19/22","end":"2/7/27","name":"Ferdinand Mabitasan","title":"Manual Quality Assurance Tester","type":"Offshore","rate":29.0,"approver":"Olalekan Osaloni"},{"start":"12/19/22","end":"3/7/27","name":"Cristobal Fragata","title":"Frontend Developer","type":"Offshore","rate":33.3,"approver":"Kevin Darty"},{"start":"12/19/22","end":"3/7/27","name":"Romel Postrano","title":"Frontend Developer","type":"Offshore","rate":33.3,"approver":"Kevin Darty"},{"start":"12/12/22","end":"3/27/27","name":"Jaycee Deann Alviz","title":"Salesforce POD","type":"Offshore","rate":51.3,"approver":"Annette Jackson"},{"start":"9/26/22","end":"3/27/27","name":"Marwin Louie Dazer","title":"Salesforce POD","type":"Offshore","rate":54.0,"approver":"Annette Jackson"},{"start":"9/26/22","end":"3/27/27","name":"Robert Criane Villanueva","title":"Salesforce POD","type":"Offshore","rate":51.3,"approver":"Annette Jackson"},{"start":"9/26/22","end":"3/27/27","name":"Gilbert Calusin","title":"Salesforce POD","type":"Offshore","rate":69.3,"approver":"Annette Jackson"},{"start":"9/6/22","end":"3/7/27","name":"Alexandra Nicole Cajes","title":"Frontend Development Pod","type":"Offshore","rate":33.3,"approver":"Kevin Darty"},{"start":"6/13/22","end":"3/27/27","name":"Ram Carlo Bumatay","title":"Salesforce Developer","type":"Offshore","rate":60.3,"approver":"Amitabh Misro"},{"start":"12/13/21","end":"3/7/27","name":"Sandeep Gadi","title":".NET Developer","type":"Onshore","rate":100.0,"approver":"Kevin Darty"},{"start":"10/1/21","end":"2/7/27","name":"Janice Dolorito","title":"QA Tester","type":"Offshore","rate":34.0,"approver":"Che Moran"},{"start":"10/1/21","end":"3/7/27","name":"Martin Syjuco","title":".NET Developer","type":"Offshore","rate":40.5,"approver":"Kevin Darty"}]
+;
+
+const MONTHLY_HOURS = 173.33;
+const MONTHS = ["Aug '26","Sep '26","Oct '26","Nov '26","Dec '26","Jan '27"];
+const money = n => "$" + Math.round(n).toLocaleString("en-US");
+const money2 = n => "$" + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+let reductionPct = 10;
+let sortKey = "name", sortDir = 1;
+let activeType = "All";
+let searchTerm = "";
+
+function computed(){
+  return contractors.map(c => {
+    const monthly = c.rate * MONTHLY_HOURS;
+    const reducedRate = c.rate * (1 - reductionPct/100);
+    const reducedMonthly = reducedRate * MONTHLY_HOURS;
+    return {...c, monthly, reducedRate, reducedMonthly, monthlySavings: monthly - reducedMonthly};
+  });
+}
+
+function fmtMoney(n){ return money(n); }
+
+function renderKPIs(rows){
+  const totalMonthly = rows.reduce((s,r)=>s+r.monthly,0);
+  const totalReducedMonthly = rows.reduce((s,r)=>s+r.reducedMonthly,0);
+  const totalMonthlySavings = totalMonthly - totalReducedMonthly;
+  const avgRate = rows.reduce((s,r)=>s+r.rate,0)/rows.length;
+
+  document.getElementById("kpi-count").textContent = rows.length;
+  document.getElementById("kpi-current-spend").textContent = fmtMoney(totalMonthly);
+  document.getElementById("kpi-avg-rate").textContent = "$" + avgRate.toFixed(2) + "/hr";
+  document.getElementById("kpi-proj-spend").textContent = fmtMoney(totalReducedMonthly);
+  document.getElementById("kpi-proj-sub").textContent = "At " + reductionPct + "% reduction target";
+  document.getElementById("kpi-6mo-savings").textContent = fmtMoney(totalMonthlySavings*6);
+  document.getElementById("kpi-annual-run-rate").textContent = fmtMoney(totalMonthlySavings*12) + " annualized run-rate";
+
+  document.getElementById("sim-monthly-savings").textContent = fmtMoney(totalMonthlySavings);
+  document.getElementById("sim-6mo-savings").textContent = fmtMoney(totalMonthlySavings*6);
+  document.getElementById("sim-annual-savings").textContent = fmtMoney(totalMonthlySavings*12);
+
+  return {totalMonthly, totalReducedMonthly, totalMonthlySavings};
+}
+
+let projectionChart, cumulativeChart;
+
+function renderProjection(totals){
+  const baseline = MONTHS.map(()=>totals.totalMonthly);
+  const reduced = MONTHS.map(()=>totals.totalReducedMonthly);
+  const cumulative = MONTHS.map((_,i)=>(totals.totalMonthlySavings)*(i+1));
+
+  if(!projectionChart){
+    projectionChart = new Chart(document.getElementById('projectionChart'), {
+      type:'line',
+      data:{labels:MONTHS, datasets:[
+        {label:'Baseline Spend', data:baseline, borderColor:'#8592a6', backgroundColor:'rgba(133,146,166,0.08)', borderDash:[5,4], tension:0.2, pointRadius:3},
+        {label:'Reduced Spend', data:reduced, borderColor:'#f5821f', backgroundColor:'rgba(245,130,31,0.12)', fill:true, tension:0.2, pointRadius:3}
+      ]},
+      options:{responsive:true, plugins:{legend:{position:'bottom', labels:{boxWidth:12,font:{size:11}}}},
+        scales:{y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}}}}
+    });
+  } else {
+    projectionChart.data.datasets[0].data = baseline;
+    projectionChart.data.datasets[1].data = reduced;
+    projectionChart.update();
+  }
+
+  if(!cumulativeChart){
+    cumulativeChart = new Chart(document.getElementById('cumulativeChart'), {
+      type:'bar',
+      data:{labels:MONTHS, datasets:[{label:'Cumulative Savings', data:cumulative, backgroundColor:'#0b2545', borderRadius:6}]},
+      options:{responsive:true, plugins:{legend:{display:false}},
+        scales:{y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'}}}}
+    });
+  } else {
+    cumulativeChart.data.datasets[0].data = cumulative;
+    cumulativeChart.update();
+  }
+}
+
+function filteredRows(rows){
+  return rows.filter(r=>{
+    if(activeType !== "All" && r.type !== activeType) return false;
+    if(searchTerm){
+      const s = searchTerm.toLowerCase();
+      if(!r.name.toLowerCase().includes(s) && !r.title.toLowerCase().includes(s) && !r.approver.toLowerCase().includes(s)) return false;
+    }
+    return true;
+  });
+}
+
+function sortRows(rows){
+  return [...rows].sort((a,b)=>{
+    let av=a[sortKey], bv=b[sortKey];
+    if(typeof av === "string"){ av=av.toLowerCase(); bv=bv.toLowerCase(); }
+    if(av<bv) return -1*sortDir;
+    if(av>bv) return 1*sortDir;
+    return 0;
+  });
+}
+
+function renderTable(rows){
+  const filtered = sortRows(filteredRows(rows));
+  document.getElementById("rowCount").textContent = filtered.length + " of " + rows.length + " contractors";
+  const body = document.getElementById("rosterBody");
+  body.innerHTML = filtered.map(r => `
+    <tr>
+      <td>${r.name}</td>
+      <td>${r.title}</td>
+      <td><span class="badge ${r.type}">${r.type}</span></td>
+      <td>${r.start}</td>
+      <td>${r.end}</td>
+      <td>$${r.rate.toFixed(2)}</td>
+      <td>$${r.reducedRate.toFixed(2)}</td>
+      <td class="savings-cell">$${r.monthlySavings.toFixed(0)}/mo</td>
+      <td>${r.approver}</td>
+    </tr>
+  `).join("");
+}
+
+function renderAll(){
+  const rows = computed();
+  const totals = renderKPIs(rows);
+  renderProjection(totals);
+  renderTable(rows);
+}
+
+document.getElementById("reductionSlider").addEventListener("input", e=>{
+  reductionPct = parseInt(e.target.value);
+  document.getElementById("reductionLabel").textContent = reductionPct + "%";
+  renderAll();
+});
+
+document.getElementById("searchBox").addEventListener("input", e=>{
+  searchTerm = e.target.value;
+  renderTable(computed());
+});
+
+document.querySelectorAll(".chip").forEach(chip=>{
+  chip.addEventListener("click", ()=>{
+    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    chip.classList.add("active");
+    activeType = chip.dataset.type;
+    renderTable(computed());
+  });
+});
+
+document.querySelectorAll("#rosterTable th").forEach(th=>{
+  th.addEventListener("click", ()=>{
+    const key = th.dataset.key;
+    if(sortKey === key){ sortDir *= -1; } else { sortKey = key; sortDir = 1; }
+    document.querySelectorAll("#rosterTable th .arrow").forEach(a=>a.textContent="");
+    th.querySelector(".arrow").textContent = sortDir === 1 ? "▲" : "▼";
+    renderTable(computed());
+  });
+});
+
+renderAll();
+</script>
+
+</body>
+</html>
