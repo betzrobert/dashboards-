@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Billable Staffing Dashboard — Week of Aug 10–14, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1C2A5E; --navy-2:#28407F; --navy-dk:#141F45;
+    --gold:#C89116; --gold-br:#DCA426; --green:#2E9E5B; --red:#C4402E; --teal:#2A8F9E;
+    --kpi-bg:#EFF2F8; --stripe:#F7F9FC; --track:#E7EBF3;
+    --txt:#333F4E; --muted:#6B7480; --faint:#A3AAB6; --line:#E3E7EF;
+    --canvas:#F1F4F8; --white:#fff;
+    --font:"Lato","Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+    --shadow:0 1px 2px rgba(20,31,69,.05),0 8px 24px rgba(20,31,69,.07);
+    --radius:9px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--txt);font-family:var(--font);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+
+  /* ---------- header ---------- */
+  header{background:var(--navy);background-image:linear-gradient(112deg,var(--navy-dk),var(--navy) 55%,var(--navy-2));color:#fff;border-bottom:4px solid var(--gold-br)}
+  .htop{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding:22px 0 16px}
+  .eyebrow{font-size:10px;font-weight:700;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold-br);margin-bottom:5px}
+  h1{margin:0;font-size:27px;font-weight:900;letter-spacing:-.2px;line-height:1.1}
+  .hmeta{font-size:12px;color:#BACADB;text-align:right;line-height:1.7}
+  .hmeta b{display:block;color:#fff;font-weight:700;font-size:13px}
+  nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
+  nav button{
+    appearance:none;border:0;background:transparent;color:#B9CADC;cursor:pointer;
+    font-family:var(--font);font-size:12.5px;font-weight:700;letter-spacing:.2px;
+    padding:11px 15px;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s;
+  }
+  nav button:hover{color:#fff;background:rgba(255,255,255,.06)}
+  nav button[aria-selected="true"]{color:#fff;border-bottom-color:var(--gold-br)}
+  nav button:focus-visible{outline:2px solid var(--gold-br);outline-offset:-3px}
+
+  /* ---------- views ---------- */
+  .view{display:none;padding:24px 0 56px}
+  .view.on{display:block}
+  .vhead{margin-bottom:18px}
+  .vhead h2{margin:0 0 4px;font-size:21px;font-weight:900;color:var(--navy)}
+  .vhead p{margin:0;font-size:13px;color:var(--muted)}
+
+  /* ---------- kpis ---------- */
+  .kpis{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+  .kpi{flex:1 1 170px;background:var(--white);border:1px solid var(--line);border-left:5px solid var(--navy);border-radius:var(--radius);padding:13px 15px;box-shadow:var(--shadow)}
+  .kpi.c2{border-left-color:var(--green)} .kpi.c3{border-left-color:var(--red)}
+  .kpi.c4{border-left-color:var(--teal)} .kpi.c5{border-left-color:var(--gold-br)}
+  .kpi .n{font-size:27px;font-weight:900;color:var(--navy);line-height:1.05}
+  .kpi .n small{font-size:14px;font-weight:700;color:var(--muted)}
+  .kpi .l{font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#5B6472;margin-top:6px}
+
+  /* ---------- panels ---------- */
+  .cols{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+  .col{flex:1 1 380px;min-width:0}
+  .col.wide{flex:1.25 1 460px}
+  .panel{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px 18px;margin-bottom:18px}
+  .ptitle{margin:0 0 3px;font-size:14px;font-weight:900;color:var(--navy);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ptitle .tools{margin-left:auto;display:flex;gap:6px;align-items:center;font-weight:400}
+  .psub{margin:0 0 12px;font-size:11.5px;color:var(--muted)}
+  .pnote{margin:12px 0 0;font-size:11.5px;color:var(--muted);line-height:1.55}
+
+  /* ---------- controls ---------- */
+  .btn{font-family:var(--font);font-size:11.5px;font-weight:700;color:var(--navy);background:var(--white);border:1px solid var(--line);border-radius:999px;padding:4px 11px;cursor:pointer}
+  .btn:hover{border-color:var(--teal);color:var(--teal)}
+  .btn[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+  input[type="search"]{font-family:var(--font);font-size:11.5px;padding:4px 10px;border:1px solid var(--line);border-radius:999px;width:130px;color:var(--txt)}
+  input[type="search"]:focus{outline:none;border-color:var(--teal)}
+
+  /* ---------- tables ---------- */
+  table{width:100%;border-collapse:collapse}
+  thead th{background:var(--navy);color:#fff;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:8px 10px;text-align:right;white-space:nowrap}
+  thead th:first-child{text-align:left;border-radius:4px 0 0 0}
+  thead th:last-child{border-radius:0 4px 0 0}
+  thead th.l{text-align:left}
+  thead th.s{cursor:pointer;user-select:none}
+  thead th.s:hover{background:var(--navy-2)}
+  thead th .ar{opacity:.4;font-size:9px;margin-left:3px}
+  thead th.sorted .ar{opacity:1;color:var(--gold-br)}
+  tbody td{padding:6.5px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  tbody td:first-child,tbody td.l{text-align:left}
+  tbody tr:nth-child(even) td{background:var(--stripe)}
+  tbody tr:hover td{background:#EAF3F5}
+  tbody td.note{color:var(--muted);font-size:11.5px;text-align:left}
+  tbody tr.tot td{font-weight:900;color:var(--navy);background:var(--kpi-bg);border-top:2px solid var(--navy);border-bottom:0}
+  tbody tr.sub td{font-weight:700;color:var(--navy);background:#F4F6FA}
+  .up{color:var(--green);font-weight:700} .dn{color:var(--red);font-weight:700} .flat{color:var(--muted)}
+  .tag{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 7px;border-radius:999px}
+  .tag.ok{background:#E4F3EA;color:#1E7A44} .tag.warn{background:#FCF0DC;color:#96690C}
+
+  /* ---------- bars ---------- */
+  .bars{display:flex;flex-direction:column}
+  .bar{display:flex;align-items:center;gap:11px;padding:5.5px 0}
+  .bar .bl{flex:0 0 var(--lw,140px);font-size:12px;font-weight:700;color:var(--navy);line-height:1.25}
+  .bar .bl em{display:block;font-style:normal;font-weight:400;font-size:10.5px;color:var(--muted)}
+  .bar .bt{flex:1 1 auto;background:var(--track);border-radius:999px;height:14px;overflow:hidden;min-width:40px}
+  .bar .bf{display:block;height:100%;border-radius:999px;width:0;transition:width .75s cubic-bezier(.2,.7,.2,1)}
+  .bar .bv{flex:0 0 46px;text-align:right;font-size:12px;font-weight:900;color:var(--navy)}
+
+  /* ---------- takeaway ---------- */
+  .takeaway{background:var(--kpi-bg);border-radius:var(--radius);border-left:5px solid var(--gold-br);padding:15px 18px;font-size:13px;line-height:1.65}
+  .takeaway b{color:var(--navy)}
+  .src{font-size:10.5px;color:var(--faint);margin:12px 0 0;line-height:1.55}
+
+  @media (max-width:760px){
+    h1{font-size:21px} .hmeta{text-align:left}
+    .kpi{flex:1 1 45%} .bar .bl{flex-basis:110px;font-size:11px}
+    .view{padding-top:18px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media print{
+    body{background:#fff} nav,.tools{display:none}
+    .view{display:block!important;page-break-after:always;padding:12px 0}
+    .panel,.kpi{box-shadow:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="htop">
+      <div>
+        <div class="eyebrow">Weekly Billable Staffing Status</div>
+        <h1>Patient Solutions, Pharmacy &amp; Talent Acquisition</h1>
+      </div>
+      <div class="hmeta">
+        <b>Week of August 10–14, 2026</b>
+        Prepared for the Chief People Officer
+      </div>
+    </div>
+    <nav id="nav" role="tablist"></nav>
+  </div>
+</header>
+
+<main class="wrap" id="main"></main>
+
+<script>
+(function(){
+  "use strict";
+
+  var C={navy:'var(--navy)',green:'var(--green)',red:'var(--red)',teal:'var(--teal)',gold:'var(--gold-br)',muted:'var(--faint)'};
+  var SRC_MAIN='Sources: Weekly Billable Staffing Status Report (Aug 10\u201314, 2026) \u2014 Pipeline Report Data; TA Pipeline Coverage Update and Patient Solutions &amp; Pharmacy Staffing Funnel (Week of 8/3\u20138/7, 2026).';
+
+  /* ------------------------------------------------ helpers */
+  function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+
+  function kpis(items){
+    var w=el('div','kpis');
+    items.forEach(function(it,i){
+      var k=el('div','kpi c'+((i%5)+1));
+      k.innerHTML='<div class="n">'+it[0]+'</div><div class="l">'+it[1]+'</div>';
+      w.appendChild(k);
+    });
+    return w;
+  }
+
+  function panel(title,sub,tools){
+    var p=el('div','panel');
+    var h=el('h3','ptitle',title);
+    if(tools)h.appendChild(tools);
+    p.appendChild(h);
+    if(sub)p.appendChild(el('p','psub',sub));
+    return p;
+  }
+
+  /* table: cols [{h,align,cls,sortable}], rows [{cells:[],cls}] */
+  function table(cols,rows,opts){
+    opts=opts||{};
+    var t=el('table'),thead=el('thead'),tr=el('tr');
+    cols.forEach(function(c,i){
+      var th=el('th',(c.align==='l'?'l ':'')+(opts.sort?'s':''),c.h+(opts.sort?'<span class="ar">\u25be</span>':''));
+      if(opts.sort){th.tabIndex=0;th.dataset.i=i;}
+      tr.appendChild(th);
+    });
+    thead.appendChild(tr);t.appendChild(thead);
+    var tb=el('tbody');t.appendChild(tb);
+
+    var state={i:opts.sortCol==null?-1:opts.sortCol,asc:false,q:''};
+
+    function val(cell){
+      var v=(cell&&cell.v!==undefined)?cell.v:cell;
+      if(typeof v==='number')return v;
+      var n=parseFloat(String(v).replace(/[^0-9.\-]/g,''));
+      return isNaN(n)?String(v).toLowerCase():n;
+    }
+    function draw(){
+      tb.innerHTML='';
+      var body=rows.filter(function(r){return !r.pinned;});
+      if(state.q){
+        body=body.filter(function(r){
+          return String(r.cells[0].v!==undefined?r.cells[0].v:r.cells[0]).toLowerCase().indexOf(state.q)>-1;
+        });
+      }
+      if(state.i>-1){
+        body=body.slice().sort(function(a,b){
+          var x=val(a.cells[state.i]),y=val(b.cells[state.i]);
+          if(typeof x==='string'||typeof y==='string')
+            return state.asc?String(x).localeCompare(String(y)):String(y).localeCompare(String(x));
+          return state.asc?x-y:y-x;
+        });
+      }
+      body.concat(rows.filter(function(r){return r.pinned;})).forEach(function(r){
+        var row=el('tr',r.cls||'');
+        r.cells.forEach(function(cell,i){
+          var txt=(cell&&cell.v!==undefined)?cell.t||cell.v:cell;
+          var cls=(cell&&cell.cls)?cell.cls:(cols[i].align==='l'&&i>0?'note':'');
+          row.appendChild(el('td',cls,String(txt)));
+        });
+        tb.appendChild(row);
+      });
+      Array.prototype.forEach.call(thead.querySelectorAll('th'),function(th,i){
+        th.classList.toggle('sorted',i===state.i);
+      });
+    }
+    if(opts.sort){
+      Array.prototype.forEach.call(thead.querySelectorAll('th'),function(th){
+        function go(){
+          var i=+th.dataset.i;
+          if(i===state.i){state.asc=!state.asc;}else{state.i=i;state.asc=(i===0);}
+          draw();
+        }
+        th.addEventListener('click',go);
+        th.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+      });
+    }
+    draw();
+    t.filter=function(q){state.q=(q||'').toLowerCase();draw();};
+    return t;
+  }
+
+  /* bars: rows [{label,sub,pct,value,color}] */
+  function bars(rows,lw){
+    var w=el('div','bars');
+    rows.forEach(function(r){
+      var b=el('div','bar');
+      if(lw)b.style.setProperty('--lw',lw+'px');
+      b.innerHTML='<span class="bl">'+r.label+(r.sub?'<em>'+r.sub+'</em>':'')+'</span>'+
+                  '<span class="bt"><i class="bf" data-w="'+r.pct+'" style="background:'+r.color+';width:'+r.pct+'%"></i></span>'+
+                  '<span class="bv">'+r.value+'</span>';
+      w.appendChild(b);
+    });
+    return w;
+  }
+
+  function takeaway(body,src){
+    var f=document.createDocumentFragment();
+    f.appendChild(el('div','takeaway','<b>Key takeaway:</b> '+body));
+    if(src)f.appendChild(el('p','src',src));
+    return f;
+  }
+
+  function cols2(left,right,wide){
+    var c=el('div','cols');
+    var a=el('div','col'+(wide==='l'?' wide':'')),b=el('div','col'+(wide==='r'?' wide':''));
+    left.forEach(function(n){a.appendChild(n);});
+    right.forEach(function(n){b.appendChild(n);});
+    c.appendChild(a);c.appendChild(b);
+    return c;
+  }
+
+  function pct(n,max){return Math.max(1.5,(n/max)*100);}
+  function delta(n,suffix){
+    var s=(n>0?'+':'')+n+(suffix||'');
+    return {v:n,t:'<span class="'+(n>0?'up':(n<0?'dn':'flat'))+'">'+s+'</span>'};
+  }
+
+  /* ------------------------------------------------ views */
+  var VIEWS=[];
+
+  // ---- 1. Summary
+  VIEWS.push({id:'summary',tab:'Summary',build:function(){
+    var f=document.createDocumentFragment();
+    f.appendChild(el('div','vhead','<h2>Workforce Summary</h2><p>Requisition activity for the week of August 10\u201314, 2026 \u00b7 Patient Solutions, Pharmacy &amp; Talent Acquisition</p>'));
+    f.appendChild(kpis([['67','Reqs Created'],['63','Reqs Closed'],['8','Terminations'],
+                        ['70','Openings Remaining'],['93','Starts Next 30 Days']]));
+    var p1=panel('Requisition Activity &amp; Upcoming Starts');
+    p1.appendChild(table(
+      [{h:'Metric',align:'l'},{h:'Count'},{h:'Notes',align:'l'}],
+      [{cells:['Terminations','8','Departures during the week (8/10\u20138/14)']},
+       {cells:['Reqs created','67','New requisitions opened']},
+       {cells:['Reqs closed','63','Requisitions filled / closed']},
+       {cells:['Reqs with pending offers','30','Offers extended, awaiting acceptance']},
+       {cells:['Openings remaining','70','Of 100 total open, after 30 pending offers']},
+       {cells:['Upcoming start \u2014 Aug 17','64','46 external (incl. 19 Academy) + 11 internal + 7 realignment']},
+       {cells:['Upcoming start \u2014 Aug 31','29','23 external + 6 internal']},
+       {cells:['Starts scheduled, next 30 days','93','In background / onboarding'],cls:'tot',pinned:true}]));
+    var p2=panel('Weekly Flow at a Glance');
+    p2.appendChild(bars([
+      {label:'Starts Next 30 Days',pct:100,value:'93',color:C.gold},
+      {label:'Openings Remaining',pct:75.3,value:'70',color:C.teal},
+      {label:'Reqs Created',pct:72,value:'67',color:C.navy},
+      {label:'Reqs Closed',pct:67.7,value:'63',color:C.green},
+      {label:'Terminations',pct:8.6,value:'8',color:C.red}],150));
+    p2.appendChild(el('p','pnote','Reqs closed (63) run nearly 8x terminations (8) for the week \u2014 the widest gap of any week to date. Openings remaining is net of the 30 reqs already at pending-offer stage.'));
+    f.appendChild(cols2([p1],[p2],'l'));
+    f.appendChild(takeaway(
+      'Attrition dropped sharply \u2014 8 terminations vs. 27 the prior week \u2014 while req activity accelerated on both sides: 67 opened and 63 closed. Openings remaining still grew to 70 (+11 vs. prior week) because new demand keeps outpacing closures, and starts scheduled in the next 30 days jumped to 93 (+16). The 8/17 date carries 64 of the 93 starts, including 19 Academy starts.',
+      SRC_MAIN));
+    return f;
+  }});
+
+  // ---- 2. Pipeline coverage
+  VIEWS.push({id:'coverage',tab:'Pipeline Coverage',build:function(){
+    var f=document.createDocumentFragment();
+    f.appendChild(el('div','vhead','<h2>Pipeline Coverage</h2><p>All open and anticipated billable demand against sourced candidate supply \u00b7 as of August 14, 2026</p>'));
+    f.appendChild(kpis([['100','Total Open'],['82','Open + Backfill Total'],['210','Candidate Pipeline'],
+                        ['3.0<small> : 1</small>','Pipeline vs. Openings'],['+20','Pipeline vs. Prior Week']]));
+    var p1=panel('Coverage Build-Up');
+    p1.appendChild(table(
+      [{h:'Line Item',align:'l'},{h:'Total'},{h:'Basis',align:'l'}],
+      [{cells:['Total open','100','Open reqs plus offers in flight']},
+       {cells:['Pending offers','30','Awaiting acceptance']},
+       {cells:['Open','70','No offer extended']},
+       {cells:['Final warning','2','Anticipated backfill']},
+       {cells:['Leave','10','Anticipated backfill']},
+       {cells:['Total (Open + Final Warning + Leave)','82','Academy &amp; Net Need not reported this week'],cls:'sub'},
+       {cells:['Candidate pipeline','210','Sourced and available \u00b7 +20 vs. prior week']},
+       {cells:['Pipeline vs. Openings Remaining','3.0 : 1','Basis is Openings Remaining (70), not Net Need'],cls:'tot',pinned:true}]));
+    var p2=panel('Upcoming Starts by Date');
+    p2.appendChild(bars([
+      {label:'Aug 17',sub:'46 external + 18 internal',pct:100,value:'64',color:C.gold},
+      {label:'Aug 31',sub:'23 external + 6 internal',pct:45.3,value:'29',color:C.teal}],130));
+    var p3=panel('Demand vs. Supply');
+    p3.appendChild(bars([
+      {label:'Candidate Pipeline',pct:100,value:'210',color:C.green},
+      {label:'Open + Backfill Total',pct:39,value:'82',color:C.red},
+      {label:'Openings Remaining',pct:33.3,value:'70',color:C.navy}],150));
+    p3.appendChild(el('p','pnote','Academy and Net Need figures were not reported this week, so the ratio compares pipeline to Openings Remaining rather than Net Need as in prior weeks.'));
+    f.appendChild(cols2([p1],[p2,p3],'l'));
+    f.appendChild(takeaway(
+      'Headline coverage improved to 3.0 candidates per opening (from 2.5 last week), and the bench grew another 20 net. Treat the improvement directionally rather than as a strict apples-to-apples read \u2014 this week\u2019s ratio is measured against Openings Remaining (70) rather than Net Need (unreported), and last week\u2019s 2.5:1 was measured against Net Need (76). Final warning and leave-driven backfill (12) is a much smaller share of total demand than the prior week\u2019s 47, suggesting less near-term attrition-driven need beyond the 70 open reqs themselves.',
+      'Sources: Weekly Billable Staffing Status Report (Aug 10\u201314, 2026) \u2014 Pipeline Report Data. Final warning and leave counts are treated as anticipated backfill demand, not confirmed openings. Academy and Net Need were not reported this week.'));
+    return f;
+  }});
+
+  // ---- 3. WoW trend
+  VIEWS.push({id:'trend',tab:'Week-over-Week',build:function(){
+    var f=document.createDocumentFragment();
+    f.appendChild(el('div','vhead','<h2>Week-over-Week Trend</h2><p>Core staffing metrics, Week of 8/3\u20138/7 vs. Week of 8/10\u20138/14</p>'));
+    f.appendChild(kpis([['-19','Terminations WoW'],['+21','Reqs Closed WoW'],['+16','Starts Next 30d WoW'],
+                        ['+20','Pipeline WoW'],['+0.5','Coverage Ratio WoW']]));
+    var p1=panel('Week-over-Week Comparison');
+    p1.appendChild(table(
+      [{h:'Metric',align:'l'},{h:'Wk 8/3\u20138/7'},{h:'Wk 8/10\u20138/14'},{h:'Change'}],
+      [{cells:['Terminations','27','8',delta(-19)]},
+       {cells:['Reqs created','49','67',delta(18)]},
+       {cells:['Reqs closed','42','63',delta(21)]},
+       {cells:['Total open requisitions','79','100',delta(21)]},
+       {cells:['Pending offers','29','30',delta(1)]},
+       {cells:['Openings remaining','59','70',delta(11)]},
+       {cells:['Starts next 30 days','77','93',delta(16)]},
+       {cells:['Candidates in pipeline','190','210',delta(20)]},
+       {cells:['Pipeline coverage ratio','2.5 : 1','3.0 : 1',delta(0.5)],cls:'tot',pinned:true}],
+      {sort:true}));
+    var p2=panel('Week-over-Week % Change');
+    p2.appendChild(bars([
+      {label:'Terminations',pct:100,value:'-70%',color:C.green},
+      {label:'Reqs Closed',pct:71.4,value:'+50%',color:C.green},
+      {label:'Reqs Created',pct:52.9,value:'+37%',color:C.navy},
+      {label:'Total Open Reqs',pct:38.6,value:'+27%',color:C.red},
+      {label:'Starts Next 30 Days',pct:30,value:'+21%',color:C.green},
+      {label:'Openings Remaining',pct:27.1,value:'+19%',color:C.red},
+      {label:'Candidates in Pipeline',pct:15.7,value:'+11%',color:C.green},
+      {label:'Pending Offers',pct:4.3,value:'+3%',color:C.navy}],150));
+    p2.appendChild(el('p','pnote','Bar length reflects magnitude of % change (longest = terminations, at 70% below prior week); direction is shown in the value. Green indicates a favorable move, red unfavorable.'));
+    f.appendChild(cols2([p1],[p2],'l'));
+    f.appendChild(takeaway(
+      'This was the sharpest weekly swing to date: terminations fell 70% while req closures rose 50%, pushing net closures well ahead of departures for the first time in recent weeks. Total open requisitions and openings remaining both grew roughly a quarter, signaling demand is still expanding faster than fulfillment even as throughput improves. Pipeline coverage improved to 3.0:1, though that comparison uses a different denominator (Openings Remaining) than last week\u2019s 2.5:1 (Net Need), since Net Need wasn\u2019t reported this cycle.',
+      'Source: Weekly Billable Staffing Status Report (Aug 10\u201314, 2026), Week-over-Week Trend section \u2014 Pipeline Report Data (Aug 14, 2026); TA Pipeline Coverage Update and Patient Solutions &amp; Pharmacy Staffing Funnel (Week of 8/3\u20138/7, 2026). This view will build out with additional weekly data points as future reports are compiled.'));
+    return f;
+  }});
+
+  // ---- 4. Upcoming starts
+  VIEWS.push({id:'starts',tab:'Upcoming Starts',build:function(){
+    var f=document.createDocumentFragment();
+    f.appendChild(el('div','vhead','<h2>Upcoming Starts \u2014 Breakdown</h2><p>93 billable starts across 8/17 and 8/31, by title and location \u00b7 excludes 1 non-billable internal move</p>'));
+    f.appendChild(kpis([['93','Total Upcoming Starts'],['21','Pharmacy Technician'],['19','Advance Academy Assoc.'],
+                        ['27','Top Location: AZ Tempe'],['18','Programs Represented']]));
+    var search=el('div','tools');
+    var box=el('input');box.type='search';box.placeholder='Filter titles\u2026';
+    search.appendChild(box);
+    var p1=panel('Upcoming Starts by Title','Click a column heading to sort',search);
+    var t=table([{h:'Title',align:'l'},{h:'Starts'}],
+      [{cells:['Pharmacy Technician','21']},{cells:['Advance Academy Associate','19']},
+       {cells:['Patient Access Specialist','15']},{cells:['Customer Service Representative','12']},
+       {cells:['Pharmacy Patient Care Coordinator','8']},{cells:['Account Care Educator','6']},
+       {cells:['Call Center RN','3']},{cells:['Team Lead, Patient Solutions','3']},
+       {cells:['Pharmacist','1']},{cells:['Pharmacist Supervisor','1']},
+       {cells:['Team Lead, Pharmacy Patient Care Coordinator','1']},
+       {cells:['Bilingual Pharmacy Patient Care Coordinator','1']},
+       {cells:['Supervisor, Patient Solutions','1']},{cells:['Pharmacy Client Liaison','1']},
+       {cells:['Total','93'],cls:'tot',pinned:true}],{sort:true,sortCol:1});
+    box.addEventListener('input',function(){t.filter(box.value);});
+    p1.appendChild(t);
+    var p2=panel('Starts by Location');
+    p2.appendChild(bars([
+      {label:'Arizona, Tempe',pct:100,value:'27',color:C.gold},
+      {label:'CoAssist',pct:85.2,value:'23',color:C.gold},
+      {label:'Overland Park',pct:63,value:'17',color:C.navy},
+      {label:'Maitland',pct:37,value:'10',color:C.navy},
+      {label:'Southpark',pct:29.6,value:'8',color:C.teal},
+      {label:'Remote',pct:29.6,value:'8',color:C.teal}],130));
+    p2.appendChild(el('p','pnote','By program, CoAssist Pharmacy (24), Academy (19) and Novo Nordisk: Obesity (16) are the top three of 18 programs, together accounting for 63% of the 93 starts.'));
+    f.appendChild(cols2([p1],[p2],'l'));
+    f.appendChild(takeaway(
+      'Pharmacy Technician and Advance Academy Associate together account for 40 of the 93 starts (43%), and Arizona Tempe and CoAssist together carry 50 (54%) of start-location volume. Four records had an unclear single location in the source (blank or dual-site codes); those were assigned to the hiring manager\u2019s most common site and should be confirmed against REQs 9185, 9164, 9165 and 9282.',
+      'Source: Weekly Billable Staffing Status Report (Aug 10\u201314, 2026), Upcoming Starts \u2014 Breakdown section, compiled from requisition-level data for starts on 8/17 and 8/31.'));
+    return f;
+  }});
+
+  // ---- 5. Open positions
+  VIEWS.push({id:'open',tab:'Open Positions',build:function(){
+    var f=document.createDocumentFragment();
+    f.appendChild(el('div','vhead','<h2>Open Positions \u2014 Breakdown</h2><p>100 total open positions, by title and program \u00b7 compiled from the ATS master roster</p>'));
+    f.appendChild(kpis([['100','Total Open Positions'],['39','Patient Access Specialist'],['38','Novo Nordisk: Obesity'],
+                        ['19','Titles Represented'],['20','Programs Represented']]));
+    var search=el('div','tools');
+    var box=el('input');box.type='search';box.placeholder='Filter titles\u2026';
+    search.appendChild(box);
+    var p1=panel('Open Positions by Title','Click a column heading to sort',search);
+    var t=table([{h:'Title',align:'l'},{h:'Open'}],
+      [{cells:['Patient Access Specialist','39']},{cells:['Customer Service Representative','16']},
+       {cells:['Pharmacy Technician','9']},{cells:['Account Care Educator','6']},
+       {cells:['Pharmacy Patient Care Coordinator','6']},
+       {cells:['Pharmacy Technician II, Escalation Specialist','5']},
+       {cells:['Team Lead, Patient Solutions','3']},{cells:['Bilingual Patient Access Specialist','2']},
+       {cells:['Supervisor, Patient Solutions','2']},{cells:['Program Manager, Patient Solutions','2']},
+       {cells:['Call Center Nurse','2']},{cells:['Manager, Pharmacovigilance','1']},
+       {cells:['Field Support Specialist','1']},{cells:['Clinical Program Manager, Patient Solutions','1']},
+       {cells:['Copay Support Specialist','1']},{cells:['Supervisor, Pharmacy PCC','1']},
+       {cells:['Supervisor, Pharmacy Technician','1']},{cells:['Bilingual Patient Care Coordinator','1']},
+       {cells:['Team Lead, Quality Assurance','1']},
+       {cells:['Total','100'],cls:'tot',pinned:true}],{sort:true,sortCol:1});
+    box.addEventListener('input',function(){t.filter(box.value);});
+    p1.appendChild(t);
+    var p2=panel('Open Positions by Program');
+    p2.appendChild(bars([
+      {label:'Novo Nordisk: Obesity',pct:100,value:'38',color:C.gold},
+      {label:'CoAssist Pharmacy COS',pct:34.2,value:'13',color:C.navy},
+      {label:'NCP Pharmacy COS',pct:26.3,value:'10',color:C.navy},
+      {label:'Gilead: Advancing Access',pct:18.4,value:'7',color:C.teal},
+      {label:'Gilead: L4P',pct:13.2,value:'5',color:C.teal},
+      {label:'Apellis: Syfovre',pct:13.2,value:'5',color:C.teal},
+      {label:'All other (14 programs)',pct:57.9,value:'22',color:C.muted}],150));
+    p2.appendChild(el('p','pnote','CoAssist Pharmacy COS (cost center 820) and NCP Pharmacy COS (cost center 810) are broken out separately this week, correcting a prior version that merged them.'));
+    f.appendChild(cols2([p1],[p2],'l'));
+    f.appendChild(takeaway(
+      'Patient Access Specialist alone is 39% of all open positions, concentrated in the Maitland/Southpark location group (35 of 100 open positions). Novo Nordisk: Obesity is the single largest program driver at 38 open roles \u2014 well ahead of any other program \u2014 while the remaining 19 programs are each in the single digits.',
+      'Source: Weekly Billable Staffing Status Report (Aug 10\u201314, 2026), Open Positions \u2014 Breakdown section, compiled from the ATS master roster.'));
+    return f;
+  }});
+
+  // ---- 6. Client demand
+  VIEWS.push({id:'demand',tab:'Client Demand',build:function(){
+    var f=document.createDocumentFragment();
+    f.appendChild(el('div','vhead','<h2>Client Demand &amp; Reverification Outlook</h2><p>309.5 forecasted seats across 12 client programs, plus 99\u2013130 additional roles tied to client reverification activity</p>'));
+    f.appendChild(kpis([['309.5','Total Forecasted Seats'],['85','Reverification Confirmed'],
+                        ['14\u201345','Reverification Open / Range'],['99\u2013130','Reverification Total'],
+                        ['40','Other Projected New Openings']]));
+    var progs=[['Boehringer Jazcayd',99.5],['Sanofi',58.25],['Apellis',38],['Novo Obesity',34],
+               ['Gilead AA',32],['Boehringer Hernexeos',13],['Galderma',9],['Gilead BIC/LEN',8],
+               ['Gilead HDV/HBV',7],['Gilead Seladelpar',6],['NSPharma',4],['Ferring',0.75]];
+    var p1=panel('Forecast by Client Program','Click a column heading to sort');
+    p1.appendChild(table([{h:'Client Program',align:'l'},{h:'Headcount'},{h:'Share'}],
+      progs.map(function(p){
+        return {cells:[p[0],String(p[1]),{v:p[1]/309.5,t:(p[1]/309.5*100).toFixed(1)+'%',cls:'flat'}]};
+      }).concat([{cells:['Total','309.5','100%'],cls:'tot',pinned:true}]),{sort:true,sortCol:1}));
+    var p2=panel('Relative Program Scale');
+    p2.appendChild(bars(progs.map(function(p,i){
+      return {label:p[0],pct:pct(p[1],99.5),value:String(p[1]),
+              color:i<3?C.gold:(i<6?C.navy:C.teal)};
+    }),150));
+    f.appendChild(cols2([p1],[p2],'l'));
+
+    var p3=panel('Reverification Headcount Demand by Program');
+    p3.appendChild(table(
+      [{h:'Program',align:'l'},{h:'Staff Type',align:'l'},{h:'Low'},{h:'High'},{h:'Status',align:'l'}],
+      [{cells:['Apellis','FTE','38','38',{v:1,t:'<span class="tag ok">Confirmed</span>'}]},
+       {cells:['Astellas','Temp','18','18',{v:1,t:'<span class="tag ok">Confirmed</span>'}]},
+       {cells:['Gilead SP','Temp','13','13',{v:1,t:'<span class="tag ok">Confirmed</span>'}]},
+       {cells:['Galderma','FTE','9','9',{v:1,t:'<span class="tag ok">Confirmed</span>'}]},
+       {cells:['Alkermes Avadel','Temp','4','4',{v:1,t:'<span class="tag ok">Confirmed</span>'}]},
+       {cells:['Incyte','Temp','3','3',{v:1,t:'<span class="tag ok">Confirmed</span>'}]},
+       {cells:['Subtotal \u2014 Confirmed','','85','85',''],cls:'sub'},
+       {cells:['Sumitomo','Temp','10','15',{v:0,t:'<span class="tag warn">Range \u2014 not locked</span>'}]},
+       {cells:['Sobi','Temp','4','24',{v:0,t:'<span class="tag warn">Open \u2014 major variance</span>'}]},
+       {cells:['Takeda Rare','Temp','0','6',{v:0,t:'<span class="tag warn">Open</span>'}]},
+       {cells:['Subtotal \u2014 Open / Range','','14','45',''],cls:'sub'},
+       {cells:['Total','','99','130',''],cls:'tot',pinned:true}]));
+    f.appendChild(p3);
+
+    f.appendChild(takeaway(
+      'Confirmed reverification need (85) already exceeds this week\u2019s Openings Remaining (70), and the Sobi and Takeda Rare ranges could add up to 30 more once resolved. Apellis (38) and Galderma (9) appear in both tables \u2014 the same underlying need viewed from two source documents \u2014 so the 309.5 and 99\u2013130 totals should not be added together. Two items need a near-term decision: confirming whether Apellis\u2019s 38 FTE are net-new or redeployed staff (a ~45% swing in the hiring plan), and resolving the 20-head gap between Sobi\u2019s requested and historically approved counts by 8/17.',
+      'Sources: Weekly Billable Staffing Status Report (Aug 10\u201314, 2026) \u2014 Upcoming Client Demand and Reverification Headcount Demand by Program sections. Reverification figures sourced from \u20182026 EOY Customer Activity Planning.xlsx\u2019, tab \u20182026\u2019 (client/program-owner-stated figures); Low/High Case reflects confirmed vs. still-under-discussion scope.'));
+    return f;
+  }});
+
+  /* ------------------------------------------------ mount */
+  var nav=document.getElementById('nav'), main=document.getElementById('main');
+  VIEWS.forEach(function(v,i){
+    var b=el('button',null,v.tab);
+    b.setAttribute('role','tab');
+    b.setAttribute('aria-selected',i===0?'true':'false');
+    b.dataset.id=v.id;
+    b.addEventListener('click',function(){show(v.id);});
+    nav.appendChild(b);
+
+    var s=el('section','view'+(i===0?' on':''));
+    s.id='v-'+v.id;
+    s.setAttribute('role','tabpanel');
+    s.appendChild(v.build());
+    main.appendChild(s);
+  });
+
+  function fillBars(scope){
+    Array.prototype.forEach.call(scope.querySelectorAll('.bf'),function(b){
+      b.style.width='0%';
+      requestAnimationFrame(function(){b.style.width=b.getAttribute('data-w')+'%';});
+    });
+  }
+  function show(id){
+    Array.prototype.forEach.call(nav.querySelectorAll('button'),function(b){
+      b.setAttribute('aria-selected',b.dataset.id===id?'true':'false');
+    });
+    Array.prototype.forEach.call(main.querySelectorAll('.view'),function(s){
+      s.classList.toggle('on',s.id==='v-'+id);
+    });
+    var active=document.getElementById('v-'+id);
+    if(active)fillBars(active);
+    window.scrollTo(0,0);
+  }
+  fillBars(document.getElementById('v-'+VIEWS[0].id));
+})();
+</script>
+</body>
+</html>
