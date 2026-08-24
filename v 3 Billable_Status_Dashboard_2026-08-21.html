@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly Billable Staffing Status: Aug 17–21, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1C2A5E; --navy-2:#28407F; --navy-dk:#141F45;
+    --gold:#C89116; --gold-br:#DCA426; --green:#2E9E5B; --red:#C4402E; --teal:#2A8F9E;
+    --kpi-bg:#EFF2F8; --stripe:#F7F9FC; --track:#E7EBF3;
+    --txt:#333F4E; --muted:#6B7480; --faint:#A3AAB6; --line:#E3E7EF;
+    --canvas:#F1F4F8; --white:#fff;
+    --font:"Lato","Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+    --shadow:0 1px 2px rgba(20,31,69,.05),0 8px 24px rgba(20,31,69,.07);
+    --radius:9px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--txt);font-family:var(--font);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+
+  header{background:var(--navy);background-image:linear-gradient(112deg,var(--navy-dk),var(--navy) 55%,var(--navy-2));color:#fff;border-bottom:4px solid var(--gold-br)}
+  .htop{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding:22px 0 16px}
+  .eyebrow{font-size:10px;font-weight:700;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold-br);margin-bottom:5px}
+  h1{margin:0;font-size:27px;font-weight:900;letter-spacing:-.2px;line-height:1.1}
+  .hmeta{font-size:12px;color:#BACADB;text-align:right;line-height:1.7}
+  .hmeta b{display:block;color:#fff;font-weight:700;font-size:13px}
+  nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
+  nav button{
+    appearance:none;border:0;background:transparent;color:#B9CADC;cursor:pointer;
+    font-family:var(--font);font-size:12.5px;font-weight:700;letter-spacing:.2px;
+    padding:11px 15px;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s;
+  }
+  nav button:hover{color:#fff;background:rgba(255,255,255,.06)}
+  nav button[aria-selected="true"]{color:#fff;border-bottom-color:var(--gold-br)}
+  nav button:focus-visible{outline:2px solid var(--gold-br);outline-offset:-3px}
+
+  .view{display:none;padding:24px 0 56px}
+  .view.on{display:block}
+  .vhead{margin-bottom:18px}
+  .vhead h2{margin:0 0 4px;font-size:21px;font-weight:900;color:var(--navy)}
+  .vhead p{margin:0;font-size:13px;color:var(--muted)}
+
+  .kpis{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+  .kpi{flex:1 1 170px;background:var(--white);border:1px solid var(--line);border-left:5px solid var(--navy);border-radius:var(--radius);padding:13px 15px;box-shadow:var(--shadow)}
+  .kpi.c2{border-left-color:var(--green)} .kpi.c3{border-left-color:var(--red)}
+  .kpi.c4{border-left-color:var(--teal)} .kpi.c5{border-left-color:var(--gold-br)}
+  .kpi .n{font-size:27px;font-weight:900;color:var(--navy);line-height:1.05}
+  .kpi .n small{font-size:14px;font-weight:700;color:var(--muted)}
+  .kpi .l{font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#5B6472;margin-top:6px}
+  .kpi .ks{font-size:10.5px;color:var(--muted);margin-top:5px;line-height:1.35}
+
+  .cols{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+  .col{flex:1 1 380px;min-width:0}
+  .col.wide{flex:1.25 1 460px}
+  .panel{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px 18px;margin-bottom:18px}
+  .ptitle{margin:0 0 3px;font-size:14px;font-weight:900;color:var(--navy);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ptitle .tools{margin-left:auto;display:flex;gap:6px;align-items:center;font-weight:400}
+  .ptitle.mt{margin-top:18px}
+  .psub{margin:0 0 12px;font-size:11.5px;color:var(--muted)}
+  .pnote{margin:12px 0 0;font-size:11.5px;color:var(--muted);line-height:1.55}
+
+  .btn{font-family:var(--font);font-size:11.5px;font-weight:700;color:var(--navy);background:var(--white);border:1px solid var(--line);border-radius:999px;padding:4px 11px;cursor:pointer}
+  .btn:hover{border-color:var(--teal);color:var(--teal)}
+  .btn[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+  input[type="search"]{font-family:var(--font);font-size:11.5px;padding:4px 10px;border:1px solid var(--line);border-radius:999px;width:130px;color:var(--txt)}
+  input[type="search"]:focus{outline:none;border-color:var(--teal)}
+
+  table{width:100%;border-collapse:collapse}
+  thead th{background:var(--navy);color:#fff;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:8px 10px;text-align:right;white-space:nowrap}
+  thead th:first-child{text-align:left;border-radius:4px 0 0 0}
+  thead th:last-child{border-radius:0 4px 0 0}
+  thead th.l{text-align:left}
+  thead th.s{cursor:pointer;user-select:none}
+  thead th.s:hover{background:var(--navy-2)}
+  thead th .ar{opacity:.4;font-size:9px;margin-left:3px}
+  thead th.sorted .ar{opacity:1;color:var(--gold-br)}
+  tbody td{padding:6.5px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  tbody td:first-child,tbody td.l{text-align:left}
+  tbody tr:nth-child(even) td{background:var(--stripe)}
+  tbody tr:hover td{background:#EAF3F5}
+  tbody td.note{color:var(--muted);font-size:11.5px;text-align:left}
+  tbody tr.tot td{font-weight:900;color:var(--navy);background:var(--kpi-bg);border-top:2px solid var(--navy);border-bottom:0}
+  tbody tr.sub td{font-weight:700;color:var(--navy);background:#F4F6FA}
+  .up{color:var(--green);font-weight:700} .dn{color:var(--red);font-weight:700} .flat{color:var(--muted)}
+
+  .bars{display:flex;flex-direction:column}
+  .bar{display:flex;align-items:center;gap:11px;padding:5.5px 0}
+  .bar .bl{flex:0 0 var(--lw,140px);font-size:12px;font-weight:700;color:var(--navy);line-height:1.25}
+  .bar .bl em{display:block;font-style:normal;font-weight:400;font-size:10.5px;color:var(--muted)}
+  .bar .bt{flex:1 1 auto;background:var(--track);border-radius:999px;height:14px;overflow:hidden;min-width:40px}
+  .bar .bf{display:block;height:100%;border-radius:999px;width:0;transition:width .75s cubic-bezier(.2,.7,.2,1)}
+  .bar .bv{flex:0 0 46px;text-align:right;font-size:12px;font-weight:900;color:var(--navy)}
+
+  .takeaway{background:var(--kpi-bg);border-radius:var(--radius);border-left:5px solid var(--gold-br);padding:15px 18px;font-size:13px;line-height:1.65}
+  .takeaway b{color:var(--navy)}
+  .src{font-size:10.5px;color:var(--faint);margin:12px 0 0;line-height:1.55}
+
+  @media (max-width:760px){
+    h1{font-size:21px} .hmeta{text-align:left}
+    .kpi{flex:1 1 45%} .bar .bl{flex-basis:110px;font-size:11px}
+    .view{padding-top:18px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media print{
+    body{background:#fff} nav,.tools{display:none}
+    .view{display:block!important;page-break-after:always;padding:12px 0}
+    .panel,.kpi{box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="htop"><div>
+<div class="eyebrow">Weekly Billable Staffing Status</div>
+<h1>Patient Solutions (PS) &amp; Pharmacy (Pharma)</h1></div>
+<div class="hmeta"><b>Week of August 17–21, 2026</b>Prepared for the Chief People Officer</div>
+</div><nav id="nav" role="tablist"></nav></div></header>
+<main class="wrap" id="main"></main>
+<script>
+(function(){
+  "use strict";
+  var SPEC = {"slides": [{"title": "Workforce Summary: Billable", "subtitle": ["Patient Solutions (PS) & Pharmacy (Pharma)", "Requisition activity for the week of August 17–21, 2026"], "kpis": [{"value": "6.2x", "label": "Starts Coverage of Departures", "accent": "green", "ksub": "62 starts vs. 10 departures"}, {"value": "49", "label": "Reqs Created", "accent": "navy", "ksub": "PS 46 · Pharma 3"}, {"value": "29", "label": "Reqs Closed", "accent": "teal", "ksub": "PS 23 · Pharma 6"}, {"value": "10", "label": "Terminations", "accent": "red", "ksub": "PS 7 · Pharma 3"}, {"value": "94", "label": "Openings Remaining", "accent": "gold", "ksub": "PS 74 · Pharma 20"}], "body": {"layout": "two-col", "split": 0.6, "left": {"title": "Requisition Activity & Upcoming Starts", "block": {"type": "table", "columns": [{"label": "Metric", "align": "left", "w": 0.2623}, {"label": "PS", "align": "right", "w": 0.0929}, {"label": "Pharma", "align": "right", "w": 0.0929}, {"label": "Total", "align": "right", "w": 0.0929}, {"label": "Notes", "align": "left", "w": 0.459}], "rows": [["Terminations", "7", "3", "10", "Departures during the week (8/17–8/21)"], ["Reqs created", "46", "3", "49", "New requisitions opened"], ["Reqs closed", "23", "6", "29", "Requisitions filled / closed"], ["Offers in flight", "28", "3", "31", "Extended, awaiting acceptance"], ["Openings remaining", "74", "20", "94", "40 opened this week (37 PS, 3 Pharma) as new client-driven demand, not a TA backlog; 54 carried over"], ["Upcoming starts, external", "32", "20", "52", "New hires"], ["Upcoming starts, internal", "8", "2", "10", "Internal moves/promotions"], {"cells": ["Starts scheduled, next 30 days", "40", "22", "62", "In background / onboarding"], "style": "total"}]}}, "right": {"title": "Weekly Flow at a Glance", "block": {"type": "barlist", "items": [{"label": "Openings Remaining", "value": 100.0, "display": "94", "color": "teal"}, {"label": "Starts Next 30 Days", "value": 66.0, "display": "62", "color": "gold"}, {"label": "Reqs Created", "value": 52.1, "display": "49", "color": "navy"}, {"label": "Reqs Closed", "value": 30.9, "display": "29", "color": "green"}, {"label": "Terminations", "value": 10.6, "display": "10", "color": "red"}]}, "note": "62 starts are already scheduled and moving through onboarding over the next 30 days, 6.2x this week's 10 departures. Talent Acquisition's pipeline is comfortably outpacing turnover."}}, "takeaway": "TA is covering turnover 6.2x over: 62 starts scheduled against 10 departures, plus 31 offers in flight. Of the 94 openings remaining, 40 opened this week alone, so this is fresh demand, not a backlog. The real gap is upstream: client programs confirming headcount need (see Reverification Staffing).", "footnote": "Sources: Billable Report Data (Aug 21, 2026); Billable Dashboard Data workbook (Aug 21, 2026).", "tab": "Summary"}, {"title": "Pipeline Coverage", "subtitle": ["Open and upcoming billable demand against sourced candidate supply", "as of August 21, 2026"], "kpis": [{"value": "94", "label": "Openings Remaining", "accent": "navy", "ksub": "PS 74 · Pharma 20"}, {"value": "31", "label": "Offers in Flight", "accent": "green", "ksub": "PS 28 · Pharma 3"}, {"value": "28", "label": "Upcoming (Future) Reqs", "accent": "red", "ksub": "PS 27 · Pharma 1"}, {"value": "285", "label": "Candidate Pipeline", "accent": "teal"}, {"value": "3.0 : 1", "label": "Pipeline vs. Openings", "accent": "gold", "ksub": "285 vs. 94 open"}], "body": {"layout": "two-col", "split": 0.6, "left": {"title": "Coverage Build-Up", "block": {"type": "table", "columns": [{"label": "Line Item", "align": "left", "w": 0.1514}, {"label": "PS", "align": "right", "w": 0.265}, {"label": "Pharma", "align": "right", "w": 0.265}, {"label": "Total", "align": "right", "w": 0.0536}, {"label": "Basis", "align": "left", "w": 0.265}], "rows": [["Openings remaining (open, no offer)", "74", "20", "94", "Currently posted, unfilled"], ["Offers in flight", "28", "3", "31", "Extended, awaiting acceptance"], ["Upcoming (future-dated) reqs", "27", "1", "28", "Not yet posted, target-fill dated"], ["Final warnings (active)", "6", "2", "8", "Anticipated backfill"], ["Continuous leaves (as of 8/21)", "", "", "24", "Anticipated backfill"], {"cells": ["Total anticipated demand", "", "", "126", "Openings + final warnings + leaves"], "style": "total"}, ["Proactive pipeline candidates", "", "", "285", "Sourced and available"], {"cells": ["Pipeline vs. Openings Remaining", "", "", "3.0 : 1", "285 pipeline candidates vs. 94 open reqs"], "style": "total"}, {"cells": ["Pipeline vs. Total Anticipated Demand", "", "", "2.3 : 1", "285 pipeline candidates vs. 126 total demand"], "style": "total"}]}}, "right": {"title": "Open Volume by Function", "block": {"type": "stack", "blocks": [{"type": "barlist", "items": [{"label": "PS Openings", "value": 100.0, "display": "74", "color": "gold"}, {"label": "Pharma Openings", "value": 27.0, "display": "20", "color": "teal"}]}, {"type": "barlist", "items": [{"label": "Candidate Pipeline", "value": 100.0, "display": "285", "color": "green"}, {"label": "Total Anticipated Demand", "value": 44.2, "display": "126", "color": "red"}, {"label": "Offers in Flight", "value": 10.9, "display": "31", "color": "navy"}]}]}, "note": "This week's source expands visibility into the sourcing funnel, now tracking 285 \"Proactive Pipeline Candidates,\" a deeper, more proactively managed bench than last week's tracked count of 210."}}, "takeaway": "Coverage holds at 3.0 candidates per opening, and even against total anticipated demand (126, including final warnings and leave backfill), the bench still clears 2.3:1. PS holds 79% of open volume; Pharma's leaner base reflects its near-complete contractor conversion.", "footnote": "Sources: Billable Dashboard Data workbook (Aug 21, 2026); Pipeline Coverage Overview, PS/Pharma Open REQs, PS/Pharma Offers in Flight, PS/Pharma Upcoming Open REQs, Final Warnings, and Continuous Leaves tabs.", "tab": "Pipeline Coverage"}, {"title": "Trend and Trailing Month View", "subtitle": ["Three-week comparison and cumulative totals since the week of 8/3"], "kpis": [{"value": "165", "label": "Reqs Created, Trailing Month", "accent": "navy"}, {"value": "134", "label": "Reqs Closed, Trailing Month", "accent": "green"}, {"value": "45", "label": "Terminations, Trailing Month", "accent": "red"}, {"value": "3.0x", "label": "Reqs Closed per Departure", "accent": "gold"}], "body": {"layout": "two-col", "split": 0.6, "left": {"title": "Reqs Created vs. Reqs Closed, by Week", "block": {"type": "table", "columns": [{"label": "Week", "align": "left", "w": 0.4138}, {"label": "Reqs Created", "align": "right", "w": 0.1466}, {"label": "Reqs Closed", "align": "right", "w": 0.1466}, {"label": "Terminations", "align": "right", "w": 0.1466}, {"label": "Closed to Terminations", "align": "right", "w": 0.1466}], "rows": [["8/3–8/7", "49", "42", "27", "1.6x"], ["8/10–8/14", "67", "63", "8", "7.9x"], ["8/17–8/21", "49", "29", "10", "2.9x"], {"cells": ["Trailing month total", "165", "134", "45", "3.0x"], "style": "total"}]}}, "right": {"title": "Created vs. Closed, by Week", "block": {"type": "barlist", "items": [{"label": "8/3–8/7, Created", "value": 29.7, "display": "49", "color": "navy"}, {"label": "8/3–8/7, Closed", "value": 25.5, "display": "42", "color": "green"}, {"label": "8/10–8/14, Created", "value": 40.6, "display": "67", "color": "navy"}, {"label": "8/10–8/14, Closed", "value": 38.2, "display": "63", "color": "green"}, {"label": "8/17–8/21, Created", "value": 29.7, "display": "49", "color": "navy"}, {"label": "8/17–8/21, Closed", "value": 17.6, "display": "29", "color": "green"}, {"label": "Trailing Month, Created", "value": 100.0, "display": "165", "color": "gold"}, {"label": "Trailing Month, Closed", "value": 81.2, "display": "134", "color": "green"}]}, "note": "Closures kept pace with creations in the first two weeks. Over the full trailing month, closures reached 81% of everything created in the same window."}}, "takeaway": "Over the trailing month, TA created 165 requisitions and closed 134, and closed 3.0x more requisitions than there were departures. The closed to terminations ratio held above 1.6x in every single week.", "footnote": "Sources: Weekly Billable Staffing Status Report (Aug 3–7, 2026 and Aug 10–14, 2026); Billable Report Data and Dashboard Data workbook (Aug 21, 2026).", "tab": "Trend"}, {"title": "Closing the Monthly Gap: Academy vs. Demand", "subtitle": ["Reqs created has outpaced reqs closed on a monthly basis. Academy runs on a monthly cadence too, so this compares monthly totals against each wave's high-end seat count, not a weekly rate against a monthly cohort."], "kpis": [{"value": "165", "label": "Reqs Created, Trailing Month", "accent": "navy"}, {"value": "134", "label": "Reqs Closed, Trailing Month", "accent": "teal"}, {"value": "+31", "label": "Net Gap, Trailing Month", "accent": "red"}], "body": {"layout": "two-col", "split": 0.6, "left": {"title": "The Weekly Gap", "block": {"type": "stack", "blocks": [{"type": "table", "columns": [{"label": "Week", "align": "left", "w": 0.4138}, {"label": "Reqs Created", "align": "right", "w": 0.1954}, {"label": "Reqs Closed", "align": "right", "w": 0.1954}, {"label": "Net Gap", "align": "right", "w": 0.1954}], "rows": [["8/3–8/7", "49", "42", "+7"], ["8/10–8/14", "67", "63", "+4"], ["8/17–8/21", "49", "29", "+20"], {"cells": ["Trailing month total", "165", "134", "+31"], "style": "total"}]}, {"type": "table", "columns": [{"label": "Wave", "align": "left", "w": 0.2892}, {"label": "Start Date", "align": "left", "w": 0.506}, {"label": "Seats", "align": "right", "w": 0.2048}], "rows": [["Wave 5", "9/14", "15–20"], ["Wave 6", "10/12", "30–40"], ["Wave 7", "11/9", "30–40"]]}]}}, "right": {"title": "Monthly Created vs. Monthly Closed Plus Academy", "block": {"type": "barlist", "items": [{"label": "Reqs Created, Month", "value": 94.8, "display": "165", "color": "red"}, {"label": "Reqs Closed, Month", "value": 77.0, "display": "134", "color": "navy"}, {"label": "Closed + Wave 5, high (20)", "value": 77.0, "display": "154", "color": "navy"}, {"label": "Closed + Wave 6, high (40)", "value": 77.0, "display": "174", "color": "navy"}, {"label": "Closed + Wave 7, high (40)", "value": 77.0, "display": "174", "color": "navy"}]}, "note": "Navy segment is reqs closed for the trailing month (134). Green segment is that wave's high-end seat count added on top, using the actual figure from the Academy Launch Calendar."}}, "takeaway": "On a monthly basis, reqs closed (134) trails reqs created (165) by 31. Wave 5's high estimate (20 seats) brings closed to 154, still 11 short. Wave 6 and Wave 7's high estimates (40 each) bring closed to 174, 9 above the month's created volume, fully closing the monthly gap on their own.", "footnote": "Built from Billable Report Data and Dashboard Data workbook (Aug 21, 2026) and the Academy Launch Calendar Update only. Wave seat counts are the high end of the exact ranges in that document, not estimates. Does not include Upcoming Launches or any other demand source.", "tab": "Academy Gap"}, {"title": "Upcoming Starts Breakdown", "subtitle": ["62 billable starts (external + internal), by title, location, and program"], "kpis": [{"value": "62", "label": "Total Upcoming Starts", "accent": "navy"}, {"value": "40", "label": "Patient Solutions", "accent": "green"}, {"value": "22", "label": "Pharmacy", "accent": "teal"}, {"value": "19", "label": "Top Location: OPK", "accent": "gold"}, {"value": "12", "label": "Programs Represented", "accent": "red"}], "body": {"layout": "two-col", "split": 0.6, "left": {"title": "Upcoming Starts by Title", "block": {"type": "table", "columns": [{"label": "Title", "align": "left", "w": 0.2892}, {"label": "Function", "align": "left", "w": 0.506}, {"label": "Starts", "align": "right", "w": 0.2048}], "rows": [["Patient Access Specialist", "PS", "21"], ["Customer Service Representative", "PS", "14"], ["Supervisor, Patient Solutions", "PS", "2"], ["Account Care Educator", "PS", "2"], ["Bilingual Call Center Nurse", "PS", "1"], {"cells": ["Subtotal, Patient Solutions", "", "40"], "style": "total"}, ["Pharmacy Technician", "Pharma", "10"], ["Pharmacy Patient Care Coordinator", "Pharma", "8"], ["Bilingual Pharmacy Patient Care Coordinator", "Pharma", "2"], ["Pharmacist", "Pharma", "1"], ["Pharmacy Client Liaison", "Pharma", "1"], {"cells": ["Subtotal, Pharmacy", "", "22"], "style": "total"}, {"cells": ["Total", "", "62"], "style": "total"}]}}, "right": {"title": "Starts by Location", "block": {"type": "barlist", "items": [{"label": "OPK", "value": 100.0, "display": "19", "color": "gold"}, {"label": "MGO", "value": 68.4, "display": "13", "color": "navy"}, {"label": "SPO", "value": 52.6, "display": "10", "color": "navy"}, {"label": "COA", "value": 52.6, "display": "10", "color": "teal"}, {"label": "AZ", "value": 31.6, "display": "6", "color": "teal"}, {"label": "Remote", "value": 21.1, "display": "4", "color": "teal"}]}, "note": "By program: Novo Obesity (23), CoAssist Pharmacy (11) and OPK Pharmacy (11) are the top three of 12 programs, together accounting for 73% of the 62 starts."}}, "takeaway": "Patient Access Specialist and Customer Service Representative make up 56% of all starts (35 of 62), nearly all PS. Pharmacy Technician and PCC make up 82% of Pharma starts, in line with the ongoing contractor conversion push.", "footnote": "Source: Billable Dashboard Data workbook (Aug 21, 2026); PS/Pharma Upcoming Ext Starts and PS/Pharma Upcoming Int Moves tabs, combined. Recruiter and hiring-manager fields present in the source were excluded from this view.", "tab": "Upcoming Starts"}, {"title": "Open Positions Breakdown", "subtitle": ["94 total open positions (no offer yet extended), by title, location, and program"], "kpis": [{"value": "94", "label": "Total Open Positions", "accent": "navy"}, {"value": "11.1", "label": "Avg Days Open", "accent": "green"}, {"value": "74", "label": "Patient Solutions", "accent": "teal"}, {"value": "20", "label": "Pharmacy", "accent": "gold"}], "body": {"layout": "two-col", "split": 0.6, "left": {"title": "Open Positions by Title", "block": {"type": "table", "columns": [{"label": "Title", "align": "left", "w": 0.2892}, {"label": "Function", "align": "left", "w": 0.506}, {"label": "Open", "align": "right", "w": 0.2048}], "rows": [["Patient Access Specialist", "PS", "38"], ["Customer Service Representative", "PS", "19"], ["Account Care Educator", "PS", "4"], ["Bilingual Patient Access Specialist", "PS", "2"], ["Field Support Specialist", "PS", "2"], ["Program Manager, Patient Solutions", "PS", "2"], ["Team Lead, Patient Solutions", "PS", "1"], ["Program Trainer", "PS", "1"], ["Specialty Pharmacy Liaison", "PS", "1"], ["Supervisor, Patient Solutions", "PS", "1"], ["Team Lead", "PS", "1"], ["Pharmacovigilance Manager", "PS", "1"], ["Team Lead, Quality Assurance", "PS", "1"], {"cells": ["Subtotal, Patient Solutions", "", "74"], "style": "total"}, ["Pharmacy Patient Care Coordinator", "Pharma", "7"], ["Pharmacy Technician", "Pharma", "7"], ["Pharmacy Technician II (Escalation Specialist)", "Pharma", "3"], ["Team Lead, Pharmacy Patient Care Coordinator", "Pharma", "1"], ["Supervisor, Pharmacy Patient Care Coordinator", "Pharma", "1"], ["Pharmacy Technician Supervisor", "Pharma", "1"], {"cells": ["Subtotal, Pharmacy", "", "20"], "style": "total"}, {"cells": ["Total", "", "94"], "style": "total"}]}}, "right": {"title": "Open Positions by Program", "block": {"type": "barlist", "items": [{"label": "Gilead: Advancing Access", "value": 100.0, "display": "21", "color": "gold"}, {"label": "Novo Obesity", "value": 81.0, "display": "17", "color": "teal"}, {"label": "Galderma", "value": 61.9, "display": "13", "color": "teal"}, {"label": "CoA-NNI", "value": 52.4, "display": "11", "color": "navy"}, {"label": "OPK Pharmacy", "value": 42.9, "display": "9", "color": "navy"}, {"label": "Apellis", "value": 28.6, "display": "6", "color": "red"}, {"label": "Gilead: L4P", "value": 23.8, "display": "5", "color": "red"}, {"label": "All other (10 programs)", "value": 57.1, "display": "12", "color": "red"}]}, "note": "Location data this week includes several dual-site codes (e.g. \"SPO/MGO\", \"SPO/OPK\") that weren't resolved to a single site in the source. Flag to the team if these should be split before reporting by location alone."}}, "takeaway": "Patient Access Specialist is the single largest line item at 40% of all open positions (38 of 94). Gilead: Advancing Access is now the top program (21), just ahead of Novo Obesity (17). Backfill accounts for 68% of open volume, so most demand is replacing existing headcount, not net growth. Most openings are fresh, 72% under 2 weeks old.", "footnote": "Source: Billable Dashboard Data workbook (Aug 21, 2026); PS Open REQs and Pharma Open REQs tabs, including NW/BF and Input Date fields. Recruiter and hiring-manager fields present in the source were excluded from this view.", "tab": "Open Positions"}, {"title": "Open Positions Breakdown (continued)", "merge_into_previous": true, "body": {"layout": "two-col", "split": 0.5, "left": {"title": "New Headcount vs. Backfill", "block": {"type": "table", "columns": [{"label": "Type", "align": "left", "w": 0.4138}, {"label": "PS", "align": "right", "w": 0.1954}, {"label": "Pharma", "align": "right", "w": 0.1954}, {"label": "Total", "align": "right", "w": 0.1954}], "rows": [["New headcount", "27", "3", "30"], ["Backfill", "47", "17", "64"], {"cells": ["Total", "74", "20", "94"], "style": "total"}]}}, "right": {"title": "Share of Open Positions", "block": {"type": "stack", "blocks": [{"type": "barlist", "items": [{"label": "Backfill", "value": 100.0, "display": "64 (68%)", "color": "red"}, {"label": "New Headcount", "value": 46.9, "display": "30 (32%)", "color": "green"}]}, {"type": "text", "text": "Roughly two-thirds of open positions (64 of 94) are backfilling existing roles rather than net-new growth. The remaining 30 (mostly PS, 27 of 30) represent expansion headcount."}, {"type": "barlist", "items": [{"label": "0 to 14 days", "value": 100.0, "display": "68", "color": "green"}, {"label": "15 to 30 days", "value": 29.4, "display": "20", "color": "teal"}, {"label": "31 to 60 days", "value": 5.9, "display": "4", "color": "red"}, {"label": "60+ days", "value": 0.0, "display": "0", "color": "navy"}], "heading": "Aging of Open Positions"}, {"type": "text", "text": "72% of open positions (68 of 94) have been open 2 weeks or less. Nothing has aged past 60 days. 2 records are missing an input date in the source and are excluded from this view."}]}}}, "timestamp": null}, {"title": "Reverification Staffing", "subtitle": ["Headcount tied to client re-verification / re-contracting activity across 9 programs"], "kpis": [{"value": "49", "label": "Confirmed (CR Received)", "accent": "navy"}, {"value": "56–61", "label": "Projected Need (Range)", "accent": "green"}, {"value": "105–110", "label": "Total Exposure", "accent": "teal"}, {"value": "2", "label": "Programs Confirmed", "accent": "red"}, {"value": "7", "label": "Programs in Progress", "accent": "gold"}], "body": {"layout": "two-col", "split": 0.6, "left": {"title": "Reverification Demand by Program", "block": {"type": "table", "columns": [{"label": "Program", "align": "left", "w": 0.1514}, {"label": "Staff Type", "align": "left", "w": 0.265}, {"label": "HC Needed", "align": "right", "w": 0.0536}, {"label": "Window", "align": "left", "w": 0.265}, {"label": "Status", "align": "left", "w": 0.265}], "rows": [["Apellis", "Temp/FTE", "38", "10/1/26 – 2/28/27", "CR Received"], ["Galderma", "FTE", "11", "Starts 9/14/26", "CR Received"], {"cells": ["Subtotal, Confirmed (CR Received)", "", "49", "", ""], "style": "total"}, ["Astellas", "Temp", "18", "TBD", "CR Requested"], ["Gilead HBV/HDV", "Temp", "7", "9/28/26 – 4/30/27", "CR Pending"], ["Gilead Seladelpar", "Temp", "6", "9/28/26 – 4/30/27", "CR Pending"], ["Avadel", "TBD", "4", "Starts 10/5/26", "CR Requested"], ["Incyte", "Temp", "3", "TBD", "CR Requested"], ["Merck", "Temp", "8", "TBD", "TBD"], ["Sumitomo (Shared Services)", "Temp", "10–15", "TBD", "TBD"], {"cells": ["Subtotal, Projected Need", "", "56–61", "", ""], "style": "total"}, {"cells": ["Total Exposure", "", "105–110", "", ""], "style": "total"}]}}, "right": {"title": "Role Mix (where specified)", "block": {"type": "barlist", "items": [{"label": "PAS", "value": 100.0, "display": "60", "color": "gold"}, {"label": "CSR", "value": 21.7, "display": "13", "color": "teal"}, {"label": "ACE", "value": 16.7, "display": "10", "color": "navy"}, {"label": "Bilingual PAS", "value": 1.7, "display": "1", "color": "navy"}, {"label": "FSS", "value": 1.7, "display": "1", "color": "navy"}]}, "note": "Role Type is specified for 6 of 9 programs (all but Incyte, Merck and Sumitomo). Galderma's listed role breakdown sums to 12 against a stated total of 11, a 1-head discrepancy in the source that we're flagging rather than silently correcting."}}, "takeaway": "Apellis and Galderma are contractually locked and already being staffed, 49 confirmed heads. The remaining 56 to 61 heads span 7 programs still awaiting client change-request approval, giving TA a head start on sourcing. This is the real staffing gap: client confirmation, not TA capacity. Astellas (18) and Merck (8) are the largest open items and worth prioritizing for follow-up.", "footnote": "Source: Billable Dashboard Data workbook (Aug 21, 2026); Reverification Staffing tab. No candidate or employee level detail included.", "tab": "Reverification"}, {"title": "Upcoming Launches", "subtitle": ["New client programs in contracting or planning", "headcount not yet reflected in open reqs or pipeline coverage"], "kpis": [{"value": "7", "label": "Programs in Planning", "accent": "navy"}, {"value": "1", "label": "Contract Awarded", "accent": "green"}, {"value": "2", "label": "In Contracting", "accent": "red"}, {"value": "181", "label": "Known HC (4 programs)", "accent": "teal"}, {"value": "102", "label": "Largest Single Program", "accent": "gold"}], "body": {"layout": "two-col", "split": 0.6, "left": {"title": "Launch Pipeline by Program", "block": {"type": "table", "columns": [{"label": "Program", "align": "left", "w": 0.125}, {"label": "Start", "align": "left", "w": 0.2188}, {"label": "Role Mix", "align": "left", "w": 0.2188}, {"label": "HC Needed", "align": "right", "w": 0.2188}, {"label": "Status", "align": "left", "w": 0.2188}], "rows": [["Boehringer Ingelheim", "4/1/2027", "ACE 30, PAS 20, CSR 20, Call Ctr RN 2, Clin. Supervisor 1, SP Liaison 3, Indirect 26", "102", "Contract Awarded"], ["Sanofi", "TBD", "PAS 13, Offshore PAS 4, CSR 25, Indirect 12.25", "58.25", ""], ["Cytokinetics", "TBD", "TBD", "16", ""], ["PharmEssentia", "3/1/2027", "TBD", "5", ""], ["Gilead: LOA (Long Acting Orals)", "Q4 2026", "TBD", "TBD", "In Contracting"], ["Eli Lilly", "Q4 2026", "TBD", "TBD", "In Contracting"], ["Mayne (Derm Portfolio re-pricing)", "TBD", "TBD", "TBD", ""]]}}, "right": {"title": "Known Headcount by Program", "block": {"type": "barlist", "items": [{"label": "Boehringer Ingelheim", "value": 100.0, "display": "102", "color": "gold"}, {"label": "Sanofi", "value": 57.1, "display": "58.25", "color": "teal"}, {"label": "Cytokinetics", "value": 15.7, "display": "16", "color": "navy"}, {"label": "PharmEssentia", "value": 4.9, "display": "5", "color": "navy"}]}, "note": "3 of 7 programs (Gilead LOA, Mayne, Eli Lilly) have no headcount estimate yet. Total future demand is at least 181, likely higher once those are scoped."}}, "takeaway": "Boehringer Ingelheim is the largest confirmed future program at 102 heads, more than the next three combined. None of this 181+ headcount is reflected in this week's Openings Remaining or Pipeline Coverage; treat it as additive. Eli Lilly and Gilead: LOA are both in contracting for Q4 2026 with headcount still undetermined and worth a check-in once terms firm up.", "footnote": "Source: Billable Dashboard Data workbook (Aug 21, 2026); Future Launch Planning tab.", "tab": "Launches"}]};
+  var COLOR = {navy:'var(--navy)', green:'var(--green)', red:'var(--red)',
+               teal:'var(--teal)', gold:'var(--gold-br)', purple:'#5B4B8A'};
+  var CYCLE = ['navy','green','red','teal','gold','purple'];
+
+  function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+
+  function kpis(items){
+    var w=el('div','kpis');
+    items.forEach(function(it,i){
+      var cls = it.accent ? 'c'+(CYCLE.indexOf(it.accent)+1) : 'c'+((i%6)+1);
+      var k=el('div','kpi '+cls);
+      k.innerHTML='<div class="n">'+it.value+'</div><div class="l">'+it.label+'</div>'+
+                  (it.ksub?'<div class="ks">'+it.ksub+'</div>':'');
+      w.appendChild(k);
+    });
+    return w;
+  }
+
+  function panel(title,sub,tools){
+    var p=el('div','panel');
+    if(title!=null){var h=el('h3','ptitle',title); if(tools)h.appendChild(tools); p.appendChild(h);}
+    if(sub)p.appendChild(el('p','psub',sub));
+    return p;
+  }
+
+  function num(v){
+    if(typeof v==='number')return v;
+    var n=parseFloat(String(v).replace(/[^0-9.\-]/g,''));
+    return isNaN(n)?String(v).toLowerCase():n;
+  }
+
+  function isLeft(c,i){
+    var a=c.align||(i===0?'left':'right');
+    return a==='l'||a==='left'||a==='center';
+  }
+
+  function table(cols,rows,opts){
+    opts=opts||{};
+    // spec rows are either a plain array of cells or {cells, style}
+    rows=rows.map(function(r){return Array.isArray(r)?{cells:r}:r;});
+    var t=el('table'),thead=el('thead'),tr=el('tr');
+    cols.forEach(function(c,i){
+      var th=el('th',(isLeft(c,i)?'l ':'')+(opts.sort?'s':''),
+                c.label+(opts.sort?'<span class="ar">▾</span>':''));
+      if(opts.sort){th.tabIndex=0;th.dataset.i=i;}
+      tr.appendChild(th);
+    });
+    thead.appendChild(tr);t.appendChild(thead);
+    var tb=el('tbody');t.appendChild(tb);
+    var state={i:-1,asc:false,q:''};
+
+    function draw(){
+      tb.innerHTML='';
+      var body=rows.filter(function(r){return r.style!=='total';});
+      var pinned=rows.filter(function(r){return r.style==='total';});
+      if(state.q){
+        body=body.filter(function(r){
+          return String(r.cells[0]).toLowerCase().indexOf(state.q)>-1;
+        });
+      }
+      if(state.i>-1){
+        body=body.slice().sort(function(a,b){
+          var x=num(a.cells[state.i]),y=num(b.cells[state.i]);
+          if(typeof x==='string'||typeof y==='string')
+            return state.asc?String(x).localeCompare(String(y)):String(y).localeCompare(String(x));
+          return state.asc?x-y:y-x;
+        });
+      }
+      body.concat(pinned).forEach(function(r){
+        var row=el('tr', r.style==='total'?'tot':(r.style||''));
+        cols.forEach(function(c,i){
+          var v=r.cells[i]==null?'':r.cells[i];
+          // a wide left-aligned column that isn't the first is prose, not a label
+          var prose=(isLeft(c,i)&&i>0&&(c.w||0)>=0.40);
+          var cls=c.cls||(prose?'note':(isLeft(c,i)&&i>0?'l':''));
+          row.appendChild(el('td',cls,String(v)));
+        });
+        tb.appendChild(row);
+      });
+      Array.prototype.forEach.call(thead.querySelectorAll('th'),function(th,i){
+        th.classList.toggle('sorted',i===state.i);
+        var ar=th.querySelector('.ar');
+        if(ar)ar.textContent=(i===state.i&&state.asc)?'▴':'▾';
+      });
+    }
+    if(opts.sort){
+      Array.prototype.forEach.call(thead.querySelectorAll('th'),function(th){
+        var go=function(){
+          var i=+th.dataset.i;
+          if(state.i===i)state.asc=!state.asc; else {state.i=i;state.asc=false;}
+          draw();
+        };
+        th.addEventListener('click',go);
+        th.addEventListener('keydown',function(e){
+          if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}
+        });
+      });
+    }
+    draw();
+    t.filter=function(q){state.q=(q||'').toLowerCase();draw();};
+    return t;
+  }
+
+  function bars(items,fixed,lw){
+    var max=1;
+    items.forEach(function(i){max=Math.max(max,Math.abs(+i.value||0));});
+    var w=el('div','bars');
+    items.forEach(function(r,i){
+      var b=el('div','bar');
+      if(lw)b.style.setProperty('--lw',lw+'px');
+      var key=r.color||fixed||CYCLE[i%CYCLE.length];
+      var p=Math.max(1.5,(Math.abs(+r.value||0)/max)*100);
+      b.innerHTML='<span class="bl">'+r.label+'</span>'+
+        '<span class="bt"><i class="bf" data-w="'+p.toFixed(1)+'" style="background:'+(COLOR[key]||COLOR.navy)+'"></i></span>'+
+        '<span class="bv">'+(r.display!=null?r.display:r.value)+'</span>';
+      w.appendChild(b);
+    });
+    return w;
+  }
+
+  function searchTools(t){
+    var tools=el('span','tools');
+    var inp=document.createElement('input');
+    inp.setAttribute('type','search'); inp.setAttribute('placeholder','Filter…');
+    inp.addEventListener('input',function(){t.filter(inp.value);});
+    tools.appendChild(inp);
+    return tools;
+  }
+
+  function addBlock(host,blk,lw){
+    if(!blk)return;
+    if(blk.type==='table'){
+      var sortable=(blk.rows||[]).length>=8;
+      var t=table(blk.columns,blk.rows,{sort:sortable});
+      if(sortable && host.firstChild && host.firstChild.classList
+         && host.firstChild.classList.contains('ptitle')){
+        host.firstChild.appendChild(searchTools(t));
+      }
+      host.appendChild(t);
+    } else if(blk.type==='barlist'||blk.type==='hbar'){
+      host.appendChild(bars(blk.items,blk.color,lw));
+    } else if(blk.type==='text'){
+      host.appendChild(el('p','pnote',blk.text));
+    } else if(blk.type==='stack'){
+      blk.blocks.forEach(function(b,i){
+        if(b.heading)host.appendChild(el('h3','ptitle'+(i?' mt':''),b.heading));
+        addBlock(host,b,lw);
+      });
+    }
+  }
+
+  function buildPanel(p,lw){
+    var host=panel(p.title==null?null:p.title);
+    addBlock(host,p.block,lw);
+    if(p.note)host.appendChild(el('p','pnote',p.note));
+    return host;
+  }
+
+  var nav=document.getElementById('nav'), main=document.getElementById('main');
+
+  var viewCount=0, lastView=null;
+  SPEC.slides.forEach(function(s,idx){
+    // a continuation section belongs to the tab before it
+    if(s.merge_into_previous && lastView){
+      var host=lastView, tk=host.querySelector('.takeaway'), sr=host.querySelector('.src');
+      var frag=document.createElement('div');
+      if(s.body){
+        if(s.body.layout==='full'){ frag.appendChild(buildPanel(s.body.panel,170)); }
+        else{
+          var cc=el('div','cols');
+          var LL=el('div','col'), RR=el('div','col');
+          if(s.body.left)LL.appendChild(buildPanel(s.body.left,150));
+          if(s.body.right)RR.appendChild(buildPanel(s.body.right,150));
+          cc.appendChild(LL);cc.appendChild(RR);frag.appendChild(cc);
+        }
+      }
+      // insert before the takeaway/sources so they stay last
+      var anchor=tk||sr;
+      while(frag.firstChild){
+        var node=frag.firstChild; frag.removeChild(node);
+        if(anchor)host.insertBefore(node,anchor); else host.appendChild(node);
+      }
+      return;
+    }
+    viewCount++;
+    var id='v'+viewCount;
+    var b=el('button',null,s.tab||s.title);
+    b.dataset.id=id; b.setAttribute('role','tab');
+    b.setAttribute('aria-selected',idx===0?'true':'false');
+    b.addEventListener('click',function(){show(id);});
+    nav.appendChild(b);
+
+    var view=el('section','view'+(idx===0?' on':''));
+    view.id='v-'+id; view.setAttribute('role','tabpanel');
+
+    var sub=s.subtitle;
+    if(Array.isArray(sub))sub=sub.join(' · ');
+    view.appendChild(el('div','vhead','<h2>'+s.title+'</h2>'+(sub?'<p>'+sub+'</p>':'')));
+    if(s.kpis&&s.kpis.length)view.appendChild(kpis(s.kpis));
+
+    var body=s.body;
+    if(body){
+      if(body.layout==='full'){
+        view.appendChild(buildPanel(body.panel,170));
+      }else{
+        var c=el('div','cols');
+        var split=body.split||0.565;
+        var L=el('div','col'+(split>0.5?' wide':''));
+        var R=el('div','col'+(split<=0.5?' wide':''));
+        if(body.left)L.appendChild(buildPanel(body.left,150));
+        if(body.right)R.appendChild(buildPanel(body.right,150));
+        c.appendChild(L);c.appendChild(R);
+        view.appendChild(c);
+      }
+    }
+    if(s.takeaway)view.appendChild(el('div','takeaway','<b>Key takeaway:</b> '+s.takeaway));
+    if(s.footnote)view.appendChild(el('p','src',s.footnote));
+    main.appendChild(view);
+    lastView=view;
+  });
+
+  function fillBars(scope){
+    if(!scope)return;
+    Array.prototype.forEach.call(scope.querySelectorAll('.bf'),function(b){
+      b.style.width='0%';
+      requestAnimationFrame(function(){b.style.width=b.getAttribute('data-w')+'%';});
+    });
+  }
+  function show(id){
+    Array.prototype.forEach.call(nav.querySelectorAll('button'),function(b){
+      b.setAttribute('aria-selected',b.dataset.id===id?'true':'false');
+    });
+    Array.prototype.forEach.call(main.querySelectorAll('.view'),function(s){
+      s.classList.toggle('on',s.id==='v-'+id);
+    });
+    fillBars(document.getElementById('v-'+id));
+    if(history.replaceState)history.replaceState(null,'','#'+id);
+    window.scrollTo(0,0);
+  }
+  nav.addEventListener('keydown',function(e){
+    var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;
+    if(!d)return;
+    var btns=[].slice.call(nav.querySelectorAll('button'));
+    var i=btns.findIndex(function(b){return b.getAttribute('aria-selected')==='true';});
+    var n=(i+d+btns.length)%btns.length;
+    e.preventDefault(); btns[n].focus(); show(btns[n].dataset.id);
+  });
+  var start=(location.hash||'').replace('#','');
+  show(document.getElementById('v-'+start)?start:'v1');
+})();
+</script>
+</body></html>
