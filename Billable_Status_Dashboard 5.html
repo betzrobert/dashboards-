@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly Billable Staffing Status: Aug 17–21, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1C2A5E;
+    --navy-dk:#141F45;
+    --gold:#C89116;
+    --gold-br:#DCA426;
+    --green:#2E9E5B;
+    --red:#C4402E;
+    --teal:#2A8F9E;
+    --kpi-bg:#EFF2F8;
+    --stripe:#F3F5FA;
+    --track:#EDF0F6;
+    --txt:#333F4E;
+    --muted:#6B7480;
+    --faint:#A3AAB6;
+    --line:#E3E7EF;
+    --font:"Lato","Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:#DFE3EB;color:var(--txt);
+    font-family:var(--font);font-size:13px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- Slide shell ---------- */
+  .slide{
+    position:relative;width:1440px;min-height:810px;margin:26px auto;background:#fff;
+    padding:38px 46px 34px;display:flex;flex-direction:column;
+    box-shadow:0 2px 4px rgba(20,31,69,.08),0 14px 40px rgba(20,31,69,.10);
+  }
+  .eyebrow{
+    display:flex;justify-content:space-between;align-items:baseline;gap:20px;margin-bottom:14px;
+  }
+  .eyebrow .tag{
+    color:var(--gold);font-weight:700;font-size:10px;letter-spacing:2.1px;text-transform:uppercase;
+  }
+  .eyebrow .gen{color:var(--faint);font-size:9.5px;letter-spacing:1.1px}
+  h1{
+    font-size:35px;font-weight:900;color:var(--navy);margin:0;letter-spacing:-.4px;line-height:1.1;
+  }
+  .deck{color:var(--muted);font-size:12.5px;margin:9px 0 0}
+
+  /* ---------- KPI strip ---------- */
+  .kpistrip{display:flex;gap:16px;margin:26px 0 24px}
+  .k{
+    flex:1;background:var(--kpi-bg);border-radius:6px;padding:16px 10px 14px;text-align:center;
+    border-left:7px solid var(--navy);
+  }
+  .k.c2{border-left-color:var(--green)}
+  .k.c3{border-left-color:var(--red)}
+  .k.c4{border-left-color:var(--teal)}
+  .k.c5{border-left-color:var(--gold-br)}
+  .k .kn{font-size:30px;font-weight:700;color:var(--navy);line-height:1.05}
+  .k .kn small{font-size:16px;font-weight:700}
+  .k .kl{
+    font-size:8.6px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+    color:#5B6472;margin-top:7px;
+  }
+  .k .ksub{font-size:9.5px;color:#8A93A3;margin-top:5px;font-weight:600}
+
+  /* ---------- Panels ---------- */
+  .cols{display:flex;gap:22px;flex:1;align-items:stretch}
+  .col{flex:1;min-width:0;display:flex;flex-direction:column}
+  .col.wide{flex:1.16}
+  .panel{
+    background:#fff;border:1px solid var(--line);border-radius:8px;padding:19px 21px 21px;
+    box-shadow:0 1px 3px rgba(20,31,69,.05);flex:1;display:flex;flex-direction:column;
+  }
+  .ptitle{font-size:13.5px;font-weight:700;color:var(--navy);margin:0 0 14px}
+  .stitle{font-size:14px;font-weight:700;color:var(--navy);margin:0 0 3px}
+  .ssub{font-size:10.5px;color:var(--muted);margin:0 0 11px}
+
+  /* ---------- Tables ---------- */
+  table{width:100%;border-collapse:collapse}
+  thead th{
+    background:var(--navy);color:#fff;font-size:9.6px;font-weight:700;letter-spacing:.35px;
+    padding:7px 10px;text-align:right;white-space:nowrap;
+  }
+  thead th:first-child{text-align:left;border-radius:4px 0 0 0}
+  thead th:last-child{border-radius:0 4px 0 0}
+  thead th.l{text-align:left}
+  tbody td{
+    font-size:10.4px;color:var(--txt);padding:6.5px 10px;text-align:right;
+    font-variant-numeric:tabular-nums;
+  }
+  tbody td:first-child{text-align:left}
+  tbody td.l{text-align:left}
+  tbody tr:nth-child(even) td{background:var(--stripe)}
+  tbody tr.tot td{font-weight:700;color:var(--navy);border-top:1.5px solid var(--navy);background:#fff}
+  tbody td.dim{color:var(--muted)}
+  tbody td.note{color:var(--muted);font-size:9.9px;text-align:left}
+
+  /* ---------- Bar rows ---------- */
+  .bars{display:block}
+  .bar{display:flex;align-items:center;gap:12px;padding:6.5px 0}
+  .bar .bl{flex:0 0 158px;font-size:10.6px;font-weight:700;color:var(--navy);text-align:left;line-height:1.3}
+  .bar .bl em{display:block;font-style:normal;font-weight:400;font-size:9.4px;color:var(--muted);margin-top:1px}
+  .bar .bt{flex:1 1 auto;background:var(--track);border-radius:999px;height:16px;overflow:hidden;min-width:40px}
+  .bar .bf{
+    display:block;height:100%;border-radius:999px;background:var(--navy);
+    transform-origin:left center;animation:grow .85s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes grow{from{transform:scaleX(.02)}to{transform:scaleX(1)}}
+  .bar .bf.c2{background:var(--green)} .bar .bf.c3{background:var(--red)}
+  .bar .bf.c4{background:var(--teal)} .bar .bf.c5{background:var(--gold-br)}
+  .bar .bv{flex:0 0 40px;font-size:10.8px;font-weight:700;color:var(--navy);text-align:right}
+  .panel .pnote{font-size:9.8px;color:var(--muted);margin:14px 0 0;line-height:1.5}
+
+  /* ---------- Wide bar variant (no card) ---------- */
+  .bars.tight .bar .bl{flex-basis:184px}
+
+  /* ---------- Takeaway + footnote ---------- */
+  .takeaway{
+    background:var(--kpi-bg);border-radius:6px;padding:15px 20px;margin-top:22px;
+    font-size:11.4px;line-height:1.65;color:var(--txt);
+  }
+  .takeaway b{color:var(--navy)}
+  .foot{font-size:7.8px;color:var(--faint);margin-top:14px;line-height:1.55}
+
+  @media (max-width:1500px){
+    body{font-size:12px}
+    .slide{width:auto;max-width:1160px;min-height:0;margin:18px 14px;padding:30px 30px 26px}
+    h1{font-size:29px}
+    .k .kn{font-size:26px}
+  }
+  @media (max-width:900px){
+    .cols{flex-direction:column}
+    .kpistrip{flex-wrap:wrap}
+    .k{flex:1 1 44%}
+    .bar .bl{flex-basis:118px}
+    .bars.tight .bar .bl{flex-basis:126px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media print{
+    @page{size:14in 8.1in;margin:0}
+    body{background:#fff}
+    .slide{width:100%;min-height:auto;margin:0;box-shadow:none;page-break-after:always;padding:34px 40px}
+    .slide:last-child{page-break-after:auto}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ SLIDE 1 ============ -->
+<section class="slide">
+  <div class="eyebrow">
+    <span class="tag">Weekly Billable Staffing Status</span>
+    <span class="gen">Week of August 17–21, 2026 · Prepared for the Chief People Officer</span>
+  </div>
+  <h1>Workforce Summary: Billable</h1>
+  <p class="deck">Patient Solutions (PS) &amp; Pharmacy (Pharma) · Requisition activity for the week of August 17–21, 2026</p>
+
+  <div class="kpistrip">
+    <div class="k c2"><div class="kn">6.2x</div><div class="kl">Starts Coverage of Departures</div><div class="ksub">62 starts vs. 10 departures</div></div>
+    <div class="k"><div class="kn">49</div><div class="kl">Reqs Created</div><div class="ksub">PS 46 &middot; Pharma 3</div></div>
+    <div class="k c4"><div class="kn">29</div><div class="kl">Reqs Closed</div><div class="ksub">PS 23 &middot; Pharma 6</div></div>
+    <div class="k c3"><div class="kn">10</div><div class="kl">Terminations</div><div class="ksub">PS 7 &middot; Pharma 3</div></div>
+    <div class="k c5"><div class="kn">94</div><div class="kl">Openings Remaining</div><div class="ksub">PS 74 &middot; Pharma 20</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col wide">
+      <div class="panel">
+        <h2 class="ptitle">Requisition Activity &amp; Upcoming Starts</h2>
+        <table>
+          <thead><tr><th class="l">Metric</th><th>PS</th><th>Pharma</th><th>Total</th><th class="l">Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Terminations</td><td>7</td><td>3</td><td>10</td><td class="note">Departures during the week (8/17–8/21)</td></tr>
+            <tr><td>Reqs created</td><td>46</td><td>3</td><td>49</td><td class="note">New requisitions opened</td></tr>
+            <tr><td>Reqs closed</td><td>23</td><td>6</td><td>29</td><td class="note">Requisitions filled / closed</td></tr>
+            <tr><td>Offers in flight</td><td>28</td><td>3</td><td>31</td><td class="note">Extended, awaiting acceptance</td></tr>
+            <tr><td>Openings remaining</td><td>74</td><td>20</td><td>94</td><td class="note">40 opened this week (37 PS, 3 Pharma) as new client-driven demand, not a TA backlog; 54 carried over</td></tr>
+            <tr><td>Upcoming starts, external</td><td>32</td><td>20</td><td>52</td><td class="note">New hires</td></tr>
+            <tr><td>Upcoming starts, internal</td><td>8</td><td>2</td><td>10</td><td class="note">Internal moves/promotions</td></tr>
+            <tr class="tot"><td>Starts scheduled, next 30 days</td><td>40</td><td>22</td><td>62</td><td class="note">In background / onboarding</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Weekly Flow at a Glance</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">Openings Remaining</span><span class="bt"><i class="bf c4" style="width:100.0%"></i></span><span class="bv">94</span></div>
+          <div class="bar"><span class="bl">Starts Next 30 Days</span><span class="bt"><i class="bf c5" style="width:66.0%"></i></span><span class="bv">62</span></div>
+          <div class="bar"><span class="bl">Reqs Created</span><span class="bt"><i class="bf" style="width:52.1%"></i></span><span class="bv">49</span></div>
+          <div class="bar"><span class="bl">Reqs Closed</span><span class="bt"><i class="bf c2" style="width:30.9%"></i></span><span class="bv">29</span></div>
+          <div class="bar"><span class="bl">Terminations</span><span class="bt"><i class="bf c3" style="width:10.6%"></i></span><span class="bv">10</span></div>
+        </div>
+        <p class="pnote"><b>62 starts are already scheduled and moving through onboarding over the next 30 days, 6.2x this week's 10 departures.</b> Talent Acquisition's pipeline is comfortably outpacing turnover.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaway">
+    <b>Key takeaway:</b> TA is covering turnover 6.2x over: 62 starts scheduled against 10 departures, plus 31 offers in flight. Of the 94 openings remaining, 40 opened this week alone, so this is fresh demand, not a backlog. The real gap is upstream: client programs confirming headcount need (see Reverification Staffing).
+  </div>
+  <p class="foot">Sources: Billable Report Data (Aug 21, 2026); Billable Dashboard Data workbook (Aug 21, 2026).</p>
+</section>
+
+<!-- ============ SLIDE 2 ============ -->
+<section class="slide">
+  <div class="eyebrow">
+    <span class="tag">Weekly Billable Staffing Status</span>
+    <span class="gen">Week of August 17–21, 2026 · Prepared for the Chief People Officer</span>
+  </div>
+  <h1>Pipeline Coverage</h1>
+  <p class="deck">Open and upcoming billable demand against sourced candidate supply · as of August 21, 2026</p>
+
+  <div class="kpistrip">
+    <div class="k"><div class="kn">94</div><div class="kl">Openings Remaining</div><div class="ksub">PS 74 &middot; Pharma 20</div></div>
+    <div class="k c2"><div class="kn">31</div><div class="kl">Offers in Flight</div><div class="ksub">PS 28 &middot; Pharma 3</div></div>
+    <div class="k c3"><div class="kn">28</div><div class="kl">Upcoming (Future) Reqs</div><div class="ksub">PS 27 &middot; Pharma 1</div></div>
+    <div class="k c4"><div class="kn">285</div><div class="kl">Candidate Pipeline</div></div>
+    <div class="k c5"><div class="kn">3.0<small> : 1</small></div><div class="kl">Pipeline vs. Openings</div><div class="ksub">285 vs. 94 open</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col wide">
+      <div class="panel">
+        <h2 class="ptitle">Coverage Build-Up</h2>
+        <table>
+          <thead><tr><th class="l">Line Item</th><th>PS</th><th>Pharma</th><th>Total</th><th class="l">Basis</th></tr></thead>
+          <tbody>
+            <tr><td>Openings remaining (open, no offer)</td><td>74</td><td>20</td><td>94</td><td class="note">Currently posted, unfilled</td></tr>
+            <tr><td>Offers in flight</td><td>28</td><td>3</td><td>31</td><td class="note">Extended, awaiting acceptance</td></tr>
+            <tr><td>Upcoming (future-dated) reqs</td><td>27</td><td>1</td><td>28</td><td class="note">Not yet posted, target-fill dated</td></tr>
+            <tr><td>Final warnings (active)</td><td>6</td><td>2</td><td>8</td><td class="note">Anticipated backfill</td></tr>
+            <tr><td>Continuous leaves (as of 8/21)</td><td class="note"></td><td class="note"></td><td>24</td><td class="note">Anticipated backfill</td></tr>
+            <tr class="tot"><td>Total anticipated demand</td><td class="note"></td><td class="note"></td><td>126</td><td class="note">Openings + final warnings + leaves</td></tr>
+            <tr><td>Proactive pipeline candidates</td><td class="note"></td><td class="note"></td><td>285</td><td class="note">Sourced and available</td></tr>
+            <tr class="tot"><td>Pipeline vs. Openings Remaining</td><td class="note"></td><td class="note"></td><td>3.0 : 1</td><td class="note">285 pipeline candidates vs. 94 open reqs</td></tr>
+            <tr class="tot"><td>Pipeline vs. Total Anticipated Demand</td><td class="note"></td><td class="note"></td><td>2.3 : 1</td><td class="note">285 pipeline candidates vs. 126 total demand</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Open Volume by Function</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">PS Openings</span><span class="bt"><i class="bf c5" style="width:100.0%"></i></span><span class="bv">74</span></div>
+          <div class="bar"><span class="bl">Pharma Openings</span><span class="bt"><i class="bf c4" style="width:27.0%"></i></span><span class="bv">20</span></div>
+        </div>
+        <h2 class="ptitle" style="margin-top:24px">Demand vs. Supply</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">Candidate Pipeline</span><span class="bt"><i class="bf c2" style="width:100.0%"></i></span><span class="bv">285</span></div>
+          <div class="bar"><span class="bl">Total Anticipated Demand</span><span class="bt"><i class="bf c3" style="width:44.2%"></i></span><span class="bv">126</span></div>
+          <div class="bar"><span class="bl">Offers in Flight</span><span class="bt"><i class="bf" style="width:10.9%"></i></span><span class="bv">31</span></div>
+        </div>
+        <p class="pnote">This week's source expands visibility into the sourcing funnel, now tracking 285 "Proactive Pipeline Candidates," a deeper, more proactively managed bench than last week's tracked count of 210.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaway">
+    <b>Key takeaway:</b> Coverage holds at 3.0 candidates per opening, and even against total anticipated demand (126, including final warnings and leave backfill), the bench still clears 2.3:1. PS holds 79% of open volume; Pharma's leaner base reflects its near-complete contractor conversion.
+  </div>
+  <p class="foot">Sources: Billable Dashboard Data workbook (Aug 21, 2026); Pipeline Coverage Overview, PS/Pharma Open REQs, PS/Pharma Offers in Flight, PS/Pharma Upcoming Open REQs, Final Warnings, and Continuous Leaves tabs.</p>
+</section>
+
+<!-- ============ SLIDE 3 ============ -->
+<section class="slide">
+  <div class="eyebrow">
+    <span class="tag">Weekly Billable Staffing Status</span>
+    <span class="gen">Week of August 17–21, 2026 · Prepared for the Chief People Officer</span>
+  </div>
+  <h1>Trend and Trailing Month View</h1>
+  <p class="deck">Three-week comparison and cumulative totals since the week of 8/3</p>
+
+  <div class="kpistrip">
+    <div class="k"><div class="kn">165</div><div class="kl">Reqs Created, Trailing Month</div></div>
+    <div class="k c2"><div class="kn">134</div><div class="kl">Reqs Closed, Trailing Month</div></div>
+    <div class="k c3"><div class="kn">45</div><div class="kl">Terminations, Trailing Month</div></div>
+    <div class="k c5"><div class="kn">3.0x</div><div class="kl">Reqs Closed per Departure</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col wide">
+      <div class="panel">
+        <h2 class="ptitle">Reqs Created vs. Reqs Closed, by Week</h2>
+        <table>
+          <thead><tr><th class="l">Week</th><th>Reqs Created</th><th>Reqs Closed</th><th>Terminations</th><th>Closed to Terminations</th></tr></thead>
+          <tbody>
+            <tr><td>8/3–8/7</td><td>49</td><td>42</td><td>27</td><td>1.6x</td></tr>
+            <tr><td>8/10–8/14</td><td>67</td><td>63</td><td>8</td><td>7.9x</td></tr>
+            <tr><td>8/17–8/21</td><td>49</td><td>29</td><td>10</td><td>2.9x</td></tr>
+            <tr class="tot"><td>Trailing month total</td><td>165</td><td>134</td><td>45</td><td>3.0x</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Created vs. Closed, by Week</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">8/3–8/7, Created</span><span class="bt"><i class="bf" style="width:29.7%"></i></span><span class="bv">49</span></div>
+          <div class="bar"><span class="bl">8/3–8/7, Closed</span><span class="bt"><i class="bf c2" style="width:25.5%"></i></span><span class="bv">42</span></div>
+          <div class="bar"><span class="bl">8/10–8/14, Created</span><span class="bt"><i class="bf" style="width:40.6%"></i></span><span class="bv">67</span></div>
+          <div class="bar"><span class="bl">8/10–8/14, Closed</span><span class="bt"><i class="bf c2" style="width:38.2%"></i></span><span class="bv">63</span></div>
+          <div class="bar"><span class="bl">8/17–8/21, Created</span><span class="bt"><i class="bf" style="width:29.7%"></i></span><span class="bv">49</span></div>
+          <div class="bar"><span class="bl">8/17–8/21, Closed</span><span class="bt"><i class="bf c2" style="width:17.6%"></i></span><span class="bv">29</span></div>
+          <div class="bar"><span class="bl">Trailing Month, Created</span><span class="bt"><i class="bf c5" style="width:100.0%"></i></span><span class="bv">165</span></div>
+          <div class="bar"><span class="bl">Trailing Month, Closed</span><span class="bt"><i class="bf c2" style="width:81.2%"></i></span><span class="bv">134</span></div>
+        </div>
+        <p class="pnote">Closures kept pace with creations in the first two weeks. Over the full trailing month, closures reached 81% of everything created in the same window.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaway">
+    <b>Key takeaway:</b> Over the trailing month, TA created 165 requisitions and closed 134, and closed 3.0x more requisitions than there were departures. The closed to terminations ratio held above 1.6x in every single week.
+  </div>
+  <p class="foot">Sources: Weekly Billable Staffing Status Report (Aug 3–7, 2026 and Aug 10–14, 2026); Billable Report Data and Dashboard Data workbook (Aug 21, 2026).</p>
+</section>
+
+<!-- ============ SLIDE 3B (NEW) ============ -->
+<section class="slide">
+  <div class="eyebrow">
+    <span class="tag">Weekly Billable Staffing Status</span>
+    <span class="gen">Week of August 17–21, 2026 · Prepared for the Chief People Officer</span>
+  </div>
+  <h1>Closing the Monthly Gap: Academy vs. Demand</h1>
+  <p class="deck">Reqs created has outpaced reqs closed on a monthly basis. Academy runs on a monthly cadence too, so this compares monthly totals against each wave's high-end seat count, not a weekly rate against a monthly cohort.</p>
+
+  <div class="kpistrip">
+    <div class="k"><div class="kn">165</div><div class="kl">Reqs Created, Trailing Month</div></div>
+    <div class="k c4"><div class="kn">134</div><div class="kl">Reqs Closed, Trailing Month</div></div>
+    <div class="k c3"><div class="kn">+31</div><div class="kl">Net Gap, Trailing Month</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col wide">
+      <div class="panel">
+        <h2 class="ptitle">The Weekly Gap</h2>
+        <table>
+          <thead><tr><th class="l">Week</th><th>Reqs Created</th><th>Reqs Closed</th><th>Net Gap</th></tr></thead>
+          <tbody>
+            <tr><td>8/3–8/7</td><td>49</td><td>42</td><td>+7</td></tr>
+            <tr><td>8/10–8/14</td><td>67</td><td>63</td><td>+4</td></tr>
+            <tr><td>8/17–8/21</td><td>49</td><td>29</td><td>+20</td></tr>
+            <tr class="tot"><td>Trailing month total</td><td>165</td><td>134</td><td>+31</td></tr>
+          </tbody>
+        </table>
+        <h2 class="ptitle" style="margin-top:24px">Academy Wave Schedule</h2>
+        <table>
+          <thead><tr><th class="l">Wave</th><th class="l">Start Date</th><th>Seats</th></tr></thead>
+          <tbody>
+            <tr><td>Wave 5</td><td class="note">9/14</td><td>15–20</td></tr>
+            <tr><td>Wave 6</td><td class="note">10/12</td><td>30–40</td></tr>
+            <tr><td>Wave 7</td><td class="note">11/9</td><td>30–40</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Monthly Created vs. Monthly Closed Plus Academy</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">Reqs Created, Month</span><span class="bt"><i class="bf c3" style="width:94.8%"></i></span><span class="bv">165</span></div>
+          <div class="bar"><span class="bl">Reqs Closed, Month</span><span class="bt"><i class="bf" style="width:77.0%"></i></span><span class="bv">134</span></div>
+          <div class="bar"><span class="bl">Closed + Wave 5, high (20)</span><span class="bt" style="display:flex"><i class="bf" style="width:77.0%"></i><i class="bf c2" style="width:11.5%"></i></span><span class="bv">154</span></div>
+          <div class="bar"><span class="bl">Closed + Wave 6, high (40)</span><span class="bt" style="display:flex"><i class="bf" style="width:77.0%"></i><i class="bf c2" style="width:23.0%"></i></span><span class="bv">174</span></div>
+          <div class="bar"><span class="bl">Closed + Wave 7, high (40)</span><span class="bt" style="display:flex"><i class="bf" style="width:77.0%"></i><i class="bf c2" style="width:23.0%"></i></span><span class="bv">174</span></div>
+        </div>
+        <p class="pnote">Navy segment is reqs closed for the trailing month (134). Green segment is that wave's high-end seat count added on top, using the actual figure from the Academy Launch Calendar.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaway">
+    <b>Key takeaway:</b> On a monthly basis, reqs closed (134) trails reqs created (165) by 31. Wave 5's high estimate (20 seats) brings closed to 154, still 11 short. Wave 6 and Wave 7's high estimates (40 each) bring closed to 174, 9 above the month's created volume, fully closing the monthly gap on their own.
+  </div>
+  <p class="foot">Built from Billable Report Data and Dashboard Data workbook (Aug 21, 2026) and the Academy Launch Calendar Update only. Wave seat counts are the high end of the exact ranges in that document, not estimates. Does not include Upcoming Launches or any other demand source.</p>
+</section>
+
+<!-- ============ SLIDE 4 ============ -->
+<section class="slide">
+  <div class="eyebrow">
+    <span class="tag">Weekly Billable Staffing Status</span>
+    <span class="gen">Week of August 17–21, 2026 · Prepared for the Chief People Officer</span>
+  </div>
+  <h1>Upcoming Starts Breakdown</h1>
+  <p class="deck">62 billable starts (external + internal), by title, location, and program</p>
+
+  <div class="kpistrip">
+    <div class="k"><div class="kn">62</div><div class="kl">Total Upcoming Starts</div></div>
+    <div class="k c2"><div class="kn">40</div><div class="kl">Patient Solutions</div></div>
+    <div class="k c4"><div class="kn">22</div><div class="kl">Pharmacy</div></div>
+    <div class="k c5"><div class="kn">19</div><div class="kl">Top Location: OPK</div></div>
+    <div class="k c3"><div class="kn">12</div><div class="kl">Programs Represented</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col wide">
+      <div class="panel">
+        <h2 class="ptitle">Upcoming Starts by Title</h2>
+        <table>
+          <thead><tr><th class="l">Title</th><th class="l">Function</th><th>Starts</th></tr></thead>
+          <tbody>
+            <tr><td>Patient Access Specialist</td><td class="note">PS</td><td>21</td></tr>
+            <tr><td>Customer Service Representative</td><td class="note">PS</td><td>14</td></tr>
+            <tr><td>Supervisor, Patient Solutions</td><td class="note">PS</td><td>2</td></tr>
+            <tr><td>Account Care Educator</td><td class="note">PS</td><td>2</td></tr>
+            <tr><td>Bilingual Call Center Nurse</td><td class="note">PS</td><td>1</td></tr>
+            <tr class="tot"><td>Subtotal, Patient Solutions</td><td class="note"></td><td>40</td></tr>
+            <tr><td>Pharmacy Technician</td><td class="note">Pharma</td><td>10</td></tr>
+            <tr><td>Pharmacy Patient Care Coordinator</td><td class="note">Pharma</td><td>8</td></tr>
+            <tr><td>Bilingual Pharmacy Patient Care Coordinator</td><td class="note">Pharma</td><td>2</td></tr>
+            <tr><td>Pharmacist</td><td class="note">Pharma</td><td>1</td></tr>
+            <tr><td>Pharmacy Client Liaison</td><td class="note">Pharma</td><td>1</td></tr>
+            <tr class="tot"><td>Subtotal, Pharmacy</td><td class="note"></td><td>22</td></tr>
+            <tr class="tot"><td>Total</td><td class="note"></td><td>62</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Starts by Location</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">OPK</span><span class="bt"><i class="bf c5" style="width:100.0%"></i></span><span class="bv">19</span></div>
+          <div class="bar"><span class="bl">MGO</span><span class="bt"><i class="bf" style="width:68.4%"></i></span><span class="bv">13</span></div>
+          <div class="bar"><span class="bl">SPO</span><span class="bt"><i class="bf" style="width:52.6%"></i></span><span class="bv">10</span></div>
+          <div class="bar"><span class="bl">COA</span><span class="bt"><i class="bf c4" style="width:52.6%"></i></span><span class="bv">10</span></div>
+          <div class="bar"><span class="bl">AZ</span><span class="bt"><i class="bf c4" style="width:31.6%"></i></span><span class="bv">6</span></div>
+          <div class="bar"><span class="bl">Remote</span><span class="bt"><i class="bf c4" style="width:21.1%"></i></span><span class="bv">4</span></div>
+        </div>
+        <p class="pnote">By program: Novo Obesity (23), CoAssist Pharmacy (11) and OPK Pharmacy (11) are the top three of 12 programs, together accounting for 73% of the 62 starts.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaway">
+    <b>Key takeaway:</b> Patient Access Specialist and Customer Service Representative make up 56% of all starts (35 of 62), nearly all PS. Pharmacy Technician and PCC make up 82% of Pharma starts, in line with the ongoing contractor conversion push.
+  </div>
+  <p class="foot">Source: Billable Dashboard Data workbook (Aug 21, 2026); PS/Pharma Upcoming Ext Starts and PS/Pharma Upcoming Int Moves tabs, combined. Recruiter and hiring-manager fields present in the source were excluded from this view.</p>
+</section>
+
+<!-- ============ SLIDE 5 ============ -->
+<section class="slide">
+  <div class="eyebrow">
+    <span class="tag">Weekly Billable Staffing Status</span>
+    <span class="gen">Week of August 17–21, 2026 · Prepared for the Chief People Officer</span>
+  </div>
+  <h1>Open Positions Breakdown</h1>
+  <p class="deck">94 total open positions (no offer yet extended), by title, location, and program</p>
+
+  <div class="kpistrip">
+    <div class="k"><div class="kn">94</div><div class="kl">Total Open Positions</div></div>
+    <div class="k c2"><div class="kn">11.1</div><div class="kl">Avg Days Open</div></div>
+    <div class="k c4"><div class="kn">74</div><div class="kl">Patient Solutions</div></div>
+    <div class="k c5"><div class="kn">20</div><div class="kl">Pharmacy</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col wide">
+      <div class="panel">
+        <h2 class="ptitle">Open Positions by Title</h2>
+        <table>
+          <thead><tr><th class="l">Title</th><th class="l">Function</th><th>Open</th></tr></thead>
+          <tbody>
+            <tr><td>Patient Access Specialist</td><td class="note">PS</td><td>38</td></tr>
+            <tr><td>Customer Service Representative</td><td class="note">PS</td><td>19</td></tr>
+            <tr><td>Account Care Educator</td><td class="note">PS</td><td>4</td></tr>
+            <tr><td>Bilingual Patient Access Specialist</td><td class="note">PS</td><td>2</td></tr>
+            <tr><td>Field Support Specialist</td><td class="note">PS</td><td>2</td></tr>
+            <tr><td>Program Manager, Patient Solutions</td><td class="note">PS</td><td>2</td></tr>
+            <tr><td>Team Lead, Patient Solutions</td><td class="note">PS</td><td>1</td></tr>
+            <tr><td>Program Trainer</td><td class="note">PS</td><td>1</td></tr>
+            <tr><td>Specialty Pharmacy Liaison</td><td class="note">PS</td><td>1</td></tr>
+            <tr><td>Supervisor, Patient Solutions</td><td class="note">PS</td><td>1</td></tr>
+            <tr><td>Team Lead</td><td class="note">PS</td><td>1</td></tr>
+            <tr><td>Pharmacovigilance Manager</td><td class="note">PS</td><td>1</td></tr>
+            <tr><td>Team Lead, Quality Assurance</td><td class="note">PS</td><td>1</td></tr>
+            <tr class="tot"><td>Subtotal, Patient Solutions</td><td class="note"></td><td>74</td></tr>
+            <tr><td>Pharmacy Patient Care Coordinator</td><td class="note">Pharma</td><td>7</td></tr>
+            <tr><td>Pharmacy Technician</td><td class="note">Pharma</td><td>7</td></tr>
+            <tr><td>Pharmacy Technician II (Escalation Specialist)</td><td class="note">Pharma</td><td>3</td></tr>
+            <tr><td>Team Lead, Pharmacy Patient Care Coordinator</td><td class="note">Pharma</td><td>1</td></tr>
+            <tr><td>Supervisor, Pharmacy Patient Care Coordinator</td><td class="note">Pharma</td><td>1</td></tr>
+            <tr><td>Pharmacy Technician Supervisor</td><td class="note">Pharma</td><td>1</td></tr>
+            <tr class="tot"><td>Subtotal, Pharmacy</td><td class="note"></td><td>20</td></tr>
+            <tr class="tot"><td>Total</td><td class="note"></td><td>94</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Open Positions by Program</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">Gilead: Advancing Access</span><span class="bt"><i class="bf c5" style="width:100.0%"></i></span><span class="bv">21</span></div>
+          <div class="bar"><span class="bl">Novo Obesity</span><span class="bt"><i class="bf c4" style="width:81.0%"></i></span><span class="bv">17</span></div>
+          <div class="bar"><span class="bl">Galderma</span><span class="bt"><i class="bf c4" style="width:61.9%"></i></span><span class="bv">13</span></div>
+          <div class="bar"><span class="bl">CoA-NNI</span><span class="bt"><i class="bf" style="width:52.4%"></i></span><span class="bv">11</span></div>
+          <div class="bar"><span class="bl">OPK Pharmacy</span><span class="bt"><i class="bf" style="width:42.9%"></i></span><span class="bv">9</span></div>
+          <div class="bar"><span class="bl">Apellis</span><span class="bt"><i class="bf c3" style="width:28.6%"></i></span><span class="bv">6</span></div>
+          <div class="bar"><span class="bl">Gilead: L4P</span><span class="bt"><i class="bf c3" style="width:23.8%"></i></span><span class="bv">5</span></div>
+          <div class="bar"><span class="bl">All other (10 programs)</span><span class="bt"><i class="bf c3" style="width:57.1%"></i></span><span class="bv">12</span></div>
+        </div>
+        <p class="pnote">Location data this week includes several dual-site codes (e.g. "SPO/MGO", "SPO/OPK") that weren't resolved to a single site in the source. Flag to the team if these should be split before reporting by location alone.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">New Headcount vs. Backfill</h2>
+        <table>
+          <thead><tr><th class="l">Type</th><th>PS</th><th>Pharma</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>New headcount</td><td>27</td><td>3</td><td>30</td></tr>
+            <tr><td>Backfill</td><td>47</td><td>17</td><td>64</td></tr>
+            <tr class="tot"><td>Total</td><td>74</td><td>20</td><td>94</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Share of Open Positions</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">Backfill</span><span class="bt"><i class="bf c3" style="width:100.0%"></i></span><span class="bv">64 (68%)</span></div>
+          <div class="bar"><span class="bl">New Headcount</span><span class="bt"><i class="bf c2" style="width:46.9%"></i></span><span class="bv">30 (32%)</span></div>
+        </div>
+        <p class="pnote">Roughly two-thirds of open positions (64 of 94) are backfilling existing roles rather than net-new growth. The remaining 30 (mostly PS, 27 of 30) represent expansion headcount.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col wide">
+      <div class="panel">
+        <h2 class="ptitle">Aging of Open Positions</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">0 to 14 days</span><span class="bt"><i class="bf c2" style="width:100.0%"></i></span><span class="bv">68</span></div>
+          <div class="bar"><span class="bl">15 to 30 days</span><span class="bt"><i class="bf c4" style="width:29.4%"></i></span><span class="bv">20</span></div>
+          <div class="bar"><span class="bl">31 to 60 days</span><span class="bt"><i class="bf c3" style="width:5.9%"></i></span><span class="bv">4</span></div>
+          <div class="bar"><span class="bl">60+ days</span><span class="bt"><i class="bf" style="width:0.0%"></i></span><span class="bv">0</span></div>
+        </div>
+        <p class="pnote">72% of open positions (68 of 94) have been open 2 weeks or less. Nothing has aged past 60 days. 2 records are missing an input date in the source and are excluded from this view.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaway">
+    <b>Key takeaway:</b> Patient Access Specialist is the single largest line item at 40% of all open positions (38 of 94). Gilead: Advancing Access is now the top program (21), just ahead of Novo Obesity (17). Backfill accounts for 68% of open volume, so most demand is replacing existing headcount, not net growth. Most openings are fresh, 72% under 2 weeks old.
+  </div>
+  <p class="foot">Source: Billable Dashboard Data workbook (Aug 21, 2026); PS Open REQs and Pharma Open REQs tabs, including NW/BF and Input Date fields. Recruiter and hiring-manager fields present in the source were excluded from this view.</p>
+</section>
+
+<!-- ============ SLIDE 6 ============ -->
+<section class="slide">
+  <div class="eyebrow">
+    <span class="tag">Weekly Billable Staffing Status</span>
+    <span class="gen">Week of August 17–21, 2026 · Prepared for the Chief People Officer</span>
+  </div>
+  <h1>Reverification Staffing</h1>
+  <p class="deck">Headcount tied to client re-verification / re-contracting activity across 9 programs</p>
+
+  <div class="kpistrip">
+    <div class="k"><div class="kn">49</div><div class="kl">Confirmed (CR Received)</div></div>
+    <div class="k c2"><div class="kn">56–61</div><div class="kl">Projected Need (Range)</div></div>
+    <div class="k c4"><div class="kn">105–110</div><div class="kl">Total Exposure</div></div>
+    <div class="k c3"><div class="kn">2</div><div class="kl">Programs Confirmed</div></div>
+    <div class="k c5"><div class="kn">7</div><div class="kl">Programs in Progress</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col wide">
+      <div class="panel">
+        <h2 class="ptitle">Reverification Demand by Program</h2>
+        <table>
+          <thead><tr><th class="l">Program</th><th class="l">Staff Type</th><th>HC Needed</th><th class="l">Window</th><th class="l">Status</th></tr></thead>
+          <tbody>
+            <tr><td>Apellis</td><td class="note">Temp/FTE</td><td>38</td><td class="note">10/1/26 – 2/28/27</td><td class="note">CR Received</td></tr>
+            <tr><td>Galderma</td><td class="note">FTE</td><td>11</td><td class="note">Starts 9/14/26</td><td class="note">CR Received</td></tr>
+            <tr class="tot"><td>Subtotal, Confirmed (CR Received)</td><td class="note"></td><td>49</td><td class="note"></td><td class="note"></td></tr>
+            <tr><td>Astellas</td><td class="note">Temp</td><td>18</td><td class="note">TBD</td><td class="note">CR Requested</td></tr>
+            <tr><td>Gilead HBV/HDV</td><td class="note">Temp</td><td>7</td><td class="note">9/28/26 – 4/30/27</td><td class="note">CR Pending</td></tr>
+            <tr><td>Gilead Seladelpar</td><td class="note">Temp</td><td>6</td><td class="note">9/28/26 – 4/30/27</td><td class="note">CR Pending</td></tr>
+            <tr><td>Avadel</td><td class="note">TBD</td><td>4</td><td class="note">Starts 10/5/26</td><td class="note">CR Requested</td></tr>
+            <tr><td>Incyte</td><td class="note">Temp</td><td>3</td><td class="note">TBD</td><td class="note">CR Requested</td></tr>
+            <tr><td>Merck</td><td class="note">Temp</td><td>8</td><td class="note">TBD</td><td class="note">TBD</td></tr>
+            <tr><td>Sumitomo (Shared Services)</td><td class="note">Temp</td><td>10–15</td><td class="note">TBD</td><td class="note">TBD</td></tr>
+            <tr class="tot"><td>Subtotal, Projected Need</td><td class="note"></td><td>56–61</td><td class="note"></td><td class="note"></td></tr>
+            <tr class="tot"><td>Total Exposure</td><td class="note"></td><td>105–110</td><td class="note"></td><td class="note"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Role Mix (where specified)</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">PAS</span><span class="bt"><i class="bf c5" style="width:100.0%"></i></span><span class="bv">60</span></div>
+          <div class="bar"><span class="bl">CSR</span><span class="bt"><i class="bf c4" style="width:21.7%"></i></span><span class="bv">13</span></div>
+          <div class="bar"><span class="bl">ACE</span><span class="bt"><i class="bf" style="width:16.7%"></i></span><span class="bv">10</span></div>
+          <div class="bar"><span class="bl">Bilingual PAS</span><span class="bt"><i class="bf" style="width:1.7%"></i></span><span class="bv">1</span></div>
+          <div class="bar"><span class="bl">FSS</span><span class="bt"><i class="bf" style="width:1.7%"></i></span><span class="bv">1</span></div>
+        </div>
+        <p class="pnote">Role Type is specified for 6 of 9 programs (all but Incyte, Merck and Sumitomo). Galderma's listed role breakdown sums to 12 against a stated total of 11, a 1-head discrepancy in the source that we're flagging rather than silently correcting.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaway">
+    <b>Key takeaway:</b> Apellis and Galderma are contractually locked and already being staffed, 49 confirmed heads. The remaining 56 to 61 heads span 7 programs still awaiting client change-request approval, giving TA a head start on sourcing. This is the real staffing gap: client confirmation, not TA capacity. Astellas (18) and Merck (8) are the largest open items and worth prioritizing for follow-up.
+  </div>
+  <p class="foot">Source: Billable Dashboard Data workbook (Aug 21, 2026); Reverification Staffing tab. No candidate or employee level detail included.</p>
+</section>
+
+<!-- ============ SLIDE 7 ============ -->
+<section class="slide">
+  <div class="eyebrow">
+    <span class="tag">Weekly Billable Staffing Status</span>
+    <span class="gen">Week of August 17–21, 2026 · Prepared for the Chief People Officer</span>
+  </div>
+  <h1>Upcoming Launches</h1>
+  <p class="deck">New client programs in contracting or planning · headcount not yet reflected in open reqs or pipeline coverage</p>
+
+  <div class="kpistrip">
+    <div class="k"><div class="kn">7</div><div class="kl">Programs in Planning</div></div>
+    <div class="k c2"><div class="kn">1</div><div class="kl">Contract Awarded</div></div>
+    <div class="k c3"><div class="kn">2</div><div class="kl">In Contracting</div></div>
+    <div class="k c4"><div class="kn">181</div><div class="kl">Known HC (4 programs)</div></div>
+    <div class="k c5"><div class="kn">102</div><div class="kl">Largest Single Program</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col wide">
+      <div class="panel">
+        <h2 class="ptitle">Launch Pipeline by Program</h2>
+        <table>
+          <thead><tr><th class="l">Program</th><th class="l">Start</th><th class="l">Role Mix</th><th>HC Needed</th><th class="l">Status</th></tr></thead>
+          <tbody>
+            <tr><td>Boehringer Ingelheim</td><td class="note">4/1/2027</td><td class="note">ACE 30, PAS 20, CSR 20, Call Ctr RN 2, Clin. Supervisor 1, SP Liaison 3, Indirect 26</td><td>102</td><td class="note">Contract Awarded</td></tr>
+            <tr><td>Sanofi</td><td class="note">TBD</td><td class="note">PAS 13, Offshore PAS 4, CSR 25, Indirect 12.25</td><td>58.25</td><td class="note"></td></tr>
+            <tr><td>Cytokinetics</td><td class="note">TBD</td><td class="note">TBD</td><td>16</td><td class="note"></td></tr>
+            <tr><td>PharmEssentia</td><td class="note">3/1/2027</td><td class="note">TBD</td><td>5</td><td class="note"></td></tr>
+            <tr><td>Gilead: LOA (Long Acting Orals)</td><td class="note">Q4 2026</td><td class="note">TBD</td><td class="note">TBD</td><td class="note">In Contracting</td></tr>
+            <tr><td>Eli Lilly</td><td class="note">Q4 2026</td><td class="note">TBD</td><td class="note">TBD</td><td class="note">In Contracting</td></tr>
+            <tr><td>Mayne (Derm Portfolio re-pricing)</td><td class="note">TBD</td><td class="note">TBD</td><td class="note">TBD</td><td class="note"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Known Headcount by Program</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">Boehringer Ingelheim</span><span class="bt"><i class="bf c5" style="width:100.0%"></i></span><span class="bv">102</span></div>
+          <div class="bar"><span class="bl">Sanofi</span><span class="bt"><i class="bf c4" style="width:57.1%"></i></span><span class="bv">58.25</span></div>
+          <div class="bar"><span class="bl">Cytokinetics</span><span class="bt"><i class="bf" style="width:15.7%"></i></span><span class="bv">16</span></div>
+          <div class="bar"><span class="bl">PharmEssentia</span><span class="bt"><i class="bf" style="width:4.9%"></i></span><span class="bv">5</span></div>
+        </div>
+        <p class="pnote">3 of 7 programs (Gilead LOA, Mayne, Eli Lilly) have no headcount estimate yet. Total future demand is at least 181, likely higher once those are scoped.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaway">
+    <b>Key takeaway:</b> Boehringer Ingelheim is the largest confirmed future program at 102 heads, more than the next three combined. None of this 181+ headcount is reflected in this week's Openings Remaining or Pipeline Coverage; treat it as additive. Eli Lilly and Gilead: LOA are both in contracting for Q4 2026 with headcount still undetermined and worth a check-in once terms firm up.
+  </div>
+  <p class="foot">Source: Billable Dashboard Data workbook (Aug 21, 2026); Future Launch Planning tab.</p>
+</section>
+
+</body>
+</html>
