@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CPO Status Update — Non-Billable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1C2A5E; --navy-2:#28407F; --navy-dk:#141F45;
+    --gold:#C89116; --gold-br:#DCA426; --green:#2E9E5B; --red:#C4402E; --teal:#2A8F9E;
+    --kpi-bg:#EFF2F8; --stripe:#F7F9FC; --track:#E7EBF3;
+    --txt:#333F4E; --muted:#6B7480; --faint:#A3AAB6; --line:#E3E7EF;
+    --canvas:#F1F4F8; --white:#fff;
+    --font:"Lato","Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+    --shadow:0 1px 2px rgba(20,31,69,.05),0 8px 24px rgba(20,31,69,.07);
+    --radius:9px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--txt);font-family:var(--font);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+
+  header{background:var(--navy);background-image:linear-gradient(112deg,var(--navy-dk),var(--navy) 55%,var(--navy-2));color:#fff;border-bottom:4px solid var(--gold-br)}
+  .htop{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding:22px 0 16px}
+  .eyebrow{font-size:10px;font-weight:700;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold-br);margin-bottom:5px}
+  h1{margin:0;font-size:27px;font-weight:900;letter-spacing:-.2px;line-height:1.1}
+  .hmeta{font-size:12px;color:#BACADB;text-align:right;line-height:1.7}
+  .hmeta b{display:block;color:#fff;font-weight:700;font-size:13px}
+  nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
+  nav button{
+    appearance:none;border:0;background:transparent;color:#B9CADC;cursor:pointer;
+    font-family:var(--font);font-size:12.5px;font-weight:700;letter-spacing:.2px;
+    padding:11px 15px;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s;
+  }
+  nav button:hover{color:#fff;background:rgba(255,255,255,.06)}
+  nav button[aria-selected="true"]{color:#fff;border-bottom-color:var(--gold-br)}
+  nav button:focus-visible{outline:2px solid var(--gold-br);outline-offset:-3px}
+
+  .view{display:none;padding:24px 0 56px}
+  .view.on{display:block}
+  .vhead{margin-bottom:18px}
+  .vhead h2{margin:0 0 4px;font-size:21px;font-weight:900;color:var(--navy)}
+  .vhead p{margin:0;font-size:13px;color:var(--muted)}
+
+  .kpis{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+  .kpi{flex:1 1 170px;background:var(--white);border:1px solid var(--line);border-left:5px solid var(--navy);border-radius:var(--radius);padding:13px 15px;box-shadow:var(--shadow)}
+  .kpi.c2{border-left-color:var(--green)} .kpi.c3{border-left-color:var(--red)}
+  .kpi.c4{border-left-color:var(--teal)} .kpi.c5{border-left-color:var(--gold-br)}
+  .kpi .n{font-size:27px;font-weight:900;color:var(--navy);line-height:1.05}
+  .kpi .n small{font-size:14px;font-weight:700;color:var(--muted)}
+  .kpi .l{font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#5B6472;margin-top:6px}
+
+  .cols{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+  .col{flex:1 1 380px;min-width:0}
+  .col.wide{flex:1.25 1 460px}
+  .panel{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px 18px;margin-bottom:18px}
+  .ptitle{margin:0 0 3px;font-size:14px;font-weight:900;color:var(--navy);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ptitle .tools{margin-left:auto;display:flex;gap:6px;align-items:center;font-weight:400}
+  .ptitle.mt{margin-top:18px}
+  .psub{margin:0 0 12px;font-size:11.5px;color:var(--muted)}
+  .pnote{margin:12px 0 0;font-size:11.5px;color:var(--muted);line-height:1.55}
+
+  .btn{font-family:var(--font);font-size:11.5px;font-weight:700;color:var(--navy);background:var(--white);border:1px solid var(--line);border-radius:999px;padding:4px 11px;cursor:pointer}
+  .btn:hover{border-color:var(--teal);color:var(--teal)}
+  .btn[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+  input[type="search"]{font-family:var(--font);font-size:11.5px;padding:4px 10px;border:1px solid var(--line);border-radius:999px;width:130px;color:var(--txt)}
+  input[type="search"]:focus{outline:none;border-color:var(--teal)}
+
+  table{width:100%;border-collapse:collapse}
+  thead th{background:var(--navy);color:#fff;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:8px 10px;text-align:right;white-space:nowrap}
+  thead th:first-child{text-align:left;border-radius:4px 0 0 0}
+  thead th:last-child{border-radius:0 4px 0 0}
+  thead th.l{text-align:left}
+  thead th.s{cursor:pointer;user-select:none}
+  thead th.s:hover{background:var(--navy-2)}
+  thead th .ar{opacity:.4;font-size:9px;margin-left:3px}
+  thead th.sorted .ar{opacity:1;color:var(--gold-br)}
+  tbody td{padding:6.5px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  tbody td:first-child,tbody td.l{text-align:left}
+  tbody tr:nth-child(even) td{background:var(--stripe)}
+  tbody tr:hover td{background:#EAF3F5}
+  tbody td.note{color:var(--muted);font-size:11.5px;text-align:left}
+  tbody tr.tot td{font-weight:900;color:var(--navy);background:var(--kpi-bg);border-top:2px solid var(--navy);border-bottom:0}
+  tbody tr.sub td{font-weight:700;color:var(--navy);background:#F4F6FA}
+  .up{color:var(--green);font-weight:700} .dn{color:var(--red);font-weight:700} .flat{color:var(--muted)}
+
+  .bars{display:flex;flex-direction:column}
+  .bar{display:flex;align-items:center;gap:11px;padding:5.5px 0}
+  .bar .bl{flex:0 0 var(--lw,140px);font-size:12px;font-weight:700;color:var(--navy);line-height:1.25}
+  .bar .bl em{display:block;font-style:normal;font-weight:400;font-size:10.5px;color:var(--muted)}
+  .bar .bt{flex:1 1 auto;background:var(--track);border-radius:999px;height:14px;overflow:hidden;min-width:40px}
+  .bar .bf{display:block;height:100%;border-radius:999px;width:0;transition:width .75s cubic-bezier(.2,.7,.2,1)}
+  .bar .bv{flex:0 0 46px;text-align:right;font-size:12px;font-weight:900;color:var(--navy)}
+
+  .takeaway{background:var(--kpi-bg);border-radius:var(--radius);border-left:5px solid var(--gold-br);padding:15px 18px;font-size:13px;line-height:1.65}
+  .takeaway b{color:var(--navy)}
+  .src{font-size:10.5px;color:var(--faint);margin:12px 0 0;line-height:1.55}
+
+  @media (max-width:760px){
+    h1{font-size:21px} .hmeta{text-align:left}
+    .kpi{flex:1 1 45%} .bar .bl{flex-basis:110px;font-size:11px}
+    .view{padding-top:18px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media print{
+    body{background:#fff} nav,.tools{display:none}
+    .view{display:block!important;page-break-after:always;padding:12px 0}
+    .panel,.kpi{box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="htop"><div>
+<div class="eyebrow">Weekly Non-Billable Staffing Status</div>
+<h1>Corporate &amp; Shared Services</h1></div>
+<div class="hmeta"><b>Snapshot as of August 24, 2026</b>Prepared for the Chief People Officer</div>
+</div><nav id="nav" role="tablist"></nav></div></header>
+<main class="wrap" id="main"></main>
+<script>
+(function(){
+  "use strict";
+  var SPEC = {"slides": [{"title": "Workforce Summary: Non-Billable", "tab": "Summary", "subtitle": ["Corporate and shared-services departments", "Requisition snapshot as of August 24, 2026"], "kpis": [{"value": 27, "label": "Open Reqs", "accent": "navy"}, {"value": 35, "label": "Pending Reqs", "accent": "gold"}, {"value": 62, "label": "Total Anticipated Demand", "accent": "red"}, {"value": 12, "label": "Pending Starts", "accent": "green"}, {"value": 10, "label": "Departments Represented", "accent": "teal"}], "body": {"layout": "two-col", "split": 0.62, "left": {"title": "Requisition Pipeline at a Glance", "block": {"type": "table", "columns": [{"label": "Metric", "w": 0.32, "align": "left"}, {"label": "Count", "w": 0.12}, {"label": "Notes", "w": 0.56, "align": "left"}], "rows": [["Total open reqs", 27, "Across 10 departments"], ["Open positions (headcount)", 27, "One position per requisition in this export"], ["Pending starts (confirmed)", 12, "Accepted offers with a start date, in background / onboarding"], ["Pending reqs (anticipated)", 35, "Backfill or new headcount not yet requisitioned"], {"cells": ["Total anticipated demand", 62, "Open reqs + pending reqs"], "style": "total"}], "row_height": 15.0, "size": 7.8}}, "right": {"title": "Demand Stages", "block": {"type": "barlist", "items": [{"label": "Pending Reqs", "value": 35, "color": "gold"}, {"label": "Open Reqs", "value": 27, "color": "navy"}, {"label": "Pending Starts", "value": 12, "color": "green"}], "label_w": 0.42, "value_w": 0.1}, "note": "Anticipated demand (35 pending reqs) now exceeds the 27 reqs already open, and committed supply of 12 covers only a small share of the 62 total."}}, "takeaway": "Non-billable open requisitions have fallen to 27 from 35 in the August 17 snapshot (−8), the first decline in the series. The pressure has shifted decisively ahead of the current list: 35 pending reqs now exceed the 27 already open, putting total anticipated demand at 62. Committed supply is 12 accepted starts, leaving net demand of 50. Implement Management alone holds 9 of the 27 open reqs.", "footnote": "Source: ATS export 'New book for Robert 8.24.xlsx' (tabs: OPEN, PENDING OFFERS, Soon Coming Reqs, Closed & Pending Start), snapshot as of August 24, 2026. This export uses a different layout from prior weeks: it carries no department code, so billable and non-billable are separated by cost centre (client cost centres NNN-NNNN-NN are billable; 000NNN department codes are not), and it carries no positions column, so each requisition counts as one position. The other 91 open reqs are billable and reported separately. Terminations and reqs-closed counts are not present in this export. Latest row date in the file is August 20; the snapshot is dated from the export itself.", "timestamp": "Generated Aug 24, 2026  12:19 PM ET"}, {"title": "Pipeline Coverage", "tab": "Pipeline Coverage", "subtitle": ["Non-billable open, anticipated and committed headcount", "as of August 24, 2026"], "kpis": [{"value": 27, "label": "Total Open", "accent": "navy"}, {"value": 62, "label": "Open + Anticipated", "accent": "gold"}, {"value": 12, "label": "Committed Supply", "accent": "green"}, {"value": 50, "label": "Net Demand", "accent": "red"}], "body": {"layout": "two-col", "split": 0.6, "left": {"title": "Coverage Build-Up", "block": {"type": "table", "columns": [{"label": "Line Item", "w": 0.44, "align": "left"}, {"label": "Total", "w": 0.14}, {"label": "Basis", "w": 0.42, "align": "left"}], "rows": [["Total open reqs", 27, "Currently requisitioned"], ["Pending reqs (anticipated)", 35, "Not yet requisitioned"], {"cells": ["Total anticipated demand", 62, "Open reqs + pending reqs"], "style": "total"}, ["Pending starts", 12, "Accepted, start date confirmed"], {"cells": ["Committed supply", 12, "Accepted starts with a confirmed date"], "style": "total"}, ["Net demand after committed supply", 50, "Anticipated demand less accepted starts and moves"]], "row_height": 15.0, "size": 7.8}}, "right": {"block": {"type": "stack", "blocks": [{"heading": "Pending Starts by Date", "type": "table", "columns": [{"label": "Start Date", "w": 0.55, "align": "left"}, {"label": "Starts", "w": 0.45}], "rows": [["Aug 31", 10], ["Sep 14", 1], ["Oct 5", 1]], "row_height": 15.0, "size": 7.8}, {"heading": "Demand vs. Committed Supply", "type": "barlist", "items": [{"label": "Total Anticipated Demand", "value": 62, "color": "gold"}, {"label": "Net Demand After Supply", "value": 50, "color": "red"}, {"label": "Open Reqs", "value": 27, "color": "navy"}, {"label": "Committed Supply", "value": 12, "color": "green"}], "label_w": 0.54, "value_w": 0.1, "space_before": 16.0}]}}}, "takeaway": "Anticipated demand of 62 reqs sits against committed supply of 12, leaving net demand of 50 — an improvement on the 62 carried a week ago, driven by the open list shrinking rather than by more offers landing. Starts are concentrated on one date: 10 of the 12 begin August 31, with single starts following on September 14 and October 5.", "footnote": "Pending reqs are anticipated demand, not confirmed openings. No candidate pipeline or coverage ratio is available from this export. This export has no Pending Internal Moves tab, so committed supply is accepted starts only.", "timestamp": "Generated Aug 24, 2026  12:19 PM ET"}, {"title": "Week-over-Week Trend", "tab": "Week-over-Week", "subtitle": ["Non-billable requisition movement", "Aug 17 vs. Aug 24"], "kpis": [{"value": "-8", "label": "Open Reqs WoW", "accent": "navy"}, {"value": "-2", "label": "Pending Reqs WoW", "accent": "gold"}, {"value": "-10", "label": "Demand WoW", "accent": "red"}, {"value": "+4", "label": "Starts WoW", "accent": "green"}, {"value": "-13", "label": "Net Demand WoW", "accent": "teal"}], "body": {"layout": "two-col", "split": 0.56, "left": {"title": "Week-over-Week Comparison", "block": {"type": "table", "columns": [{"label": "Metric", "w": 0.46, "align": "left"}, {"label": "Aug 17", "w": 0.18}, {"label": "Aug 24", "w": 0.18}, {"label": "Change", "w": 0.18}], "rows": [["Open reqs", 35, 27, "-8"], ["Pending reqs (anticipated)", 37, 35, "-2"], ["Total anticipated demand", 72, 62, "-10"], ["Pending starts", 8, 12, "+4"], ["Committed supply", 9, 12, "+3"], ["Net demand after supply", 63, 50, "-13"], ["Departments represented", 10, 10, "0"]], "row_height": 15.0, "size": 7.8}}, "right": {"title": "Magnitude of Change", "block": {"type": "barlist", "items": [{"label": "Pending starts", "value": 50.0, "display": "+50%", "color": "green"}, {"label": "Committed supply", "value": 33.333333333333336, "display": "+33%", "color": "green"}, {"label": "Open reqs", "value": 22.857142857142858, "display": "-23%", "color": "green"}, {"label": "Net demand after supply", "value": 20.634920634920636, "display": "-21%", "color": "green"}, {"label": "Total anticipated demand", "value": 13.88888888888889, "display": "-14%", "color": "green"}, {"label": "Pending reqs (anticipated)", "value": 5.405405405405405, "display": "-5%", "color": "green"}, {"label": "Departments represented", "value": 0.0, "display": "0%", "color": "navy"}], "label_w": 0.56, "value_w": 0.12}}}, "takeaway": "The open list turned for the first time in the series: open reqs fell 8 to 27 (−23%) and total anticipated demand fell 10 to 62. Committed supply moved the other way, up 3 to 12 as four more starts were confirmed, so net demand after supply improved 13 to 50. The improvement is driven by requisitions leaving the open list rather than by a surge in offers, and pending reqs barely moved (37 to 35) — so the forward pipeline is essentially unchanged.", "footnote": "Both columns are recomputed by this toolkit from their own ATS export — 'NEW Robert Book v 1.xlsx' for August 17 and 'New book for Robert 8.24.xlsx' for August 24 — so the two weeks are measured on the same basis. Note one restatement: the August 17 pending-starts figure is 8 here, not the 9 previously reported, because a row with a blank cost centre can no longer be classified as non-billable. Committed supply for August 24 is starts only, as that export has no internal-moves tab.", "timestamp": "Generated Aug 24, 2026  12:19 PM ET"}, {"title": "Upcoming Starts — Breakdown", "tab": "Upcoming Starts", "subtitle": ["12 confirmed non-billable starts, by title and location", "excludes 64 billable starts"], "kpis": [{"value": 12, "label": "Total Upcoming Starts", "accent": "green"}, {"value": 7, "label": "Backfill", "accent": "navy"}, {"value": 5, "label": "New Headcount", "accent": "gold"}, {"value": 10, "label": "Starting Aug 31", "accent": "teal"}, {"value": 9, "label": "Remote Locations", "accent": "navy"}], "body": {"layout": "two-col", "split": 0.58, "left": {"title": "Upcoming Starts by Title", "block": {"type": "table", "columns": [{"label": "Title", "w": 0.62, "align": "left"}, {"label": "Type", "w": 0.22, "align": "left"}, {"label": "Starts", "w": 0.16}], "rows": [["Associate Implementation Analyst", "New", 2], ["CISO", "New", 1], ["Implementation Analyst", "New", 1], ["Implementation Manager (prev req 7974)", "Backfill", 1], ["Manager, Marketing & Communications", "Backfill", 1], ["Senior Implementation Analyst", "Backfill", 1], ["Service Desk Technician, Level 1", "Backfill", 1], ["Service Desk Technician, Level 2", "Backfill", 1], ["Telephony Systems Administrator", "Backfill", 1], ["Vice President, Engineering", "New", 1], ["Vice President, Infrastructure & Telecom", "Backfill", 1], {"cells": ["Total", "", 12], "style": "total"}], "row_height": 15.0, "size": 7.8}}, "right": {"title": "Starts by Location", "block": {"type": "barlist", "items": [{"label": "Remote (8 locations)", "value": 9}, {"label": "MGO", "value": 2}, {"label": "SPO", "value": 1}], "color": "green", "label_w": 0.52, "value_w": 0.1}}}, "takeaway": "12 non-billable starts are confirmed, 7 backfills against 5 net-new roles. Ten of the twelve begin August 31, so onboarding is concentrated in a single week. The cohort is overwhelmingly remote — 9 of the 12, spread across eight named states plus one unspecified — with only Maitland (2) and Southpark (1) sited in offices.", "footnote": "Source: the 'Closed & Pending Start' tab, restricted to rows with a confirmed start date and a department (non-billable) cost centre. Excludes 64 billable starts. One row on that tab has shifted columns — its cost centre field contains a department name and its title field a date — and is excluded from all counts; it is worth correcting at source. Remote hires are grouped into one bar; each named state carries a single start. Location codes as recorded in the source (MGO Maitland, SPO Southpark).", "timestamp": "Generated Aug 24, 2026  12:19 PM ET"}, {"title": "Open Positions — Breakdown", "tab": "Open Positions", "subtitle": ["27 open non-billable requisitions, by title and department", "27 positions across those reqs"], "kpis": [{"value": 27, "label": "Total Open Reqs", "accent": "navy"}, {"value": 22, "label": "Distinct Job Titles", "accent": "gold"}, {"value": 10, "label": "Departments", "accent": "teal"}, {"value": 4, "label": "Implementation Manager", "accent": "green"}, {"value": 9, "label": "Implement Management", "accent": "red"}], "body": {"layout": "two-col", "split": 0.58, "left": {"title": "Open Reqs by Title", "block": {"type": "table", "columns": [{"label": "Title", "w": 0.54, "align": "left"}, {"label": "Department", "w": 0.3, "align": "left"}, {"label": "Open", "w": 0.16}], "rows": [["Implementation Manager", "Implement Management", 4], ["Data Scientist, Insights to Action", "Data & Reporting", 3], [".Net Tech Lead - high priority", "Development", 1], ["Data Analyst", "Enterprise Data", 1], ["Data Steward", "Enterprise Data", 1], ["HR Generalist - Operations Specialist", "Human Resources", 1], ["Implementation Analyst", "Implement Management", 1], ["Implementation Manager (prev req 8074)", "Implement Management", 1], ["Implementation Manager (prev req 8609)", "Implement Management", 1], ["Manager, Implementations Analysts (BA)", "Implement Management", 1], ["Manager. Software Engineeriing (.Net/Salesforce) Dev Manager)", "Development", 1], ["Marketing & Communications Specialist", "Marketing", 1], ["Other titles (10, 1 each)*", "across 6 departments", 10], {"cells": ["Total", "", 27], "style": "total"}], "row_height": 13.2, "size": 7.4}}, "right": {"title": "Open Reqs by Department", "block": {"type": "barlist", "items": [{"label": "Implement Management", "value": 9}, {"label": "Development", "value": 5}, {"label": "Data & Reporting", "value": 3}, {"label": "Enterprise Data", "value": 2}, {"label": "Product", "value": 2}, {"label": "Quality & Release Management", "value": 2}, {"label": "Account Management", "value": 1}, {"label": "Architecture & DevOps", "value": 1}, {"label": "All other (2 departments)", "value": 2}], "color": "navy", "label_w": 0.56, "value_w": 0.1}}}, "takeaway": "Delivery management remains the centre of gravity: Implement Management holds 9 of the 27 open reqs (33%), with Implementation Manager and its variants the largest title group at 6. Development follows at 5, and the data functions — Data & Reporting plus Enterprise Data — add 5 between them. The tail is long and thin: 20 of the 22 distinct titles have exactly one open req, so most of the list is one-off senior or specialist hiring rather than repeatable volume roles.", "footnote": "Source: the OPEN tab, 27 non-billable rows. Titles with a single open req are folded into one row to keep the table legible. Titles are shown as recorded, including in-line notes such as prior req numbers. *Other titles (1 each): Procurement Specialist, Product Owner (switched from Product BA 8/6), QA Lead, Data & Reporting, Release Coordinator, Salesforce Administrator II, Salesforce Architect, Senior Director, Strategic Account Management, Senior Implementation Analyst, Software Engineer III (.Net Tech Lead), Tech Lead ( SF Focus ).", "timestamp": "Generated Aug 24, 2026  12:19 PM ET"}, {"title": "Client Demand & Reverification", "tab": "Client Demand", "dashboard_only": true, "subtitle": ["Not reported in this cycle"], "kpis": [], "body": {"layout": "full", "panel": {"title": "No source data for this section", "block": {"type": "stack", "blocks": [{"type": "text", "size": 9.5, "text": "The weekly billable dashboard carries a Client Demand & Reverification section covering forecast seats by client programme and reverification headcount ranges. Neither figure exists in the ATS requisition export, and neither applies to non-billable departments, which are not billed to a client programme. Nothing is estimated here. Supply the inputs below and this tab will populate on the next run."}, {"type": "table", "space_before": 14.0, "columns": [{"label": "Required input", "w": 0.42, "align": "left"}, {"label": "Source document", "w": 0.58, "align": "left"}], "rows": [["Forecast seats by client programme", "2026 EOY Customer Activity Planning.xlsx, tab '2026'"], ["Reverification headcount, low / high case", "Same workbook — confirmed vs. under-discussion scope"], ["Confirmed vs. projected split", "Client / programme owner sign-off"], ["Terminations and reqs closed for the week", "Weekly Billable Staffing Status Report"]], "row_height": 15.0, "size": 7.8}]}}}, "footnote": "This tab is shown for completeness against the standard section set and appears in the dashboard only — it is omitted from the PDF and Word versions rather than printing an empty page. Client demand and reverification are billable-side measures; if they are wanted for non-billable, the equivalent would be a corporate headcount plan.", "timestamp": "Generated Aug 24, 2026  12:19 PM ET"}]};
+  var COLOR = {navy:'var(--navy)', green:'var(--green)', red:'var(--red)',
+               teal:'var(--teal)', gold:'var(--gold-br)', purple:'#5B4B8A'};
+  var CYCLE = ['navy','green','red','teal','gold','purple'];
+
+  function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+
+  function kpis(items){
+    var w=el('div','kpis');
+    items.forEach(function(it,i){
+      var cls = it.accent ? 'c'+(CYCLE.indexOf(it.accent)+1) : 'c'+((i%6)+1);
+      var k=el('div','kpi '+cls);
+      k.innerHTML='<div class="n">'+it.value+'</div><div class="l">'+it.label+'</div>';
+      w.appendChild(k);
+    });
+    return w;
+  }
+
+  function panel(title,sub,tools){
+    var p=el('div','panel');
+    if(title!=null){var h=el('h3','ptitle',title); if(tools)h.appendChild(tools); p.appendChild(h);}
+    if(sub)p.appendChild(el('p','psub',sub));
+    return p;
+  }
+
+  function num(v){
+    if(typeof v==='number')return v;
+    var n=parseFloat(String(v).replace(/[^0-9.\-]/g,''));
+    return isNaN(n)?String(v).toLowerCase():n;
+  }
+
+  function isLeft(c,i){
+    var a=c.align||(i===0?'left':'right');
+    return a==='l'||a==='left'||a==='center';
+  }
+
+  function table(cols,rows,opts){
+    opts=opts||{};
+    // spec rows are either a plain array of cells or {cells, style}
+    rows=rows.map(function(r){return Array.isArray(r)?{cells:r}:r;});
+    var t=el('table'),thead=el('thead'),tr=el('tr');
+    cols.forEach(function(c,i){
+      var th=el('th',(isLeft(c,i)?'l ':'')+(opts.sort?'s':''),
+                c.label+(opts.sort?'<span class="ar">▾</span>':''));
+      if(opts.sort){th.tabIndex=0;th.dataset.i=i;}
+      tr.appendChild(th);
+    });
+    thead.appendChild(tr);t.appendChild(thead);
+    var tb=el('tbody');t.appendChild(tb);
+    var state={i:-1,asc:false,q:''};
+
+    function draw(){
+      tb.innerHTML='';
+      var body=rows.filter(function(r){return r.style!=='total';});
+      var pinned=rows.filter(function(r){return r.style==='total';});
+      if(state.q){
+        body=body.filter(function(r){
+          return String(r.cells[0]).toLowerCase().indexOf(state.q)>-1;
+        });
+      }
+      if(state.i>-1){
+        body=body.slice().sort(function(a,b){
+          var x=num(a.cells[state.i]),y=num(b.cells[state.i]);
+          if(typeof x==='string'||typeof y==='string')
+            return state.asc?String(x).localeCompare(String(y)):String(y).localeCompare(String(x));
+          return state.asc?x-y:y-x;
+        });
+      }
+      body.concat(pinned).forEach(function(r){
+        var row=el('tr', r.style==='total'?'tot':(r.style||''));
+        cols.forEach(function(c,i){
+          var v=r.cells[i]==null?'':r.cells[i];
+          // a wide left-aligned column that isn't the first is prose, not a label
+          var prose=(isLeft(c,i)&&i>0&&(c.w||0)>=0.40);
+          var cls=c.cls||(prose?'note':(isLeft(c,i)&&i>0?'l':''));
+          row.appendChild(el('td',cls,String(v)));
+        });
+        tb.appendChild(row);
+      });
+      Array.prototype.forEach.call(thead.querySelectorAll('th'),function(th,i){
+        th.classList.toggle('sorted',i===state.i);
+        var ar=th.querySelector('.ar');
+        if(ar)ar.textContent=(i===state.i&&state.asc)?'▴':'▾';
+      });
+    }
+    if(opts.sort){
+      Array.prototype.forEach.call(thead.querySelectorAll('th'),function(th){
+        var go=function(){
+          var i=+th.dataset.i;
+          if(state.i===i)state.asc=!state.asc; else {state.i=i;state.asc=false;}
+          draw();
+        };
+        th.addEventListener('click',go);
+        th.addEventListener('keydown',function(e){
+          if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}
+        });
+      });
+    }
+    draw();
+    t.filter=function(q){state.q=(q||'').toLowerCase();draw();};
+    return t;
+  }
+
+  function bars(items,fixed,lw){
+    var max=1;
+    items.forEach(function(i){max=Math.max(max,Math.abs(+i.value||0));});
+    var w=el('div','bars');
+    items.forEach(function(r,i){
+      var b=el('div','bar');
+      if(lw)b.style.setProperty('--lw',lw+'px');
+      var key=r.color||fixed||CYCLE[i%CYCLE.length];
+      var p=Math.max(1.5,(Math.abs(+r.value||0)/max)*100);
+      b.innerHTML='<span class="bl">'+r.label+'</span>'+
+        '<span class="bt"><i class="bf" data-w="'+p.toFixed(1)+'" style="background:'+(COLOR[key]||COLOR.navy)+'"></i></span>'+
+        '<span class="bv">'+(r.display!=null?r.display:r.value)+'</span>';
+      w.appendChild(b);
+    });
+    return w;
+  }
+
+  function searchTools(t){
+    var tools=el('span','tools');
+    var inp=document.createElement('input');
+    inp.setAttribute('type','search'); inp.setAttribute('placeholder','Filter…');
+    inp.addEventListener('input',function(){t.filter(inp.value);});
+    tools.appendChild(inp);
+    return tools;
+  }
+
+  function addBlock(host,blk,lw){
+    if(!blk)return;
+    if(blk.type==='table'){
+      var sortable=(blk.rows||[]).length>=8;
+      var t=table(blk.columns,blk.rows,{sort:sortable});
+      if(sortable && host.firstChild && host.firstChild.classList
+         && host.firstChild.classList.contains('ptitle')){
+        host.firstChild.appendChild(searchTools(t));
+      }
+      host.appendChild(t);
+    } else if(blk.type==='barlist'||blk.type==='hbar'){
+      host.appendChild(bars(blk.items,blk.color,lw));
+    } else if(blk.type==='text'){
+      host.appendChild(el('p','pnote',blk.text));
+    } else if(blk.type==='stack'){
+      blk.blocks.forEach(function(b,i){
+        if(b.heading)host.appendChild(el('h3','ptitle'+(i?' mt':''),b.heading));
+        addBlock(host,b,lw);
+      });
+    }
+  }
+
+  function buildPanel(p,lw){
+    var host=panel(p.title==null?null:p.title);
+    addBlock(host,p.block,lw);
+    if(p.note)host.appendChild(el('p','pnote',p.note));
+    return host;
+  }
+
+  var nav=document.getElementById('nav'), main=document.getElementById('main');
+
+  SPEC.slides.forEach(function(s,idx){
+    var id='v'+(idx+1);
+    var b=el('button',null,s.tab||s.title);
+    b.dataset.id=id; b.setAttribute('role','tab');
+    b.setAttribute('aria-selected',idx===0?'true':'false');
+    b.addEventListener('click',function(){show(id);});
+    nav.appendChild(b);
+
+    var view=el('section','view'+(idx===0?' on':''));
+    view.id='v-'+id; view.setAttribute('role','tabpanel');
+
+    var sub=s.subtitle;
+    if(Array.isArray(sub))sub=sub.join(' · ');
+    view.appendChild(el('div','vhead','<h2>'+s.title+'</h2>'+(sub?'<p>'+sub+'</p>':'')));
+    if(s.kpis&&s.kpis.length)view.appendChild(kpis(s.kpis));
+
+    var body=s.body;
+    if(body){
+      if(body.layout==='full'){
+        view.appendChild(buildPanel(body.panel,170));
+      }else{
+        var c=el('div','cols');
+        var split=body.split||0.565;
+        var L=el('div','col'+(split>0.5?' wide':''));
+        var R=el('div','col'+(split<=0.5?' wide':''));
+        if(body.left)L.appendChild(buildPanel(body.left,150));
+        if(body.right)R.appendChild(buildPanel(body.right,150));
+        c.appendChild(L);c.appendChild(R);
+        view.appendChild(c);
+      }
+    }
+    if(s.takeaway)view.appendChild(el('div','takeaway','<b>Key takeaway:</b> '+s.takeaway));
+    if(s.footnote)view.appendChild(el('p','src',s.footnote));
+    main.appendChild(view);
+  });
+
+  function fillBars(scope){
+    if(!scope)return;
+    Array.prototype.forEach.call(scope.querySelectorAll('.bf'),function(b){
+      b.style.width='0%';
+      requestAnimationFrame(function(){b.style.width=b.getAttribute('data-w')+'%';});
+    });
+  }
+  function show(id){
+    Array.prototype.forEach.call(nav.querySelectorAll('button'),function(b){
+      b.setAttribute('aria-selected',b.dataset.id===id?'true':'false');
+    });
+    Array.prototype.forEach.call(main.querySelectorAll('.view'),function(s){
+      s.classList.toggle('on',s.id==='v-'+id);
+    });
+    fillBars(document.getElementById('v-'+id));
+    if(history.replaceState)history.replaceState(null,'','#'+id);
+    window.scrollTo(0,0);
+  }
+  nav.addEventListener('keydown',function(e){
+    var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;
+    if(!d)return;
+    var btns=[].slice.call(nav.querySelectorAll('button'));
+    var i=btns.findIndex(function(b){return b.getAttribute('aria-selected')==='true';});
+    var n=(i+d+btns.length)%btns.length;
+    e.preventDefault(); btns[n].focus(); show(btns[n].dataset.id);
+  });
+  var start=(location.hash||'').replace('#','');
+  show(document.getElementById('v-'+start)?start:'v1');
+})();
+</script>
+</body></html>
