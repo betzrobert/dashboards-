@@ -57,6 +57,7 @@
   td.worst{color:var(--red);background:var(--red-wash);}
   td.cad,th.cadh{background:var(--amber-wash);color:var(--amber);}
   .cadtag{font-family:'Archivo',sans-serif;font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--amber);background:var(--amber-wash);border-radius:3px;padding:1px 5px;margin-left:4px;}
+  td.warncell{color:var(--red);font-weight:700;}
   td.cheap{font-weight:600;color:var(--teal-dark);font-size:12px;}
   td.cheap.solo{color:#9AA9BB;font-weight:400;font-style:italic;}
   .rng{display:block;font-size:10.5px;color:var(--slate);font-weight:400;}
@@ -238,7 +239,7 @@
       <div class="kpi"><div class="v num">324</div><div class="l">Active contingent workers on record</div></div>
       <div class="kpi"><div class="v num warn">83</div><div class="l">Engaged as direct 1099 &mdash; 26% of the population</div></div>
       <div class="kpi"><div class="v num">93</div><div class="l">Past 12 months tenure &mdash; conversion candidates</div></div>
-      <div class="kpi"><div class="v num warn">261</div><div class="l">Records titled only "Contractor" &mdash; 81%</div></div>
+      <div class="kpi"><div class="v num warn">261</div><div class="l">Records <b>missing</b> a real role &mdash; titled only "Contractor" (81%)</div></div>
     </div>
     <div class="grid2">
       <div class="card">
@@ -263,15 +264,17 @@
         <div class="brow"><span class="bl">Technology</span><span class="btrack"><span class="bfill" style="width:100.0%"></span></span><span class="bv num">178</span><span class="bp num">55%</span></div><div class="brow"><span class="bl">PS + Pharma</span><span class="btrack"><span class="bfill" style="width:65.2%"></span></span><span class="bv num">116</span><span class="bp num">36%</span></div><div class="brow"><span class="bl">Commercial</span><span class="btrack"><span class="bfill" style="width:14.0%"></span></span><span class="bv num">25</span><span class="bp num">8%</span></div><div class="brow"><span class="bl">Support</span><span class="btrack"><span class="bfill" style="width:2.8%"></span></span><span class="bv num">5</span><span class="bp num">2%</span></div>
       </div>
       <div class="card scrollx">
-        <h3>Record completeness</h3>
-        <div class="card-sub">Fields the rate card depends on</div>
-        <table><thead><tr><th>Field</th><th class="r">Records affected</th><th class="r">Share</th><th>Why it blocks the rate card</th></tr></thead>
+        <h3>Missing or non-specific fields</h3>
+        <div class="card-sub">Counts below are records with the field <b>missing or generic</b>, not records complete</div>
+        <table><thead><tr><th>Field</th><th class="r">Usable</th><th class="r">Missing or generic</th><th class="r">% missing</th><th>What the gap blocks</th></tr></thead>
         <tbody>
-          <tr><td>Role / job title</td><td class="r num">261</td><td class="r num">81%</td><td class="basis">Titled only "Contractor"; 18 distinct titles cover all 324 seats. A role-and-level ceiling cannot be enforced.</td></tr>
-          <tr><td>Delivery location</td><td class="r num">228</td><td class="r num">70%</td><td class="basis">Blank, so the onshore / nearshore / offshore mix the rate card is built on cannot be measured.</td></tr>
-          <tr><td>Program / SBU</td><td class="r num">76</td><td class="r num">23%</td><td class="basis">No program assigned, so program-level cost recovery is understated.</td></tr>
+          <tr><td>Role / job title</td><td class="r num">63</td><td class="r num warncell">261</td><td class="r num warncell">81%</td><td class="basis">Titled only &ldquo;Contractor&rdquo; with no role or level. Only 17 real titles exist across all 324 seats, so a role-and-level rate ceiling cannot be applied or audited.</td></tr>
+          <tr><td>Delivery location</td><td class="r num">96</td><td class="r num warncell">228</td><td class="r num warncell">70%</td><td class="basis">Blank, so the onshore / nearshore / offshore mix the rate card is priced around cannot be measured.</td></tr>
+          <tr><td>Program / SBU</td><td class="r num">248</td><td class="r num warncell">76</td><td class="r num warncell">23%</td><td class="basis">Recorded as &ldquo;No Program Assigned.&rdquo; All 76 sit in Patient Solutions &mdash; billable delivery &mdash; so their cost cannot be attributed to a client program.</td></tr>
         </tbody></table>
-        <div class="note teal" style="margin-top:12px;"><span class="tag">Prerequisite</span>
+        <div class="note red" style="margin-top:12px;"><span class="tag">One cohort</span>
+          <span>These are not three separate problems. <b>The same 76 people account for every &ldquo;No Program Assigned&rdquo; record, all sit in Patient Solutions, are all direct 1099s, are all titled &ldquo;Contractor,&rdquo; and are all under one year of tenure.</b> Fixing that one cohort closes the entire program gap and 92% of the 1099 exposure at the same time.</span></div>
+        <div class="note teal" style="margin-top:10px;"><span class="tag">Prerequisite</span>
           <span>Two of the three savings levers in Tiering &amp; Savings cannot be executed until role and location are backfilled.</span></div>
       </div>
     </div>
