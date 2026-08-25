@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AssistRx RFP Rate Card Analysis — Five Presenting Agencies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#16294B;--teal:#00A6BE;--teal-dark:#00869A;--teal-wash:#E7F6F9;
+    --mist:#F4F7F9;--line:#DCE5EC;--ink:#1C2B42;--slate:#54677D;
+    --amber:#8A6A00;--amber-wash:#FBF3DC;--amber-bar:#D9A400;
+    --red:#B23A2C;--red-wash:#FBEBE8;--green:#1E7A4C;--green-wash:#E8F5EE;--white:#fff;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--mist);color:var(--ink);font-size:15px;line-height:1.5;}
+  .num{font-variant-numeric:tabular-nums;}
+  header{background:var(--navy);color:#fff;padding:22px 44px 0;}
+  .hi{max-width:1500px;margin:0 auto;}
+  .htop{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding-bottom:16px;}
+  header h1{font-family:'Archivo',sans-serif;font-weight:700;font-size:24px;letter-spacing:-0.015em;}
+  header .sub{color:#B9C6DA;font-size:13px;margin-top:5px;font-weight:500;}
+  .src{font-family:'Archivo',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:0.07em;text-transform:uppercase;
+    color:var(--navy);background:var(--teal);border-radius:5px;padding:5px 11px;}
+  .tabs{display:flex;gap:2px;flex-wrap:wrap;}
+  .tab{appearance:none;border:none;background:transparent;cursor:pointer;font-family:'Archivo',sans-serif;
+    font-weight:700;font-size:12.5px;color:#9FB1CC;padding:12px 17px;border-radius:8px 8px 0 0;
+    border-bottom:3px solid transparent;transition:.15s;display:flex;align-items:center;gap:7px;}
+  .tab:hover{color:#fff;background:rgba(255,255,255,.06);}
+  .tab:focus-visible{outline:2px solid var(--teal);outline-offset:-2px;}
+  .tab.active{background:var(--mist);color:var(--navy);border-bottom-color:var(--teal);}
+  .tab .cnt{font-size:10.5px;background:rgba(255,255,255,.14);border-radius:10px;padding:1px 7px;color:#CFDCEE;}
+  .tab.active .cnt{background:var(--teal-wash);color:var(--teal-dark);}
+  main{max-width:1500px;margin:0 auto;padding:28px 44px 50px;}
+  .panel{display:none;} .panel.active{display:block;}
+  section{margin-top:30px;} section:first-child{margin-top:0;}
+  .eyebrow{font-family:'Archivo',sans-serif;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-dark);margin-bottom:6px;}
+  .section-title{font-family:'Archivo',sans-serif;font-weight:700;font-size:21px;color:var(--navy);letter-spacing:-.01em;}
+  .section-note{color:var(--slate);font-size:14px;margin-top:5px;max-width:1000px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px;}
+  .card h3{font-family:'Archivo',sans-serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:2px;}
+  .card-sub{font-size:12.5px;color:var(--slate);margin-bottom:14px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start;}
+  .scrollx{overflow-x:auto;} .scrollx table{min-width:760px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{text-align:left;font-family:'Archivo',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--slate);padding:0 9px 8px;border-bottom:2px solid var(--navy);white-space:nowrap;}
+  thead th.r,td.r{text-align:right;}
+  tbody td{padding:8px 9px;border-bottom:1px solid var(--line);vertical-align:top;}
+  table.rates tbody td{padding:6px 9px;}
+  .famrow td{background:var(--navy);color:#fff;font-family:'Archivo',sans-serif;font-weight:700;
+    font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:6px 9px !important;}
+  td.lvl{color:var(--slate);font-size:12px;}
+  td.muted{color:#AFBECD;}
+  td.best{color:var(--green);font-weight:700;background:var(--green-wash);}
+  td.worst{color:var(--red);background:var(--red-wash);}
+  td.cad,th.cadh{background:var(--amber-wash);color:var(--amber);}
+  .cadtag{font-family:'Archivo',sans-serif;font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--amber);background:var(--amber-wash);border-radius:3px;padding:1px 5px;margin-left:4px;}
+  td.cheap{font-weight:600;color:var(--teal-dark);font-size:12px;}
+  td.cheap.solo{color:#9AA9BB;font-weight:400;font-style:italic;}
+  .rng{display:block;font-size:10.5px;color:var(--slate);font-weight:400;}
+  td.stated{font-size:12px;color:var(--slate);}
+  td.basis{font-size:12px;color:var(--slate);}
+  td.why{font-size:12.5px;color:var(--slate);}
+  td.why .cav{display:block;margin-top:4px;color:var(--amber);font-size:11.5px;}
+  tbody tr.total td{border-bottom:none;border-top:2px solid var(--navy);font-weight:700;color:var(--navy);background:var(--teal-wash);}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 17px 13px;}
+  .kpi .v{font-family:'Archivo',sans-serif;font-weight:800;font-size:24px;color:var(--navy);letter-spacing:-.02em;}
+  .kpi .v.hl{color:var(--teal-dark);} .kpi .v.warn{color:var(--red);}
+  .kpi .l{font-size:12px;color:var(--slate);margin-top:3px;line-height:1.4;}
+  .brow{display:grid;grid-template-columns:132px 1fr 76px 56px;gap:11px;align-items:center;padding:7px 0;font-size:13px;}
+  .brow .bl{color:var(--navy);font-weight:500;}
+  .btrack{display:block;height:13px;background:var(--mist);border-radius:7px;overflow:hidden;}
+  .bfill{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,var(--teal),var(--teal-dark));}
+  .bfill.warn{background:linear-gradient(90deg,#E0705E,var(--red));}
+  .brow .bv{text-align:right;font-family:'Archivo',sans-serif;font-weight:700;color:var(--navy);}
+  .brow .bp{text-align:right;font-size:11.5px;color:var(--slate);}
+  .months{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;align-items:end;height:170px;margin-top:6px;}
+  .mcol{display:flex;flex-direction:column;justify-content:flex-end;height:100%;text-align:center;gap:5px;}
+  .mcol .mv{font-family:'Archivo',sans-serif;font-weight:700;font-size:12.5px;color:var(--navy);}
+  .mcol .mbar{display:block;background:linear-gradient(180deg,var(--teal),var(--teal-dark));border-radius:5px 5px 0 0;}
+  .mcol.part .mbar{background:repeating-linear-gradient(45deg,#8FD3DF,#8FD3DF 5px,#B9E4EB 5px,#B9E4EB 10px);}
+  .mlabels{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-top:6px;}
+  .mlabels span{text-align:center;font-size:11px;color:var(--slate);font-weight:600;}
+  .bfill.amb{background:linear-gradient(90deg,#E8C25A,var(--amber-bar));}
+  .minor{font-size:11.5px;color:var(--slate);margin-top:10px;padding-top:9px;border-top:1px solid var(--line);}
+  .trow{display:grid;grid-template-columns:120px 78px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);align-items:start;font-size:12.5px;}
+  .trow:last-child{border-bottom:none;padding-bottom:1px;}
+  .trow .tv{font-weight:600;color:var(--navy);}
+  .trow .tt{color:var(--slate);line-height:1.5;}
+  .flag{font-family:'Archivo',sans-serif;font-weight:700;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;
+    border-radius:4px;padding:3px 7px;text-align:center;white-space:nowrap;}
+  .flag.best{color:var(--green);background:var(--green-wash);}
+  .flag.ok{color:var(--teal-dark);background:var(--teal-wash);}
+  .flag.gap{color:var(--red);background:var(--red-wash);}
+  .chip{font-family:'Archivo',sans-serif;font-weight:700;font-size:9.5px;letter-spacing:.06em;border-radius:4px;padding:3px 8px;white-space:nowrap;}
+  .chip.t1{color:var(--green);background:var(--green-wash);}
+  .chip.t2{color:var(--teal-dark);background:var(--teal-wash);}
+  .chip.exit{color:var(--red);background:var(--red-wash);}
+  .note{display:flex;gap:10px;align-items:baseline;border-radius:8px;padding:12px 15px;font-size:12.5px;line-height:1.55;margin-top:14px;
+    background:var(--amber-wash);border-left:3px solid var(--amber-bar);}
+  .note.red{background:var(--red-wash);border-left-color:var(--red);}
+  .note.teal{background:var(--teal-wash);border-left-color:var(--teal);}
+  .note.green{background:var(--green-wash);border-left-color:var(--green);}
+  .note .tag{font-family:'Archivo',sans-serif;font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);white-space:nowrap;}
+  .note.red .tag{color:var(--red);} .note.teal .tag{color:var(--teal-dark);} .note.green .tag{color:var(--green);}
+  .note b{color:var(--navy);font-weight:600;}
+  .fineprint{border-top:1px solid var(--line);padding-top:14px;font-size:11.5px;color:var(--slate);line-height:1.7;margin-top:26px;}
+  .fineprint strong{font-family:'Archivo',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-dark);margin-right:4px;}
+  footer{max-width:1500px;margin:0 auto;padding:0 44px 34px;color:#8FA0B4;font-size:11.5px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  @media (max-width:1100px){
+    .grid2,.grid3{grid-template-columns:1fr;} .kpis{grid-template-columns:repeat(2,1fr);}
+    .trow{grid-template-columns:1fr;gap:4px;} .flag{justify-self:start;}
+  }
+  @media (max-width:640px){
+    header,main{padding-left:16px;padding-right:16px;} footer{padding-left:16px;padding-right:16px;}
+    .kpis{grid-template-columns:1fr;} .tab{padding:10px 12px;font-size:11.5px;}
+    .brow{grid-template-columns:100px 1fr 70px 50px;}
+    .months,.mlabels{grid-template-columns:repeat(4,1fr);}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="hi">
+    <div class="htop">
+      <div>
+        <h1>RFP Rate Card Analysis — Five Presenting Agencies</h1>
+        <div class="sub">CitiusTech · Insight Global · IntelliPro · Neutrino · On Demand Group &nbsp;|&nbsp; 373 rate lines extracted from the submitted pricing schedules</div>
+      </div>
+      <span class="src">Built from vendor submissions</span>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Rate card sections">
+      <button class="tab active" role="tab" aria-selected="true" id="t0" onclick="show(0)">Summary</button>
+      <button class="tab" role="tab" aria-selected="false" id="t1" onclick="show(1)">Current Contractors <span class="cnt num">324</span></button>
+      <button class="tab" role="tab" aria-selected="false" id="t2" onclick="show(2)">Terminations <span class="cnt num">363</span></button>
+      <button class="tab" role="tab" aria-selected="false" id="t3" onclick="show(3)">Onshore <span class="cnt num">33</span></button>
+      <button class="tab" role="tab" aria-selected="false" id="t4" onclick="show(4)">Nearshore <span class="cnt num">35</span></button>
+      <button class="tab" role="tab" aria-selected="false" id="t5" onclick="show(5)">Offshore <span class="cnt num">36</span></button>
+      <button class="tab" role="tab" aria-selected="false" id="t6" onclick="show(6)">Markup &amp; Rebates</button>
+      <button class="tab" role="tab" aria-selected="false" id="t7" onclick="show(7)">Commercial Terms</button>
+      <button class="tab" role="tab" aria-selected="false" id="t8" onclick="show(8)">Tiering &amp; Savings</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<div class="panel active" id="p0">
+  <section>
+    <div class="eyebrow">Summary</div>
+    <h2 class="section-title" style="margin-bottom:14px;">What the five rate cards say</h2>
+    <div class="kpis">
+      <div class="kpi"><div class="v num">373</div><div class="l">Rate lines extracted across the five submissions and nine rate cards</div></div>
+      <div class="kpi"><div class="v num hl">$91.50</div><div class="l">Cheapest onshore basket — IntelliPro, 22.4% below ODG</div></div>
+      <div class="kpi"><div class="v num warn">2.7x</div><div class="l">Highest true markup vs lowest: 62.2% vs 23.3%</div></div>
+      <div class="kpi"><div class="v num hl">$25.52</div><div class="l">Cheapest offshore basket &mdash; IntelliPro India, 45% below ODG</div></div>
+    </div>
+    <div class="note red">
+      <span class="tag">Headline</span>
+      <span><b>No vendor's stated markup could be taken at face value.</b> CitiusTech quoted margin on bill rather than markup on pay, and Insight Global quoted a pay-to-bill ratio. Restating all five as (bill ÷ pay) − 1 moves Insight Global from a stated 50–65% to a true <b>62.2%</b> and CitiusTech from a stated 17–22% to <b>25.2%</b>. The ranking changes once they are on a common basis.</span>
+    </div>
+    <div class="note green">
+      <span class="tag">Most valuable term</span>
+      <span>Given that 58% of contractor terminations happen inside 90 days, <b>Neutrino is the only vendor offering fee-free replacement at 30, 60 or 90 days</b> with billing limited to approved hours worked. Insight Global offers no guarantee period on contract placements and ODG has none in its MSA at all.</span>
+    </div>
+  </section>
+  <section>
+    <div class="eyebrow">Onshore</div>
+    <h2 class="section-title" style="margin-bottom:14px;">Like-for-like comparison by delivery location</h2>
+    
+      <div class="grid2">
+        <div class="card">
+          <h3>Like-for-like basket</h3>
+          <div class="card-sub">Average bill rate across the 9 role-levels every USD onshore bidder quoted</div>
+          <div class="brow"><span class="bl">IntelliPro</span><span class="btrack"><span class="bfill" style="width:77.6%"></span></span><span class="bv num">$91.50</span><span class="bp num">-22.4%</span></div><div class="brow"><span class="bl">CitiusTech</span><span class="btrack"><span class="bfill" style="width:87.2%"></span></span><span class="bv num">$102.78</span><span class="bp num">-12.8%</span></div><div class="brow"><span class="bl">Neutrino</span><span class="btrack"><span class="bfill" style="width:88.1%"></span></span><span class="bv num">$103.89</span><span class="bp num">-11.9%</span></div><div class="brow"><span class="bl">Insight Global</span><span class="btrack"><span class="bfill" style="width:90.9%"></span></span><span class="bv num">$107.22</span><span class="bp num">-9.1%</span></div><div class="brow"><span class="bl">On Demand Group</span><span class="btrack"><span class="bfill warn" style="width:100.0%"></span></span><span class="bv num">$117.89</span><span class="bp num">+0.0%</span></div>
+          
+        </div>
+        <div class="card scrollx">
+          <h3>Coverage and lowest-rate wins</h3>
+          <div class="card-sub">Across all 33 onshore role-levels in the RFP</div>
+          <table><thead><tr><th>Vendor</th><th class="r">Role-levels quoted</th><th class="r">Avg where quoted</th><th class="r">Lowest-rate wins</th></tr></thead>
+          <tbody><tr><td>CitiusTech</td><td class="r num">18 / 33</td><td class="r num">$83.61</td><td class="r num">2</td></tr><tr><td>Insight Global</td><td class="r num">33 / 33</td><td class="r num">$90.79</td><td class="r num">7</td></tr><tr><td>IntelliPro</td><td class="r num">20 / 33</td><td class="r num">$73.37</td><td class="r num">13</td></tr><tr><td>Neutrino</td><td class="r num">31 / 33</td><td class="r num">$89.32</td><td class="r num">9</td></tr><tr><td>On Demand Group</td><td class="r num">27 / 33</td><td class="r num">$108.26</td><td class="r num">2</td></tr></tbody></table>
+        </div>
+      </div>
+  </section>
+  <section>
+    <div class="eyebrow">Nearshore</div>
+    
+      <div class="grid2">
+        <div class="card">
+          <h3>Like-for-like basket</h3>
+          <div class="card-sub">Average bill rate across the 23 role-levels every USD nearshore bidder quoted</div>
+          <div class="brow"><span class="bl">On Demand Group</span><span class="btrack"><span class="bfill warn" style="width:87.2%"></span></span><span class="bv num">$45.61</span><span class="bp num">+0.0%</span></div><div class="brow"><span class="bl">CitiusTech</span><span class="btrack"><span class="bfill" style="width:89.6%"></span></span><span class="bv num">$46.83</span><span class="bp num">+2.7%</span></div><div class="brow"><span class="bl">Insight Global</span><span class="btrack"><span class="bfill" style="width:100.0%"></span></span><span class="bv num">$52.28</span><span class="bp num">+14.6%</span></div>
+          <div class="minor">IntelliPro Canada quoted in CAD and excluded from USD comparison.</div>
+        </div>
+        <div class="card scrollx">
+          <h3>Coverage and lowest-rate wins</h3>
+          <div class="card-sub">Across all 35 nearshore role-levels in the RFP</div>
+          <table><thead><tr><th>Vendor</th><th class="r">Role-levels quoted</th><th class="r">Avg where quoted</th><th class="r">Lowest-rate wins</th></tr></thead>
+          <tbody><tr><td>CitiusTech</td><td class="r num">25 / 35</td><td class="r num">$47.20</td><td class="r num">10</td></tr><tr><td>Insight Global</td><td class="r num">33 / 35</td><td class="r num">$47.97</td><td class="r num">11</td></tr><tr><td>On Demand Group</td><td class="r num">27 / 35</td><td class="r num">$47.48</td><td class="r num">14</td></tr><tr><td>IntelliPro Canada <span class='cadtag'>CAD</span></td><td class="r num">16 / 35</td><td class="r num">$93.23</td><td class="r num">&mdash;</td></tr></tbody></table>
+        </div>
+      </div>
+  </section>
+  <section>
+    <div class="eyebrow">Offshore</div>
+    
+      <div class="grid2">
+        <div class="card">
+          <h3>Like-for-like basket</h3>
+          <div class="card-sub">Average bill rate across the 13 role-levels every USD offshore bidder quoted</div>
+          <div class="brow"><span class="bl">IntelliPro India</span><span class="btrack"><span class="bfill" style="width:54.6%"></span></span><span class="bv num">$25.52</span><span class="bp num">-45.4%</span></div><div class="brow"><span class="bl">Neutrino</span><span class="btrack"><span class="bfill" style="width:74.3%"></span></span><span class="bv num">$34.77</span><span class="bp num">-25.7%</span></div><div class="brow"><span class="bl">CitiusTech</span><span class="btrack"><span class="bfill" style="width:75.2%"></span></span><span class="bv num">$35.15</span><span class="bp num">-24.8%</span></div><div class="brow"><span class="bl">IntelliPro SE Asia</span><span class="btrack"><span class="bfill" style="width:80.1%"></span></span><span class="bv num">$37.48</span><span class="bp num">-19.9%</span></div><div class="brow"><span class="bl">Insight Global</span><span class="btrack"><span class="bfill" style="width:82.8%"></span></span><span class="bv num">$38.72</span><span class="bp num">-17.2%</span></div><div class="brow"><span class="bl">On Demand Group</span><span class="btrack"><span class="bfill warn" style="width:100.0%"></span></span><span class="bv num">$46.77</span><span class="bp num">+0.0%</span></div>
+          
+        </div>
+        <div class="card scrollx">
+          <h3>Coverage and lowest-rate wins</h3>
+          <div class="card-sub">Across all 36 offshore role-levels in the RFP</div>
+          <table><thead><tr><th>Vendor</th><th class="r">Role-levels quoted</th><th class="r">Avg where quoted</th><th class="r">Lowest-rate wins</th></tr></thead>
+          <tbody><tr><td>CitiusTech</td><td class="r num">30 / 36</td><td class="r num">$34.70</td><td class="r num">9</td></tr><tr><td>Insight Global</td><td class="r num">33 / 36</td><td class="r num">$34.97</td><td class="r num">8</td></tr><tr><td>IntelliPro India</td><td class="r num">13 / 36</td><td class="r num">$25.52</td><td class="r num">10</td></tr><tr><td>IntelliPro SE Asia</td><td class="r num">13 / 36</td><td class="r num">$37.48</td><td class="r num">0</td></tr><tr><td>Neutrino</td><td class="r num">27 / 36</td><td class="r num">$33.19</td><td class="r num">9</td></tr><tr><td>On Demand Group</td><td class="r num">27 / 36</td><td class="r num">$49.33</td><td class="r num">0</td></tr></tbody></table>
+        </div>
+      </div>
+    <div class="note">
+      <span class="tag">Note</span>
+      <span>IntelliPro priced India and SE Asia as two separate cards and they differ by <b>$11.96/hr on the same roles</b> (India $25.52 vs SE Asia $37.48), so the delivery region has to be named in the MSA. Separately, <b>ODG’s offshore basket of $46.77 is barely below its own nearshore basket of $45.61</b> — the only vendor offering effectively no offshore saving.</span>
+    </div>
+  </section>
+</div>
+
+
+<div class="panel" id="p1">
+  <section>
+    <div class="eyebrow">Workforce &middot; Current population</div>
+    <h2 class="section-title">324 active contingent workers</h2>
+    <p class="section-note" style="margin-bottom:16px;">Aggregated from the HR extract, with no individual records displayed. This is the population the awarded rate card will govern.</p>
+    <div class="kpis" style="margin-bottom:16px;">
+      <div class="kpi"><div class="v num">324</div><div class="l">Active contingent workers on record</div></div>
+      <div class="kpi"><div class="v num warn">83</div><div class="l">Engaged as direct 1099 &mdash; 26% of the population</div></div>
+      <div class="kpi"><div class="v num">93</div><div class="l">Past 12 months tenure &mdash; conversion candidates</div></div>
+      <div class="kpi"><div class="v num warn">261</div><div class="l">Records titled only "Contractor" &mdash; 81%</div></div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Engagement type</h3>
+        <div class="card-sub">Only 67% sit behind an agency agreement</div>
+        <div class="brow"><span class="bl">Temp Worker [Agency]</span><span class="btrack"><span class="bfill" style="width:100.0%"></span></span><span class="bv num">218</span><span class="bp num">67%</span></div><div class="brow"><span class="bl">1099 Independent</span><span class="btrack"><span class="bfill warn" style="width:38.1%"></span></span><span class="bv num">83</span><span class="bp num">26%</span></div><div class="brow"><span class="bl">Contractor</span><span class="btrack"><span class="bfill" style="width:7.8%"></span></span><span class="bv num">17</span><span class="bp num">5%</span></div><div class="brow"><span class="bl">Consultant</span><span class="btrack"><span class="bfill" style="width:1.4%"></span></span><span class="bv num">3</span><span class="bp num">1%</span></div><div class="brow"><span class="bl">Per Diem</span><span class="btrack"><span class="bfill" style="width:1.4%"></span></span><span class="bv num">3</span><span class="bp num">1%</span></div>
+        <div class="note red" style="margin-top:12px;"><span class="tag">Exposure</span>
+          <span><b>106 workers &mdash; 33% of the population &mdash; carry no agency MSA</b>, no insurance verification and no indemnification. The 83 direct 1099s are the largest classification risk in the program.</span></div>
+      </div>
+      <div class="card">
+        <h3>Tenure of active seats</h3>
+        <div class="card-sub">Anything past 12 months should already have hit a convert-or-end decision</div>
+        <div class="brow"><span class="bl">Under 1 year</span><span class="btrack"><span class="bfill" style="width:100.0%"></span></span><span class="bv num">231</span><span class="bp num">71%</span></div><div class="brow"><span class="bl">1–3 years</span><span class="btrack"><span class="bfill amb" style="width:23.4%"></span></span><span class="bv num">54</span><span class="bp num">17%</span></div><div class="brow"><span class="bl">3–5 years</span><span class="btrack"><span class="bfill amb" style="width:11.7%"></span></span><span class="bv num">27</span><span class="bp num">8%</span></div><div class="brow"><span class="bl">5–10 years</span><span class="btrack"><span class="bfill warn" style="width:4.8%"></span></span><span class="bv num">11</span><span class="bp num">3%</span></div><div class="brow"><span class="bl">10+ years</span><span class="btrack"><span class="bfill warn" style="width:0.4%"></span></span><span class="bv num">1</span><span class="bp num">0%</span></div>
+        <div class="note" style="margin-top:12px;"><span class="tag">Conversion</span>
+          <span><b>39 workers have been contingent for more than three years</b>, one beyond ten. This is why conversion terms carry more weight in the award than a dollar of hourly rate &mdash; see Commercial Terms.</span></div>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:16px;">
+      <div class="card">
+        <h3>Active seats by group</h3>
+        <div class="card-sub">Technology holds the majority of the contingent book</div>
+        <div class="brow"><span class="bl">Technology</span><span class="btrack"><span class="bfill" style="width:100.0%"></span></span><span class="bv num">178</span><span class="bp num">55%</span></div><div class="brow"><span class="bl">PS + Pharma</span><span class="btrack"><span class="bfill" style="width:65.2%"></span></span><span class="bv num">116</span><span class="bp num">36%</span></div><div class="brow"><span class="bl">Commercial</span><span class="btrack"><span class="bfill" style="width:14.0%"></span></span><span class="bv num">25</span><span class="bp num">8%</span></div><div class="brow"><span class="bl">Support</span><span class="btrack"><span class="bfill" style="width:2.8%"></span></span><span class="bv num">5</span><span class="bp num">2%</span></div>
+      </div>
+      <div class="card scrollx">
+        <h3>Record completeness</h3>
+        <div class="card-sub">Fields the rate card depends on</div>
+        <table><thead><tr><th>Field</th><th class="r">Records affected</th><th class="r">Share</th><th>Why it blocks the rate card</th></tr></thead>
+        <tbody>
+          <tr><td>Role / job title</td><td class="r num">261</td><td class="r num">81%</td><td class="basis">Titled only "Contractor"; 18 distinct titles cover all 324 seats. A role-and-level ceiling cannot be enforced.</td></tr>
+          <tr><td>Delivery location</td><td class="r num">228</td><td class="r num">70%</td><td class="basis">Blank, so the onshore / nearshore / offshore mix the rate card is built on cannot be measured.</td></tr>
+          <tr><td>Program / SBU</td><td class="r num">76</td><td class="r num">23%</td><td class="basis">No program assigned, so program-level cost recovery is understated.</td></tr>
+        </tbody></table>
+        <div class="note teal" style="margin-top:12px;"><span class="tag">Prerequisite</span>
+          <span>Two of the three savings levers in Tiering &amp; Savings cannot be executed until role and location are backfilled.</span></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="panel" id="p2">
+  <section>
+    <div class="eyebrow">Workforce &middot; Terminated population</div>
+    <h2 class="section-title">363 contingent terminations, 2 Jan – 21 Aug 2026</h2>
+    <p class="section-note" style="margin-bottom:16px;">More contractors left in under eight months than are currently on the books. This is the single strongest argument for the replacement and guarantee terms in the award.</p>
+    <div class="kpis" style="margin-bottom:16px;">
+      <div class="kpi"><div class="v num warn">112%</div><div class="l">YTD churn &mdash; 363 terminations against 324 active seats</div></div>
+      <div class="kpi"><div class="v num warn">58%</div><div class="l">Left inside 90 days &mdash; 210 of 363</div></div>
+      <div class="kpi"><div class="v num warn">2.8 mo</div><div class="l">Median tenure at termination</div></div>
+      <div class="kpi"><div class="v num">80%</div><div class="l">Involuntary &mdash; 291 of 363</div></div>
+    </div>
+    <div class="card" style="margin-bottom:16px;">
+      <h3>Terminations by month</h3>
+      <div class="card-sub">August is partial, through the 21st</div>
+      <div class="months"><div class="mcol"><span class="mv num">28</span><span class="mbar" style="height:54px"></span></div><div class="mcol"><span class="mv num">49</span><span class="mbar" style="height:95px"></span></div><div class="mcol"><span class="mv num">67</span><span class="mbar" style="height:130px"></span></div><div class="mcol"><span class="mv num">60</span><span class="mbar" style="height:116px"></span></div><div class="mcol"><span class="mv num">41</span><span class="mbar" style="height:80px"></span></div><div class="mcol"><span class="mv num">28</span><span class="mbar" style="height:54px"></span></div><div class="mcol"><span class="mv num">57</span><span class="mbar" style="height:111px"></span></div><div class="mcol part"><span class="mv num">33</span><span class="mbar" style="height:64px"></span></div></div><div class="mlabels"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug*</span></div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Tenure at termination</h3>
+        <div class="card-sub">210 of 363 did not reach 90 days</div>
+        <div class="brow"><span class="bl">Under 30 days</span><span class="btrack"><span class="bfill warn" style="width:64.4%"></span></span><span class="bv num">96</span><span class="bp num">26%</span></div><div class="brow"><span class="bl">30–60 days</span><span class="btrack"><span class="bfill warn" style="width:51.7%"></span></span><span class="bv num">77</span><span class="bp num">21%</span></div><div class="brow"><span class="bl">60–90 days</span><span class="btrack"><span class="bfill warn" style="width:24.8%"></span></span><span class="bv num">37</span><span class="bp num">10%</span></div><div class="brow"><span class="bl">90 days – 1 year</span><span class="btrack"><span class="bfill" style="width:100.0%"></span></span><span class="bv num">149</span><span class="bp num">41%</span></div><div class="brow"><span class="bl">1–3 years</span><span class="btrack"><span class="bfill" style="width:2.7%"></span></span><span class="bv num">4</span><span class="bp num">1%</span></div>
+      </div>
+      <div class="card">
+        <h3>Reason for termination</h3>
+        <div class="card-sub">Top reasons; red are quality and screening failures rather than program milestones</div>
+        <div class="brow"><span class="bl">End of Contract</span><span class="btrack"><span class="bfill" style="width:100.0%"></span></span><span class="bv num">155</span><span class="bp num">43%</span></div><div class="brow"><span class="bl">Performance</span><span class="btrack"><span class="bfill warn" style="width:48.4%"></span></span><span class="bv num">75</span><span class="bp num">21%</span></div><div class="brow"><span class="bl">Did not start / no show</span><span class="btrack"><span class="bfill warn" style="width:22.6%"></span></span><span class="bv num">35</span><span class="bp num">10%</span></div><div class="brow"><span class="bl">Attendance</span><span class="btrack"><span class="bfill warn" style="width:18.7%"></span></span><span class="bv num">29</span><span class="bp num">8%</span></div><div class="brow"><span class="bl">Personal</span><span class="btrack"><span class="bfill" style="width:14.2%"></span></span><span class="bv num">22</span><span class="bp num">6%</span></div><div class="brow"><span class="bl">Abandoned Job</span><span class="btrack"><span class="bfill warn" style="width:10.3%"></span></span><span class="bv num">16</span><span class="bp num">4%</span></div><div class="brow"><span class="bl">Better Opportunity</span><span class="btrack"><span class="bfill" style="width:3.9%"></span></span><span class="bv num">6</span><span class="bp num">2%</span></div><div class="brow"><span class="bl">Misconduct</span><span class="btrack"><span class="bfill warn" style="width:2.6%"></span></span><span class="bv num">4</span><span class="bp num">1%</span></div>
+      </div>
+    </div>
+    <div class="note red">
+      <span class="tag">35 never started</span>
+      <span><b>Every one of the 35 "did not start / no show" records has no tenure at all</b> &mdash; sourced, onboarded and provisioned, then never appeared. Only Neutrino offers fee-free replacement covering this; Insight Global offers no guarantee period on contract placements and ODG has none in its MSA.</span>
+    </div>
+    <div class="card scrollx" style="margin-top:16px;">
+      <h3>Where the churn sits</h3>
+      <div class="card-sub">Terminations by department, with the two highest-volume reasons split out</div>
+      <table><thead><tr><th>Department</th><th class="r">Terms</th><th class="r">End of contract</th><th class="r">Performance</th></tr></thead><tbody><tr><td>Patient Solutions</td><td class="r num">168</td><td class="r num">71</td><td class="r num">21</td></tr><tr><td>CoAssist Pharmacy</td><td class="r num">144</td><td class="r num">69</td><td class="r num">47</td></tr><tr><td>ARx PS Pharmacy</td><td class="r num">28</td><td class="r num">2</td><td class="r num">1</td></tr><tr><td>Project Management Org</td><td class="r num">11</td><td class="r num">4</td><td class="r num">4</td></tr><tr><td>Development</td><td class="r num">5</td><td class="r num">4</td><td class="r num">&mdash;</td></tr><tr><td>Human Resources</td><td class="r num">4</td><td class="r num">3</td><td class="r num">1</td></tr><tr class="total"><td>All departments</td><td class="r num">363</td><td class="r num">155</td><td class="r num">75</td></tr></tbody></table>
+      <div class="note" style="margin-top:12px;"><span class="tag">Read this way</span>
+        <span>PS + Pharma runs 36% of active seats but produces 94% of terminations. End of contract explains 140 of those, which is the pharmacy conversion program working as intended. The rest is performance, no-show, attendance and abandonment &mdash; and <b>47 of the 75 performance exits sit in CoAssist Pharmacy alone</b>.</span></div>
+    </div>
+  </section>
+</div>
+
+<div class="panel" id="p3">
+  <section>
+    <div class="eyebrow">Onshore · US delivery</div>
+    <h2 class="section-title">Onshore rate card, role by role</h2>
+    <p class="section-note" style="margin-bottom:16px;">Every onshore line as submitted. Green is the lowest bid for that role and level, red the highest. Check the bid count before reading a spread as competitive tension.</p>
+    
+      <div class="card scrollx">
+        <h3>Onshore &mdash; effective bill rate by role and level</h3>
+        <div class="card-sub">33 role-levels quoted. All five vendors quoted 9 of these role-levels; the rest have partial coverage.</div>
+        <table class="rates">
+          <thead><tr><th>Role</th><th>Level</th><th class="r">CitiusTech</th><th class="r">Insight Global</th><th class="r">IntelliPro</th><th class="r">Neutrino</th><th class="r">On Demand Group</th><th class="r">Bids</th><th>Lowest</th><th class="r">Spread</th></tr></thead>
+          <tbody><tr class="famrow"><td colspan="10">Finance</td></tr><tr><td>AP Coordinator</td><td class="lvl">Junior</td><td class="r num worst">$50.00</td><td class="r num">$34.00</td><td class="r num best">$27.00</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">3</td><td class="cheap">IntelliPro</td><td class="r num">$23.00</td></tr><tr><td>AP Coordinator</td><td class="lvl">Mid-Level</td><td class="r num worst">$55.00</td><td class="r num">$38.00</td><td class="r num best">$36.45</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">3</td><td class="cheap">IntelliPro</td><td class="r num">$18.55</td></tr><tr class="famrow"><td colspan="10">Operations</td></tr><tr><td>CSR – Data Intake / Call Center</td><td class="lvl">Junior</td><td class="r num worst">$40.00</td><td class="r num">$34.00</td><td class="r num best">$24.30</td><td class="r num">$29.00</td><td class="r muted">&mdash;</td><td class="r num">4</td><td class="cheap">IntelliPro</td><td class="r num">$15.70</td></tr><tr><td>CSR – Data Intake / Call Center</td><td class="lvl">Mid-Level</td><td class="r num worst">$45.00</td><td class="r num">$40.00</td><td class="r num best">$29.70</td><td class="r num">$35.00</td><td class="r muted">&mdash;</td><td class="r num">4</td><td class="cheap">IntelliPro</td><td class="r num">$15.30</td></tr><tr><td>Case Manager</td><td class="lvl">Mid-Level</td><td class="r num worst">$50.00</td><td class="r num">$45.00</td><td class="r num">$47.25</td><td class="r num best">$40.00</td><td class="r muted">&mdash;</td><td class="r num">4</td><td class="cheap">Neutrino</td><td class="r num">$10.00</td></tr><tr><td>Case Manager</td><td class="lvl">Senior</td><td class="r num">$55.00</td><td class="r num worst">$60.00</td><td class="r num">$58.05</td><td class="r num best">$50.00</td><td class="r muted">&mdash;</td><td class="r num">4</td><td class="cheap">Neutrino</td><td class="r num">$10.00</td></tr><tr class="famrow"><td colspan="10">Quality & Release Mgmt</td></tr><tr><td>Automation QA Tester</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num best">$85.00</td><td class="r muted">&mdash;</td><td class="r num best">$85.00</td><td class="r num worst">$95.00</td><td class="r num">3</td><td class="cheap">Insight Global</td><td class="r num">$10.00</td></tr><tr><td>Automation QA Tester</td><td class="lvl">Senior</td><td class="r muted">&mdash;</td><td class="r num">$105.00</td><td class="r muted">&mdash;</td><td class="r num best">$95.00</td><td class="r num worst">$115.00</td><td class="r num">3</td><td class="cheap">Neutrino</td><td class="r num">$20.00</td></tr><tr><td>Data Quality Tester</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num best">$70.00</td><td class="r muted">&mdash;</td><td class="r num">$85.00</td><td class="r num worst">$95.00</td><td class="r num">3</td><td class="cheap">Insight Global</td><td class="r num">$25.00</td></tr><tr><td>Data Quality Tester</td><td class="lvl">Lead</td><td class="r muted">&mdash;</td><td class="r num best">$95.00</td><td class="r muted">&mdash;</td><td class="r num best">$95.00</td><td class="r num worst">$118.00</td><td class="r num">3</td><td class="cheap">Insight Global</td><td class="r num">$23.00</td></tr><tr><td>Manual QA Tester</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num best">$65.00</td><td class="r muted">&mdash;</td><td class="r num worst">$80.00</td><td class="r num">$70.00</td><td class="r num">3</td><td class="cheap">Insight Global</td><td class="r num">$15.00</td></tr><tr class="famrow"><td colspan="10">Technology / Engineering</td></tr><tr><td>.NET Developer</td><td class="lvl">Junior</td><td class="r muted">&mdash;</td><td class="r num worst">$85.00</td><td class="r num best">$51.30</td><td class="r num">$70.00</td><td class="r num">$75.00</td><td class="r num">4</td><td class="cheap">IntelliPro</td><td class="r num">$33.70</td></tr><tr><td>.NET Developer</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num worst">$95.00</td><td class="r num best">$72.90</td><td class="r num">$85.00</td><td class="r num">$94.00</td><td class="r num">4</td><td class="cheap">IntelliPro</td><td class="r num">$22.10</td></tr><tr><td>.NET Developer</td><td class="lvl">Senior</td><td class="r muted">&mdash;</td><td class="r num">$120.00</td><td class="r num">$101.25</td><td class="r num best">$100.00</td><td class="r num worst">$125.00</td><td class="r num">4</td><td class="cheap">Neutrino</td><td class="r num">$25.00</td></tr><tr><td>Angular / Frontend Developer</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num worst">$90.00</td><td class="r num">$87.75</td><td class="r num">$85.00</td><td class="r num best">$75.00</td><td class="r num">4</td><td class="cheap">On Demand Group</td><td class="r num">$15.00</td></tr><tr><td>Angular / Frontend Developer</td><td class="lvl">Senior</td><td class="r muted">&mdash;</td><td class="r num worst">$115.00</td><td class="r num">$108.00</td><td class="r num">$95.00</td><td class="r num best">$90.00</td><td class="r num">4</td><td class="cheap">On Demand Group</td><td class="r num">$25.00</td></tr><tr><td>Business Analyst</td><td class="lvl">Mid-Level</td><td class="r num worst">$95.00</td><td class="r num">$85.00</td><td class="r num best">$67.50</td><td class="r num">$85.00</td><td class="r num">$85.00</td><td class="r num">5</td><td class="cheap">IntelliPro</td><td class="r num">$27.50</td></tr><tr><td>Business Analyst</td><td class="lvl">Senior</td><td class="r num worst">$110.00</td><td class="r num">$105.00</td><td class="r num best">$101.25</td><td class="r num">$105.00</td><td class="r num worst">$110.00</td><td class="r num">5</td><td class="cheap">IntelliPro</td><td class="r num">$8.75</td></tr><tr><td>Cloud Data Architect</td><td class="lvl">Senior</td><td class="r muted">&mdash;</td><td class="r num worst">$150.00</td><td class="r muted">&mdash;</td><td class="r num best">$120.00</td><td class="r num">$130.00</td><td class="r num">3</td><td class="cheap">Neutrino</td><td class="r num">$30.00</td></tr><tr><td>Data Analyst</td><td class="lvl">Junior</td><td class="r num worst">$90.00</td><td class="r num best">$45.00</td><td class="r muted">&mdash;</td><td class="r num">$75.00</td><td class="r num">$70.00</td><td class="r num">4</td><td class="cheap">Insight Global</td><td class="r num">$45.00</td></tr><tr><td>Data Analyst</td><td class="lvl">Mid-Level</td><td class="r num worst">$95.00</td><td class="r num best">$70.00</td><td class="r muted">&mdash;</td><td class="r num">$85.00</td><td class="r num">$90.00</td><td class="r num">4</td><td class="cheap">Insight Global</td><td class="r num">$25.00</td></tr><tr><td>Data Analyst</td><td class="lvl">Senior</td><td class="r num">$100.00</td><td class="r num best">$90.00</td><td class="r muted">&mdash;</td><td class="r num">$95.00</td><td class="r num worst">$109.00</td><td class="r num">4</td><td class="cheap">Insight Global</td><td class="r num">$19.00</td></tr><tr><td>Data Engineer</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num worst">$105.00</td><td class="r muted">&mdash;</td><td class="r num best">$90.00</td><td class="r num worst">$105.00</td><td class="r num">3</td><td class="cheap">Neutrino</td><td class="r num">$15.00</td></tr><tr><td>Data Engineer</td><td class="lvl">Senior</td><td class="r muted">&mdash;</td><td class="r num worst">$130.00</td><td class="r muted">&mdash;</td><td class="r num best">$110.00</td><td class="r num">$122.00</td><td class="r num">3</td><td class="cheap">Neutrino</td><td class="r num">$20.00</td></tr><tr><td>ML & AI Developer</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num">$120.00</td><td class="r muted">&mdash;</td><td class="r num best">$105.00</td><td class="r num worst">$129.00</td><td class="r num">3</td><td class="cheap">Neutrino</td><td class="r num">$24.00</td></tr><tr><td>ML & AI Developer</td><td class="lvl">Senior</td><td class="r muted">&mdash;</td><td class="r num">$145.00</td><td class="r muted">&mdash;</td><td class="r num best">$125.00</td><td class="r num worst">$155.00</td><td class="r num">3</td><td class="cheap">Neutrino</td><td class="r num">$30.00</td></tr><tr><td>Project Manager</td><td class="lvl">Mid-Level</td><td class="r num worst">$100.00</td><td class="r num">$90.00</td><td class="r num best">$67.50</td><td class="r num worst">$100.00</td><td class="r num">$95.00</td><td class="r num">5</td><td class="cheap">IntelliPro</td><td class="r num">$32.50</td></tr><tr><td>Project Manager</td><td class="lvl">Senior</td><td class="r num">$115.00</td><td class="r num">$110.00</td><td class="r num best">$101.25</td><td class="r num worst">$125.00</td><td class="r num worst">$125.00</td><td class="r num">5</td><td class="cheap">IntelliPro</td><td class="r num">$23.75</td></tr><tr><td>Salesforce Developer</td><td class="lvl">Junior</td><td class="r num">$90.00</td><td class="r num">$85.00</td><td class="r num best">$60.75</td><td class="r num">$75.00</td><td class="r num worst">$95.00</td><td class="r num">5</td><td class="cheap">IntelliPro</td><td class="r num">$34.25</td></tr><tr><td>Salesforce Developer</td><td class="lvl">Mid-Level</td><td class="r num">$95.00</td><td class="r num">$105.00</td><td class="r num best">$87.75</td><td class="r num">$90.00</td><td class="r num worst">$117.00</td><td class="r num">5</td><td class="cheap">IntelliPro</td><td class="r num">$29.25</td></tr><tr><td>Salesforce Developer</td><td class="lvl">Senior</td><td class="r num">$110.00</td><td class="r num">$130.00</td><td class="r num best">$108.00</td><td class="r num">$115.00</td><td class="r num worst">$149.00</td><td class="r num">5</td><td class="cheap">IntelliPro</td><td class="r num">$41.00</td></tr><tr><td>Salesforce Developer</td><td class="lvl">Lead</td><td class="r num best">$120.00</td><td class="r num">$145.00</td><td class="r num">$128.25</td><td class="r num">$130.00</td><td class="r num worst">$165.00</td><td class="r num">5</td><td class="cheap">CitiusTech</td><td class="r num">$45.00</td></tr><tr><td>Scrum Master</td><td class="lvl">Standard</td><td class="r num best">$90.00</td><td class="r num">$110.00</td><td class="r num">$101.25</td><td class="r num">$110.00</td><td class="r num worst">$120.00</td><td class="r num">5</td><td class="cheap">CitiusTech</td><td class="r num">$30.00</td></tr></tbody>
+        </table>
+      </div>
+  </section>
+</div>
+
+<div class="panel" id="p4">
+  <section>
+    <div class="eyebrow">Nearshore · Canada and LATAM</div>
+    <h2 class="section-title">Nearshore rate card, role by role</h2>
+    <p class="section-note" style="margin-bottom:16px;">Only three vendors submitted USD nearshore rates. Neutrino submitted none at all, and IntelliPro priced Canada in CAD — shown here for completeness but excluded from the USD comparison.</p>
+    
+      <div class="card scrollx">
+        <h3>Nearshore &mdash; effective bill rate by role and level</h3>
+        <div class="card-sub">35 role-levels quoted. Neutrino submitted no nearshore rates. IntelliPro’s Canada card is shown in amber and excluded from the USD comparison.</div>
+        <table class="rates">
+          <thead><tr><th>Role</th><th>Level</th><th class="r">CitiusTech</th><th class="r">Insight Global</th><th class="r">On Demand Group</th><th class="r cadh">IntelliPro Canada<span class='rng'>CAD</span></th><th class="r">Bids</th><th>Lowest</th><th class="r">Spread</th></tr></thead>
+          <tbody><tr class="famrow"><td colspan="9">Finance</td></tr><tr><td>AP Coordinator</td><td class="lvl">Junior</td><td class="r muted">&mdash;</td><td class="r num">$17.38</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">Insight Global</td><td class="r num">&mdash;</td></tr><tr><td>AP Coordinator</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num">$25.02</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">Insight Global</td><td class="r num">&mdash;</td></tr><tr class="famrow"><td colspan="9">Operations</td></tr><tr><td>CSR – Data Intake / Call Center</td><td class="lvl">Junior</td><td class="r muted">&mdash;</td><td class="r num">$17.38</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">Insight Global</td><td class="r num">&mdash;</td></tr><tr><td>CSR – Data Intake / Call Center</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num">$23.04</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">Insight Global</td><td class="r num">&mdash;</td></tr><tr><td>Case Manager</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num">$26.37</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">Insight Global</td><td class="r num">&mdash;</td></tr><tr><td>Case Manager</td><td class="lvl">Senior</td><td class="r muted">&mdash;</td><td class="r num">$39.55</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">Insight Global</td><td class="r num">&mdash;</td></tr><tr class="famrow"><td colspan="9">Quality & Release Mgmt</td></tr><tr><td>Automation QA Tester</td><td class="lvl">Mid-Level</td><td class="r num worst">$45.00</td><td class="r num">$39.87</td><td class="r num best">$38.00</td><td class="r muted">&mdash;</td><td class="r num">3</td><td class="cheap">On Demand Group</td><td class="r num">$7.00</td></tr><tr><td>Automation QA Tester</td><td class="lvl">Senior</td><td class="r num">$48.00</td><td class="r num worst">$50.83</td><td class="r num best">$40.00</td><td class="r muted">&mdash;</td><td class="r num">3</td><td class="cheap">On Demand Group</td><td class="r num">$10.83</td></tr><tr><td>Data Quality Tester</td><td class="lvl">Mid-Level</td><td class="r num worst">$42.00</td><td class="r num best">$34.23</td><td class="r num">$38.00</td><td class="r muted">&mdash;</td><td class="r num">3</td><td class="cheap">Insight Global</td><td class="r num">$7.77</td></tr><tr><td>Data Quality Tester</td><td class="lvl">Lead</td><td class="r num">$45.00</td><td class="r num worst">$50.41</td><td class="r num best">$38.00</td><td class="r muted">&mdash;</td><td class="r num">3</td><td class="cheap">On Demand Group</td><td class="r num">$12.41</td></tr><tr><td>Manual QA Tester</td><td class="lvl">Mid-Level</td><td class="r num worst">$35.00</td><td class="r num best">$29.75</td><td class="r num">$32.00</td><td class="r muted">&mdash;</td><td class="r num">3</td><td class="cheap">Insight Global</td><td class="r num">$5.25</td></tr><tr class="famrow"><td colspan="9">Technology / Engineering</td></tr><tr><td>.NET Developer</td><td class="lvl">Junior</td><td class="r num">$40.00</td><td class="r num worst">$44.38</td><td class="r num best">$35.00</td><td class="r num cad">$54.00</td><td class="r num">3</td><td class="cheap">On Demand Group</td><td class="r num">$9.38</td></tr><tr><td>.NET Developer</td><td class="lvl">Mid-Level</td><td class="r num">$45.00</td><td class="r num worst">$53.52</td><td class="r num best">$44.00</td><td class="r num cad">$81.00</td><td class="r num">3</td><td class="cheap">On Demand Group</td><td class="r num">$9.52</td></tr><tr><td>.NET Developer</td><td class="lvl">Senior</td><td class="r num best">$50.00</td><td class="r num">$62.66</td><td class="r num worst">$63.00</td><td class="r num cad">$114.75</td><td class="r num">3</td><td class="cheap">CitiusTech</td><td class="r num">$13.00</td></tr><tr><td>Angular / Frontend Developer</td><td class="lvl">Mid-Level</td><td class="r num">$45.00</td><td class="r num worst">$53.52</td><td class="r num best">$35.00</td><td class="r num cad">$74.25</td><td class="r num">3</td><td class="cheap">On Demand Group</td><td class="r num">$18.52</td></tr><tr><td>Angular / Frontend Developer</td><td class="lvl">Senior</td><td class="r num best">$50.00</td><td class="r num worst">$62.66</td><td class="r num best">$50.00</td><td class="r num cad">$121.50</td><td class="r num">3</td><td class="cheap">CitiusTech</td><td class="r num">$12.66</td></tr><tr><td>Business Analyst</td><td class="lvl">Mid-Level</td><td class="r num">$45.00</td><td class="r num worst">$48.03</td><td class="r num best">$43.00</td><td class="r muted">&mdash;</td><td class="r num">3</td><td class="cheap">On Demand Group</td><td class="r num">$5.03</td></tr><tr><td>Business Analyst</td><td class="lvl">Senior</td><td class="r num">$50.00</td><td class="r num worst">$59.97</td><td class="r num best">$49.00</td><td class="r muted">&mdash;</td><td class="r num">3</td><td class="cheap">On Demand Group</td><td class="r num">$10.97</td></tr><tr><td>Cloud Data Architect</td><td class="lvl">Senior</td><td class="r num best">$65.00</td><td class="r num worst">$76.64</td><td class="r num">$69.00</td><td class="r num cad">$135.00</td><td class="r num">3</td><td class="cheap">CitiusTech</td><td class="r num">$11.64</td></tr><tr><td>Data Analyst</td><td class="lvl">Junior</td><td class="r num worst">$45.00</td><td class="r num best">$25.55</td><td class="r num">$31.00</td><td class="r num cad">$40.50</td><td class="r num">3</td><td class="cheap">Insight Global</td><td class="r num">$19.45</td></tr><tr><td>Data Analyst</td><td class="lvl">Mid-Level</td><td class="r num worst">$48.00</td><td class="r num">$44.38</td><td class="r num best">$39.00</td><td class="r num cad">$60.75</td><td class="r num">3</td><td class="cheap">On Demand Group</td><td class="r num">$9.00</td></tr><tr><td>Data Analyst</td><td class="lvl">Senior</td><td class="r num worst">$55.00</td><td class="r num">$53.52</td><td class="r num best">$45.00</td><td class="r num cad">$87.75</td><td class="r num">3</td><td class="cheap">On Demand Group</td><td class="r num">$10.00</td></tr><tr><td>Data Engineer</td><td class="lvl">Mid-Level</td><td class="r num">$45.00</td><td class="r num worst">$49.86</td><td class="r num best">$40.00</td><td class="r num cad">$81.00</td><td class="r num">3</td><td class="cheap">On Demand Group</td><td class="r num">$9.86</td></tr><tr><td>Data Engineer</td><td class="lvl">Senior</td><td class="r num">$48.00</td><td class="r num worst">$68.51</td><td class="r num best">$42.00</td><td class="r num cad">$121.50</td><td class="r num">3</td><td class="cheap">On Demand Group</td><td class="r num">$26.51</td></tr><tr><td>Data Engineer (GenAI+ Python + Adv SQL)</td><td class="lvl">Mid-Level</td><td class="r num">$48.00</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">CitiusTech</td><td class="r num">&mdash;</td></tr><tr><td>Data Engineer (GenAI+ Python + Adv SQL)</td><td class="lvl">Senior</td><td class="r num">$55.00</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">CitiusTech</td><td class="r num">&mdash;</td></tr><tr><td>ML & AI Developer</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num best">$58.14</td><td class="r num worst">$65.00</td><td class="r muted">&mdash;</td><td class="r num">2</td><td class="cheap">Insight Global</td><td class="r num">$6.86</td></tr><tr><td>ML & AI Developer</td><td class="lvl">Senior</td><td class="r muted">&mdash;</td><td class="r num best">$67.28</td><td class="r num worst">$78.00</td><td class="r muted">&mdash;</td><td class="r num">2</td><td class="cheap">Insight Global</td><td class="r num">$10.72</td></tr><tr><td>Project Manager</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num worst">$47.28</td><td class="r num best">$40.00</td><td class="r muted">&mdash;</td><td class="r num">2</td><td class="cheap">On Demand Group</td><td class="r num">$7.28</td></tr><tr><td>Project Manager</td><td class="lvl">Senior</td><td class="r muted">&mdash;</td><td class="r num worst">$59.25</td><td class="r num best">$50.00</td><td class="r muted">&mdash;</td><td class="r num">2</td><td class="cheap">On Demand Group</td><td class="r num">$9.25</td></tr><tr><td>Salesforce Developer</td><td class="lvl">Junior</td><td class="r num best">$40.00</td><td class="r num worst">$44.38</td><td class="r num">$43.00</td><td class="r num cad">$60.75</td><td class="r num">3</td><td class="cheap">CitiusTech</td><td class="r num">$4.38</td></tr><tr><td>Salesforce Developer</td><td class="lvl">Mid-Level</td><td class="r num best">$45.00</td><td class="r num">$53.52</td><td class="r num worst">$54.00</td><td class="r num cad">$87.75</td><td class="r num">3</td><td class="cheap">CitiusTech</td><td class="r num">$9.00</td></tr><tr><td>Salesforce Developer</td><td class="lvl">Senior</td><td class="r num best">$48.00</td><td class="r num">$62.66</td><td class="r num worst">$63.00</td><td class="r num cad">$121.50</td><td class="r num">3</td><td class="cheap">CitiusTech</td><td class="r num">$15.00</td></tr><tr><td>Salesforce Developer</td><td class="lvl">Lead</td><td class="r num best">$50.00</td><td class="r num worst">$73.73</td><td class="r num">$70.00</td><td class="r num cad">$155.25</td><td class="r num">3</td><td class="cheap">CitiusTech</td><td class="r num">$23.73</td></tr><tr><td>Scrum Master</td><td class="lvl">Standard</td><td class="r num best">$48.00</td><td class="r num worst">$59.83</td><td class="r num best">$48.00</td><td class="r num cad">$94.50</td><td class="r num">3</td><td class="cheap">CitiusTech</td><td class="r num">$11.83</td></tr></tbody>
+        </table>
+      </div>
+  </section>
+</div>
+
+<div class="panel" id="p5">
+  <section>
+    <div class="eyebrow">Offshore · India and SE Asia</div>
+    <h2 class="section-title">Offshore rate card, role by role</h2>
+    <p class="section-note" style="margin-bottom:16px;">The widest dispersion of the three locations, and the only tab where one vendor competes against itself — IntelliPro priced India and SE Asia separately and the gap between them is material.</p>
+    
+      <div class="card scrollx">
+        <h3>Offshore &mdash; effective bill rate by role and level</h3>
+        <div class="card-sub">36 role-levels quoted. IntelliPro submitted India and SE Asia as separate rate cards; both are shown. Insight Global’s India rates exclude a $1.63/hr facility fee.</div>
+        <table class="rates">
+          <thead><tr><th>Role</th><th>Level</th><th class="r">CitiusTech</th><th class="r">Insight Global</th><th class="r">IntelliPro India</th><th class="r">IntelliPro SE Asia</th><th class="r">Neutrino</th><th class="r">On Demand Group</th><th class="r">Bids</th><th>Lowest</th><th class="r">Spread</th></tr></thead>
+          <tbody><tr class="famrow"><td colspan="11">Finance</td></tr><tr><td>AP Coordinator</td><td class="lvl">Junior</td><td class="r muted">&mdash;</td><td class="r num">$17.56</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">Insight Global</td><td class="r num">&mdash;</td></tr><tr><td>AP Coordinator</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num">$19.30</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">Insight Global</td><td class="r num">&mdash;</td></tr><tr class="famrow"><td colspan="11">Operations</td></tr><tr><td>CSR – Data Intake / Call Center</td><td class="lvl">Junior</td><td class="r muted">&mdash;</td><td class="r num">$13.29</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">Insight Global</td><td class="r num">&mdash;</td></tr><tr><td>CSR – Data Intake / Call Center</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num">$17.97</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">Insight Global</td><td class="r num">&mdash;</td></tr><tr><td>Case Manager</td><td class="lvl">Mid-Level</td><td class="r muted">&mdash;</td><td class="r num">$21.80</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">Insight Global</td><td class="r num">&mdash;</td></tr><tr><td>Case Manager</td><td class="lvl">Senior</td><td class="r muted">&mdash;</td><td class="r num">$30.89</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">Insight Global</td><td class="r num">&mdash;</td></tr><tr class="famrow"><td colspan="11">Quality & Release Mgmt</td></tr><tr><td>Automation QA Tester</td><td class="lvl">Mid-Level</td><td class="r num">$32.00</td><td class="r num">$31.25</td><td class="r num best">$16.80</td><td class="r num">$28.00</td><td class="r num">$30.00</td><td class="r num worst">$38.00</td><td class="r num">6</td><td class="cheap">IntelliPro India</td><td class="r num">$21.20</td></tr><tr><td>Automation QA Tester</td><td class="lvl">Senior</td><td class="r num">$35.00</td><td class="r num worst">$44.59</td><td class="r num best">$28.00</td><td class="r num">$35.00</td><td class="r num">$35.00</td><td class="r num">$40.00</td><td class="r num">6</td><td class="cheap">IntelliPro India</td><td class="r num">$16.59</td></tr><tr><td>Data Quality Tester</td><td class="lvl">Mid-Level</td><td class="r num">$35.00</td><td class="r num">$26.02</td><td class="r num best">$18.20</td><td class="r num">$29.40</td><td class="r num">$30.00</td><td class="r num worst">$38.00</td><td class="r num">6</td><td class="cheap">IntelliPro India</td><td class="r num">$19.80</td></tr><tr><td>Data Quality Tester</td><td class="lvl">Lead</td><td class="r num">$38.00</td><td class="r num">$39.11</td><td class="r num best">$29.40</td><td class="r num worst">$42.00</td><td class="r num">$35.00</td><td class="r num">$38.00</td><td class="r num">6</td><td class="cheap">IntelliPro India</td><td class="r num">$12.60</td></tr><tr><td>Manual QA Tester</td><td class="lvl">Mid-Level</td><td class="r num">$28.00</td><td class="r num">$24.51</td><td class="r num best">$11.20</td><td class="r num">$25.20</td><td class="r num">$27.00</td><td class="r num worst">$32.00</td><td class="r num">6</td><td class="cheap">IntelliPro India</td><td class="r num">$20.80</td></tr><tr class="famrow"><td colspan="11">Technology / Engineering</td></tr><tr><td>.NET Developer</td><td class="lvl">Junior</td><td class="r num">$28.00</td><td class="r num">$22.93</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num best">$20.00</td><td class="r num worst">$35.00</td><td class="r num">4</td><td class="cheap">Neutrino</td><td class="r num">$15.00</td></tr><tr><td>.NET Developer</td><td class="lvl">Mid-Level</td><td class="r num">$31.00</td><td class="r num">$35.33</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num best">$25.00</td><td class="r num worst">$42.00</td><td class="r num">4</td><td class="cheap">Neutrino</td><td class="r num">$17.00</td></tr><tr><td>.NET Developer</td><td class="lvl">Senior</td><td class="r num">$34.00</td><td class="r num">$46.15</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num best">$30.00</td><td class="r num worst">$63.00</td><td class="r num">4</td><td class="cheap">Neutrino</td><td class="r num">$33.00</td></tr><tr><td>.NET Developer</td><td class="lvl">Lead</td><td class="r num">$36.00</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">CitiusTech</td><td class="r num">&mdash;</td></tr><tr><td>Angular / Frontend Developer</td><td class="lvl">Mid-Level</td><td class="r num">$34.00</td><td class="r num">$35.33</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num best">$25.00</td><td class="r num worst">$44.00</td><td class="r num">4</td><td class="cheap">Neutrino</td><td class="r num">$19.00</td></tr><tr><td>Angular / Frontend Developer</td><td class="lvl">Senior</td><td class="r num">$36.00</td><td class="r num">$46.15</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num best">$30.00</td><td class="r num worst">$67.00</td><td class="r num">4</td><td class="cheap">Neutrino</td><td class="r num">$37.00</td></tr><tr><td>Business Analyst</td><td class="lvl">Mid-Level</td><td class="r num">$32.00</td><td class="r num">$29.12</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num best">$27.00</td><td class="r num worst">$44.00</td><td class="r num">4</td><td class="cheap">Neutrino</td><td class="r num">$17.00</td></tr><tr><td>Business Analyst</td><td class="lvl">Senior</td><td class="r num best">$35.00</td><td class="r num">$39.27</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num best">$35.00</td><td class="r num worst">$50.00</td><td class="r num">4</td><td class="cheap">CitiusTech</td><td class="r num">$15.00</td></tr><tr><td>Cloud Data Architect</td><td class="lvl">Senior</td><td class="r num">$48.00</td><td class="r num">$67.41</td><td class="r num">$49.00</td><td class="r num">$60.20</td><td class="r num best">$45.00</td><td class="r num worst">$70.00</td><td class="r num">6</td><td class="cheap">Neutrino</td><td class="r num">$25.00</td></tr><tr><td>Data Analyst</td><td class="lvl">Junior</td><td class="r num">$30.00</td><td class="r num">$19.86</td><td class="r num best">$7.00</td><td class="r num">$19.60</td><td class="r num">$25.00</td><td class="r num worst">$32.00</td><td class="r num">6</td><td class="cheap">IntelliPro India</td><td class="r num">$25.00</td></tr><tr><td>Data Analyst</td><td class="lvl">Mid-Level</td><td class="r num">$32.00</td><td class="r num">$30.68</td><td class="r num best">$16.80</td><td class="r num">$29.40</td><td class="r num">$30.00</td><td class="r num worst">$40.00</td><td class="r num">6</td><td class="cheap">IntelliPro India</td><td class="r num">$23.20</td></tr><tr><td>Data Analyst</td><td class="lvl">Senior</td><td class="r num">$35.00</td><td class="r num">$39.96</td><td class="r num best">$26.60</td><td class="r num">$42.00</td><td class="r num">$35.00</td><td class="r num worst">$46.00</td><td class="r num">6</td><td class="cheap">IntelliPro India</td><td class="r num">$19.40</td></tr><tr><td>Data Engineer</td><td class="lvl">Mid-Level</td><td class="r num">$32.00</td><td class="r num">$36.85</td><td class="r num best">$21.00</td><td class="r num">$29.40</td><td class="r num">$35.00</td><td class="r num worst">$40.00</td><td class="r num">6</td><td class="cheap">IntelliPro India</td><td class="r num">$19.00</td></tr><tr><td>Data Engineer</td><td class="lvl">Senior</td><td class="r num best">$36.00</td><td class="r num">$47.70</td><td class="r num">$36.40</td><td class="r num">$42.00</td><td class="r num">$40.00</td><td class="r num worst">$53.00</td><td class="r num">6</td><td class="cheap">CitiusTech</td><td class="r num">$17.00</td></tr><tr><td>Data Engineer (GenAI+ Python + Adv SQL)</td><td class="lvl">Mid-Level</td><td class="r num">$34.00</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">CitiusTech</td><td class="r num">&mdash;</td></tr><tr><td>Data Engineer (GenAI+ Python + Adv SQL)</td><td class="lvl">Senior</td><td class="r num">$38.00</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">1</td><td class="cheap solo">CitiusTech</td><td class="r num">&mdash;</td></tr><tr><td>ML & AI Developer</td><td class="lvl">Mid-Level</td><td class="r num">$36.00</td><td class="r num">$41.50</td><td class="r num best">$26.60</td><td class="r num">$43.40</td><td class="r num">$40.00</td><td class="r num worst">$64.00</td><td class="r num">6</td><td class="cheap">IntelliPro India</td><td class="r num">$37.40</td></tr><tr><td>ML & AI Developer</td><td class="lvl">Senior</td><td class="r num best">$40.00</td><td class="r num">$53.87</td><td class="r num">$44.80</td><td class="r num">$61.60</td><td class="r num">$45.00</td><td class="r num worst">$77.00</td><td class="r num">6</td><td class="cheap">CitiusTech</td><td class="r num">$37.00</td></tr><tr><td>Project Manager</td><td class="lvl">Mid-Level</td><td class="r num">$38.00</td><td class="r num best">$29.98</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">$40.00</td><td class="r num worst">$41.00</td><td class="r num">4</td><td class="cheap">Insight Global</td><td class="r num">$11.02</td></tr><tr><td>Project Manager</td><td class="lvl">Senior</td><td class="r num">$40.00</td><td class="r num best">$38.09</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">$45.00</td><td class="r num worst">$51.00</td><td class="r num">4</td><td class="cheap">Insight Global</td><td class="r num">$12.91</td></tr><tr><td>Salesforce Developer</td><td class="lvl">Junior</td><td class="r num">$28.00</td><td class="r num">$27.48</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num best">$25.00</td><td class="r num worst">$51.00</td><td class="r num">4</td><td class="cheap">Neutrino</td><td class="r num">$26.00</td></tr><tr><td>Salesforce Developer</td><td class="lvl">Mid-Level</td><td class="r num best">$32.00</td><td class="r num">$35.33</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num best">$32.00</td><td class="r num worst">$54.00</td><td class="r num">4</td><td class="cheap">CitiusTech</td><td class="r num">$22.00</td></tr><tr><td>Salesforce Developer</td><td class="lvl">Senior</td><td class="r num best">$34.00</td><td class="r num">$46.15</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">$35.00</td><td class="r num worst">$63.00</td><td class="r num">4</td><td class="cheap">CitiusTech</td><td class="r num">$29.00</td></tr><tr><td>Salesforce Developer</td><td class="lvl">Lead</td><td class="r num best">$36.00</td><td class="r num">$53.87</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num">$40.00</td><td class="r num worst">$70.00</td><td class="r num">4</td><td class="cheap">CitiusTech</td><td class="r num">$34.00</td></tr><tr><td>Scrum Master</td><td class="lvl">Standard</td><td class="r num">$38.00</td><td class="r num">$44.87</td><td class="r muted">&mdash;</td><td class="r muted">&mdash;</td><td class="r num best">$35.00</td><td class="r num worst">$49.00</td><td class="r num">4</td><td class="cheap">Neutrino</td><td class="r num">$14.00</td></tr></tbody>
+        </table>
+      </div>
+  </section>
+</div>
+
+<div class="panel" id="p6">
+  <section>
+    <div class="eyebrow">Markup &amp; Rebates</div>
+    <h2 class="section-title">Every markup restated on a common basis</h2>
+    <p class="section-note" style="margin-bottom:16px;">Vendors defined markup three different ways. Each figure below is recomputed line by line as (effective bill rate ÷ average pay rate) − 1, then averaged, so the five are finally comparable.</p>
+    <div class="card scrollx" style="margin-bottom:16px;">
+      <h3>True markup on pay</h3>
+      <div class="card-sub">Average, with the line-level range beneath</div>
+      <table>
+        <thead><tr><th>Vendor</th><th class="r">Onshore</th><th class="r">Nearshore</th><th class="r">Offshore</th><th>What the vendor's stated % actually measured</th></tr></thead>
+        <tbody><tr><td><b>CitiusTech</b></td><td class="r num">25.2%<span class="rng">21–28%</span></td><td class="r num">26.1%<span class="rng">22–29%</span></td><td class="r num">26.5%<span class="rng">25–29%</span></td><td class="stated">17.1%–22.4% — stated as MARGIN on bill, not markup on pay</td></tr><tr><td><b>Insight Global</b></td><td class="r num">62.2%<span class="rng">54–100%</span></td><td class="r muted">—</td><td class="r muted">—</td><td class="stated">50%–65% — stated as pay-to-bill RATIO, not a markup</td></tr><tr><td><b>IntelliPro</b></td><td class="r num">35.0%<span class="rng">35–35%</span></td><td class="r muted">—</td><td class="r num">40.0%<span class="rng">40–40%</span></td><td class="stated">35% onshore / 40% offshore — markup on pay (standard)</td></tr><tr><td><b>Neutrino</b></td><td class="r num">23.5%<span class="rng">20–30%</span></td><td class="r muted">—</td><td class="r num">23.3%<span class="rng">20–30%</span></td><td class="stated">20%–30% — markup on pay (standard)</td></tr><tr><td><b>On Demand Group</b></td><td class="r num">48.1%<span class="rng">30–67%</span></td><td class="r num">48.0%<span class="rng">23–85%</span></td><td class="r num">44.5%<span class="rng">18–83%</span></td><td class="stated">29.6%–66.7% — markup on pay including load</td></tr></tbody>
+      </table>
+      <div class="note red">
+        <span class="tag">Watch</span>
+        <span><b>ODG's markup range is the widest in the RFP</b> — 29.6% to 66.7% onshore and up to 85.2% nearshore, on lines where it disclosed pay. A single blended number hides that. Insight Global's onshore range tops out at 100%, meaning at least one line bills at double the pay rate.</span>
+      </div>
+    </div>
+    <div class="card scrollx">
+      <h3>Volume rebate ladder</h3>
+      <div class="card-sub">As submitted on each pricing schedule. Highest offer in each band is highlighted.</div>
+      <table>
+        <thead><tr><th>Vendor</th><th class="r">&lt;$5M</th><th class="r">$5–6M</th><th class="r">$6–7M</th><th class="r">$7–8M</th><th class="r">$8–9M</th><th class="r">$9–10M</th><th class="r">$10M+</th><th class="r">Value on $10M</th></tr></thead>
+        <tbody><tr><td><b>CitiusTech</b></td><td class="r num">1.50%</td><td class="r num">2.00%</td><td class="r num">2.50%</td><td class="r num">3.00%</td><td class="r num">3.50%</td><td class="r num">4.00%</td><td class="r num">4.50%</td><td class="r num">$450,000</td></tr><tr><td><b>Insight Global</b></td><td class="r num">0.00%</td><td class="r num">1.00%</td><td class="r num">1.00%</td><td class="r num">1.00%</td><td class="r num">1.50%</td><td class="r num">1.50%</td><td class="r num">2.00%</td><td class="r num">$200,000</td></tr><tr><td><b>IntelliPro</b></td><td class="r num">0.50%</td><td class="r num">0.50%</td><td class="r num">1.00%</td><td class="r num">1.00%</td><td class="r num">1.50%</td><td class="r num">1.50%</td><td class="r num">2.00%</td><td class="r num">$200,000</td></tr><tr><td><b>Neutrino</b></td><td class="r num best">3.00%</td><td class="r num best">4.00%</td><td class="r num best">4.50%</td><td class="r num best">5.00%</td><td class="r num best">5.50%</td><td class="r num best">6.00%</td><td class="r num best">7.00%</td><td class="r num">$700,000</td></tr><tr><td><b>On Demand Group</b></td><td class="r num">0.50%</td><td class="r num">0.75%</td><td class="r num">1.00%</td><td class="r num">1.25%</td><td class="r num">1.50%</td><td class="r num">1.75%</td><td class="r num">2.00%</td><td class="r num">$200,000</td></tr></tbody>
+      </table>
+      <div class="note teal">
+        <span class="tag">Consolidation lever</span>
+        <span><b>Neutrino's ladder beats every other vendor in every band</b>, reaching 7.0% at $10M+ against 4.5% from CitiusTech and 2.0% from the rest — a $500K annual difference against the next best offer on $10M routed. It is also the only ladder that pays meaningfully below $5M, so it rewards consolidation from the first dollar.</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="panel" id="p7">
+  <section>
+    <div class="eyebrow">Commercial Terms</div>
+    <h2 class="section-title">The terms that matter more than the rate</h2>
+    <p class="section-note" style="margin-bottom:16px;">Taken from each vendor's question-list responses. Given 58% sub-90-day attrition and 126 seats planned for FTE conversion, replacement guarantees and conversion terms carry more weight here than a dollar or two of hourly rate.</p>
+    <div class="card" style="margin-bottom:16px;"><h3>Replacement / guarantee (30-60-90 days)</h3><div class="card-sub">As submitted in each vendor's question list, ranked strongest first</div><div class="trow"><span class="tv">Neutrino</span><span class="flag best">Strong</span><span class="tt">No sourcing, recruiting or replacement fee for any replacement, whether the issue arises at 30, 60 or 90 days. Billed only for approved hours worked.</span></div><div class="trow"><span class="tv">CitiusTech</span><span class="flag ok">Adequate</span><span class="tt">Structured replacement and billing protection through the first 90 days — stronger where AssistRx did not pre-screen the candidate.</span></div><div class="trow"><span class="tv">IntelliPro</span><span class="flag ok">Adequate</span><span class="tt">40-hour performance guarantee: if the worker is not the right fit early in the assignment, AssistRx is not charged beyond it.</span></div><div class="trow"><span class="tv">Insight Global</span><span class="flag gap">Gap</span><span class="tt">No guarantee period on contract or contract-to-hire placements — they are time & material. Guarantee applies only to direct placements.</span></div><div class="trow"><span class="tv">On Demand Group</span><span class="flag gap">Gap</span><span class="tt">No formal 30, 60 or 90-day replacement guarantee in the MSA today.</span></div></div><div class="card" style="margin-bottom:16px;"><h3>Conversion / temp-to-hire</h3><div class="card-sub">As submitted in each vendor's question list, ranked strongest first</div><div class="trow"><span class="tv">IntelliPro</span><span class="flag best">Strong</span><span class="tt">Tenure ladder: 0–499 hrs 25%, 500–999 hrs 20%, 1,000–1,499 hrs 15%, 1,500–1,999 hrs 10%, 2,000+ hrs free.</span></div><div class="trow"><span class="tv">Insight Global</span><span class="flag ok">Adequate</span><span class="tt">Current MSA: 6-month C2H at 10%. Earlier conversion: 0–60 days 25%, 61–120 days 20%, 121–180 days 15%.</span></div><div class="trow"><span class="tv">On Demand Group</span><span class="flag ok">Adequate</span><span class="tt">Conversion and direct-hire options; fee reduces or is eliminated as the engagement lengthens.</span></div><div class="trow"><span class="tv">Neutrino</span><span class="flag gap">Gap</span><span class="tt">Onshore only. Not offered offshore or nearshore without separate written approval. No conversion under 1,040 hours.</span></div><div class="trow"><span class="tv">CitiusTech</span><span class="flag gap">Gap</span><span class="tt">No standard conversion programme. Will hire named talent on request with advance notice — a favour, not a contract right.</span></div></div><div class="card" style="margin-bottom:16px;"><h3>Fill rate, last 12 months</h3><div class="card-sub">As submitted in each vendor's question list, ranked strongest first</div><div class="trow"><span class="tv">CitiusTech</span><span class="flag best">Strong</span><span class="tt">87% — supporting data attached to the submission.</span></div><div class="trow"><span class="tv">Neutrino</span><span class="flag best">Strong</span><span class="tt">83% — 29 of 35 requisitions filled, Oct 2025 to 2 Jul 2026.</span></div><div class="trow"><span class="tv">Insight Global</span><span class="flag ok">Adequate</span><span class="tt">65% with AssistRx — 95 starts from 146 openings across 24 requisitions.</span></div><div class="trow"><span class="tv">On Demand Group</span><span class="flag gap">Gap</span><span class="tt">53% with AssistRx — 52 of 98 requisitions. Roughly one placement per two requisitions released.</span></div><div class="trow"><span class="tv">IntelliPro</span><span class="flag gap">Gap</span><span class="tt">26.83% globally — 550 fills from 2,050 roles. Not AssistRx-specific.</span></div></div><div class="card" style="margin-bottom:16px;"><h3>Security attestation</h3><div class="card-sub">As submitted in each vendor's question list, ranked strongest first</div><div class="trow"><span class="tv">Neutrino</span><span class="flag best">Strong</span><span class="tt">ISO and SOC 2 certified, HIPAA compliant, formal information security programme.</span></div><div class="trow"><span class="tv">CitiusTech</span><span class="flag best">Strong</span><span class="tt">SOC 2 Type II, under the CCSP information security framework.</span></div><div class="trow"><span class="tv">Insight Global</span><span class="flag ok">Adequate</span><span class="tt">SOC 2 Type I only — Type II not provided.</span></div><div class="trow"><span class="tv">On Demand Group</span><span class="flag ok">Adequate</span><span class="tt">Security policies document and attestation note; no SOC 2 report provided.</span></div><div class="trow"><span class="tv">IntelliPro</span><span class="flag gap">Gap</span><span class="tt">No SOC 2. In the process of obtaining SOC 1.</span></div></div><div class="card" style="margin-bottom:16px;"><h3>Payment terms</h3><div class="card-sub">As submitted in each vendor's question list, ranked strongest first</div><div class="trow"><span class="tv">CitiusTech</span><span class="flag best">Strong</span><span class="tt">Accepts Net 90; prefers Net 45–60. No early-pay discount.</span></div><div class="trow"><span class="tv">IntelliPro</span><span class="flag ok">Adequate</span><span class="tt">Prefers 30–60 days; would accept Net 90 if not negotiable. Pays workers bi-weekly.</span></div><div class="trow"><span class="tv">Neutrino</span><span class="flag ok">Adequate</span><span class="tt">Can accept Net 90 but requests to stay at the current Net 30 MSA term.</span></div><div class="trow"><span class="tv">On Demand Group</span><span class="flag gap">Gap</span><span class="tt">Net 30 today; flags extended terms as a significant working-capital burden.</span></div><div class="trow"><span class="tv">Insight Global</span><span class="flag gap">Gap</span><span class="tt">Declined Net 90 — standard is Net 30 per the current MSA.</span></div></div>
+    <div class="note red">
+      <span class="tag">Negotiate first</span>
+      <span>Two Tier 1 candidates have exactly one serious gap each, and they are opposite gaps: <b>CitiusTech has no conversion programme but the strongest security and fill rate; Neutrino has the best replacement and rebate terms but restricts conversion to onshore.</b> Awarding both and negotiating each vendor's single gap is stronger than awarding either alone.</span>
+    </div>
+  </section>
+</div>
+
+<div class="panel" id="p8">
+  <section>
+    <div class="eyebrow">Recommendation</div>
+    <h2 class="section-title">Vendor tiering</h2>
+    <p class="section-note" style="margin-bottom:16px;">Ranked on the onshore like-for-like basket, true markup, rebate ladder, fill rate and the commercial terms above.</p>
+    <div class="card scrollx" style="margin-bottom:16px;">
+      <table>
+        <thead><tr><th>Tier</th><th>Vendor</th><th class="r">Onshore basket</th><th class="r">True markup</th><th class="r">Rebate @$10M+</th><th class="r">Time to fill</th><th class="r">Fill rate</th><th>Why, and what to watch</th></tr></thead>
+        <tbody><tr><td><span class="chip t1">Tier 1</span></td><td><b>CitiusTech</b></td><td class="r num">$102.78</td><td class="r num">25.2%</td><td class="r num">4.5%</td><td class="r">1–2 wks</td><td class="r num">87%</td><td class="why">Core onshore and nearshore volume. Lowest markup band of the five, SOC 2 Type II, best fill rate.<span class="cav">Watch: No standard conversion programme — the one term that must be negotiated in.</span></td></tr><tr><td><span class="chip t1">Tier 1</span></td><td><b>Neutrino</b></td><td class="r num">$103.89</td><td class="r num">23.5%</td><td class="r num">7.0%</td><td class="r">1–2 wks</td><td class="r num">83%</td><td class="why">Offshore delivery and the rebate engine. Lowest true markup at 23.5%, and the only vendor offering fee-free replacement at 30, 60 or 90 days.<span class="cav">Watch: No nearshore rates submitted; conversion onshore only; wants to stay at Net 30.</span></td></tr><tr><td><span class="chip t2">Tier 2</span></td><td><b>IntelliPro</b></td><td class="r num">$91.50</td><td class="r num">35.0%</td><td class="r num">2.0%</td><td class="r">1.5–3 wks</td><td class="r num">26.8%*</td><td class="why">Cheapest card in the RFP onshore and offshore, and the best conversion ladder — free at 2,000 hours.<span class="cav">Watch: No SOC 2, 26.8% global fill rate, no USD nearshore, and coverage gaps by location.</span></td></tr><tr><td><span class="chip t2">Tier 2</span></td><td><b>Insight Global</b></td><td class="r num">$107.22</td><td class="r num">62.2%</td><td class="r num">2.0%</td><td class="r">48 hrs</td><td class="r num">65%</td><td class="why">Speed and coverage — the only vendor quoting all 33 onshore role-levels, and 48-hour time to fill.<span class="cav">Watch: 62.2% true markup, SOC 2 Type I only, no guarantee period on contract placements, declined Net 90.</span></td></tr><tr><td><span class="chip exit">Exit</span></td><td><b>On Demand Group</b></td><td class="r num">$117.89</td><td class="r num">48.1%</td><td class="r num">2.0%</td><td class="r">4–5 wks</td><td class="r num">53%</td><td class="why">Only two lowest-rate wins across 33 onshore role-levels, and none at all offshore.<span class="cav">Watch: Most expensive onshore, 53% fill rate, no replacement guarantee, and no offshore rate advantage.</span></td></tr></tbody>
+      </table>
+      <div class="minor">* IntelliPro's 26.8% fill rate is a global blended figure across 2,050 roles, not AssistRx-specific.</div>
+    </div>
+    <div class="card scrollx">
+      <h3>Potential savings, recomputed on these rate cards</h3>
+      <div class="card-sub">Against current run-rate spend by vendor. Low uses markup parity with Tier 1; high uses the cheapest submitted card.</div>
+      <table>
+        <thead><tr><th>Savings option</th><th>Applies to</th><th class="r">Spend</th><th>Basis</th><th class="r">Low</th><th class="r">High</th></tr></thead>
+        <tbody><tr><td><b>Reprice or replace ODG's onshore book</b></td><td>On Demand Group</td><td class="r num">$8,589,984</td><td class="basis">48.1% true markup vs 23.5–25.2% at Tier 1; ODG basket $117.89 vs $91.50–$103.89</td><td class="r num">$1,328,228</td><td class="r num">$1,922,891</td></tr><tr><td><b>Normalize Insight Global's markup</b></td><td>Insight Global</td><td class="r num">$4,310,155</td><td class="basis">62.2% true markup — the highest in the RFP and nearly triple Tier 1</td><td class="r num">$983,204</td><td class="r num">$1,028,379</td></tr><tr><td><b>Shift eligible tech seats offshore</b></td><td>Per 10% of finalist spend</td><td class="r num">$1,960,000</td><td class="basis">Same role delivered offshore: CitiusTech $102.78→$35.15, IntelliPro $91.50→$25.52</td><td class="r num">$1,289,694</td><td class="r num">$1,413,342</td></tr>
+          <tr class="total"><td>Combined range</td><td></td><td></td><td></td><td class="r num">$3,601,127</td><td class="r num">$4,364,612</td></tr>
+        </tbody>
+      </table>
+      <div class="note">
+        <span class="tag">Read first</span>
+        <span>Do not sum these without seat-level validation — a seat that is both repriced and moved offshore is counted twice. Neutrino's rebate stacks on top of all three. And two of the three cannot be executed today: <b>81% of contractor records carry no real role and 70% carry no location</b>, so neither a rate ceiling nor an onshore-to-offshore mix can be measured until the database is fixed.</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="fineprint">
+  <strong>Sources:</strong> Workforce tabs from the HR extracts — 324 active contingent workers and 363 contingent terminations, 2 Jan to 21 Aug 2026 — aggregated, with no individual records displayed. Rate tabs from the five vendor RFP responses as submitted — sheet "4 - Pricing Schedule" for all rates and rebate ladders, sheet "3 - Question List" for commercial terms. 373 rate lines extracted; nothing re-priced or estimated. Insight Global's India and LATAM rates were submitted as ranges and the midpoint is used, with both bounds preserved in the source. IntelliPro's Canada rates are CAD and excluded from USD comparisons. Location labels normalized: US = onshore; Canada and LATAM = nearshore; India and SE Asia = offshore. Current spend by vendor from the contingent run-rate extract, annualized at 40 hrs/wk.
+</div>
+</main>
+<footer>
+  <span>AssistRx &nbsp;|&nbsp; Talent Acquisition &nbsp;|&nbsp; Contingent Labor RFP</span>
+  <span>Internal working document — rates as submitted, subject to negotiation</span>
+</footer>
+<script>
+  function show(i){
+    for(var k=0;k<9;k++){
+      var t=document.getElementById("t"+k), p=document.getElementById("p"+k);
+      var on=(k===i);
+      t.classList.toggle("active",on);
+      t.setAttribute("aria-selected",on?"true":"false");
+      p.classList.toggle("active",on);
+    }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+</script>
+</body>
+</html>
