@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contingent Labor Program — Executive Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#16294B;--teal:#00A6BE;--teal-dark:#00869A;--teal-wash:#E7F6F9;
+    --mist:#F4F7F9;--line:#DCE5EC;--ink:#1C2B42;--slate:#54677D;
+    --amber:#8A6A00;--amber-wash:#FBF3DC;--amber-bar:#D9A400;
+    --red:#B23A2C;--red-wash:#FBEBE8;--green:#1E7A4C;--green-wash:#E8F5EE;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--mist);color:var(--ink);font-size:15px;line-height:1.5;}
+  .num{font-variant-numeric:tabular-nums;}
+
+  header{background:var(--navy);color:#fff;padding:26px 44px 24px;}
+  .hi{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;gap:22px;flex-wrap:wrap;}
+  header h1{font-family:'Archivo',sans-serif;font-weight:800;font-size:27px;letter-spacing:-0.015em;}
+  header .sub{color:#B9C6DA;font-size:13.5px;margin-top:6px;}
+  header .meta{text-align:right;color:#B9C6DA;font-size:12.5px;line-height:1.6;}
+  header .meta b{color:#fff;}
+
+  main{max-width:1400px;margin:0 auto;padding:28px 44px 54px;}
+  section{margin-top:34px;} section:first-child{margin-top:0;}
+  .eyebrow{font-family:'Archivo',sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-dark);margin-bottom:6px;}
+  .st{font-family:'Archivo',sans-serif;font-weight:700;font-size:21px;color:var(--navy);letter-spacing:-.01em;}
+  .sn{color:var(--slate);font-size:14px;margin-top:5px;max-width:960px;}
+
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 16px 13px;}
+  .kpi.warn{border-left:3px solid var(--red);}
+  .kpi.good{border-left:3px solid var(--green);}
+  .kpi .v{font-family:'Archivo',sans-serif;font-weight:800;font-size:23px;color:var(--navy);letter-spacing:-.02em;}
+  .kpi.warn .v{color:var(--red);} .kpi.good .v{color:var(--green);}
+  .kpi .l{font-size:11.5px;color:var(--slate);margin-top:3px;line-height:1.4;}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px;}
+  .card h3{font-family:'Archivo',sans-serif;font-weight:700;font-size:15.5px;color:var(--navy);margin-bottom:2px;}
+  .card-sub{font-size:12.5px;color:var(--slate);margin-bottom:14px;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+  .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start;}
+  .g12{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;align-items:start;}
+  .scrollx{overflow-x:auto;} .scrollx table{min-width:520px;}
+  .scrollx.narrow table{min-width:0;}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{text-align:left;font-family:'Archivo',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.07em;
+     text-transform:uppercase;color:var(--slate);padding:0 9px 8px;border-bottom:2px solid var(--navy);}
+  th.r,td.r{text-align:right;}
+  td{padding:9px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tr.tot td{border-bottom:none;border-top:2px solid var(--navy);font-weight:700;color:var(--navy);background:var(--teal-wash);}
+  td.hot{color:var(--red);font-weight:700;} td.g{color:var(--green);font-weight:700;}
+
+  .brow{display:grid;grid-template-columns:118px 1fr 44px;gap:11px;align-items:center;padding:6px 0;font-size:13px;}
+  .brow .bl{color:var(--navy);font-weight:500;}
+  .bt{display:block;height:13px;background:var(--mist);border-radius:7px;overflow:hidden;}
+  .bf{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,var(--teal),var(--teal-dark));}
+  .bf.hot{background:linear-gradient(90deg,#E0705E,var(--red));}
+  .bf.amb{background:linear-gradient(90deg,#E8C25A,var(--amber-bar));}
+  .brow .bv{text-align:right;font-family:'Archivo',sans-serif;font-weight:700;color:var(--navy);}
+
+  /* tenure ladder */
+  .ladder{display:flex;flex-direction:column;gap:7px;}
+  .rung{display:grid;grid-template-columns:74px 1fr 128px;gap:12px;align-items:center;}
+  .rung .band{font-family:'Archivo',sans-serif;font-weight:700;font-size:12.5px;color:var(--navy);}
+  .rung .track{display:block;height:26px;background:var(--mist);border-radius:6px;position:relative;overflow:hidden;}
+  .rung .fill{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--teal),var(--teal-dark));}
+  .rung .fill.hot{background:linear-gradient(90deg,#E0705E,var(--red));}
+  .rung .fill.amb{background:linear-gradient(90deg,#E8C25A,var(--amber-bar));}
+  .rung .cnt{position:absolute;left:9px;top:0;line-height:26px;font-family:'Archivo',sans-serif;font-weight:800;font-size:13px;color:#fff;}
+  .rung .cnt.dark{color:var(--navy);}
+  .rung .sp{text-align:right;font-size:12.5px;color:var(--slate);font-variant-numeric:tabular-nums;}
+  .rung .sp b{color:var(--navy);font-weight:600;}
+
+  .note{display:flex;gap:11px;align-items:baseline;border-radius:8px;padding:12px 15px;font-size:13px;line-height:1.5;margin-top:14px;
+    background:var(--amber-wash);border-left:3px solid var(--amber-bar);}
+  .note.red{background:var(--red-wash);border-left-color:var(--red);}
+  .note.green{background:var(--green-wash);border-left-color:var(--green);}
+  .note.teal{background:var(--teal-wash);border-left-color:var(--teal);}
+  .note .tg{font-family:'Archivo',sans-serif;font-weight:800;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);white-space:nowrap;}
+  .note.red .tg{color:var(--red);} .note.green .tg{color:var(--green);} .note.teal .tg{color:var(--teal-dark);}
+  .note b{color:var(--navy);font-weight:600;}
+
+  .hero{background:linear-gradient(135deg,#1B3157,var(--navy));color:#fff;border-radius:12px;padding:22px 24px;display:flex;align-items:center;gap:26px;flex-wrap:wrap;}
+  .hero .big{font-family:'Archivo',sans-serif;font-weight:800;font-size:52px;line-height:1;letter-spacing:-.03em;}
+  .hero .txt{font-size:13.5px;color:#C6D2E4;line-height:1.55;max-width:640px;}
+  .hero .txt b{color:#fff;font-weight:600;}
+
+  ol.act{list-style:none;counter-reset:a;}
+  ol.act li{counter-increment:a;position:relative;padding:9px 0 9px 24px;border-bottom:1px solid var(--line);font-size:13px;line-height:1.45;color:var(--slate);}
+  ol.act li:last-child{border-bottom:none;}
+  ol.act li:before{content:counter(a);position:absolute;left:0;top:9px;font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;color:var(--teal-dark);}
+  ol.act li b{color:var(--navy);font-weight:600;}
+  .own{display:inline-block;font-family:'Archivo',sans-serif;font-weight:700;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;
+    background:var(--teal-wash);color:var(--teal-dark);border-radius:4px;padding:2px 7px;margin-left:5px;white-space:nowrap;}
+  .own.now{background:var(--red-wash);color:var(--red);}
+
+  .chip{font-family:'Archivo',sans-serif;font-weight:700;font-size:9.5px;letter-spacing:.06em;border-radius:4px;padding:3px 8px;white-space:nowrap;}
+  .chip.t1{color:var(--green);background:var(--green-wash);}
+  .chip.t2{color:var(--teal-dark);background:var(--teal-wash);}
+  .chip.exit{color:var(--red);background:var(--red-wash);}
+
+  .fp{border-top:1px solid var(--line);padding-top:14px;font-size:11.5px;color:var(--slate);line-height:1.7;margin-top:32px;}
+  .fp b{font-family:'Archivo',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-dark);}
+  footer{max-width:1400px;margin:0 auto;padding:0 44px 36px;color:#8FA0B4;font-size:11.5px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+
+  @media (max-width:1150px){
+    .kpis{grid-template-columns:repeat(3,1fr);}
+    .g2,.g3,.g12{grid-template-columns:1fr;}
+    .hero .big{font-size:40px;}
+  }
+  @media (max-width:640px){
+    header,main{padding-left:18px;padding-right:18px;} footer{padding-left:18px;padding-right:18px;}
+    .kpis{grid-template-columns:repeat(2,1fr);}
+    .rung{grid-template-columns:60px 1fr;} .rung .sp{grid-column:2;text-align:left;}
+    .brow{grid-template-columns:96px 1fr 40px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hi">
+    <div>
+      <h1>Contingent Labor Program — Executive Dashboard</h1>
+      <div class="sub">Contractor database &nbsp;·&nbsp; Onboarding controls &nbsp;·&nbsp; Rate cards, consolidation &amp; savings</div>
+    </div>
+    <div class="meta">
+      <b>Talent Acquisition</b> &nbsp;·&nbsp; 27 Aug 2026<br>
+      <b>All five finalists have presented</b><br>
+      HR extracts (324 active / 363 termed) · 5 vendor RFP responses · run-rate spend extract
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- KPIs -->
+  <section>
+    <div class="kpis">
+      <div class="kpi"><div class="v num">$32.6M</div><div class="l">Annual run-rate spend across 13 agencies</div></div>
+      <div class="kpi"><div class="v num">324</div><div class="l">Active contingent workers — ~10% of workforce</div></div>
+      <div class="kpi warn"><div class="v num">112%</div><div class="l">YTD churn — 363 exits against 324 seats</div></div>
+      <div class="kpi warn"><div class="v num">93</div><div class="l">Seats past 12 months with no decision made</div></div>
+      <div class="kpi warn"><div class="v num">83</div><div class="l">Direct 1099s in HR vs 9 in the spend file</div></div>
+      <div class="kpi good"><div class="v num">$3.6–4.4M</div><div class="l">Identified annual rate-side savings</div></div>
+    </div>
+  </section>
+
+  <!-- 1. TENURE -->
+  <section>
+    <div class="eyebrow">Section 1 · The clearest governance failure in the program</div>
+    <h2 class="st">Contractors who should already have been converted or ended</h2>
+    <p class="sn" style="margin-bottom:16px;">Tenure recomputed from hire dates as of 27 Aug 2026; all 324 records parsed. Nothing in the current record flags a seat approaching a decision point, so assignments have renewed silently for years.</p>
+
+    <div class="hero" style="margin-bottom:16px;">
+      <div class="big num">11.9<span style="font-size:22px;font-weight:700;"> yrs</span></div>
+      <div class="txt">The longest-running contingent engagement at AssistRx — a <b>Development contractor hired October 2014</b>, still engaged today as an agency temp. Eight more have passed seven years, and <b>39 seats have been contingent for more than three years</b>. Together the 93 seats past 12 months have accumulated <b>196.2 contingent-years beyond the decision point</b>, roughly <b>$20.6M of cumulative spend</b>.</div>
+    </div>
+
+    <div class="g12">
+      <div class="card">
+        <h3>Tenure ladder — 93 seats past the 12-month mark</h3>
+        <div class="card-sub">Bar width is seat count; the figure on the right is annual spend held in that band</div>
+        <div class="ladder">
+          <div class="rung"><span class="band">1–2 yrs</span><span class="track"><span class="fill amb" style="width:100%;background:linear-gradient(90deg,#E8C25A,var(--amber-bar));"></span><span class="cnt">35 seats</span></span><span class="sp"><b>$3,683,631</b><br>12.3 yrs past</span></div>
+          <div class="rung"><span class="band">2–3 yrs</span><span class="track"><span class="fill" style="width:54.3%;background:linear-gradient(90deg,#E8A55A,#C77A1E);"></span><span class="cnt">19</span></span><span class="sp"><b>$1,999,685</b><br>26.2 yrs past</span></div>
+          <div class="rung"><span class="band">3–5 yrs</span><span class="track"><span class="fill hot" style="width:77.1%;"></span><span class="cnt">27</span></span><span class="sp"><b>$2,841,658</b><br>77.5 yrs past</span></div>
+          <div class="rung"><span class="band">5–7 yrs</span><span class="track"><span class="fill hot" style="width:8.6%;"></span><span class="cnt dark" style="left:auto;right:10px;">3 seats</span></span><span class="sp"><b>$315,740</b><br>13.5 yrs past</span></div>
+          <div class="rung"><span class="band">7–12 yrs</span><span class="track"><span class="fill" style="width:25.7%;background:linear-gradient(90deg,#8E2C20,#6E1F16);"></span><span class="cnt">9</span></span><span class="sp"><b>$947,219</b><br>66.7 yrs past</span></div>
+        </div>
+        <div class="note red">
+          <span class="tg">Total</span>
+          <span><b>93 seats · 29% of the book · $9,787,933 in annual spend · 196.2 years held past 12 months.</b> 86 of the 93 are agency temps, so every year beyond the decision point paid an agency markup on top of pay.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Where the long-tenured sit</h3>
+        <div class="card-sub">This is a Technology problem, not a Patient Solutions one</div>
+        <div class="brow"><span class="bl">Technology</span><span class="bt"><span class="bf hot" style="width:100%"></span></span><span class="bv num">80</span></div>
+        <div class="brow"><span class="bl">Commercial</span><span class="bt"><span class="bf amb" style="width:13.8%"></span></span><span class="bv num">11</span></div>
+        <div class="brow"><span class="bl">PS + Pharma</span><span class="bt"><span class="bf" style="width:2.5%"></span></span><span class="bv num">2</span></div>
+        <div style="font-family:'Archivo',sans-serif;font-weight:700;font-size:12.5px;color:var(--navy);margin:14px 0 4px;">By department</div>
+        <div class="brow"><span class="bl">Development</span><span class="bt"><span class="bf hot" style="width:100%"></span></span><span class="bv num">44</span></div>
+        <div class="brow"><span class="bl">Quality &amp; Release</span><span class="bt"><span class="bf hot" style="width:63.6%"></span></span><span class="bv num">28</span></div>
+        <div class="brow"><span class="bl">Product</span><span class="bt"><span class="bf amb" style="width:20.5%"></span></span><span class="bv num">9</span></div>
+        <div class="brow"><span class="bl">Enterprise Data</span><span class="bt"><span class="bf amb" style="width:13.6%"></span></span><span class="bv num">6</span></div>
+        <div class="brow"><span class="bl">All others</span><span class="bt"><span class="bf" style="width:13.6%"></span></span><span class="bv num">6</span></div>
+        <div class="note green">
+          <span class="tg">What it returns</span>
+          <span>The pharmacy program proves conversion saves <b>31–33% per seat</b> (observed, not modeled). On this cohort's $9.79M, converting or ending returns <b>$1.5M–$3.0M annually</b>.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. TURNOVER -->
+  <section>
+    <div class="eyebrow">Section 2 · 363 exits, 2 Jan – 27 Aug 2026</div>
+    <h2 class="st">We are replacing the workforce faster than we staff it</h2>
+    <p class="sn" style="margin-bottom:16px;">Median tenure at termination is 2.8 months. At this pace the program is tracking toward roughly 570 exits for the year.</p>
+    <div class="g3">
+      <div class="card scrollx narrow">
+        <h3>Tenure at exit</h3>
+        <div class="card-sub">210 of 363 did not reach 90 days</div>
+        <table>
+          <thead><tr><th>Band</th><th class="r">Exits</th><th class="r">%</th></tr></thead>
+          <tbody>
+            <tr><td>Under 30 days</td><td class="r num hot">96</td><td class="r num">26%</td></tr>
+            <tr><td>30–60 days</td><td class="r num hot">77</td><td class="r num">21%</td></tr>
+            <tr><td>60–90 days</td><td class="r num hot">37</td><td class="r num">10%</td></tr>
+            <tr><td>90 days – 1 year</td><td class="r num">149</td><td class="r num">41%</td></tr>
+            <tr><td>1–3 years</td><td class="r num">4</td><td class="r num">1%</td></tr>
+            <tr class="tot"><td>Inside 90 days</td><td class="r num">210</td><td class="r num">58%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card scrollx narrow">
+        <h3>Reason for exit</h3>
+        <div class="card-sub">Red are quality and screening failures, not program milestones</div>
+        <table>
+          <thead><tr><th>Reason</th><th class="r">Exits</th><th class="r">%</th></tr></thead>
+          <tbody>
+            <tr><td>End of contract</td><td class="r num">155</td><td class="r num">43%</td></tr>
+            <tr><td>Performance</td><td class="r num hot">75</td><td class="r num">21%</td></tr>
+            <tr><td>Did not start / no show</td><td class="r num hot">35</td><td class="r num">10%</td></tr>
+            <tr><td>Attendance</td><td class="r num hot">29</td><td class="r num">8%</td></tr>
+            <tr><td>Abandoned job</td><td class="r num hot">16</td><td class="r num">4%</td></tr>
+            <tr class="tot"><td>Quality &amp; screening</td><td class="r num">155</td><td class="r num">43%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card scrollx narrow">
+        <h3>Concentration</h3>
+        <div class="card-sub">PS + Pharma holds 36% of seats, produces 94% of exits</div>
+        <table>
+          <thead><tr><th>Department</th><th class="r">Exits</th><th class="r">Perf.</th></tr></thead>
+          <tbody>
+            <tr><td>Patient Solutions</td><td class="r num">168</td><td class="r num">21</td></tr>
+            <tr><td>CoAssist Pharmacy</td><td class="r num">144</td><td class="r num hot">47</td></tr>
+            <tr><td>ARx PS Pharmacy</td><td class="r num">28</td><td class="r num">1</td></tr>
+            <tr><td>All other depts</td><td class="r num">23</td><td class="r num">6</td></tr>
+            <tr class="tot"><td>PS + Pharma share</td><td class="r num">94%</td><td class="r num">92%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="note red">
+      <span class="tg">35 never started</span>
+      <span>Every no-show record carries zero tenure — sourced, onboarded and provisioned, then no appearance. End of contract explains 140 of the PS + Pharma exits, which is the pharmacy conversion working as intended, leaving <b>roughly 200 exits driven by quality and screening</b>. Only Neutrino offers fee-free replacement at 30, 60 or 90 days; Insight Global offers no guarantee period on contract placements and ODG has none in its MSA.</span>
+    </div>
+  </section>
+
+  <!-- 3. RATE CARDS -->
+  <section>
+    <div class="eyebrow">Section 3 · 373 rate lines across 9 cards, restated on one basis</div>
+    <h2 class="st">Rate cards &amp; savings</h2>
+    <p class="sn" style="margin-bottom:16px;">No vendor's stated markup was usable as submitted — CitiusTech quoted margin on bill and Insight Global a pay-to-bill ratio. All five are recomputed as (bill ÷ pay) − 1.</p>
+    <div class="g2">
+      <div class="card scrollx">
+        <h3>Vendor tiering</h3>
+        <div class="card-sub">Onshore basket = the 9 role-levels all five vendors quoted</div>
+        <table>
+          <thead><tr><th>Tier</th><th>Vendor</th><th class="r">Basket</th><th class="r">True markup</th><th class="r">Rebate @$10M</th><th class="r">Fill</th></tr></thead>
+          <tbody>
+            <tr><td><span class="chip t1">Tier 1</span></td><td><b>CitiusTech</b></td><td class="r num">$102.78</td><td class="r num">25.2%</td><td class="r num">4.5%</td><td class="r num g">87%</td></tr>
+            <tr><td><span class="chip t1">Tier 1</span></td><td><b>Neutrino</b></td><td class="r num">$103.89</td><td class="r num g">23.5%</td><td class="r num g">7.0%</td><td class="r num">83%</td></tr>
+            <tr><td><span class="chip t2">Tier 2</span></td><td><b>IntelliPro</b></td><td class="r num g">$91.50</td><td class="r num">35.0%</td><td class="r num">2.0%</td><td class="r num hot">26.8%*</td></tr>
+            <tr><td><span class="chip t2">Tier 2</span></td><td><b>Insight Global</b></td><td class="r num">$107.22</td><td class="r num hot">62.2%</td><td class="r num">2.0%</td><td class="r num">65%</td></tr>
+            <tr><td><span class="chip exit">Exit</span></td><td><b>On Demand Group</b></td><td class="r num hot">$117.89</td><td class="r num hot">48.1%</td><td class="r num">2.0%</td><td class="r num hot">53%</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:11.5px;color:var(--slate);margin-top:10px;">* Global blended figure across 2,050 roles, not AssistRx-specific.</div>
+      </div>
+      <div class="card scrollx">
+        <h3>Potential savings</h3>
+        <div class="card-sub">Against current run-rate spend, using the RFP rates as submitted</div>
+        <table>
+          <thead><tr><th>Option</th><th class="r">Spend</th><th class="r">Low</th><th class="r">High</th></tr></thead>
+          <tbody>
+            <tr><td><b>Reprice / replace ODG onshore book</b></td><td class="r num">$8.59M</td><td class="r num">$1,328,228</td><td class="r num">$1,922,891</td></tr>
+            <tr><td><b>Normalize Insight Global markup</b></td><td class="r num">$4.31M</td><td class="r num">$983,204</td><td class="r num">$1,028,379</td></tr>
+            <tr><td><b>Shift eligible tech seats offshore</b></td><td class="r num">$1.96M</td><td class="r num">$1,289,694</td><td class="r num">$1,413,342</td></tr>
+            <tr class="tot"><td>Combined rate-side range</td><td class="r">&nbsp;</td><td class="r num">$3,601,127</td><td class="r num">$4,364,612</td></tr>
+          </tbody>
+        </table>
+        <div class="note">
+          <span class="tg">Do not sum</span>
+          <span>The rate-side range and the <b>$9.40M seat-level opportunity overlap</b> — a seat both repriced and moved offshore is counted twice. Two of the three levers are also blocked today: <b>81% of records carry no usable role and 70% no location</b>, so a rate ceiling cannot be enforced and offshore mix cannot be measured.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. NEXT -->
+  <section>
+    <div class="eyebrow">Section 4 · Sequenced so data fixes land before the levers that depend on them</div>
+    <h2 class="st">What happens next</h2>
+    <div class="g2" style="margin-top:16px;">
+      <div class="card">
+        <h3>Now — no approval needed</h3>
+        <div class="card-sub">Actionable this week</div>
+        <ol class="act">
+          <li><b>Reconcile the 1099 count</b> — 83 in HR against 9 in spend. 76 of them are one cohort: all Patient Solutions, all billable, all titled "Contractor," none with a program. <span class="own now">TA + HRIS</span></li>
+          <li><b>Execute the 6 Term/Reduce seats</b> — $713,440, 100% savings, no negotiation required. <span class="own now">TA</span></li>
+          <li><b>Set a convert-or-end decision on the 39 seats past three years</b>, starting with the nine past seven. <span class="own now">TA + dept leaders</span></li>
+          <li><b>Freeze new off-panel vendors and direct 1099 engagement</b> pending award. <span class="own now">TA</span></li>
+          <li><b>Open 90-day attrition root cause</b> with Patient Solutions and CoAssist Pharmacy. <span class="own now">TA + PS/Pharma</span></li>
+          <li><b>Pilot the new agency with Nicole Loper</b> — trial requisitions with the agency we like, tracked on fill rate, time to fill, rate compliance and 90-day survival before any volume commitment. <span class="own now">TA + N. Loper</span></li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>30 to 90 days</h3>
+        <div class="card-sub">Through the award and into standing governance</div>
+        <ol class="act">
+          <li><b>We are in the Tier 1 and Tier 2 selection process.</b> <span class="own">30 days</span></li>
+          <li><b>Negotiate into every MSA:</b> replacement guarantee with a 90-day quality clause, tenure-based conversion waivers, rate ceilings by role and level, rebate ladders. <span class="own">30 days</span></li>
+          <li><b>Re-bid or transition ODG's $8.59M book</b> using the 34% same-role rate gap as the evidence base. <span class="own">30 days</span></li>
+          <li><b>Backfill role, level and location</b> on the affected records — prerequisite for the rate ceiling. <span class="own">60 days</span></li>
+          <li><b>Turn on the three onboarding gates</b> and stand up the quarterly vendor scorecard and rebate true-up. <span class="own">60–90 days</span></li>
+        </ol>
+      </div>
+    </div>
+    <div class="note red">
+      <span class="tg">Priority</span>
+      <span>If only one item moves this month it is the <b>1099 reconciliation</b>. Every other number here is stable enough to present; that one carries a 74-worker discrepancy on the program's highest-risk classification.</span>
+    </div>
+  </section>
+
+  <div class="fp">
+    <b>Notes:</b> Tenure computed from hire/rehire date as of 27 Aug 2026; 324 of 324 records parsed. Spend annualized at 40 hrs/wk, 12 months; the $105,247 blended seat cost is applied where per-seat rates are unavailable in the HR extract, so cohort spend figures are indicative rather than invoiced. The 31–33% conversion saving is the observed delta from the RPh pharmacy program, not a modeled assumption. Rate cards, markups and commercial terms taken from the five vendor RFP responses as submitted; nothing re-priced or estimated. Onboarding control gaps are inferred from spend and HR patterns, not a policy audit — confirm against current practice before presenting as fact. Rate-side savings and the $9.40M seat-level opportunity overlap and must not be summed. Populations aggregated; no individual records displayed.
+  </div>
+
+</main>
+
+<footer>
+  <span>AssistRx &nbsp;|&nbsp; Talent Acquisition &nbsp;|&nbsp; Contingent Labor Program</span>
+  <span>Internal working document — findings subject to confirmation and negotiation outcomes</span>
+</footer>
+
+</body>
+</html>
