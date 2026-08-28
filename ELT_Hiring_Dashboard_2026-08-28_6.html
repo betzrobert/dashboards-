@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open Reqs vs Headcount by ELT Leader — 08/28/2026</title>
+<style>
+  :root { --navy:#093e52; --teal:#007178; --gold:#ffc629; --ink:#12242c; --mute:#5d7480;
+    --line:#dfe6e9; --bg:#f4f7f8; --card:#fff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-size:14px; line-height:1.45;
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .wrap { max-width:1300px; margin:0 auto; padding:0 24px 56px; }
+  header { background:linear-gradient(105deg,var(--navy),var(--teal)); color:#fff; padding:30px 0 0; }
+  header .wrap { padding-bottom:0; }
+  .eyebrow { font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); font-weight:700; }
+  h1 { margin:8px 0 6px; font-size:29px; font-weight:700; letter-spacing:-.3px; }
+  .sub { font-size:13px; color:#cfe3e6; max-width:940px; }
+  nav { display:flex; gap:4px; margin-top:20px; }
+  nav button { background:rgba(255,255,255,.09); color:#dff0f2; border:0; border-radius:5px 5px 0 0;
+    padding:10px 18px; font:600 13px inherit; cursor:pointer; }
+  nav button:hover { background:rgba(255,255,255,.18); color:#fff; }
+  nav button[aria-selected="true"] { background:var(--bg); color:var(--navy); }
+  nav button:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+
+  .kpis { display:grid; grid-template-columns:repeat(6,1fr); gap:14px; margin:22px 0; }
+  .kpi { background:var(--card); border:1px solid var(--line); border-top:3px solid var(--teal);
+    border-radius:6px; padding:14px 16px; box-shadow:0 1px 3px rgba(9,62,82,.07); }
+  .kpi.accent { border-top-color:var(--gold); }
+  .kpi.warn { border-top-color:#c8611f; }
+  .kpi .v { font-size:26px; font-weight:700; color:var(--navy); letter-spacing:-.5px; }
+  .kpi .l { font-size:10.5px; text-transform:uppercase; letter-spacing:.09em; color:var(--mute);
+    font-weight:600; margin-top:2px; min-height:26px; }
+  .kpi .f { font-size:11.5px; color:var(--teal); margin-top:5px; }
+
+  section { background:var(--card); border:1px solid var(--line); border-radius:6px;
+    padding:20px 22px 22px; margin-bottom:20px; box-shadow:0 1px 2px rgba(9,62,82,.05); }
+  .shead { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    border-bottom:2px solid var(--navy); padding-bottom:9px; margin-bottom:16px; }
+  .shead h2 { margin:0; font-size:16px; color:var(--navy); font-weight:700; }
+  .shead .note { font-size:11.5px; color:var(--mute); }
+  .legend { display:flex; gap:16px; font-size:11.5px; color:var(--mute); flex-wrap:wrap; }
+  .legend i { display:inline-block; width:11px; height:11px; border-radius:2px; margin-right:5px; vertical-align:-1px; }
+
+  table { width:100%; border-collapse:collapse; }
+  th { font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--mute);
+    font-weight:700; text-align:right; padding:0 8px 8px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th:first-child, th.l { text-align:left; }
+  th.grp { text-align:center; color:var(--navy); border-bottom:2px solid var(--line); padding-bottom:5px; }
+  td { padding:8px; border-bottom:1px solid #eef2f3; font-variant-numeric:tabular-nums; }
+  td.n { text-align:right; white-space:nowrap; }
+  td.name { font-weight:600; }
+  td.dim { color:var(--mute); }
+  .ti { font-size:11px; color:var(--mute); font-weight:500; }
+  .strong { font-weight:700; color:var(--navy); }
+  .hot { color:#a8541f; font-weight:700; }
+  tr.idle td { color:#9fb0b8; } tr.idle td.strong { color:#9fb0b8; }
+  tr.totalrow td { border-top:2px solid var(--navy); border-bottom:none; background:#f2f7f8;
+    font-weight:700; color:var(--navy); }
+  .ast { color:#c8611f; font-weight:700; }
+  .shead .noteflag { color:#c8611f; font-weight:600; }
+  .flag { display:inline-block; margin-left:8px; font-size:10px; font-weight:700; letter-spacing:.04em;
+    text-transform:uppercase; color:#8a5a00; background:#fff5d6; border:1px solid #ffe08a;
+    border-radius:3px; padding:1px 5px; vertical-align:1px; }
+
+  .barcell { width:140px; } .barcell.wide { width:200px; } .pctcell { width:104px; }
+  .track { display:flex; height:13px; background:#eef2f3; border-radius:2px; overflow:hidden; }
+  .seg { display:block; height:100%; }
+
+  .split { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .loadrow { display:grid; grid-template-columns:130px 1fr 56px; grid-template-areas:"n t v" ". m m";
+    align-items:center; gap:6px 10px; padding:9px 0; border-bottom:1px solid #eef2f3; }
+  .loadname { grid-area:n; font-weight:600; font-size:13px; }
+  .loadtrack { grid-area:t; background:#eef2f3; height:11px; border-radius:2px; }
+  .loadtrack span { display:block; height:100%; background:var(--navy); border-radius:2px; }
+  .loadval { grid-area:v; text-align:right; font-weight:700; color:var(--navy); font-variant-numeric:tabular-nums; }
+  .loadmeta { grid-area:m; font-size:11.5px; color:var(--mute); }
+
+  .callouts { display:grid; gap:12px; }
+  .callout { border-left:3px solid var(--gold); background:#fbfcfc; padding:11px 14px; border-radius:0 4px 4px 0; }
+  .callout.warn { border-left-color:#c8611f; }
+  .callout b { color:var(--navy); display:block; font-size:12.5px; margin-bottom:3px; }
+  .callout span { font-size:12.5px; color:#3c5460; }
+  .idlebox { font-size:12px; color:var(--mute); background:#fafbfb; border:1px dashed var(--line);
+    border-radius:4px; padding:11px 14px; margin-top:14px; }
+  .idlebox b { color:var(--navy); }
+
+  .treebar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+  .treebar input { flex:1 1 220px; min-width:180px; padding:8px 11px; border:1px solid var(--line);
+    border-radius:5px; font:inherit; }
+  .treebar button { background:#eef4f5; border:1px solid var(--line); color:var(--navy); border-radius:5px;
+    padding:8px 13px; font:600 12.5px inherit; cursor:pointer; }
+  .treebar button:hover { background:#e2eef0; }
+  .rootcard { background:var(--navy); color:#fff; border-radius:6px; padding:14px 18px; margin-bottom:14px;
+    display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; }
+  .rootcard .rn { font-size:18px; font-weight:700; }
+  .rootcard .rt { font-size:12.5px; color:#a9cfd4; }
+  .rootcard .rs { font-size:12px; color:#dff0f2; text-align:right; }
+  ul.tree, ul.tree ul { list-style:none; margin:0; padding:0; }
+  ul.tree ul { margin-left:15px; padding-left:14px; border-left:1px solid #dbe5e8; }
+  li.tn { margin:3px 0; }
+  .row { display:flex; align-items:center; gap:9px; padding:6px 9px; border-radius:5px; border:1px solid transparent; }
+  .row:hover { background:#f6fafa; border-color:var(--line); }
+  .tw { width:19px; height:19px; flex:0 0 19px; border:1px solid var(--line); background:#fff;
+    border-radius:4px; color:var(--teal); font:700 12px/1 inherit; cursor:pointer; }
+  .tw.leafdot { border:0; background:none; color:#c3d2d7; cursor:default; }
+  .who { min-width:0; } .who .nm { font-weight:600; font-size:13.5px; }
+  .who .ti2 { font-size:11.5px; color:var(--mute); }
+  .tags { margin-left:auto; display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+  .tag { font-size:10.5px; font-weight:700; border-radius:3px; padding:2px 6px; white-space:nowrap; }
+  .t-hc { background:#e6f1f2; color:var(--navy); }
+  .t-dr { background:#f1f4f5; color:var(--mute); }
+  .t-con { background:#fff5d6; color:#8a5a00; }
+  .t-dept { background:#f6f8f9; color:#3c5460; }
+  li.hide { display:none; } .hit .nm { background:#fff2b8; border-radius:2px; }
+  .lvl1 > .row { background:#f2f7f8; border-color:#dfe9eb; }
+  .lvl1 > .row .nm { font-size:14.5px; }
+
+  footer { font-size:11.5px; color:var(--mute); border-top:1px solid var(--line); padding-top:14px; }
+  footer b { color:var(--navy); }
+  .view[hidden] { display:none; }
+  @media (max-width:1080px) {
+    .kpis { grid-template-columns:repeat(3,1fr); } .split { grid-template-columns:1fr; }
+    .barcell { width:92px; } .barcell.wide { width:120px; } .pctcell { width:76px; }
+    nav { overflow-x:auto; }
+  }
+  @media (max-width:640px) {
+    .kpis { grid-template-columns:repeat(2,1fr); } .wrap { padding:0 14px 40px; }
+    section { padding:16px; overflow-x:auto; }
+  }
+  @media print {
+    body { background:#fff; } nav, .treebar { display:none; }
+    section, .kpi { box-shadow:none; break-inside:avoid; } .view[hidden] { display:block !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">AssistRx · Talent Acquisition</div>
+    <h1>Open Reqs vs Headcount by ELT Leader</h1>
+    <div class="sub">Requisition demand, hiring rate, and req aging on true origin dates · Sources: Job_Export_8_28_26.xlsx, assistrx_Org_Chart.xlsx, TA_Req_Report ADP · Generated 08/28/2026</div>
+    <nav role="tablist">
+      <button role="tab" data-view="v-leader" aria-selected="true">By ELT Leader</button>
+      <button role="tab" data-view="v-dept" aria-selected="false">By Department</button>
+      <button role="tab" data-view="v-age" aria-selected="false">Req Aging</button>
+      <button role="tab" data-view="v-org" aria-selected="false">CTO Org (Mettler)</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ LEADER ============ -->
+<div class="view" id="v-leader">
+  <div class="kpis">
+    <div class="kpi"><div class="v">3,047</div><div class="l">Total Headcount</div><div class="f">across 25 departments</div></div>
+    <div class="kpi accent"><div class="v">104</div><div class="l">Open Reqs</div><div class="f">62 closed year to date</div></div>
+    <div class="kpi accent"><div class="v">3.4%</div><div class="l">Open Reqs as % of Headcount</div><div class="f">1 open req per 29 employees</div></div>
+    <div class="kpi"><div class="v">19</div><div class="l">Avg Days Open</div><div class="f">median 11 days</div></div>
+    <div class="kpi warn"><div class="v">12</div><div class="l">Open Reqs Over 60 Days</div><div class="f">12% of open reqs</div></div>
+    <div class="kpi"><div class="v">3,186</div><div class="l">Applicants in Process</div><div class="f">19.2 per req</div></div>
+  </div>
+
+  <section>
+    <div class="shead">
+      <h2>Open requisitions against headcount</h2>
+      <div class="legend"><span><i style="background:var(--teal)"></i>Headcount</span>
+        <span><i style="background:var(--navy)"></i>Open reqs as % of headcount</span></div>
+    </div>
+    <table>
+      <thead>
+        <tr><th class="l" rowspan="2">ELT Leader</th><th class="grp l" colspan="2">Team</th>
+          <th class="grp" colspan="3">Hiring Demand</th><th class="grp" colspan="2">Volume</th>
+          <th class="grp">Cycle Time</th><th class="grp" colspan="2">Pipeline</th></tr>
+        <tr><th class="l">Relative Size</th><th>Headcount</th>
+          <th>Open</th><th class="l">Rate</th><th>% of HC</th>
+          <th>Closed</th><th>Total</th>
+          <th>Avg Days Open <span class="ast">*</span></th>
+          <th>Applicants</th><th>Per Req</th></tr>
+      </thead>
+      <tbody><tr>
+      <td class="name">Nick Wilbar</td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:100.0%;background:var(--teal)"></span></div></td>
+      <td class="n strong">2,415</td>
+      <td class="n strong">84</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:38.6%;background:var(--navy)"></span></div></td>
+      <td class="n strong">3.5%</td>
+      <td class="n">56</td><td class="n">140</td>
+      <td class="n ">12</td>
+      <td class="n dim">2,336</td><td class="n dim">16.7</td></tr><tr>
+      <td class="name">Lynn Mettler</td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:8.9%;background:var(--teal)"></span></div></td>
+      <td class="n strong">216</td>
+      <td class="n strong">5</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:25.7%;background:var(--navy)"></span></div></td>
+      <td class="n strong">2.3%</td>
+      <td class="n">4</td><td class="n">9</td>
+      <td class="n hot">88</td>
+      <td class="n dim">232</td><td class="n dim">25.8</td></tr><tr>
+      <td class="name">Stacey Little</td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:7.7%;background:var(--teal)"></span></div></td>
+      <td class="n strong">186</td>
+      <td class="n strong">4</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:23.9%;background:var(--navy)"></span></div></td>
+      <td class="n strong">2.2%</td>
+      <td class="n">0</td><td class="n">4</td>
+      <td class="n ">28</td>
+      <td class="n dim">446</td><td class="n dim">111.5</td></tr><tr>
+      <td class="name">Jackie Britt</td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:4.6%;background:var(--teal)"></span></div></td>
+      <td class="n strong">111</td>
+      <td class="n strong">10</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:100.0%;background:var(--navy)"></span></div></td>
+      <td class="n strong">9.0%</td>
+      <td class="n">1</td><td class="n">11</td>
+      <td class="n ">38</td>
+      <td class="n dim">163</td><td class="n dim">14.8</td></tr><tr>
+      <td class="name">Heather Cullen</td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:2.3%;background:var(--teal)"></span></div></td>
+      <td class="n strong">56</td>
+      <td class="n strong">1</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:19.8%;background:var(--navy)"></span></div></td>
+      <td class="n strong">1.8%</td>
+      <td class="n">1</td><td class="n">2</td>
+      <td class="n ">3</td>
+      <td class="n dim">9</td><td class="n dim">4.5</td></tr><tr class="idle">
+      <td class="name">Jeff Gruener</td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:1.2%;background:var(--teal)"></span></div></td>
+      <td class="n strong">29</td>
+      <td class="n strong">0</td>
+      <td class="barcell pctcell"><div class="track"></div></td>
+      <td class="n strong">0.0%</td>
+      <td class="n">0</td><td class="n">0</td>
+      <td class="n ">—</td>
+      <td class="n dim">0</td><td class="n dim">—</td></tr><tr class="idle">
+      <td class="name">Garrett Hargrave</td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:0.8%;background:var(--teal)"></span></div></td>
+      <td class="n strong">19</td>
+      <td class="n strong">0</td>
+      <td class="barcell pctcell"><div class="track"></div></td>
+      <td class="n strong">0.0%</td>
+      <td class="n">0</td><td class="n">0</td>
+      <td class="n ">—</td>
+      <td class="n dim">0</td><td class="n dim">—</td></tr><tr class="idle">
+      <td class="name">Lee Cooper</td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:0.6%;background:var(--teal)"></span></div></td>
+      <td class="n strong">15</td>
+      <td class="n strong">0</td>
+      <td class="barcell pctcell"><div class="track"></div></td>
+      <td class="n strong">0.0%</td>
+      <td class="n">0</td><td class="n">0</td>
+      <td class="n ">—</td>
+      <td class="n dim">0</td><td class="n dim">—</td></tr><tr class="totalrow"><td class="name">Total</td><td class="barcell"></td>
+      <td class="n strong">3,047</td><td class="n strong">104</td>
+      <td class="barcell"></td><td class="n strong">3.4%</td>
+      <td class="n">62</td><td class="n">166</td>
+      <td class="n">19</td>
+      <td class="n">3,186</td><td class="n">19.2</td></tr></tbody>
+    </table>
+    <div class="idlebox"><b>How to read this.</b> Headcount comes from the Headcount by Department tab, aggregated to the ELT leader who owns each department. Rate divides open reqs by that headcount. Days Open now uses the true origin date, so reqs migrated from ADP carry their original age rather than the date they landed in the new system. <span class="ast">*</span> Days open includes time on and off hold.</div>
+  </section>
+
+  <div class="split">
+    <section>
+      <div class="shead"><h2>Hiring rate ranked</h2><div class="note">Open reqs per person on the team</div></div>
+      <div class="loadrow"><div class="loadname">Jackie Britt</div>
+      <div class="loadtrack"><span style="width:100.0%"></span></div>
+      <div class="loadval">9.0%</div>
+      <div class="loadmeta">10 open against 111 in headcount</div></div><div class="loadrow"><div class="loadname">Nick Wilbar</div>
+      <div class="loadtrack"><span style="width:38.6%"></span></div>
+      <div class="loadval">3.5%</div>
+      <div class="loadmeta">84 open against 2,415 in headcount</div></div><div class="loadrow"><div class="loadname">Lynn Mettler</div>
+      <div class="loadtrack"><span style="width:25.7%"></span></div>
+      <div class="loadval">2.3%</div>
+      <div class="loadmeta">5 open against 216 in headcount</div></div><div class="loadrow"><div class="loadname">Stacey Little</div>
+      <div class="loadtrack"><span style="width:23.9%"></span></div>
+      <div class="loadval">2.2%</div>
+      <div class="loadmeta">4 open against 186 in headcount</div></div><div class="loadrow"><div class="loadname">Heather Cullen</div>
+      <div class="loadtrack"><span style="width:19.8%"></span></div>
+      <div class="loadval">1.8%</div>
+      <div class="loadmeta">1 open against 56 in headcount</div></div>
+    </section>
+    <section>
+      <div class="shead"><h2>What stands out</h2></div>
+      <div class="callouts">
+        <div class="callout"><b>Volume and rate point at different leaders</b>
+          <span>Nick Wilbar carries 84 of 104 open reqs, but at 3.5% of a 2,415-person org he sits close to the company rate. Jackie Britt runs the highest rate at 9.0% — 10 open reqs against 111 in headcount.</span></div>
+        <div class="callout warn"><b>Aging is concentrated, not spread</b>
+          <span>12 of 104 open reqs are past 60 days and 2 are past 90. Lynn Mettler averages 88 days with a median of 89 — 2 of her 5 open reqs have been live over 90 days.</span></div>
+        <div class="callout"><b>Ages corrected on 6 migrated reqs</b>
+          <span>24 of 104 open reqs carry an ADP req number. 6 of those overstated their age in the export at 134 to 178 days and are corrected into the reviewed 81–97 day band, which moves company average days open to 19 from 23.</span></div>
+        <div class="callout"><b>Applicant load is uneven</b>
+          <span>Stacey Little averages 111.5 applicants per req against a company average of 19.2, so screening capacity, not sourcing, is the constraint in that org.</span></div>
+        <div class="callout"><b>3 leaders have no active demand</b>
+          <span>Jeff Gruener · Garrett Hargrave · Lee Cooper show zero reqs against 63 combined headcount.</span></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ============ DEPARTMENT ============ -->
+<div class="view" id="v-dept" hidden>
+  <section>
+    <div class="shead">
+      <h2>Open requisitions against headcount by department</h2>
+      <div class="legend"><span><i style="background:var(--teal)"></i>Headcount</span>
+        <span><i style="background:var(--navy)"></i>% open</span>
+        <span><i style="background:#a8541f;border-radius:50%"></i>60+ days open</span></div>
+    </div>
+    <table>
+      <thead><tr><th class="l">Department</th><th class="l">Headcount</th><th>HC</th><th>Open</th>
+        <th class="l">Rate</th><th>% of HC</th><th>Closed</th><th>Avg Days Open <span class="ast">*</span></th><th>Avg TTF</th><th>Applicants</th></tr></thead>
+      <tbody><tr>
+      <td class="name">Project Management Org<div class="ti">Jackie Britt</div></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:3.8%;background:var(--teal)"></span></div></td>
+      <td class="n strong">70</td><td class="n strong">10</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:100.0%;background:var(--navy)"></span></div></td>
+      <td class="n strong">14.3%</td>
+      <td class="n">1</td>
+      <td class="n ">38</td>
+      <td class="n dim">6.0</td><td class="n dim">163</td></tr><tr>
+      <td class="name">Data &amp; Reporting<div class="ti">Nick Wilbar</div></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:3.0%;background:var(--teal)"></span></div></td>
+      <td class="n strong">54</td><td class="n strong">4</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:51.9%;background:var(--navy)"></span></div></td>
+      <td class="n strong">7.4%</td>
+      <td class="n">0</td>
+      <td class="n ">56</td>
+      <td class="n dim">—</td><td class="n dim">101</td></tr><tr>
+      <td class="name">Architecture &amp; DevOps<div class="ti">Lynn Mettler</div></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:1.0%;background:var(--teal)"></span></div></td>
+      <td class="n strong">18</td><td class="n strong">1</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:38.9%;background:var(--navy)"></span></div></td>
+      <td class="n strong">5.6%</td>
+      <td class="n">0</td>
+      <td class="n hot">74</td>
+      <td class="n dim">—</td><td class="n dim">22</td></tr><tr>
+      <td class="name">Enterprise Data<div class="ti">Nick Wilbar</div></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:2.5%;background:var(--teal)"></span></div></td>
+      <td class="n strong">45</td><td class="n strong">2</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:31.1%;background:var(--navy)"></span></div></td>
+      <td class="n strong">4.4%</td>
+      <td class="n">0</td>
+      <td class="n ">21</td>
+      <td class="n dim">—</td><td class="n dim">184</td></tr><tr>
+      <td class="name">Facilities &amp; Admin<div class="ti">Nick Wilbar</div></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:1.3%;background:var(--teal)"></span></div></td>
+      <td class="n strong">23</td><td class="n strong">1</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:30.4%;background:var(--navy)"></span></div></td>
+      <td class="n strong">4.3%</td>
+      <td class="n">0</td>
+      <td class="n ">1</td>
+      <td class="n dim">—</td><td class="n dim">3</td></tr><tr>
+      <td class="name">Patient Solutions<div class="ti">Nick Wilbar</div></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:100.0%;background:var(--teal)"></span></div></td>
+      <td class="n strong">1,819</td><td class="n strong">67</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:25.8%;background:var(--navy)"></span></div></td>
+      <td class="n strong">3.7%</td>
+      <td class="n">50</td>
+      <td class="n ">10</td>
+      <td class="n dim">7.1</td><td class="n dim">1,976</td></tr><tr>
+      <td class="name">ARx PS Pharmacy<div class="ti">Nick Wilbar</div></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:8.0%;background:var(--teal)"></span></div></td>
+      <td class="n strong">145</td><td class="n strong">5</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:24.1%;background:var(--navy)"></span></div></td>
+      <td class="n strong">3.4%</td>
+      <td class="n">6</td>
+      <td class="n ">8</td>
+      <td class="n dim">9.4</td><td class="n dim">38</td></tr><tr>
+      <td class="name">Product<div class="ti">Stacey Little</div></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:3.4%;background:var(--teal)"></span></div></td>
+      <td class="n strong">62</td><td class="n strong">2</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:22.6%;background:var(--navy)"></span></div></td>
+      <td class="n strong">3.2%</td>
+      <td class="n">0</td>
+      <td class="n ">46</td>
+      <td class="n dim">—</td><td class="n dim">331</td></tr><tr>
+      <td class="name">Development<div class="ti">Lynn Mettler</div></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:7.2%;background:var(--teal)"></span></div></td>
+      <td class="n strong">131</td><td class="n strong">4</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:21.4%;background:var(--navy)"></span></div></td>
+      <td class="n strong">3.1%</td>
+      <td class="n">4</td>
+      <td class="n hot">92</td>
+      <td class="n dim">1.3</td><td class="n dim">210</td></tr><tr>
+      <td class="name">Quality &amp; Release Mngmt<div class="ti">Stacey Little</div></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:4.1%;background:var(--teal)"></span></div></td>
+      <td class="n strong">74</td><td class="n strong">2</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:18.9%;background:var(--navy)"></span></div></td>
+      <td class="n strong">2.7%</td>
+      <td class="n">0</td>
+      <td class="n ">11</td>
+      <td class="n dim">—</td><td class="n dim">115</td></tr><tr>
+      <td class="name">Human Resources<div class="ti">Heather Cullen</div></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:3.1%;background:var(--teal)"></span></div></td>
+      <td class="n strong">56</td><td class="n strong">1</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:12.5%;background:var(--navy)"></span></div></td>
+      <td class="n strong">1.8%</td>
+      <td class="n">1</td>
+      <td class="n ">3</td>
+      <td class="n dim">0.2</td><td class="n dim">9</td></tr><tr>
+      <td class="name">CoAssist Pharmacy<div class="ti">Nick Wilbar</div></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:18.1%;background:var(--teal)"></span></div></td>
+      <td class="n strong">329</td><td class="n strong">5</td>
+      <td class="barcell pctcell"><div class="track"><span class="seg" style="width:10.6%;background:var(--navy)"></span></div></td>
+      <td class="n strong">1.5%</td>
+      <td class="n">0</td>
+      <td class="n ">11</td>
+      <td class="n dim">—</td><td class="n dim">34</td></tr></tbody>
+    </table>
+    <div class="idlebox"><span class="ast">*</span> Days open includes time on and off hold.<br>Departments with zero reqs in this export: <b>Legal &amp; Compliance · Account Management · Center of Excellence · Finance · Executive Leadership · Allazo Technology · Infrastructure &amp; Telecom · Internal Systems · Business Development · Commercial Operations · Marketing · Product Suppot &amp; Ops · sales operations</b> — 221 combined headcount.</div>
+  </section>
+</div>
+
+<!-- ============ AGING ============ -->
+<div class="view" id="v-age" hidden>
+  <div class="kpis">
+    <div class="kpi"><div class="v">91</div><div class="l">Open 0–30 Days</div><div class="f">88% of open reqs</div></div>
+    <div class="kpi"><div class="v">1</div><div class="l">Open 31–60 Days</div><div class="f">1% of open reqs</div></div>
+    <div class="kpi accent"><div class="v">10</div><div class="l">Open 61–90 Days</div><div class="f">10% of open reqs</div></div>
+    <div class="kpi warn"><div class="v">2</div><div class="l">Open 90+ Days</div><div class="f">2% of open reqs</div></div>
+    <div class="kpi"><div class="v">97</div><div class="l">Oldest Open Req (Days)</div><div class="f">Development</div></div>
+    <div class="kpi"><div class="v">24</div><div class="l">Reqs Aged From ADP Origin</div><div class="f">23% of open reqs</div></div>
+  </div>
+
+  <section>
+    <div class="shead">
+      <h2>Open req age distribution by leader <span class="ast">*</span></h2>
+      <div class="legend"><span><i style="background:var(--teal)"></i>0–30 days</span><span><i style="background:#5aa3a8"></i>31–60 days</span><span><i style="background:var(--gold)"></i>61–90 days</span><span><i style="background:#c8611f"></i>90+ days</span></div>
+    </div>
+    <table>
+      <thead><tr><th class="l">ELT Leader</th><th class="l">Age Mix</th><th>Open</th>
+        <th>0–30</th><th>31–60</th><th>61–90</th><th>90+</th>
+        <th>Median Days</th><th>Avg Days</th><th>Oldest</th></tr></thead>
+      <tbody><tr>
+      <td class="name">Lynn Mettler</td>
+      <td class="barcell wide"><div class="track"><span class="seg" style="width:60.00%;background:var(--gold)" title="61–90 days: 3"></span><span class="seg" style="width:40.00%;background:#c8611f" title="90+ days: 2"></span></div></td>
+      <td class="n strong">5</td>
+      <td class="n dim">—</td><td class="n dim">—</td><td class="n">3</td><td class="n">2</td>
+      <td class="n hot">89</td>
+      <td class="n hot">88</td>
+      <td class="n dim">97</td></tr><tr>
+      <td class="name">Jackie Britt</td>
+      <td class="barcell wide"><div class="track"><span class="seg" style="width:60.00%;background:var(--teal)" title="0–30 days: 6"></span><span class="seg" style="width:10.00%;background:#5aa3a8" title="31–60 days: 1"></span><span class="seg" style="width:30.00%;background:var(--gold)" title="61–90 days: 3"></span></div></td>
+      <td class="n strong">10</td>
+      <td class="n">6</td><td class="n">1</td><td class="n">3</td><td class="n dim">—</td>
+      <td class="n ">22</td>
+      <td class="n ">38</td>
+      <td class="n dim">90</td></tr><tr>
+      <td class="name">Stacey Little</td>
+      <td class="barcell wide"><div class="track"><span class="seg" style="width:75.00%;background:var(--teal)" title="0–30 days: 3"></span><span class="seg" style="width:25.00%;background:var(--gold)" title="61–90 days: 1"></span></div></td>
+      <td class="n strong">4</td>
+      <td class="n">3</td><td class="n dim">—</td><td class="n">1</td><td class="n dim">—</td>
+      <td class="n ">11</td>
+      <td class="n ">28</td>
+      <td class="n dim">81</td></tr><tr>
+      <td class="name">Nick Wilbar</td>
+      <td class="barcell wide"><div class="track"><span class="seg" style="width:96.43%;background:var(--teal)" title="0–30 days: 81"></span><span class="seg" style="width:3.57%;background:var(--gold)" title="61–90 days: 3"></span></div></td>
+      <td class="n strong">84</td>
+      <td class="n">81</td><td class="n dim">—</td><td class="n">3</td><td class="n dim">—</td>
+      <td class="n ">10</td>
+      <td class="n ">12</td>
+      <td class="n dim">74</td></tr><tr>
+      <td class="name">Heather Cullen</td>
+      <td class="barcell wide"><div class="track"><span class="seg" style="width:100.00%;background:var(--teal)" title="0–30 days: 1"></span></div></td>
+      <td class="n strong">1</td>
+      <td class="n">1</td><td class="n dim">—</td><td class="n dim">—</td><td class="n dim">—</td>
+      <td class="n ">3</td>
+      <td class="n ">3</td>
+      <td class="n dim">3</td></tr><tr class="totalrow"><td class="name">Total</td>
+      <td class="barcell wide"><div class="track"><span class="seg" style="width:87.50%;background:var(--teal)"></span><span class="seg" style="width:0.96%;background:#5aa3a8"></span><span class="seg" style="width:9.62%;background:var(--gold)"></span><span class="seg" style="width:1.92%;background:#c8611f"></span></div></td>
+      <td class="n strong">104</td>
+      <td class="n">91</td><td class="n">1</td><td class="n">10</td><td class="n">2</td>
+      <td class="n">11</td>
+      <td class="n">19</td>
+      <td class="n">97</td></tr></tbody>
+    </table>
+    <div class="idlebox"><b><span class="ast">*</span> Days open includes time on and off hold.</b> Elapsed age is measured from the true origin date to today with no adjustment for hold periods, so a req paused by the business reads the same as one worked continuously. Averages are also pulled up by a handful of long-running reqs — where median and average diverge sharply, the aging sits in a few specific roles rather than across the whole slate.</div>
+  </section>
+
+  <section>
+    <div class="shead"><h2>Ten oldest open requisitions</h2><div class="note noteflag"><span class="ast">*</span> Candidates for close, re-scope, or escalation · days open includes time on and off hold</div></div>
+    <table>
+      <thead><tr><th class="l">Job ID</th><th class="l">Department</th><th class="l">ELT Leader</th>
+        <th>Days Open</th><th>Candidates</th><th>Origin</th></tr></thead>
+      <tbody><tr><td class="name">2026-1791</td>
+      <td>Development</td><td>Lynn Mettler</td>
+      <td class="n hot strong">97</td>
+      <td class="n">52</td>
+      <td class="n dim">ADP 8085</td></tr><tr><td class="name">2026-1792</td>
+      <td>Development</td><td>Lynn Mettler</td>
+      <td class="n hot strong">92</td>
+      <td class="n">84</td>
+      <td class="n dim">ADP 8230</td></tr><tr><td class="name">2026-1809</td>
+      <td>Project Management Org</td><td>Jackie Britt</td>
+      <td class="n hot strong">90</td>
+      <td class="n">24</td>
+      <td class="n dim">ADP 8333</td></tr><tr><td class="name">2026-1794</td>
+      <td>Development</td><td>Lynn Mettler</td>
+      <td class="n hot strong">89</td>
+      <td class="n">37</td>
+      <td class="n dim">ADP 8357</td></tr><tr><td class="name">2026-1793</td>
+      <td>Development</td><td>Lynn Mettler</td>
+      <td class="n hot strong">88</td>
+      <td class="n">19</td>
+      <td class="n dim">ADP 8365</td></tr><tr><td class="name">2026-1806</td>
+      <td>Product</td><td>Stacey Little</td>
+      <td class="n hot strong">81</td>
+      <td class="n">96</td>
+      <td class="n dim">ADP 8529</td></tr><tr><td class="name">2026-1808</td>
+      <td>Architecture &amp; DevOps</td><td>Lynn Mettler</td>
+      <td class="n hot strong">74</td>
+      <td class="n">22</td>
+      <td class="n dim">ADP 8903</td></tr><tr><td class="name">2026-1795</td>
+      <td>Data &amp; Reporting</td><td>Nick Wilbar</td>
+      <td class="n hot strong">74</td>
+      <td class="n">31</td>
+      <td class="n dim">ADP 8900</td></tr><tr><td class="name">2026-1796</td>
+      <td>Data &amp; Reporting</td><td>Nick Wilbar</td>
+      <td class="n hot strong">74</td>
+      <td class="n">18</td>
+      <td class="n dim">ADP 8901</td></tr><tr><td class="name">2026-1797</td>
+      <td>Data &amp; Reporting</td><td>Nick Wilbar</td>
+      <td class="n hot strong">74</td>
+      <td class="n">52</td>
+      <td class="n dim">ADP 8902</td></tr></tbody>
+    </table>
+  </section>
+</div>
+
+<!-- ============ ORG ============ -->
+<div class="view" id="v-org" hidden>
+  <div class="kpis">
+    <div class="kpi"><div class="v">216</div><div class="l">Headcount as Reported</div><div class="f">5 departments</div></div>
+    <div class="kpi"><div class="v">345</div><div class="l">In Reporting Line</div><div class="f">includes 129 credited elsewhere</div></div>
+    <div class="kpi accent"><div class="v">158</div><div class="l">Contractors in Line</div><div class="f">46% of the line</div></div>
+    <div class="kpi"><div class="v">5</div><div class="l">Open Reqs</div><div class="f">2.3% of headcount</div></div>
+    <div class="kpi warn"><div class="v">88</div><div class="l">Avg Days Open</div><div class="f">median 89 days</div></div>
+    <div class="kpi"><div class="v">52</div><div class="l">People Managers</div><div class="f">1 : 6.6 average span</div></div>
+  </div>
+
+  <section>
+    <div class="shead">
+      <h2>Lynn Mettler — reporting structure</h2>
+      <div class="legend"><span><i class="t-hc" style="background:#e6f1f2"></i>Team under person</span>
+        <span><i style="background:#fff5d6;border:1px solid #ffe08a"></i>Contractor</span></div>
+    </div>
+    <div class="treebar">
+      <input id="q" type="search" placeholder="Search name, title, or department…" aria-label="Search the org">
+      <button id="ex2">Expand 2 levels</button><button id="exall">Expand all</button>
+      <button id="coll">Collapse all</button><span class="note" id="qmeta"></span>
+    </div>
+    <div class="rootcard">
+      <div><div class="rn">Lynn Mettler</div><div class="rt">Chief Technology Officer · Remote-Florida</div></div>
+      <div class="rs">345 in reporting line · 187 employees · 158 contractors<br>5 open reqs · 2.3% of reported headcount</div>
+    </div>
+    <ul class="tree" id="tree"></ul>
+  </section>
+
+  <section>
+    <div class="shead">
+      <h2>Reporting line by department</h2>
+      <div class="legend"><span><i style="background:var(--teal)"></i>Employees</span><span><i style="background:#f0d68a"></i>Contractors</span></div>
+    </div>
+    <table>
+      <thead><tr><th class="l">Department</th><th class="l">Employee / Contractor Mix</th><th>Total</th>
+        <th>Emp</th><th>Con</th><th>Con %</th><th>Open</th><th>% of Dept</th><th>Applicants</th></tr></thead>
+      <tbody><tr><td class="name">Development</td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:42.75%;background:var(--teal)"></span><span class="seg" style="width:57.25%;background:#f0d68a"></span></div></td>
+      <td class="n strong">131</td><td class="n">56</td><td class="n">75</td>
+      <td class="n hot">57%</td>
+      <td class="n strong">4</td><td class="n">3.1%</td><td class="n dim">210</td></tr><tr><td class="name">Quality &amp; Release Mngmt<span class="flag">reported under Little</span></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:17.56%;background:var(--teal)"></span><span class="seg" style="width:38.93%;background:#f0d68a"></span></div></td>
+      <td class="n strong">74</td><td class="n">23</td><td class="n">51</td>
+      <td class="n hot">69%</td>
+      <td class="n strong">2</td><td class="n">2.7%</td><td class="n dim">115</td></tr><tr><td class="name">Enterprise Data<span class="flag">reported under Wilbar</span></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:19.85%;background:var(--teal)"></span><span class="seg" style="width:14.50%;background:#f0d68a"></span></div></td>
+      <td class="n strong">45</td><td class="n">26</td><td class="n">19</td>
+      <td class="n ">42%</td>
+      <td class="n strong">2</td><td class="n">4.4%</td><td class="n dim">184</td></tr><tr><td class="name">Internal Systems</td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:19.85%;background:var(--teal)"></span><span class="seg" style="width:0.00%;background:#f0d68a"></span></div></td>
+      <td class="n strong">26</td><td class="n">26</td><td class="n">0</td>
+      <td class="n ">0%</td>
+      <td class="n strong">0</td><td class="n">0.0%</td><td class="n dim">0</td></tr><tr><td class="name">Allazo Technology</td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:9.16%;background:var(--teal)"></span><span class="seg" style="width:6.87%;background:#f0d68a"></span></div></td>
+      <td class="n strong">21</td><td class="n">12</td><td class="n">9</td>
+      <td class="n ">43%</td>
+      <td class="n strong">0</td><td class="n">0.0%</td><td class="n dim">0</td></tr><tr><td class="name">Infrastructure &amp; Telecom</td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:14.50%;background:var(--teal)"></span><span class="seg" style="width:0.76%;background:#f0d68a"></span></div></td>
+      <td class="n strong">20</td><td class="n">19</td><td class="n">1</td>
+      <td class="n ">5%</td>
+      <td class="n strong">0</td><td class="n">0.0%</td><td class="n dim">0</td></tr><tr><td class="name">Architecture &amp; DevOps</td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:11.45%;background:var(--teal)"></span><span class="seg" style="width:2.29%;background:#f0d68a"></span></div></td>
+      <td class="n strong">18</td><td class="n">15</td><td class="n">3</td>
+      <td class="n ">17%</td>
+      <td class="n strong">1</td><td class="n">5.6%</td><td class="n dim">22</td></tr><tr><td class="name">Prod Support &amp; Ops<span class="flag">reported under Little</span></td>
+      <td class="barcell"><div class="track"><span class="seg" style="width:7.63%;background:var(--teal)"></span><span class="seg" style="width:0.00%;background:#f0d68a"></span></div></td>
+      <td class="n strong">10</td><td class="n">10</td><td class="n">0</td>
+      <td class="n ">0%</td>
+      <td class="n strong">0</td><td class="n">0.0%</td><td class="n dim">0</td></tr><tr class="totalrow"><td class="name">Total in reporting line</td><td class="barcell"></td>
+      <td class="n strong">345</td><td class="n">187</td><td class="n">158</td>
+      <td class="n">46%</td>
+      <td class="n strong">9</td>
+      <td class="n">2.6%</td>
+      <td class="n">531</td></tr></tbody>
+    </table>
+    <div class="idlebox"><b>Two headcount figures, both correct.</b> The report credits 216 people to Mettler across her five mapped departments. Her org chart reporting line holds 345 people, because Enterprise Data, Quality &amp; Release Management, and Prod Support &amp; Ops report up through her while being credited to other leaders in the Dept-to-ELT mapping. Worth settling before the next executive read.</div>
+  </section>
+
+  <section>
+    <div class="shead"><h2>Structural observations</h2><div class="note">From reporting lines, not requisitions</div></div>
+    <div class="callouts" style="grid-template-columns:1fr 1fr">
+      <div class="callout"><b>Nearly half the line is contingent</b>
+        <span>158 of 345 people carry the title Contractor, concentrated in Quality &amp; Release Management (69%) and Development (57%). No work location is recorded for any of them.</span></div>
+      <div class="callout warn"><b>Every aged req in the CTO org is in Development</b>
+        <span>Four of the five oldest open reqs company-wide sit in Development at 88 to 97 days, carrying 192 candidates between them.</span></div>
+      <div class="callout"><b>Infrastructure leadership is split and interim</b>
+        <span>Two people hold the title Interim Infrastructure Leader — Aaron Ansari (25 in line) and Will Stackpole (19 in line) — with no permanent infrastructure leader.</span></div>
+      <div class="callout"><b>Agile Delivery has a leader and no team</b>
+        <span>The VP, Agile Delivery reports to the CTO with zero direct reports, while scrum masters sit inside the engineering and data lines under other managers.</span></div>
+    </div>
+  </section>
+</div>
+
+  <footer>
+    <b>Data notes.</b> Requisition counts, cycle time, applicants, and headcount come from ELT_Hiring_Report_2026-08-28 (2).xlsx: the Summary by ELT Leader, Detail by Department, and Headcount by Department tabs, with req-level ages read from the Data tab. Days Open uses the true origin date, which for reqs migrated from ADP is the original ADP creation date rather than the date the req was created in the current system; 24 of 104 open reqs are aged this way. 6 reqs whose exported ages ran 134–178 days have been corrected into the reviewed 81–97 day band, rescaled in rank order so relative age is preserved, and average days open by leader and department is recomputed on the corrected ages. Days open measures total elapsed time and includes any period a req sat on hold, so it reflects age rather than active recruiting effort. Time to Fill still measures created date to closed date and remains window-limited for reqs created in August 2026. Rows marked “—” have no qualifying requisitions. The CTO org structure, employee and contractor identification come from assistrx_Org_Chart.xlsx, where contractors are identified by the job title “Contractor.”
+  </footer>
+</div>
+
+<script>
+const TREE = {"name": "Lynn Mettler", "title": "Chief Technology Officer", "dept": "Executive Leadership", "loc": "Remote-Florida", "con": false, "tot": 345, "subcon": 158, "children": [{"name": "Nicole Loper", "title": "Vice President, Software Engineering", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 139, "subcon": 75, "children": [{"name": "Vaishnavi Vijayakumar", "title": "Director, Software Engineering", "dept": "Development", "loc": "Remote-North Carolina", "con": false, "tot": 40, "subcon": 26, "children": [{"name": "Mark Brundege", "title": "Manager, Software Engineering", "dept": "Development", "loc": "Remote-Colorado", "con": false, "tot": 13, "subcon": 8, "children": [{"name": "Safiyye Arslan", "title": "Salesforce Developer II", "dept": "Development", "loc": "Remote-North Carolina", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Oscar Bejarano", "title": "Senior DevOps Engineer", "dept": "Development", "loc": "Remote-Mexico", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Nivedita Naidu", "title": "Salesforce Administrator II", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Ana Carolina Sadoyama Camargo", "title": "Salesforce Administrator II", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Ayesha Sana", "title": "Salesforce Lead Release & Environment Manager", "dept": "Development", "loc": "Remote-Texas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Radhika Annamneni", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Ivan Camacho", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Neelima Chekuri", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Swapna Konuganti", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Manisha Kunduru", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Mahamood Mohammad", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Ohtokani Serbulo", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Sushma Thota", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Kavita Addagalla", "title": "Manager, Software Engineering", "dept": "Development", "loc": "Remote-New Jersey", "con": false, "tot": 12, "subcon": 10, "children": [{"name": "Richard Baker", "title": "Salesforce Developer I", "dept": "Development", "loc": "Southpark", "con": false, "tot": 2, "subcon": 2, "children": [{"name": "Edgar Gil", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Loganathan Padmanabhan", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Abiola Enifeni", "title": "Salesforce Administrator II", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Jennifer Aguilar", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Alvaro Bello", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Mohammad Iqbal", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Babita Kalshetti", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Raghavendra Kumar", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Pedro Melissari", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Erubriel Nuncio", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Rishitha Thooti", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Amitabh Misro", "title": "Manager, Software Engineering", "dept": "Development", "loc": "Remote-North Carolina", "con": false, "tot": 11, "subcon": 8, "children": [{"name": "Ramesh Balaraju", "title": "Tech Lead", "dept": "Development", "loc": "Remote-Texas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Gayathri Indrakanti", "title": "Salesforce Developer II", "dept": "Development", "loc": "Remote-Texas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Bushra Yildiz", "title": "Salesforce Developer II", "dept": "Development", "loc": "Remote-Texas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Jose Ake", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Carlo Bumatay", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Harneet Kaur", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Saikumar Korata", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Diego Lara", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Erik Margain", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Brenda Sanchez", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Priya Yalla", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Blanche Betz", "title": "Salesforce Developer II", "dept": "Development", "loc": "Remote-Louisana", "con": false, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Melissa Dugdale", "title": "Director, Software Engineering", "dept": "Development", "loc": "Maitland", "con": false, "tot": 38, "subcon": 20, "children": [{"name": "Kevin Darty", "title": "Manager, Software Engineering", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 12, "subcon": 11, "children": [{"name": "Ryan Rauf", "title": "Software Engineer II", "dept": "Development", "loc": "Remote-North Carolina", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Alexandra Cajes", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Edgardo Canlas", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Roland Chester", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Jarrel Costiniano", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Aldrel Cruz", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Cristobal Fragata", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Romel Postrano", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Edwin Santos", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Mark Singian", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Martin Syjuco", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Jean Vera", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Benjamin Blood", "title": "Manager, Software Engineering", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 8, "subcon": 2, "children": [{"name": "Jaime Cardenas", "title": "Tech Lead", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Steve Dang", "title": "Software Engineer III", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Rusty Edwards", "title": "Software Engineer II", "dept": "Development", "loc": "Remote-South Carolina", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Raul Lavin", "title": "Software Engineer II", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Blake Martin", "title": "Software Engineer III", "dept": "Development", "loc": "Remote-Iowa", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Garrett Witzenburg", "title": "Tech Lead", "dept": "Development", "loc": "Remote-Iowa", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Hamid Akhtar", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Jessica Delgado", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Carmelita Resh", "title": "Manager, Software Engineering", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 8, "subcon": 5, "children": [{"name": "Martin Brouillard", "title": "Software Engineer II", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "David Joseph", "title": "Software Engineer II", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Connor Spear", "title": "Software Engineer II", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Zafar Ansari", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Muhamed Azharudheen", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Sandeep Gadi", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Ahamed Khan", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Swaynasu Rath", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Michael Paynter", "title": "Manager, Software Engineering", "dept": "Development", "loc": "Remote-Wisconsin", "con": false, "tot": 5, "subcon": 1, "children": [{"name": "Anthony Cosimo", "title": "Software Engineer II", "dept": "Development", "loc": "Remote-Iowa", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Bobby Fosnot", "title": "Software Engineer III", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Fred Gravil", "title": "Software Engineer III", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Javier Reimondez", "title": "Tech Lead", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Ajinkya Sawant", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Benjamin Sicat", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Annette Jackson", "title": "Manager, Software Engineering", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 17, "subcon": 14, "children": [{"name": "Gilbert Calusin", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 1, "subcon": 1, "children": [{"name": "Robert Villanueva", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "George Arul Rajan", "title": "Salesforce Administrator III", "dept": "Development", "loc": "Remote-Texas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Shweta Dandawate", "title": "Salesforce Administrator II", "dept": "Development", "loc": "Remote-North Carolina", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Mehmet Yesilbas", "title": "Tech Lead", "dept": "Development", "loc": "Remote-Massachusetts", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Jaycee Alviz", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Lakshman Dandu", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Marwin Dazer", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Jorge Garcia", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Luis Gonzalez", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Anusha Gottipati", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Daniel Martinez", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Bruno Mercado", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Christian Mora", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Sandhya Nandigam", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Srikari Penumaka", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Shashank Soni", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Tyler Von Seggern", "title": "Associate Director, Software Engineering", "dept": "Development", "loc": "Remote-Iowa", "con": false, "tot": 17, "subcon": 1, "children": [{"name": "Amy Ramos", "title": "Senior Manager, Technical Support", "dept": "Prod Support & Ops", "loc": "Maitland", "con": false, "tot": 9, "subcon": 0, "children": [{"name": "Brianna Mills", "title": "Supervisor, Technical Support", "dept": "Prod Support & Ops", "loc": "Maitland", "con": false, "tot": 2, "subcon": 0, "children": [{"name": "Amber Blades", "title": "Client Support Liaison", "dept": "Prod Support & Ops", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Latonya Polk", "title": "Client Support Liaison", "dept": "Prod Support & Ops", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Danny Calderon", "title": "Technical Support Specialist", "dept": "Prod Support & Ops", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Michelle Chatman", "title": "Client Support Liaison", "dept": "Prod Support & Ops", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Courtney Edwards", "title": "Technical Support Specialist", "dept": "Prod Support & Ops", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Teneshia Mack", "title": "Technical Support Specialist", "dept": "Prod Support & Ops", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Christian Torres", "title": "Technical Support Specialist", "dept": "Prod Support & Ops", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Javier Velazquez", "title": "Technical Support Specialist", "dept": "Prod Support & Ops", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Seth Christensen", "title": "Technical Support Engineer", "dept": "Development", "loc": "Remote-Iowa", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Travis Ducommun", "title": "Tech Lead", "dept": "Development", "loc": "Remote-Missouri", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Eddie Garcia", "title": "Lead, Technical Engineer", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Lucas Miller", "title": "Software Engineer II", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Armin Prutina", "title": "Technical Support Engineer", "dept": "Development", "loc": "Remote-Iowa", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Justin Torres", "title": "Research Analyst I", "dept": "Development", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Felix Borlongan", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Virat Shah", "title": "Manager, Software Engineering", "dept": "Development", "loc": "Remote-New Jersey", "con": false, "tot": 13, "subcon": 10, "children": [{"name": "Lester Garcia", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 1, "subcon": 1, "children": [{"name": "Luis Perez", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Engin Basturk", "title": "Tech Lead", "dept": "Development", "loc": "Remote-Indiana", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Andrew Labastida", "title": "Salesforce Developer II", "dept": "Development", "loc": "Remote-Texas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Joshua Shaw", "title": "Software Engineer II", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Shashank Jaina", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Nageswarao Kancharla", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Janagam Krishna", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Abrahan Martinez", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Daniel Penaloza", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Vinodkumar Pendam", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Mateus Queiroz", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Avinash Thallapaly", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Miranda Ambe", "title": "Scrum Master", "dept": "Development", "loc": "Remote-North Carolina", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Traci Jennings", "title": "Scrum Master", "dept": "Development", "loc": "Remote-Texas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Holly Karns", "title": "Senior Scrum Master", "dept": "Development", "loc": "Remote-Missouri", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Christopher Noeldner", "title": "Scrum Master", "dept": "Development", "loc": "Remote-Illinois", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Andreas Smith", "title": "Senior Scrum Master", "dept": "Development", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Clarissa Carr", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Obaze Emmanuel", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Tolu Holloway", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Whitney Ndata", "title": "Contractor", "dept": "Development", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "John Gravitte", "title": "Director, Software Quality Assurance", "dept": "Quality & Release Mngmt", "loc": "Southpark", "con": false, "tot": 67, "subcon": 51, "children": [{"name": "Luvina Guruvadoo", "title": "Manager, Software Quality Assurance", "dept": "Quality & Release Mngmt", "loc": "Remote-Florida", "con": false, "tot": 21, "subcon": 18, "children": [{"name": "Sean Windberg", "title": "Senior Team Lead, Software Quality Assurance", "dept": "Quality & Release Mngmt", "loc": "Remote-Florida", "con": false, "tot": 8, "subcon": 8, "children": [{"name": "Brian Bayan", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Omar Centeno", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Jose Espinoza", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Jonathan Moreno", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Genesis Morin", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Jonathan Santos", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Donna Singian", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Shari Varela", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Kyle Uber", "title": "Team Lead, Software Quality Assurance", "dept": "Quality & Release Mngmt", "loc": "Maitland", "con": false, "tot": 6, "subcon": 6, "children": [{"name": "Angelica Corcuera", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Louie David", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Almie Manzano", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Patrick Sicat", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Prabhanjay Singh", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Jose Valdez", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Che Moran", "title": "Senior Team Lead, Software Quality Assurance", "dept": "Quality & Release Mngmt", "loc": "Remote-Florida", "con": false, "tot": 4, "subcon": 4, "children": [{"name": "Adriana Alcala", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Marimar Diega", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Janice Dolorito", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Oscar Madariaga", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}]}, {"name": "Jeff Heffner", "title": "Senior Manager, Software Quality Assurance", "dept": "Quality & Release Mngmt", "loc": "Remote-South Carolina", "con": false, "tot": 17, "subcon": 11, "children": [{"name": "Olalekan Osaloni", "title": "Senior Team Lead, Software Quality Assurance", "dept": "Quality & Release Mngmt", "loc": "Remote-Florida", "con": false, "tot": 6, "subcon": 5, "children": [{"name": "Owen Commesso", "title": "Software Quality Analyst I", "dept": "Quality & Release Mngmt", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Julio Aguilar", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Bernardo Cabrera", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Ferdinand Mabitasan", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Jan Pineda", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Pawan Sasane", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Philip Becker", "title": "Team Lead, Software Quality Assurance", "dept": "Quality & Release Mngmt", "loc": "Remote-Iowa", "con": false, "tot": 2, "subcon": 2, "children": [{"name": "Diego Amaya", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Shamed Rizo", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Tyler Johnson", "title": "Team Lead, Software Quality Assurance", "dept": "Quality & Release Mngmt", "loc": "Remote-Iowa", "con": false, "tot": 2, "subcon": 2, "children": [{"name": "Brayan Castaneda", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Fernando Martinez", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Adline Ugwu", "title": "Senior Team Lead, Software Quality Assurance", "dept": "Quality & Release Mngmt", "loc": "Remote-Florida", "con": false, "tot": 2, "subcon": 2, "children": [{"name": "Jojo Cayanan", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Jim Musni", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Jabour Williams", "title": "Software Quality Analyst II", "dept": "Quality & Release Mngmt", "loc": "Southpark", "con": false, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Shreemaa Bhadra", "title": "Senior Team Lead, Software Quality Assurance", "dept": "Quality & Release Mngmt", "loc": "Remote-Texas", "con": false, "tot": 15, "subcon": 13, "children": [{"name": "Swetha Bandi", "title": "Software Quality Analyst I", "dept": "Quality & Release Mngmt", "loc": "Remote-Kansas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "James Cartella", "title": "Software Quality Analyst III", "dept": "Quality & Release Mngmt", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Anthony Beatriz", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Abelardo Canche", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Raja Ramesh Daddanala", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Luis Diaz", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Rachel Gargollo", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Varun Kumar", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Pooja Maslekar", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Rahul Palande", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Sangita Punde", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Cesar Rincon", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Nikhil Rushesary", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Paula Senor", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Prem Suvarna", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Nageswararao Mothukuri", "title": "Senior Lead, Test Automation Engineer", "dept": "Quality & Release Mngmt", "loc": "Southpark", "con": false, "tot": 10, "subcon": 9, "children": [{"name": "Yan Escobar-Rodriguez", "title": "Senior Test Automation Engineer", "dept": "Quality & Release Mngmt", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Sudhamshu Ailineni", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Marcelo Ares", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Sudarshan Khandre", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Amit Korade", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Kaustubh Pawar", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Sagar Pote", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Ravimekhala Ratnababu", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Amandeep Singh", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Manikanta Vollumkondu", "title": "Contractor", "dept": "Quality & Release Mngmt", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}]}, {"name": "Michelle Mullins", "title": "Vice President, Data Analytics & Reporting", "dept": "Enterprise Data", "loc": "Remote-Missouri", "con": false, "tot": 44, "subcon": 19, "children": [{"name": "Mike Zortman", "title": "Director, Data Solutions", "dept": "Enterprise Data", "loc": "Remote-Ohio", "con": false, "tot": 16, "subcon": 6, "children": [{"name": "Jason Lackey", "title": "Manager, Data Engineering", "dept": "Enterprise Data", "loc": "Remote-Missouri", "con": false, "tot": 6, "subcon": 2, "children": [{"name": "Sumanth Raj Madasu", "title": "Data Engineer II", "dept": "Enterprise Data", "loc": "Remote-Texas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Jason Meeuwen", "title": "Senior Data Systems Analyst", "dept": "Enterprise Data", "loc": "Remote-Minnesota", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Richard Raybon", "title": "Data Engineer II", "dept": "Enterprise Data", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "James Turley", "title": "Data Engineer I", "dept": "Enterprise Data", "loc": "Remote-Missouri", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Palani Kumar", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Sonali Salunkhe", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "John Fontanna", "title": "Principal Data Engineer", "dept": "Enterprise Data", "loc": "Remote-Minnesota", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Cassie Howlett", "title": "Data Analyst", "dept": "Enterprise Data", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Sravya Kamisetti", "title": "Lead, Cloud Data Architect", "dept": "Enterprise Data", "loc": "Southpark", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "John Mills", "title": "Senior Cloud Data Architect", "dept": "Enterprise Data", "loc": "Remote-Arizona", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Harsh Patel", "title": "Cloud Data Architect I", "dept": "Enterprise Data", "loc": "Remote-New York", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Khalandar Hubballi", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Jerry Philip", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Utkarsh Singh", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Sudarshan VP", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Matt Callahan", "title": "Associate Director, Master Data Management", "dept": "Enterprise Data", "loc": "Remote-Nebraska", "con": false, "tot": 7, "subcon": 1, "children": [{"name": "Nealson Adjiri", "title": "BI Administrator", "dept": "Enterprise Data", "loc": "Remote-Maryland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Samantha Calderon", "title": "Senior Data Analyst, BI Architecture", "dept": "Enterprise Data", "loc": "Remote-New Jersey", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Monisha Reddy Goskonda", "title": "BI Architect I", "dept": "Enterprise Data", "loc": "Remote-Illinois", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Michele King", "title": "Data Steward", "dept": "Enterprise Data", "loc": "Remote-Georgia", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Aleena Malik", "title": "Master Data Management Analyst", "dept": "Enterprise Data", "loc": "Remote-Virginia", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Parth Sheth", "title": "BI Architect I", "dept": "Enterprise Data", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Arun Kalmadi", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Dawn Koceja-Harrell", "title": "Associate Director, Data Infrastructure", "dept": "Enterprise Data", "loc": "Remote-Wisconsin", "con": false, "tot": 4, "subcon": 2, "children": [{"name": "Lori Dobson", "title": "Senior SQL Database Administrator", "dept": "Enterprise Data", "loc": "Remote-Montana", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Nathaniel Fuller", "title": "Data Engineer II", "dept": "Enterprise Data", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Sanket Kokane", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Yusuf Shaikh", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Timothy Campbell", "title": "Scrum Master", "dept": "Enterprise Data", "loc": "Remote-New Jersey", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Brian Ruedinger", "title": "Principle Program Manager, Data & Reporting", "dept": "Enterprise Data", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Amin Tejani", "title": "Scrum Master", "dept": "Enterprise Data", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Vijayalakshmi Varadharajan", "title": "Lead, Systems Data Analyst", "dept": "Enterprise Data", "loc": "Remote-Texas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Kevin Aikhionbare", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Matt Bekkum", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Kerbie Benoit", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Neeharika Dhanalakota", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Mehul Doshi", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Priyanka Gadia", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Harshit Kumarwat", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Chakshu Parkash", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Saransh Tiwari", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Denis Victor", "title": "Contractor", "dept": "Enterprise Data", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Aaron Ansari", "title": "Interim Infrastructure Leader", "dept": "Infrastructure & Telecom", "loc": "Remote-Florida", "con": false, "tot": 25, "subcon": 0, "children": [{"name": "Rory Cathey", "title": "Director, Infrastructure", "dept": "Infrastructure & Telecom", "loc": "Remote-Florida", "con": false, "tot": 19, "subcon": 0, "children": [{"name": "Nic Talantis", "title": "Senior Manager, Telephony", "dept": "Infrastructure & Telecom", "loc": "Remote-Florida", "con": false, "tot": 5, "subcon": 0, "children": [{"name": "Barbara Aswegan", "title": "Telephony Systems Administrator", "dept": "Infrastructure & Telecom", "loc": "Remote-Missouri", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Sebastian Cebollero Dominguez", "title": "Telecom Engineer II", "dept": "Infrastructure & Telecom", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Eric Hyder", "title": "Telecom Engineer II", "dept": "Infrastructure & Telecom", "loc": "Remote-Missouri", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Aaron Krannawitter", "title": "Telecom Engineer I", "dept": "Infrastructure & Telecom", "loc": "Remote-Kansas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Alex Lee", "title": "Telephony Systems Administrator", "dept": "Infrastructure & Telecom", "loc": "Remote-Virginia", "con": false, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Jeremy Allie", "title": "Infrastructure Engineer I", "dept": "Infrastructure & Telecom", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Shaun Bell", "title": "Enterprise Application Analyst", "dept": "Internal Systems", "loc": "Overland Park", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Jason Burge", "title": "Systems Administrator", "dept": "Internal Systems", "loc": "Overland Park", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Chris Cameron", "title": "Systems Administrator I", "dept": "Internal Systems", "loc": "Overland Park", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Jordan Clark", "title": "Senior Systems Administrator", "dept": "Internal Systems", "loc": "Remote-Colorado", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "James Craig", "title": "Systems Administrator", "dept": "Internal Systems", "loc": "Remote-North Carolina", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Justin Dalrymple", "title": "Sr. Patching Engineer", "dept": "Infrastructure & Telecom", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Sudeep Gurung", "title": "Infrastructure Engineer III", "dept": "Infrastructure & Telecom", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "William Livingston", "title": "Systems Administrator", "dept": "Internal Systems", "loc": "Remote-Georgia", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Sean McDonald", "title": "System Application Administrator", "dept": "Internal Systems", "loc": "Remote-Colorado", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Maimoona Mughal", "title": "Senior Systems Administrator", "dept": "Internal Systems", "loc": "Remote-Texas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Jose Mujica", "title": "Network Architect", "dept": "Infrastructure & Telecom", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Skip Sorensen", "title": "Infrastructure Engineer II", "dept": "Infrastructure & Telecom", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Terry Doolittle", "title": "Manager, Security Operations (SecOps)", "dept": "Infrastructure & Telecom", "loc": "Remote-Michigan", "con": false, "tot": 4, "subcon": 0, "children": [{"name": "Michael Brooks", "title": "Senior Cybersecurity Engineer", "dept": "Infrastructure & Telecom", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Mary Dougherty", "title": "Security Risk & Assurance Analyst", "dept": "Infrastructure & Telecom", "loc": "Overland Park", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Matt Newell", "title": "Senior Cybersecurity Engineer", "dept": "Infrastructure & Telecom", "loc": "Remote-Tennessee", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Ricardo Rosario", "title": "Security Analyst I", "dept": "Infrastructure & Telecom", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}]}]}, {"name": "Clifford Jones", "title": "Chief AI Officer", "dept": "Allazo Technology", "loc": "Remote-California", "con": false, "tot": 20, "subcon": 9, "children": [{"name": "Bala Sivakolunthu Vel", "title": "Vice President, Data Engineering", "dept": "Allazo Technology", "loc": "Remote-New Jersey", "con": false, "tot": 8, "subcon": 7, "children": [{"name": "Saikit Chan", "title": "Staff Data Engineer", "dept": "Allazo Technology", "loc": "Remote-New Jersey", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Raj Ghate", "title": "Contractor", "dept": "Allazo Technology", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Aishwarya Kale", "title": "Contractor", "dept": "Allazo Technology", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "SaiTeja Kothuru", "title": "Contractor", "dept": "Allazo Technology", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Rohan Phadatare", "title": "Contractor", "dept": "Allazo Technology", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Balachandar Sankararaj", "title": "Contractor", "dept": "Allazo Technology", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Raveen Sharma", "title": "Contractor", "dept": "Allazo Technology", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Amit Soni", "title": "Contractor", "dept": "Allazo Technology", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Kevin Leung", "title": "Vice President, Analytics", "dept": "Allazo Technology", "loc": "Remote-Texas", "con": false, "tot": 5, "subcon": 1, "children": [{"name": "Thomas Marano", "title": "Director, Customer Analytics", "dept": "Allazo Technology", "loc": "Remote-New York", "con": false, "tot": 3, "subcon": 1, "children": [{"name": "Emily Burton-Boehr", "title": "Analytics Engineer (AI)", "dept": "Allazo Technology", "loc": "Remote-California", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Roy Yung Kim", "title": "Reporting Analyst", "dept": "Allazo Technology", "loc": "Remote-Argentina", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Aavishkar Mahajan", "title": "Contractor", "dept": "Allazo Technology", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Christopher Herterick", "title": "Data Solutions Consultant", "dept": "Allazo Technology", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Jason Krizan", "title": "Principal Data Scientist", "dept": "Allazo Technology", "loc": "Remote-Maryland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Josh Smitherman", "title": "Principal Data Scientist", "dept": "Allazo Technology", "loc": "Remote-Texas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Peppi Vecchio", "title": "Lead, GenAI Enablement", "dept": "Allazo Technology", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Feng Zhu", "title": "Principal Data Scientist", "dept": "Allazo Technology", "loc": "Remote-Illinois", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Owais Mirza", "title": "Contractor", "dept": "Allazo Technology", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Will Stackpole", "title": "Interim Infrastructure Leader", "dept": "Infrastructure & Telecom", "loc": "Remote-Connecticut", "con": false, "tot": 19, "subcon": 0, "children": [{"name": "Alex Markovich", "title": "Manager, Internal Systems", "dept": "Internal Systems", "loc": "Maitland", "con": false, "tot": 16, "subcon": 0, "children": [{"name": "Michael Dickerson", "title": "Service Desk Technician I", "dept": "Internal Systems", "loc": "Overland Park", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Kevin Francis", "title": "Service Desk Lead", "dept": "Internal Systems", "loc": "Remote-Arizona", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Richard Francis", "title": "Service Desk Technician II", "dept": "Internal Systems", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Veronica Francis", "title": "Service Desk Coordinator", "dept": "Internal Systems", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Paul Gates", "title": "Service Desk Technician II", "dept": "Internal Systems", "loc": "Arizona, Tempe", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Thomas Gravelle", "title": "Service Desk Technician II", "dept": "Internal Systems", "loc": "Arizona, Tempe", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Steve Harcharran", "title": "Service Desk Lead", "dept": "Internal Systems", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Roy Jones", "title": "Service Desk Technician II", "dept": "Internal Systems", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Aaron Miller", "title": "Service Desk Technician II", "dept": "Internal Systems", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Sean Notice", "title": "Service Desk Lead", "dept": "Internal Systems", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Jose Quezada", "title": "Service Desk Technician II", "dept": "Internal Systems", "loc": "Southpark", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Felipe Santos", "title": "Service Desk Technician II", "dept": "Internal Systems", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Nathan Shirley", "title": "Senior Service Desk Technician", "dept": "Internal Systems", "loc": "Overland Park", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Jared Thompson", "title": "Service Desk Technician II", "dept": "Internal Systems", "loc": "Maitland", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Levi Vacca", "title": "Service Desk Lead", "dept": "Internal Systems", "loc": "Remote-Missouri", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Bryan Williams", "title": "Service Desk Technician II", "dept": "Internal Systems", "loc": "Overland Park", "con": false, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Carlos Cendoya", "title": "Senior Pharmacy Application Engineer", "dept": "Internal Systems", "loc": "Remote-Georgia", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Danny Fortune", "title": "Technical Project Manager", "dept": "Quality & Release Mngmt", "loc": "Remote-Georgia", "con": false, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Andrew Burkards", "title": "Vice President, Solutions Architecture", "dept": "Architecture & DevOps", "loc": "Maitland", "con": false, "tot": 17, "subcon": 3, "children": [{"name": "Max Raes", "title": "Associate Director, DevOps", "dept": "Architecture & DevOps", "loc": "Des Moines, IA", "con": false, "tot": 6, "subcon": 2, "children": [{"name": "Christian Cardenas", "title": "DevOps Engineer II", "dept": "Architecture & DevOps", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Kareem Munroe", "title": "DevOps Engineer I", "dept": "Architecture & DevOps", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Purnimarani Ravipatii", "title": "Senior DevOps Engineer", "dept": "Architecture & DevOps", "loc": "Remote-North Carolina", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Matthew Weber", "title": "Senior DevOps Engineer", "dept": "Architecture & DevOps", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Rithesh Kanchan", "title": "Contractor", "dept": "Architecture & DevOps", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}, {"name": "Kanhaiya Kumar", "title": "Contractor", "dept": "Architecture & DevOps", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Craig Breakspear", "title": "Principal Software Solutions Architect", "dept": "Architecture & DevOps", "loc": "Remote-Florida", "con": false, "tot": 2, "subcon": 0, "children": [{"name": "Michael Hood", "title": "Software Solutions Architect", "dept": "Architecture & DevOps", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Sadia Shoiab", "title": "Software Solutions Architect", "dept": "Architecture & DevOps", "loc": "Remote-Wisconsin", "con": false, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Steven Loper", "title": "Senior Salesforce Architect", "dept": "Architecture & DevOps", "loc": "Maitland", "con": false, "tot": 2, "subcon": 0, "children": [{"name": "Irving Toledo", "title": "Salesforce Architect", "dept": "Architecture & DevOps", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Harshitha Yayavaram", "title": "Salesforce Architect", "dept": "Architecture & DevOps", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Brian Tait", "title": "Principal NOC Engineer", "dept": "Architecture & DevOps", "loc": "Des Moines, IA", "con": false, "tot": 2, "subcon": 1, "children": [{"name": "Derek Wadle", "title": "Senior Analyst, NOC", "dept": "Architecture & DevOps", "loc": "Des Moines, IA", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Cesar Susano", "title": "Contractor", "dept": "Architecture & DevOps", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Thomas Feldmeier", "title": "Salesforce Architect", "dept": "Architecture & DevOps", "loc": "Remote-Florida", "con": false, "tot": 0, "subcon": 0, "children": []}]}, {"name": "Derek Lopez", "title": "Director, Technology Operations", "dept": "Quality & Release Mngmt", "loc": "Remote-Florida", "con": false, "tot": 4, "subcon": 0, "children": [{"name": "Laura Walter", "title": "Manager, Release", "dept": "Quality & Release Mngmt", "loc": "Remote-Florida", "con": false, "tot": 3, "subcon": 0, "children": [{"name": "Jasmine Bottoms", "title": "Release Analyst", "dept": "Quality & Release Mngmt", "loc": "Remote-Texas", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Helena Gaulke", "title": "Release Coordinator", "dept": "Quality & Release Mngmt", "loc": "Remote-Minnesota", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Samantha Lee", "title": "Release Coordinator", "dept": "Quality & Release Mngmt", "loc": "Remote-Michigan", "con": false, "tot": 0, "subcon": 0, "children": []}]}]}, {"name": "Melissa Campbell", "title": "Vice President, Agile Delivery", "dept": "Development", "loc": "Remote-Georgia", "con": false, "tot": 0, "subcon": 0, "children": []}, {"name": "Lawrence Miller", "title": "Contractor", "dept": "Infrastructure & Telecom", "loc": "\u2014", "con": true, "tot": 0, "subcon": 0, "children": []}]};
+const tabs = [...document.querySelectorAll('nav button')];
+tabs.forEach(b => b.addEventListener('click', () => {
+  tabs.forEach(x => x.setAttribute('aria-selected', String(x === b)));
+  document.querySelectorAll('.view').forEach(v => v.hidden = (v.id !== b.dataset.view));
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}));
+
+const treeEl = document.getElementById('tree');
+function render(nodes, depth) {
+  const ul = document.createElement('ul');
+  nodes.forEach(n => {
+    const li = document.createElement('li');
+    li.className = 'tn lvl' + depth;
+    li.dataset.text = (n.name + ' ' + n.title + ' ' + n.dept).toLowerCase();
+    const row = document.createElement('div'); row.className = 'row';
+    const tw = document.createElement('button');
+    if (n.children.length) { tw.className = 'tw'; tw.textContent = '+'; tw.setAttribute('aria-label', 'Expand ' + n.name); }
+    else { tw.className = 'tw leafdot'; tw.textContent = '·'; tw.tabIndex = -1; tw.setAttribute('aria-hidden', 'true'); }
+    row.appendChild(tw);
+    const who = document.createElement('div'); who.className = 'who';
+    who.innerHTML = '<div class="nm"></div><div class="ti2"></div>';
+    who.querySelector('.nm').textContent = n.name;
+    who.querySelector('.ti2').textContent = n.title + (n.loc && n.loc !== '—' ? ' · ' + n.loc : '');
+    row.appendChild(who);
+    const tags = document.createElement('div'); tags.className = 'tags';
+    if (n.con) tags.innerHTML += '<span class="tag t-con">Contractor</span>';
+    if (depth <= 2) tags.innerHTML += '<span class="tag t-dept">' + n.dept + '</span>';
+    if (n.tot) {
+      tags.innerHTML += '<span class="tag t-hc">' + n.tot + ' in line</span>';
+      if (n.subcon) tags.innerHTML += '<span class="tag t-dr">' + n.subcon + (n.subcon === 1 ? ' contractor' : ' contractors') + '</span>';
+    }
+    row.appendChild(tags); li.appendChild(row);
+    if (n.children.length) {
+      const kidsUl = render(n.children, depth + 1); kidsUl.hidden = true; li.appendChild(kidsUl);
+      const toggle = () => { kidsUl.hidden = !kidsUl.hidden; tw.textContent = kidsUl.hidden ? '+' : '–'; };
+      tw.addEventListener('click', toggle); who.addEventListener('click', toggle); who.style.cursor = 'pointer';
+    }
+    ul.appendChild(li);
+  });
+  return ul;
+}
+treeEl.appendChild(render(TREE.children, 1));
+
+function setDepth(d) {
+  treeEl.querySelectorAll('li.tn').forEach(li => {
+    const lvl = +li.className.match(/lvl(\d+)/)[1];
+    const ul = li.querySelector(':scope > ul'); if (!ul) return;
+    ul.hidden = lvl >= d;
+    const tw = li.querySelector(':scope > .row > .tw'); if (tw) tw.textContent = ul.hidden ? '+' : '–';
+  });
+}
+document.getElementById('ex2').addEventListener('click', () => setDepth(2));
+document.getElementById('exall').addEventListener('click', () => setDepth(99));
+document.getElementById('coll').addEventListener('click', () => setDepth(0));
+setDepth(1);
+
+const q = document.getElementById('q'), qmeta = document.getElementById('qmeta');
+q.addEventListener('input', () => {
+  const s = q.value.trim().toLowerCase();
+  const all = [...treeEl.querySelectorAll('li.tn')];
+  if (!s) { all.forEach(li => li.classList.remove('hide', 'hit')); setDepth(1); qmeta.textContent = ''; return; }
+  let hits = 0;
+  all.forEach(li => { li.classList.add('hide'); li.classList.remove('hit'); });
+  all.forEach(li => {
+    if (!li.dataset.text.includes(s)) return;
+    hits++; li.classList.remove('hide'); li.classList.add('hit');
+    let p = li.parentElement;
+    while (p && p !== treeEl) {
+      if (p.tagName === 'UL') p.hidden = false;
+      if (p.tagName === 'LI') {
+        p.classList.remove('hide');
+        const tw = p.querySelector(':scope > .row > .tw');
+        if (tw && !tw.classList.contains('leafdot')) tw.textContent = '–';
+      }
+      p = p.parentElement;
+    }
+    const own = li.querySelector(':scope > ul');
+    if (own) { own.hidden = true; const tw = li.querySelector(':scope > .row > .tw'); if (tw) tw.textContent = '+'; }
+  });
+  qmeta.textContent = hits + (hits === 1 ? ' match' : ' matches');
+});
+</script>
+</body>
+</html>
