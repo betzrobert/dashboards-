@@ -1,188 +1,546 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Other Dashboards</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: #f5f7fb;
-      color: #172033;
-    }
-    header {
-      background: linear-gradient(135deg, #123a63, #1f6feb);
-      color: white;
-      padding: 48px 24px;
-    }
-    .container {
-      max-width: 1150px;
-      margin: 0 auto;
-    }
-    h1 {
-      margin: 0;
-      font-size: 42px;
-      letter-spacing: -1px;
-    }
-    .subtitle {
-      margin-top: 10px;
-      font-size: 16px;
-      opacity: 0.88;
-    }
-    main {
-      padding: 34px 24px 60px;
-    }
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 18px;
-    }
-    .section-title h2 {
-      margin: 0;
-      font-size: 24px;
-    }
-    .count {
-      color: #6b7280;
-      font-size: 14px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-    }
-    .card {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      background: white;
-      border: 1px solid #dfe5ee;
-      border-radius: 14px;
-      padding: 20px;
-      min-height: 112px;
-      box-shadow: 0 7px 20px rgba(20, 35, 55, 0.07);
-      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-    }
-    .card:hover {
-      transform: translateY(-3px);
-      border-color: #9fc1ec;
-      box-shadow: 0 12px 28px rgba(20, 35, 55, 0.12);
-    }
-    .title {
-      font-size: 17px;
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 24px;
-    }
-    .open {
-      color: #1f6feb;
-      font-size: 13px;
-      font-weight: 600;
-    }
-    footer {
-      text-align: center;
-      color: #7a8494;
-      font-size: 13px;
-      padding: 20px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Hub</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  background: #f5f7fb;
+  color: #172033;
+}
+header {
+  background: linear-gradient(135deg, #123a63, #1f6feb);
+  color: white;
+  padding: 48px 24px 36px;
+}
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+h1 {
+  margin: 0;
+  font-size: 42px;
+  letter-spacing: -1px;
+}
+.subtitle {
+  margin-top: 10px;
+  font-size: 16px;
+  opacity: 0.9;
+}
+.search-wrap {
+  margin-top: 22px;
+}
+#search {
+  width: 100%;
+  max-width: 620px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  outline: none;
+}
+main {
+  padding: 34px 24px 60px;
+}
+.group {
+  margin-bottom: 38px;
+}
+.group-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.group-head h2 {
+  margin: 0;
+  font-size: 24px;
+}
+.group-head span {
+  color: #6b7280;
+  font-size: 14px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: white;
+  border: 1px solid #dfe5ee;
+  border-radius: 14px;
+  padding: 20px;
+  min-height: 112px;
+  box-shadow: 0 7px 20px rgba(20,35,55,.07);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  border-color: #9fc1ec;
+  box-shadow: 0 12px 28px rgba(20,35,55,.12);
+}
+.title {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 24px;
+}
+.open {
+  color: #1f6feb;
+  font-size: 13px;
+  font-weight: 600;
+}
+footer {
+  text-align: center;
+  color: #7a8494;
+  font-size: 13px;
+  padding: 20px;
+}
+.hidden { display: none !important; }
+</style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <h1>Dashboard Hub</h1>
-      <div class="subtitle">Quick access to your dashboards</div>
+<header>
+  <div class="container">
+    <h1>Dashboard Hub</h1>
+    <div class="subtitle">Quick access to 85 dashboards across all categories</div>
+    <div class="search-wrap">
+      <input id="search" type="search" placeholder="Search dashboards...">
     </div>
-  </header>
+  </div>
+</header>
 
-  <main>
-    <div class="container">
-      <div class="section-title">
-        <h2>Other Dashboards</h2>
-        <div class="count">18 dashboards</div>
-      </div>
+<main>
+  <div class="container">
+    
+<section class="group">
+  <div class="group-head">
+    <h2>Contractor / Contingent Labor</h2>
+    <span>10 dashboards</span>
+  </div>
+  <div class="grid">
+<a class="card" href="AssistRx_Contractor_Bill_Rates_Cost.html" target="_blank" rel="noopener" data-search="contractor / contingent labor assistrx contractor bill rates & cost">
+  <div class="title">AssistRx Contractor Bill Rates & Cost</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="AssistRx_Contractors_12mo_Plus_CPO.html" target="_blank" rel="noopener" data-search="contractor / contingent labor assistrx contractors 12mo+ cpo">
+  <div class="title">AssistRx Contractors 12mo+ CPO</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="AssistRx_Contractors_12mo_Plus_CPO_2.html" target="_blank" rel="noopener" data-search="contractor / contingent labor assistrx contractors 12mo+ cpo 2">
+  <div class="title">AssistRx Contractors 12mo+ CPO 2</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="Contingent%20Labor%20Brief%20Dashboard.html" target="_blank" rel="noopener" data-search="contractor / contingent labor contingent labor brief dashboard">
+  <div class="title">Contingent Labor Brief Dashboard</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="ContingentLabor.html" target="_blank" rel="noopener" data-search="contractor / contingent labor contingent labor">
+  <div class="title">Contingent Labor</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="ContingentLaborProgram.html" target="_blank" rel="noopener" data-search="contractor / contingent labor contingent labor program">
+  <div class="title">Contingent Labor Program</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="Contingentlaborv2.html" target="_blank" rel="noopener" data-search="contractor / contingent labor contingent labor v2">
+  <div class="title">Contingent Labor V2</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="v2contingentlabor.html" target="_blank" rel="noopener" data-search="contractor / contingent labor v2 contingent labor">
+  <div class="title">V2 Contingent Labor</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="Contractor%20Data%20Rate%20Card%20Information.html" target="_blank" rel="noopener" data-search="contractor / contingent labor contractor data rate card information">
+  <div class="title">Contractor Data Rate Card Information</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="contractortermdata.html" target="_blank" rel="noopener" data-search="contractor / contingent labor contractor term data">
+  <div class="title">Contractor Term Data</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+  </div>
+</section>
 
-      <div class="grid">
-      <a class="card" href="CITUSTECH.html" target="_blank" rel="noopener">
-        <div class="title">CITUSTECH</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="ODG.html" target="_blank" rel="noopener">
-        <div class="title">ODG</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="ODGv1.html" target="_blank" rel="noopener">
-        <div class="title">ODG V1</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="RIF.html" target="_blank" rel="noopener">
-        <div class="title">RIF</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="RIFV1.html" target="_blank" rel="noopener">
-        <div class="title">RIF V1</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="dashterm.html" target="_blank" rel="noopener">
-        <div class="title">Dash Term</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="termdashv1.html" target="_blank" rel="noopener">
-        <div class="title">Term Dashboard V1</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="fin.html" target="_blank" rel="noopener">
-        <div class="title">Finance</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="hr.html" target="_blank" rel="noopener">
-        <div class="title">HR</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="novo.html" target="_blank" rel="noopener">
-        <div class="title">Novo</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="novo1.html" target="_blank" rel="noopener">
-        <div class="title">Novo 1</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="novojdmatch.html" target="_blank" rel="noopener">
-        <div class="title">Novo JD Match</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="novojdmatch1.html" target="_blank" rel="noopener">
-        <div class="title">Novo JD Match 1</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="rph4.html" target="_blank" rel="noopener">
-        <div class="title">RPH4</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="RobertIsGreat.html" target="_blank" rel="noopener">
-        <div class="title">Robert Is Great</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="dashv1robertisgreat.html" target="_blank" rel="noopener">
-        <div class="title">Dash V1 Robert Is Great</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="You_Are_Welcome_Hailey.html" target="_blank" rel="noopener">
-        <div class="title">You Are Welcome Hailey</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      <a class="card" href="yourwelcome.html" target="_blank" rel="noopener">
-        <div class="title">Your Welcome</div>
-        <div class="open">Open dashboard ↗</div>
-      </a>
-      </div>
-    </div>
-  </main>
+<section class="group">
+  <div class="group-head">
+    <h2>RFP / Rate Cards</h2>
+    <span>10 dashboards</span>
+  </div>
+  <div class="grid">
+<a class="card" href="AssistRx_RFP_Rate_Card_Analysis.html" target="_blank" rel="noopener" data-search="rfp / rate cards assistrx rfp rate card analysis">
+  <div class="title">AssistRx RFP Rate Card Analysis</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="AssistRx_RFP_Rate_Cards_Five_Vendors_1.html" target="_blank" rel="noopener" data-search="rfp / rate cards assistrx rfp rate cards – five vendors">
+  <div class="title">AssistRx RFP Rate Cards – Five Vendors</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="RFP.html" target="_blank" rel="noopener" data-search="rfp / rate cards rfp">
+  <div class="title">RFP</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="rfp.html" target="_blank" rel="noopener" data-search="rfp / rate cards rfp">
+  <div class="title">rfp</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="rfp1.html" target="_blank" rel="noopener" data-search="rfp / rate cards rfp1">
+  <div class="title">rfp1</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="rfp2.html" target="_blank" rel="noopener" data-search="rfp / rate cards rfp2">
+  <div class="title">rfp2</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="rfp3.html" target="_blank" rel="noopener" data-search="rfp / rate cards rfp3">
+  <div class="title">rfp3</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="rfp5.html" target="_blank" rel="noopener" data-search="rfp / rate cards rfp5">
+  <div class="title">rfp5</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="rfp8.html" target="_blank" rel="noopener" data-search="rfp / rate cards rfp8">
+  <div class="title">rfp8</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="rfpscorecard.html" target="_blank" rel="noopener" data-search="rfp / rate cards rfp scorecard">
+  <div class="title">RFP Scorecard</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+  </div>
+</section>
 
-  <footer>Dashboard Hub</footer>
+<section class="group">
+  <div class="group-head">
+    <h2>Billable / CPO Staffing</h2>
+    <span>15 dashboards</span>
+  </div>
+  <div class="grid">
+<a class="card" href="Billable%208%2024.html" target="_blank" rel="noopener" data-search="billable / cpo staffing billable 8/24">
+  <div class="title">Billable 8/24</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="Billable%20Aug%2010%20to%2014.html" target="_blank" rel="noopener" data-search="billable / cpo staffing billable aug 10–14">
+  <div class="title">Billable Aug 10–14</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="Billable%20Status%208%2014.html" target="_blank" rel="noopener" data-search="billable / cpo staffing billable status 8/14">
+  <div class="title">Billable Status 8/14</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="Billable%20V1%208%2024.html" target="_blank" rel="noopener" data-search="billable / cpo staffing billable v1 8/24">
+  <div class="title">Billable V1 8/24</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="Billable_Staffing_Dashboard_Aug17-21_2026_2.html" target="_blank" rel="noopener" data-search="billable / cpo staffing billable staffing aug 17–21">
+  <div class="title">Billable Staffing Aug 17–21</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="Billable_Status_Dashboard%201.html" target="_blank" rel="noopener" data-search="billable / cpo staffing billable status dashboard 1">
+  <div class="title">Billable Status Dashboard 1</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="Billable_Status_Dashboard%2011.html" target="_blank" rel="noopener" data-search="billable / cpo staffing billable status dashboard 11">
+  <div class="title">Billable Status Dashboard 11</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="Billable_Status_Dashboard%202.html" target="_blank" rel="noopener" data-search="billable / cpo staffing billable status dashboard 2">
+  <div class="title">Billable Status Dashboard 2</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="Billable_Status_Dashboard%205.html" target="_blank" rel="noopener" data-search="billable / cpo staffing billable status dashboard 5">
+  <div class="title">Billable Status Dashboard 5</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="billable.html" target="_blank" rel="noopener" data-search="billable / cpo staffing billable">
+  <div class="title">Billable</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="v%203%20Billable_Status_Dashboard_2026-08-21.html" target="_blank" rel="noopener" data-search="billable / cpo staffing v3 billable status 8/21">
+  <div class="title">V3 Billable Status 8/21</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="CPO%20Non%20Billable%208%2017.html" target="_blank" rel="noopener" data-search="billable / cpo staffing cpo non-billable 8/17">
+  <div class="title">CPO Non-Billable 8/17</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="CPO%20Status%208%2024%20v1%20Non%20Billable.html" target="_blank" rel="noopener" data-search="billable / cpo staffing cpo non-billable 8/24 v1">
+  <div class="title">CPO Non-Billable 8/24 V1</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="NonBillable_Status_Dashboard_2026-08-24.html" target="_blank" rel="noopener" data-search="billable / cpo staffing non-billable status 8/24">
+  <div class="title">Non-Billable Status 8/24</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="NonBillable_Status_Dashboard_2026-08-31.html" target="_blank" rel="noopener" data-search="billable / cpo staffing non-billable status 8/31">
+  <div class="title">Non-Billable Status 8/31</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+  </div>
+</section>
+
+<section class="group">
+  <div class="group-head">
+    <h2>Hiring / TA</h2>
+    <span>17 dashboards</span>
+  </div>
+  <div class="grid">
+<a class="card" href="ELT_Hiring_Dashboard_2026-08-28_6.html" target="_blank" rel="noopener" data-search="hiring / ta elt hiring dashboard">
+  <div class="title">ELT Hiring Dashboard</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="arxhiringanalysis.html" target="_blank" rel="noopener" data-search="hiring / ta arx hiring analysis">
+  <div class="title">ARX Hiring Analysis</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="arxjdmatch.html" target="_blank" rel="noopener" data-search="hiring / ta arx jd match">
+  <div class="title">ARX JD Match</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="TAV1.html" target="_blank" rel="noopener" data-search="hiring / ta ta v1">
+  <div class="title">TA V1</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="TAV2.html" target="_blank" rel="noopener" data-search="hiring / ta ta v2">
+  <div class="title">TA V2</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="TAV4.html" target="_blank" rel="noopener" data-search="hiring / ta ta v4">
+  <div class="title">TA V4</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="TAV5.html" target="_blank" rel="noopener" data-search="hiring / ta ta v5">
+  <div class="title">TA V5</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="TAV7.html" target="_blank" rel="noopener" data-search="hiring / ta ta v7">
+  <div class="title">TA V7</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="TAV8.html" target="_blank" rel="noopener" data-search="hiring / ta ta v8">
+  <div class="title">TA V8</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="TAV10.html" target="_blank" rel="noopener" data-search="hiring / ta ta v10">
+  <div class="title">TA V10</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="TAV11.html" target="_blank" rel="noopener" data-search="hiring / ta ta v11">
+  <div class="title">TA V11</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="TAV12.html" target="_blank" rel="noopener" data-search="hiring / ta ta v12">
+  <div class="title">TA V12</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="TA_ROCKS.html" target="_blank" rel="noopener" data-search="hiring / ta ta rocks">
+  <div class="title">TA Rocks</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="tametrics.html" target="_blank" rel="noopener" data-search="hiring / ta ta metrics">
+  <div class="title">TA Metrics</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="tametrics1.html" target="_blank" rel="noopener" data-search="hiring / ta ta metrics 1">
+  <div class="title">TA Metrics 1</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="seniorscrum.html" target="_blank" rel="noopener" data-search="hiring / ta senior scrum">
+  <div class="title">Senior Scrum</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="seniorscrum1.html" target="_blank" rel="noopener" data-search="hiring / ta senior scrum 1">
+  <div class="title">Senior Scrum 1</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+  </div>
+</section>
+
+<section class="group">
+  <div class="group-head">
+    <h2>Academy / Retention / 30-60-90</h2>
+    <span>12 dashboards</span>
+  </div>
+  <div class="grid">
+<a class="card" href="427Day123.html" target="_blank" rel="noopener" data-search="academy / retention / 30-60-90 427 day 123">
+  <div class="title">427 Day 123</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="427and511.html" target="_blank" rel="noopener" data-search="academy / retention / 30-60-90 427 and 511">
+  <div class="title">427 and 511</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="90daytech.html" target="_blank" rel="noopener" data-search="academy / retention / 30-60-90 90 day tech">
+  <div class="title">90 Day Tech</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="CultureAmp306090May4.html" target="_blank" rel="noopener" data-search="academy / retention / 30-60-90 cultureamp 30/60/90 may 4">
+  <div class="title">CultureAmp 30/60/90 May 4</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="DashboardMay11.html" target="_blank" rel="noopener" data-search="academy / retention / 30-60-90 dashboard may 11">
+  <div class="title">Dashboard May 11</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="June1Lookback.html" target="_blank" rel="noopener" data-search="academy / retention / 30-60-90 june 1 lookback">
+  <div class="title">June 1 Lookback</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="may18306090.html" target="_blank" rel="noopener" data-search="academy / retention / 30-60-90 may 18 30/60/90">
+  <div class="title">May 18 30/60/90</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="academydash.html" target="_blank" rel="noopener" data-search="academy / retention / 30-60-90 academy dashboard">
+  <div class="title">Academy Dashboard</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="academydashv1.html" target="_blank" rel="noopener" data-search="academy / retention / 30-60-90 academy dashboard v1">
+  <div class="title">Academy Dashboard V1</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="academydashv2.html" target="_blank" rel="noopener" data-search="academy / retention / 30-60-90 academy dashboard v2">
+  <div class="title">Academy Dashboard V2</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="academyresume.html" target="_blank" rel="noopener" data-search="academy / retention / 30-60-90 academy resume">
+  <div class="title">Academy Resume</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="academyv3.html" target="_blank" rel="noopener" data-search="academy / retention / 30-60-90 academy v3">
+  <div class="title">Academy V3</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+  </div>
+</section>
+
+<section class="group">
+  <div class="group-head">
+    <h2>Onboarding / Orientation</h2>
+    <span>3 dashboards</span>
+  </div>
+  <div class="grid">
+<a class="card" href="AssistRx_Onboarding_Survey_Dashboard_Refresh.html" target="_blank" rel="noopener" data-search="onboarding / orientation assistrx onboarding survey dashboard">
+  <div class="title">AssistRx Onboarding Survey Dashboard</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="welcome_orientation_dashboard.html" target="_blank" rel="noopener" data-search="onboarding / orientation welcome orientation dashboard">
+  <div class="title">Welcome Orientation Dashboard</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="Wave6July20.html" target="_blank" rel="noopener" data-search="onboarding / orientation wave 6 july 20">
+  <div class="title">Wave 6 July 20</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+  </div>
+</section>
+
+<section class="group">
+  <div class="group-head">
+    <h2>Other Dashboards</h2>
+    <span>18 dashboards</span>
+  </div>
+  <div class="grid">
+<a class="card" href="CITUSTECH.html" target="_blank" rel="noopener" data-search="other dashboards citustech">
+  <div class="title">CITUSTECH</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="ODG.html" target="_blank" rel="noopener" data-search="other dashboards odg">
+  <div class="title">ODG</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="ODGv1.html" target="_blank" rel="noopener" data-search="other dashboards odg v1">
+  <div class="title">ODG V1</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="RIF.html" target="_blank" rel="noopener" data-search="other dashboards rif">
+  <div class="title">RIF</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="RIFV1.html" target="_blank" rel="noopener" data-search="other dashboards rif v1">
+  <div class="title">RIF V1</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="dashterm.html" target="_blank" rel="noopener" data-search="other dashboards dash term">
+  <div class="title">Dash Term</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="termdashv1.html" target="_blank" rel="noopener" data-search="other dashboards term dashboard v1">
+  <div class="title">Term Dashboard V1</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="fin.html" target="_blank" rel="noopener" data-search="other dashboards finance">
+  <div class="title">Finance</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="hr.html" target="_blank" rel="noopener" data-search="other dashboards hr">
+  <div class="title">HR</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="novo.html" target="_blank" rel="noopener" data-search="other dashboards novo">
+  <div class="title">Novo</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="novo1.html" target="_blank" rel="noopener" data-search="other dashboards novo 1">
+  <div class="title">Novo 1</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="novojdmatch.html" target="_blank" rel="noopener" data-search="other dashboards novo jd match">
+  <div class="title">Novo JD Match</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="novojdmatch1.html" target="_blank" rel="noopener" data-search="other dashboards novo jd match 1">
+  <div class="title">Novo JD Match 1</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="rph4.html" target="_blank" rel="noopener" data-search="other dashboards rph4">
+  <div class="title">RPH4</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="RobertIsGreat.html" target="_blank" rel="noopener" data-search="other dashboards robert is great">
+  <div class="title">Robert Is Great</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="dashv1robertisgreat.html" target="_blank" rel="noopener" data-search="other dashboards dash v1 robert is great">
+  <div class="title">Dash V1 Robert Is Great</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="You_Are_Welcome_Hailey.html" target="_blank" rel="noopener" data-search="other dashboards you are welcome hailey">
+  <div class="title">You Are Welcome Hailey</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+<a class="card" href="yourwelcome.html" target="_blank" rel="noopener" data-search="other dashboards your welcome">
+  <div class="title">Your Welcome</div>
+  <div class="open">Open dashboard ↗</div>
+</a>
+  </div>
+</section>
+
+  </div>
+</main>
+
+<footer>Dashboard Hub</footer>
+
+<script>
+const search = document.getElementById('search');
+search.addEventListener('input', () => {
+  const q = search.value.trim().toLowerCase();
+  document.querySelectorAll('.card').forEach(card => {
+    const match = card.dataset.search.includes(q);
+    card.classList.toggle('hidden', !match);
+  });
+  document.querySelectorAll('.group').forEach(group => {
+    const visible = [...group.querySelectorAll('.card')].some(c => !c.classList.contains('hidden'));
+    group.classList.toggle('hidden', !visible);
+  });
+});
+</script>
 </body>
 </html>
