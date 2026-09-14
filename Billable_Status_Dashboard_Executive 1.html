@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly Billable Staffing Status — Executive Summary: Sep 8–14, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1C2A5E;
+    --navy-dk:#141F45;
+    --gold:#C89116;
+    --gold-br:#DCA426;
+    --green:#2E9E5B;
+    --red:#C4402E;
+    --teal:#2A8F9E;
+    --kpi-bg:#EFF2F8;
+    --stripe:#F3F5FA;
+    --track:#EDF0F6;
+    --txt:#333F4E;
+    --muted:#6B7480;
+    --faint:#A3AAB6;
+    --line:#E3E7EF;
+    --font:"Lato","Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:#DFE3EB;color:var(--txt);
+    font-family:var(--font);font-size:13px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- Slide shell ---------- */
+  .slide{
+    position:relative;width:1440px;min-height:810px;margin:26px auto;background:#fff;
+    padding:38px 46px 34px;display:flex;flex-direction:column;
+    box-shadow:0 2px 4px rgba(20,31,69,.08),0 14px 40px rgba(20,31,69,.10);
+  }
+  .eyebrow{
+    display:flex;justify-content:space-between;align-items:baseline;gap:20px;margin-bottom:14px;
+  }
+  .eyebrow .tag{
+    color:var(--gold);font-weight:700;font-size:10px;letter-spacing:2.1px;text-transform:uppercase;
+  }
+  .eyebrow .gen{color:var(--faint);font-size:9.5px;letter-spacing:1.1px}
+  h1{
+    font-size:35px;font-weight:900;color:var(--navy);margin:0;letter-spacing:-.4px;line-height:1.1;
+  }
+  .deck{color:var(--muted);font-size:12.5px;margin:9px 0 0}
+
+  /* ---------- KPI strip ---------- */
+  .kpistrip{display:flex;gap:16px;margin:26px 0 24px}
+  .k{
+    flex:1;background:var(--kpi-bg);border-radius:6px;padding:16px 10px 14px;text-align:center;
+    border-left:7px solid var(--navy);
+  }
+  .k.c2{border-left-color:var(--green)}
+  .k.c3{border-left-color:var(--red)}
+  .k.c4{border-left-color:var(--teal)}
+  .k.c5{border-left-color:var(--gold-br)}
+  .k .kn{font-size:30px;font-weight:700;color:var(--navy);line-height:1.05}
+  .k .kn small{font-size:16px;font-weight:700}
+  .k .kl{
+    font-size:8.6px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+    color:#5B6472;margin-top:7px;
+  }
+  .k .ksub{font-size:9.5px;color:#8A93A3;margin-top:5px;font-weight:600}
+
+  /* ---------- Panels ---------- */
+  .cols{display:flex;gap:22px;flex:1;align-items:stretch}
+  .col{flex:1;min-width:0;display:flex;flex-direction:column}
+  .col.wide{flex:1.16}
+  .panel{
+    background:#fff;border:1px solid var(--line);border-radius:8px;padding:19px 21px 21px;
+    box-shadow:0 1px 3px rgba(20,31,69,.05);flex:1;display:flex;flex-direction:column;
+  }
+  .ptitle{font-size:13.5px;font-weight:700;color:var(--navy);margin:0 0 14px}
+  .stitle{font-size:14px;font-weight:700;color:var(--navy);margin:0 0 3px}
+  .ssub{font-size:10.5px;color:var(--muted);margin:0 0 11px}
+
+  /* ---------- Tables ---------- */
+  table{width:100%;border-collapse:collapse}
+  thead th{
+    background:var(--navy);color:#fff;font-size:9.6px;font-weight:700;letter-spacing:.35px;
+    padding:7px 10px;text-align:right;white-space:nowrap;
+  }
+  thead th:first-child{text-align:left;border-radius:4px 0 0 0}
+  thead th:last-child{border-radius:0 4px 0 0}
+  thead th.l{text-align:left}
+  tbody td{
+    font-size:10.4px;color:var(--txt);padding:6.5px 10px;text-align:right;
+    font-variant-numeric:tabular-nums;
+  }
+  tbody td:first-child{text-align:left}
+  tbody td.l{text-align:left}
+  tbody tr:nth-child(even) td{background:var(--stripe)}
+  tbody tr.tot td{font-weight:700;color:var(--navy);border-top:1.5px solid var(--navy);background:#fff}
+  tbody td.dim{color:var(--muted)}
+  tbody td.note{color:var(--muted);font-size:9.9px;text-align:left}
+
+  /* ---------- Bar rows ---------- */
+  .bars{display:block}
+  .bar{display:flex;align-items:center;gap:12px;padding:6.5px 0}
+  .bar .bl{flex:0 0 158px;font-size:10.6px;font-weight:700;color:var(--navy);text-align:left;line-height:1.3}
+  .bar .bl em{display:block;font-style:normal;font-weight:400;font-size:9.4px;color:var(--muted);margin-top:1px}
+  .bar .bt{flex:1 1 auto;background:var(--track);border-radius:999px;height:16px;overflow:hidden;min-width:40px}
+  .bar .bf{
+    display:block;height:100%;border-radius:999px;background:var(--navy);
+    transform-origin:left center;animation:grow .85s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes grow{from{transform:scaleX(.02)}to{transform:scaleX(1)}}
+  .bar .bf.c2{background:var(--green)} .bar .bf.c3{background:var(--red)}
+  .bar .bf.c4{background:var(--teal)} .bar .bf.c5{background:var(--gold-br)}
+  .bar .bv{flex:0 0 40px;font-size:10.8px;font-weight:700;color:var(--navy);text-align:right}
+  .panel .pnote{font-size:9.8px;color:var(--muted);margin:14px 0 0;line-height:1.5}
+
+  /* ---------- Wide bar variant (no card) ---------- */
+  .bars.tight .bar .bl{flex-basis:184px}
+
+  /* ---------- Takeaway + footnote ---------- */
+  .takeaway{
+    background:var(--kpi-bg);border-radius:6px;padding:15px 20px;margin-top:22px;
+    font-size:11.4px;line-height:1.65;color:var(--txt);
+  }
+  .takeaway b{color:var(--navy)}
+  .foot{font-size:7.8px;color:var(--faint);margin-top:14px;line-height:1.55}
+
+  @media (max-width:1500px){
+    body{font-size:12px}
+    .slide{width:auto;max-width:1160px;min-height:0;margin:18px 14px;padding:30px 30px 26px}
+    h1{font-size:29px}
+    .k .kn{font-size:26px}
+  }
+  @media (max-width:900px){
+    .cols{flex-direction:column}
+    .kpistrip{flex-wrap:wrap}
+    .k{flex:1 1 44%}
+    .bar .bl{flex-basis:118px}
+    .bars.tight .bar .bl{flex-basis:126px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media print{
+    @page{size:14in 8.1in;margin:0}
+    body{background:#fff}
+    .slide{width:100%;min-height:auto;margin:0;box-shadow:none;page-break-after:always;padding:34px 40px}
+    .slide:last-child{page-break-after:auto}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ SLIDE 1: EXECUTIVE SUMMARY ============ -->
+<section class="slide">
+  <div class="eyebrow">
+    <span class="tag">Weekly Billable Staffing Status</span>
+    <span class="gen">Week of September 8–14, 2026 · Executive Summary</span>
+  </div>
+  <h1>Workforce Summary: Billable</h1>
+  <p class="deck">Patient Solutions (PS) &amp; Pharmacy (Pharma) · headline figures for the week</p>
+
+  <div class="kpistrip">
+    <div class="k"><div class="kn">10</div><div class="kl">Reqs Created</div><div class="ksub">PS 8 &middot; Pharma 2</div></div>
+    <div class="k c4"><div class="kn">6</div><div class="kl">Reqs Closed</div><div class="ksub">PS 6 &middot; Pharma 0</div></div>
+    <div class="k c3"><div class="kn">16</div><div class="kl">Terminations</div><div class="ksub">PS 12 &middot; Pharma 4</div></div>
+    <div class="k c5"><div class="kn">48</div><div class="kl">Openings Remaining</div><div class="ksub">PS 38 &middot; Pharma 10</div></div>
+    <div class="k c2"><div class="kn">15</div><div class="kl">Upcoming Starts</div><div class="ksub">PS 15 &middot; Pharma 0</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col wide">
+      <div class="panel">
+        <h2 class="ptitle">Requisition Activity, PS vs. Pharma</h2>
+        <table>
+          <thead><tr><th class="l">Metric</th><th>PS</th><th>Pharma</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>Reqs created</td><td>8</td><td>2</td><td>10</td></tr>
+            <tr><td>Reqs closed</td><td>6</td><td>0</td><td>6</td></tr>
+            <tr><td>Terminations</td><td>12</td><td>4</td><td>16</td></tr>
+            <tr><td>Openings remaining</td><td>38</td><td>10</td><td>48</td></tr>
+            <tr class="tot"><td>Upcoming starts</td><td>15</td><td>0</td><td>15</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Weekly Flow</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">Openings Remaining</span><span class="bt"><i class="bf c4" style="width:100.0%"></i></span><span class="bv">48</span></div>
+          <div class="bar"><span class="bl">Terminations</span><span class="bt"><i class="bf c3" style="width:33.3%"></i></span><span class="bv">16</span></div>
+          <div class="bar"><span class="bl">Upcoming Starts</span><span class="bt"><i class="bf c5" style="width:31.3%"></i></span><span class="bv">15</span></div>
+          <div class="bar"><span class="bl">Reqs Created</span><span class="bt"><i class="bf" style="width:20.8%"></i></span><span class="bv">10</span></div>
+          <div class="bar"><span class="bl">Reqs Closed</span><span class="bt"><i class="bf c2" style="width:12.5%"></i></span><span class="bv">6</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="foot">Sources: Open_Req_Details__14_refreshed.xlsx; termination detail as provided.</p>
+</section>
+
+<!-- ============ SLIDE 2: TERMINATIONS VS. BACKFILL ============ -->
+<section class="slide">
+  <div class="eyebrow">
+    <span class="tag">Weekly Billable Staffing Status</span>
+    <span class="gen">Week of September 8–14, 2026 · Executive Summary</span>
+  </div>
+  <h1>Terminations vs. Backfill</h1>
+  <p class="deck">16 departures this week and the resulting requisition action for each</p>
+
+  <div class="kpistrip">
+    <div class="k c3"><div class="kn">16</div><div class="kl">Total Terminations</div></div>
+    <div class="k c4"><div class="kn">7</div><div class="kl">Backfilled: New Req</div></div>
+    <div class="k c2"><div class="kn">1</div><div class="kl">Backfilled: Internal Realignment</div></div>
+    <div class="k c5"><div class="kn">8</div><div class="kl">No Backfill Needed</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col wide">
+      <div class="panel">
+        <h2 class="ptitle">Backfilled: New Req Opened (7)</h2>
+        <table>
+          <thead><tr><th class="l">Term Date</th><th class="l">Role</th><th class="l">Program</th><th class="l">Location</th></tr></thead>
+          <tbody>
+            <tr><td>9/10</td><td>Patient Access Specialist</td><td class="note">Aimmune/Nestle</td><td class="note">Southpark</td></tr>
+            <tr><td>9/8</td><td>Account Care Educator</td><td class="note">Apellis: Syfovre</td><td class="note">Southpark</td></tr>
+            <tr><td>9/9</td><td>Field Support Specialist</td><td class="note">Galderma</td><td class="note">Maitland</td></tr>
+            <tr><td>9/8</td><td>Bilingual Patient Care Coordinator</td><td class="note">NCP Pharmacy COS</td><td class="note">Overland Park</td></tr>
+            <tr><td>9/8</td><td>Customer Service Representative</td><td class="note">Novo Nordisk: Norditropin</td><td class="note">Overland Park</td></tr>
+            <tr><td>9/9</td><td>Process Writer</td><td class="note">PS: Overhead and Admin</td><td class="note">Maitland</td></tr>
+            <tr><td>9/11</td><td>Bilingual Patient Access Specialist</td><td class="note">Scholar Rock</td><td class="note">Southpark</td></tr>
+          </tbody>
+        </table>
+        <h2 class="ptitle" style="margin-top:20px">Backfilled: Internal Realignment (1)</h2>
+        <table>
+          <thead><tr><th class="l">Term Date</th><th class="l">Role</th><th class="l">Program</th><th class="l">Location</th></tr></thead>
+          <tbody>
+            <tr><td>9/8</td><td>Customer Service Representative</td><td class="note">Ionis</td><td class="note">Overland Park</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">No Backfill Needed (8)</h2>
+        <table>
+          <thead><tr><th class="l">Term Date</th><th class="l">Role</th><th class="l">Program</th><th class="l">Location</th></tr></thead>
+          <tbody>
+            <tr><td>9/9</td><td>Pharmacy Technician</td><td class="note">COA Pharmacy COS</td><td class="note">Southpark</td></tr>
+            <tr><td>9/10</td><td>Pharmacy Technician</td><td class="note">COA Pharmacy COS</td><td class="note">Southpark</td></tr>
+            <tr><td>9/9</td><td>Pharmacy Technician</td><td class="note">COA Pharmacy COS</td><td class="note">CoAssist</td></tr>
+            <tr><td>9/8</td><td>Patient Access Specialist</td><td class="note">Novo Nordisk: Obesity</td><td class="note">Arizona, Tempe</td></tr>
+            <tr><td>9/7</td><td>Patient Access Specialist</td><td class="note">Novo Nordisk: Obesity</td><td class="note">Remote-Arizona</td></tr>
+            <tr><td>9/10</td><td>Patient Access Specialist</td><td class="note">Novo Nordisk: Obesity</td><td class="note">Arizona, Tempe</td></tr>
+            <tr><td>9/10</td><td>Customer Service Representative</td><td class="note">Novo Nordisk: Obesity</td><td class="note">Arizona, Tempe</td></tr>
+            <tr><td>9/11</td><td>Advance Academy Associate</td><td class="note">PS - Academy</td><td class="note">Arizona, Tempe</td></tr>
+          </tbody>
+        </table>
+        <p class="pnote">Novo Nordisk: Obesity accounts for 4 of the 8 no-backfill departures; all in Arizona/Remote-Arizona.</p>
+      </div>
+    </div>
+  </div>
+  <p class="foot">Source: termination detail as provided. 50% of this week's departures (8 of 16) resulted in a backfill action (new req or internal realignment).</p>
+</section>
+
+<!-- ============ SLIDE 3: TREND, OPENINGS & STARTS ============ -->
+<section class="slide">
+  <div class="eyebrow">
+    <span class="tag">Weekly Billable Staffing Status</span>
+    <span class="gen">Week of September 8–14, 2026 · Executive Summary</span>
+  </div>
+  <h1>Trend, Open Positions &amp; Upcoming Starts</h1>
+  <p class="deck">Trailing month pace, and where current demand and near-term starts concentrate</p>
+
+  <div class="kpistrip">
+    <div class="k"><div class="kn">87</div><div class="kl">Reqs Created, Trailing Month</div></div>
+    <div class="k c2"><div class="kn">148</div><div class="kl">Reqs Closed, Trailing Month</div></div>
+    <div class="k c5"><div class="kn">3.8x</div><div class="kl">Closed per Departure</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Open Positions &mdash; Top Programs (48 total)</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">Gilead: Advancing Access</span><span class="bt"><i class="bf c5" style="width:100.0%"></i></span><span class="bv">16</span></div>
+          <div class="bar"><span class="bl">NCP Pharmacy COS</span><span class="bt"><i class="bf c4" style="width:62.5%"></i></span><span class="bv">10</span></div>
+          <div class="bar"><span class="bl">Gilead: L4P</span><span class="bt"><i class="bf" style="width:37.5%"></i></span><span class="bv">6</span></div>
+          <div class="bar"><span class="bl">All other (13 programs)</span><span class="bt"><i class="bf c3" style="width:100.0%"></i></span><span class="bv">16</span></div>
+        </div>
+        <p class="pnote">Top title: Patient Access Specialist (15 of 48). 98% of openings are backfill, not net growth.</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Upcoming Starts &mdash; Top Program (15 total)</h2>
+        <div class="bars">
+          <div class="bar"><span class="bl">Gilead AA</span><span class="bt"><i class="bf c5" style="width:100.0%"></i></span><span class="bv">13</span></div>
+          <div class="bar"><span class="bl">Novo Obesity</span><span class="bt"><i class="bf" style="width:7.7%"></i></span><span class="bv">1</span></div>
+          <div class="bar"><span class="bl">Gilead HCV</span><span class="bt"><i class="bf" style="width:7.7%"></i></span><span class="bv">1</span></div>
+        </div>
+        <p class="pnote">All 15 starts are PS; Gilead AA is a 9/28 remote-training cohort split MGO (8) / SPO (5). No Pharmacy starts this week.</p>
+      </div>
+    </div>
+  </div>
+  <p class="foot">Trailing month reflects the 4 weeks through 9/14. Sources: Open_Req_Details__14_refreshed.xlsx; Workforce_Summary_9_4.docx.</p>
+</section>
+
+<!-- ============ SLIDE 4: REVERIFICATION & LAUNCHES ============ -->
+<section class="slide">
+  <div class="eyebrow">
+    <span class="tag">Weekly Billable Staffing Status</span>
+    <span class="gen">Week of September 8–14, 2026 · Executive Summary</span>
+  </div>
+  <h1>Reverification &amp; Upcoming Launches</h1>
+  <p class="deck">Client-required reverification staffing and the new-program pipeline</p>
+
+  <div class="kpistrip">
+    <div class="k c2"><div class="kn">6</div><div class="kl">Reverification: On Track</div></div>
+    <div class="k c4"><div class="kn">3</div><div class="kl">Reverification: Pending HC</div></div>
+    <div class="k"><div class="kn">9</div><div class="kl">Launches in Planning</div></div>
+    <div class="k c5"><div class="kn">105</div><div class="kl">Largest Launch (BI)</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Reverification Staffing</h2>
+        <table>
+          <thead><tr><th class="l">Program</th><th>HC</th></tr></thead>
+          <tbody>
+            <tr><td>Apellis</td><td>42</td></tr>
+            <tr><td>Astellas</td><td>18</td></tr>
+            <tr><td>Gilead (HBV/HDV, Seladelpar)</td><td>13</td></tr>
+            <tr><td>Merck</td><td>8</td></tr>
+            <tr><td>Avadel</td><td>4</td></tr>
+            <tr><td>Incyte</td><td>2</td></tr>
+            <tr class="tot"><td>Subtotal, On Track</td><td>87</td></tr>
+            <tr><td>Galderma</td><td class="note">Completed &mdash; filled</td></tr>
+            <tr><td>Sumitomo / Sobi / Takeda Rare</td><td class="note">Pending HC</td></tr>
+          </tbody>
+        </table>
+        <p class="pnote">All On Track roles will be filled internally.</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Upcoming Launches &mdash; Top Programs</h2>
+        <table>
+          <thead><tr><th class="l">Program</th><th>HC</th><th class="l">Status</th></tr></thead>
+          <tbody>
+            <tr><td>Boehringer Ingelheim</td><td>105</td><td class="note">Confirmed, 80% win prob.</td></tr>
+            <tr><td>Sanofi</td><td>58.25</td><td class="note"></td></tr>
+            <tr><td>Cytokinetics</td><td>16</td><td class="note"></td></tr>
+            <tr><td>Gilead: BIC/LEN</td><td>8</td><td class="note">Recently executed</td></tr>
+            <tr><td>PharmEssentia</td><td>5</td><td class="note"></td></tr>
+          </tbody>
+        </table>
+        <p class="pnote">Boehringer Ingelheim go-live targeted 4/1/27; kickoff TBD. No change to the launch pipeline this week.</p>
+      </div>
+    </div>
+  </div>
+  <p class="foot">Sources: Status_Update_9_4.docx; Billable Dashboard Data workbook (Aug 21, 2026), Future Launch Planning tab.</p>
+</section>
+</body>
+</html>
