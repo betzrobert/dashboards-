@@ -1,0 +1,381 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AssistRx — Resume-to-JD Match, 2026 Year to Date</title><style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,Helvetica,sans-serif;background:#F2F2F2;color:#414042;
+        line-height:1.5;padding:24px 14px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;background:#FFFFFF;
+         box-shadow:0 2px 18px rgba(65,64,66,.12);overflow:hidden}
+  .inner{padding:0 34px}
+
+  /* ---------- masthead ---------- */
+  .hero{padding:22px 34px 20px;background:#FFFFFF;border-bottom:1px solid #D9D9D9;display:block}
+  .brandbar{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding-bottom:15px;margin-bottom:16px;border-bottom:3px solid #007178;flex-wrap:wrap}
+  .brandbar img{height:34px;display:block}
+  .brandbar .dept{font-size:.64rem;letter-spacing:2px;text-transform:uppercase;
+    color:#00ae9a;font-weight:bold;text-align:right;line-height:1.7}
+  .hero h1{font-size:1.5rem;font-weight:bold;color:#007178;text-transform:uppercase;
+    letter-spacing:.2px;line-height:1.25}
+  .hero p{font-size:.82rem;color:#6B6B6D;margin-top:7px;max-width:76ch}
+  .hbadges{display:flex;gap:9px;margin-top:17px;flex-wrap:wrap}
+  .hb{background:#007178;border-radius:3px;padding:10px 14px;text-align:center;
+       min-width:92px;flex:1 1 92px;color:#FFFFFF}
+  .hb:nth-child(2){background:#00ae9a}
+  .hb:nth-child(3){background:#093e52}
+  .hb:nth-child(4),.hb:nth-child(5){background:#FFFFFF;color:#007178;
+    border:1px solid #D9D9D9}
+  .hb .b{font-size:1.46rem;font-weight:bold;letter-spacing:-.4px}
+  .hb .l{font-size:.56rem;text-transform:uppercase;letter-spacing:.7px;opacity:.9;margin-top:2px}
+  .hb:nth-child(4) .l,.hb:nth-child(5) .l{color:#6B6B6D;opacity:1}
+
+  /* ---------- section labels (guide: Light Teal bold caps) ---------- */
+  .seclbl{font-size:.72rem;text-transform:uppercase;letter-spacing:1.1px;color:#00ae9a;
+    font-weight:bold;margin:24px 0 10px}
+
+  /* ---------- kpis ---------- */
+  .kpis{display:flex;gap:9px;flex-wrap:wrap}
+  .kpi{background:#FFFFFF;border:1px solid #D9D9D9;border-top:3px solid #007178;
+        padding:14px 13px;text-align:center;flex:1 1 150px}
+  .kpi .n{font-size:1.68rem;font-weight:bold;letter-spacing:-.6px;color:#007178}
+  .kpi .s{font-size:.72rem;color:#6B6B6D;margin-top:3px;line-height:1.35}
+  .kpi .s span{color:#9A9A9C;font-size:.65rem}
+  .kpi.blue{border-top-color:#093e52}   .kpi.blue .n{color:#093e52}
+  .kpi.green{border-top-color:#00ae9a} .kpi.green .n{color:#00ae9a}
+  .kpi.red{border-top-color:#B3382F}          .kpi.red .n{color:#B3382F}
+  .kpi.amber{border-top-color:#ffc629}       .kpi.amber .n{color:#007178}
+  .kpi.slate{border-top-color:#ade2e3} .kpi.slate .n{color:#093e52}
+
+  /* ---------- panels & tables (guide p55) ---------- */
+  .panel{background:#FFFFFF;border:1px solid #D9D9D9;padding:15px 17px;margin-bottom:4px}
+  .panel h2{font-size:.95rem;font-weight:bold;margin-bottom:11px;color:#007178;
+    text-transform:uppercase;letter-spacing:.5px}
+  table{width:100%;border-collapse:collapse;font-size:.8rem}
+  th{text-align:left;font-size:.64rem;text-transform:uppercase;letter-spacing:.5px;
+      color:#00ae9a;padding:8px;border-bottom:1px solid #D9D9D9;font-weight:bold;
+      white-space:nowrap;background:#FFFFFF}
+  td{padding:7px 8px;border-bottom:1px solid #F2F2F2;vertical-align:middle;color:#414042}
+  tbody tr:hover{background:#F2F2F2}
+  tbody tr:last-child td{border-bottom:none}
+  .sumtable{font-size:.78rem}
+  .mbar{height:8px;background:#F2F2F2;border:1px solid #D9D9D9;overflow:hidden}
+  .mbar i{display:block;height:100%}
+
+  /* ---------- role grid ---------- */
+  .rolegrid{display:flex;gap:8px;flex-wrap:wrap}
+  .rolecell{flex:1 1 150px;border:1px solid #D9D9D9;border-top:3px solid #007178;
+    padding:11px 12px;background:#FFFFFF}
+  .rc-ab{font-weight:bold;font-size:.66rem;color:#FFFFFF;padding:2px 7px;
+    display:inline-block;margin-bottom:6px;letter-spacing:.6px}
+  .rc-pct{font-size:1.36rem;font-weight:bold;margin:1px 0;letter-spacing:-.5px}
+  .rc-meta{font-size:.63rem;color:#6B6B6D;line-height:1.55}
+  .minibar{height:7px;background:#F2F2F2;border:1px solid #D9D9D9;overflow:hidden;margin:5px 0 7px}
+  .minibar i{display:block;height:100%}
+
+  /* ---------- call-outs ---------- */
+  .co-hero{background:#007178;padding:22px 26px;color:#FFFFFF;display:flex;
+    align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:10px;
+    border-left:6px solid #ffc629}
+  .ch-big{font-size:3.9rem;font-weight:bold;line-height:.94;letter-spacing:-2.4px;color:#FFFFFF}
+  .ch-text{flex:1;min-width:250px}
+  .ch-title{font-size:1.28rem;font-weight:bold;margin-bottom:6px;line-height:1.3}
+  .ch-title em{font-style:normal;border-bottom:3px solid #ffc629;padding-bottom:2px}
+  .ch-sub{font-size:.83rem;line-height:1.58;color:rgba(255,255,255,.93)}
+  .ch-sub b{color:#FFFFFF;font-weight:bold}
+  .co-grid{display:flex;gap:10px;flex-wrap:wrap}
+  .co-card{background:#FFFFFF;border:1px solid #D9D9D9;padding:15px 17px;
+    border-top:3px solid #007178;flex:1 1 260px}
+  .co-card .co-n{font-size:1.95rem;font-weight:bold;line-height:1;letter-spacing:-1px;color:#007178}
+  .co-card .co-t{font-size:.9rem;font-weight:bold;margin:5px 0 7px;line-height:1.32;color:#007178}
+  .co-card .co-d{font-size:.75rem;color:#6B6B6D;line-height:1.58}
+  .co-card .co-d b{color:#414042}
+  .co-red{border-top-color:#B3382F}          .co-red .co-n,.co-red .co-t{color:#B3382F}
+  .co-amber{border-top-color:#ffc629}       .co-amber .co-n,.co-amber .co-t{color:#093e52}
+  .co-green{border-top-color:#00ae9a} .co-green .co-n,.co-green .co-t{color:#00ae9a}
+
+  /* ---------- notes & footer ---------- */
+  .note{font-size:.67rem;color:#6B6B6D;margin-top:9px;line-height:1.6}
+  .note b{color:#007178}
+  .foot{color:#9A9A9C;font-size:.67rem;margin-top:22px;padding:13px 34px 0;
+    border-top:1px solid #D9D9D9;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .endbar{height:9px;background:#00ae9a;margin-top:18px}
+  .twocol{display:flex;gap:10px;flex-wrap:wrap} .twocol>div{flex:1 1 300px}
+
+  @media(max-width:760px){
+    .hero h1{font-size:1.2rem} .ch-big{font-size:2.9rem}
+    .kpi,.rolecell,.co-card{flex-basis:100%}
+    body{padding:10px 6px} .inner,.hero,.foot{padding-left:16px;padding-right:16px}
+  }
+  @media print{
+    body{background:#FFFFFF;padding:0} .wrap{box-shadow:none}
+    .panel,.kpi,.rolecell,.co-card,.co-hero{break-inside:avoid}
+  }
+</style></head>
+<body><div class="wrap">
+
+<div class="hero">
+  <div class="brandbar"><img src="data:image/png;base64,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" alt="AssistRx"><div class="dept">Talent Acquisition<br>Resume&ndash;to&ndash;JD Match</div></div>
+  <div>
+    <h1>AssistRx &mdash; Are We Hiring to the Job Description?</h1>
+    <p>Full year to date &middot; January&ndash;September 2026 &middot; 629 resumes scored against the six core-role JDs &middot; referrals tracked separately</p>
+  </div>
+  <div class="hbadges">
+    <div class="hb"><div class="b">64.3%</div><div class="l">JD Match</div><div class="l">(ex-referral)</div></div>
+    <div class="hb"><div class="b">629</div><div class="l">Resumes</div><div class="l">Scored</div></div>
+    <div class="hb"><div class="b">78%</div><div class="l">of 808 non-ref</div><div class="l">Core Hires</div></div>
+    <div class="hb"><div class="b">6</div><div class="l">Core</div><div class="l">Roles</div></div>
+    <div class="hb"><div class="b">144</div><div class="l">Referral</div><div class="l">Resumes</div></div>
+  </div>
+</div>
+
+<div class="inner">
+<div class="kpis">
+  <div class="kpi blue"><div class="n">64.3%</div><div class="s">JD Match, Jan&ndash;Sep<br><span>n=629 &middot; &plusmn;1.3 within sample</span></div></div>
+  <div class="kpi green"><div class="n">110</div><div class="s">Strong &ge;80%<br><span>17% of scored</span></div></div>
+  <div class="kpi red"><div class="n">118</div><div class="s">Weak &lt;50%<br><span>19% of scored</span></div></div>
+  <div class="kpi red"><div class="n">53.3%</div><div class="s">Weakest role: PCC<br><span>19 of 40 score under 50%</span></div></div>
+  <div class="kpi slate"><div class="n">60.8%</div><div class="s">Referral JD Match<br><span>144 referrals, tracked separately</span></div></div>
+</div>
+
+<div class="seclbl">JD Match by Hire Month &mdash; bar shading shows how much of that month is covered</div>
+<div class="panel">
+  <svg viewBox="0 0 1000 196" style="width:100%;height:auto"><line x1="44" y1="166.0" x2="992" y2="166.0" stroke="#D9D9D9"/><text x="37" y="169.5" font-size="9" fill="#9A9A9C" text-anchor="end">50%</text><line x1="44" y1="128.0" x2="992" y2="128.0" stroke="#D9D9D9"/><text x="37" y="131.5" font-size="9" fill="#9A9A9C" text-anchor="end">60%</text><line x1="44" y1="90.0" x2="992" y2="90.0" stroke="#D9D9D9"/><text x="37" y="93.5" font-size="9" fill="#9A9A9C" text-anchor="end">70%</text><line x1="44" y1="52.0" x2="992" y2="52.0" stroke="#D9D9D9"/><text x="37" y="55.5" font-size="9" fill="#9A9A9C" text-anchor="end">80%</text><line x1="44" y1="111.7" x2="992" y2="111.7" stroke="#B3382F" stroke-width="1.2" stroke-dasharray="5 4"/><text x="990" y="106.7" font-size="9" fill="#B3382F" text-anchor="end" font-weight="700">year 64.3%</text><rect x="62.8" y="115.1" width="67.0" height="50.9" rx="2" fill="#007178" opacity="1"/><text x="96.3" y="110.1" font-size="10.5" font-weight="700" fill="#007178" text-anchor="middle">63.4</text><text x="96.3" y="179.0" font-size="10" fill="#414042" text-anchor="middle">Jan</text><text x="96.3" y="191.0" font-size="8.5" fill="#9A9A9C" text-anchor="middle">74/87 &#183; 85%</text><rect x="167.5" y="100.3" width="67.0" height="65.7" rx="2" fill="#007178" opacity="1"/><text x="201.0" y="95.3" font-size="10.5" font-weight="700" fill="#007178" text-anchor="middle">67.3</text><text x="201.0" y="179.0" font-size="10" fill="#414042" text-anchor="middle">Feb</text><text x="201.0" y="191.0" font-size="8.5" fill="#9A9A9C" text-anchor="middle">113/125 &#183; 90%</text><rect x="272.2" y="120.4" width="67.0" height="45.6" rx="2" fill="#007178" opacity="1"/><text x="305.7" y="115.4" font-size="10.5" font-weight="700" fill="#007178" text-anchor="middle">62.0</text><text x="305.7" y="179.0" font-size="10" fill="#414042" text-anchor="middle">Mar</text><text x="305.7" y="191.0" font-size="8.5" fill="#9A9A9C" text-anchor="middle">172/211 &#183; 82%</text><rect x="376.8" y="120.4" width="67.0" height="45.6" rx="2" fill="#007178" opacity="1"/><text x="410.3" y="115.4" font-size="10.5" font-weight="700" fill="#007178" text-anchor="middle">62.0</text><text x="410.3" y="179.0" font-size="10" fill="#414042" text-anchor="middle">Apr</text><text x="410.3" y="191.0" font-size="8.5" fill="#9A9A9C" text-anchor="middle">94/104 &#183; 90%</text><rect x="481.5" y="106.3" width="67.0" height="59.7" rx="2" fill="#007178" opacity="1"/><text x="515.0" y="101.3" font-size="10.5" font-weight="700" fill="#007178" text-anchor="middle">65.7</text><text x="515.0" y="179.0" font-size="10" fill="#414042" text-anchor="middle">May</text><text x="515.0" y="191.0" font-size="8.5" fill="#9A9A9C" text-anchor="middle">41/52 &#183; 79%</text><rect x="586.2" y="127.6" width="67.0" height="38.4" rx="2" fill="#B3382F" opacity="0.32"/><text x="619.7" y="122.6" font-size="10.5" font-weight="700" fill="#B3382F" text-anchor="middle">60.1</text><text x="619.7" y="179.0" font-size="10" fill="#414042" text-anchor="middle">Jun</text><text x="619.7" y="191.0" font-size="8.5" fill="#9A9A9C" text-anchor="middle">13/25 &#183; 52%</text><rect x="690.8" y="87.7" width="67.0" height="78.3" rx="2" fill="#B3382F" opacity="0.32"/><text x="724.3" y="82.7" font-size="10.5" font-weight="700" fill="#B3382F" text-anchor="middle">70.6</text><text x="724.3" y="179.0" font-size="10" fill="#414042" text-anchor="middle">Jul</text><text x="724.3" y="191.0" font-size="8.5" fill="#9A9A9C" text-anchor="middle">22/54 &#183; 41%</text><rect x="795.5" y="113.6" width="67.0" height="52.4" rx="2" fill="#093e52" opacity="0.68"/><text x="829.0" y="108.6" font-size="10.5" font-weight="700" fill="#093e52" text-anchor="middle">63.8</text><text x="829.0" y="179.0" font-size="10" fill="#414042" text-anchor="middle">Aug</text><text x="829.0" y="191.0" font-size="8.5" fill="#9A9A9C" text-anchor="middle">58/88 &#183; 66%</text><rect x="900.2" y="90.4" width="67.0" height="75.6" rx="2" fill="#093e52" opacity="0.68"/><text x="933.7" y="85.4" font-size="10.5" font-weight="700" fill="#093e52" text-anchor="middle">69.9</text><text x="933.7" y="179.0" font-size="10" fill="#414042" text-anchor="middle">Sep*</text><text x="933.7" y="191.0" font-size="8.5" fill="#9A9A9C" text-anchor="middle">42/62 &#183; 68%</text></svg>
+  <div class="note">Each bar is the mean JD match for hires who started that month, labelled with resumes scored / core-role non-referral hires and the resulting coverage. Bars fade below 75% coverage and fade heavily below 55% &mdash; <b>June (52%) and July (41%) are too thin to read as trend</b>, and they happen to be the low and high points of the whole year. Across the seven months with usable coverage the range is <b>62.0&ndash;69.9%</b>, with no consistent direction. <b>*September is a partial month</b>: it runs to the 15th, and 11 of its 62 hires have start dates still in the future.</div>
+</div>
+
+<div class="seclbl">Match by Position &mdash; full year</div>
+<div class="rolegrid"><div class="rolecell">
+      <span class="rc-ab" style="background:#007178">CSR</span>
+      <div class="rc-pct" style="color:#007178">75.5%</div>
+      <div class="minibar"><i style="width:76%;background:#007178"></i></div>
+      <div class="rc-meta">Customer Service Representative<br>
+      <b>99</b> of 122 scored &middot; <b>81%</b> covered<br>
+      ▲ 44 strong &middot; ▼ 3 weak<br>
+      <span style="color:#9A9A9C">168 hires incl. referrals</span></div>
+    </div><div class="rolecell">
+      <span class="rc-ab" style="background:#093e52">PT</span>
+      <div class="rc-pct" style="color:#093e52">63.9%</div>
+      <div class="minibar"><i style="width:64%;background:#093e52"></i></div>
+      <div class="rc-meta">Pharmacy Technician<br>
+      <b>152</b> of 239 scored &middot; <b>64%</b> covered<br>
+      ▲ 22 strong &middot; ▼ 32 weak<br>
+      <span style="color:#9A9A9C">257 hires incl. referrals</span></div>
+    </div><div class="rolecell">
+      <span class="rc-ab" style="background:#B3382F">PAS</span>
+      <div class="rc-pct" style="color:#B3382F">63.1%</div>
+      <div class="minibar"><i style="width:63%;background:#B3382F"></i></div>
+      <div class="rc-meta">Patient Access Specialist<br>
+      <b>241</b> of 280 scored &middot; <b>86%</b> covered<br>
+      ▲ 29 strong &middot; ▼ 42 weak<br>
+      <span style="color:#9A9A9C">368 hires incl. referrals</span></div>
+    </div><div class="rolecell">
+      <span class="rc-ab" style="background:#00ae9a">AAA</span>
+      <div class="rc-pct" style="color:#00ae9a">62.3%</div>
+      <div class="minibar"><i style="width:62%;background:#00ae9a"></i></div>
+      <div class="rc-meta">Advance Academy Associate<br>
+      <b>86</b> of 99 scored &middot; <b>87%</b> covered<br>
+      ▲ 12 strong &middot; ▼ 17 weak<br>
+      <span style="color:#9A9A9C">106 hires incl. referrals</span></div>
+    </div><div class="rolecell" style="opacity:.62">
+      <span class="rc-ab" style="background:#3f8fa0">ACE</span> <span style="font-size:9px;color:#B3382F;font-weight:700">low n</span>
+      <div class="rc-pct" style="color:#3f8fa0">54.2%</div>
+      <div class="minibar"><i style="width:54%;background:#3f8fa0"></i></div>
+      <div class="rc-meta">Account Care Educator<br>
+      <b>11</b> of 14 scored &middot; <b>79%</b> covered<br>
+      ▲ 1 strong &middot; ▼ 5 weak<br>
+      <span style="color:#9A9A9C">22 hires incl. referrals</span></div>
+    </div><div class="rolecell">
+      <span class="rc-ab" style="background:#093e52">PCC</span>
+      <div class="rc-pct" style="color:#093e52">53.3%</div>
+      <div class="minibar"><i style="width:53%;background:#093e52"></i></div>
+      <div class="rc-meta">Patient Care Coordinator<br>
+      <b>40</b> of 54 scored &middot; <b>74%</b> covered<br>
+      ▲ 2 strong &middot; ▼ 19 weak<br>
+      <span style="color:#9A9A9C">65 hires incl. referrals</span></div>
+    </div></div>
+
+<div class="seclbl">Where Hires Miss the JD &mdash; weakest heavily-weighted requirements</div>
+<div class="panel">
+  <table class="sumtable"><thead><tr><th>Role</th><th>JD requirement</th><th style="text-align:right">JD weight</th><th>Hires with direct evidence</th><th style="text-align:right">n</th></tr></thead>
+  <tbody><tr><td><span class="rc-ab" style="background:#093e52;margin:0;font-size:10px">PCC</span></td>
+    <td>Contacting physicians for missing or required information</td><td style="text-align:right;color:#6B6B6D">0.09</td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:50px"><i style="width:2%;background:#B3382F"></i></div>
+    <span style="color:#B3382F;font-weight:700;min-width:40px;text-align:right">2.5%</span></div></td>
+    <td style="text-align:right;color:#6B6B6D">40</td></tr><tr><td><span class="rc-ab" style="background:#B3382F;margin:0;font-size:10px">PAS</span></td>
+    <td>Interacting with providers on health plan requirements (2-4 yrs pref.)</td><td style="text-align:right;color:#6B6B6D">0.14</td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:50px"><i style="width:18%;background:#B3382F"></i></div>
+    <span style="color:#B3382F;font-weight:700;min-width:40px;text-align:right">17.8%</span></div></td>
+    <td style="text-align:right;color:#6B6B6D">241</td></tr><tr><td><span class="rc-ab" style="background:#093e52;margin:0;font-size:10px">PCC</span></td>
+    <td>Gathering & documenting demographics, plan info & patient history</td><td style="text-align:right;color:#6B6B6D">0.14</td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:50px"><i style="width:22%;background:#B3382F"></i></div>
+    <span style="color:#B3382F;font-weight:700;min-width:40px;text-align:right">22.5%</span></div></td>
+    <td style="text-align:right;color:#6B6B6D">40</td></tr><tr><td><span class="rc-ab" style="background:#093e52;margin:0;font-size:10px">PCC</span></td>
+    <td>Scheduling calls via dialer / outbound queues</td><td style="text-align:right;color:#6B6B6D">0.14</td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:50px"><i style="width:25%;background:#B3382F"></i></div>
+    <span style="color:#B3382F;font-weight:700;min-width:40px;text-align:right">25.0%</span></div></td>
+    <td style="text-align:right;color:#6B6B6D">40</td></tr><tr><td><span class="rc-ab" style="background:#093e52;margin:0;font-size:10px">PCC</span></td>
+    <td>Pharmacy setting / pharmacy application experience</td><td style="text-align:right;color:#6B6B6D">0.12</td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:50px"><i style="width:25%;background:#B3382F"></i></div>
+    <span style="color:#B3382F;font-weight:700;min-width:40px;text-align:right">25.0%</span></div></td>
+    <td style="text-align:right;color:#6B6B6D">40</td></tr><tr><td><span class="rc-ab" style="background:#B3382F;margin:0;font-size:10px">PAS</span></td>
+    <td>Enrollment, pre-assessment & benefits processes</td><td style="text-align:right;color:#6B6B6D">0.09</td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:50px"><i style="width:34%;background:#093e52"></i></div>
+    <span style="color:#093e52;font-weight:700;min-width:40px;text-align:right">34.4%</span></div></td>
+    <td style="text-align:right;color:#6B6B6D">241</td></tr><tr><td><span class="rc-ab" style="background:#093e52;margin:0;font-size:10px">PT</span></td>
+    <td>National pharmacy technician certification (PTCB / CPhT)</td><td style="text-align:right;color:#6B6B6D">0.15</td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:50px"><i style="width:40%;background:#093e52"></i></div>
+    <span style="color:#093e52;font-weight:700;min-width:40px;text-align:right">40.1%</span></div></td>
+    <td style="text-align:right;color:#6B6B6D">152</td></tr><tr><td><span class="rc-ab" style="background:#093e52;margin:0;font-size:10px">PCC</span></td>
+    <td>Receiving & triaging inbound phone calls</td><td style="text-align:right;color:#6B6B6D">0.19</td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:50px"><i style="width:45%;background:#093e52"></i></div>
+    <span style="color:#093e52;font-weight:700;min-width:40px;text-align:right">45.0%</span></div></td>
+    <td style="text-align:right;color:#6B6B6D">40</td></tr><tr><td><span class="rc-ab" style="background:#00ae9a;margin:0;font-size:10px">AAA</span></td>
+    <td>Pharmacy benefit / insurance exposure</td><td style="text-align:right;color:#6B6B6D">0.12</td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:50px"><i style="width:45%;background:#093e52"></i></div>
+    <span style="color:#093e52;font-weight:700;min-width:40px;text-align:right">45.3%</span></div></td>
+    <td style="text-align:right;color:#6B6B6D">86</td></tr></tbody></table>
+  <div class="note">The nine lowest-scoring of the <b>28</b> requirements carrying a JD weight of 0.09 or more, across the five roles with at least 20 scored resumes. &ldquo;Direct evidence&rdquo; means the resume names the requirement itself; adjacent evidence earns partial credit in the match&nbsp;% but is not counted here. None of CSR&rsquo;s requirements appears &mdash; the lowest of its 6 heavily-weighted requirements sits at 73%.</div>
+</div>
+
+<div class="seclbl">Match by Recruiter &mdash; full year (referrals excluded)</div>
+<div class="panel">
+  <table class="sumtable"><thead><tr><th>Recruiter</th><th style="text-align:right">scored</th><th style="text-align:right">coverage</th><th>Raw JD match</th><th style="text-align:right">vs role mix</th><th style="text-align:right">strong</th><th style="text-align:right">weak</th><th>role mix</th></tr></thead>
+  <tbody><tr><td><b>Amar</b></td>
+    <td style="text-align:right">156</td>
+    <td style="text-align:right"><span style="color:#00ae9a;font-weight:700">91%</span> <span style="color:#9A9A9C;font-size:9px">of 171</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:44px"><i style="width:63%;background:#093e52"></i></div>
+    <span style="color:#093e52;font-weight:700;min-width:42px;text-align:right">63.0%</span></div></td>
+    <td style="text-align:right;color:#414042">+0.1 <span style='color:#9A9A9C;font-size:9px'>&plusmn;2.7</span></td>
+    <td style="text-align:right;color:#00ae9a;font-weight:600">23</td>
+    <td style="text-align:right;color:#B3382F;font-weight:600">37</td>
+    <td style="font-size:9px;color:#6B6B6D">PT 107, PAS 23, PCC 16, CSR 10</td></tr><tr><td><b>Anissa</b></td>
+    <td style="text-align:right">32</td>
+    <td style="text-align:right"><span style="color:#00ae9a;font-weight:700">89%</span> <span style="color:#9A9A9C;font-size:9px">of 36</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:44px"><i style="width:56%;background:#B3382F"></i></div>
+    <span style="color:#B3382F;font-weight:700;min-width:42px;text-align:right">55.6%</span></div></td>
+    <td style="text-align:right;color:#414042"><b>-9.7</b> <span style='color:#9A9A9C;font-size:9px'>&plusmn;6.7</span></td>
+    <td style="text-align:right;color:#00ae9a;font-weight:600">4</td>
+    <td style="text-align:right;color:#B3382F;font-weight:600">11</td>
+    <td style="font-size:9px;color:#6B6B6D">AAA 30, PAS 2</td></tr><tr><td><b>Donna</b></td>
+    <td style="text-align:right">50</td>
+    <td style="text-align:right"><span style="color:#00ae9a;font-weight:700">86%</span> <span style="color:#9A9A9C;font-size:9px">of 58</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:44px"><i style="width:62%;background:#B3382F"></i></div>
+    <span style="color:#B3382F;font-weight:700;min-width:42px;text-align:right">61.8%</span></div></td>
+    <td style="text-align:right;color:#414042">-2.2 <span style='color:#9A9A9C;font-size:9px'>&plusmn;4.8</span></td>
+    <td style="text-align:right;color:#00ae9a;font-weight:600">6</td>
+    <td style="text-align:right;color:#B3382F;font-weight:600">12</td>
+    <td style="font-size:9px;color:#6B6B6D">PAS 35, CSR 8, PCC 7</td></tr><tr><td><b>Hailey</b></td>
+    <td style="text-align:right">20</td>
+    <td style="text-align:right"><span style="color:#00ae9a;font-weight:700">100%</span> <span style="color:#9A9A9C;font-size:9px">of 20</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:44px"><i style="width:67%;background:#093e52"></i></div>
+    <span style="color:#093e52;font-weight:700;min-width:42px;text-align:right">66.6%</span></div></td>
+    <td style="text-align:right;color:#414042">+4.0 <span style='color:#9A9A9C;font-size:9px'>&plusmn;7.3</span></td>
+    <td style="text-align:right;color:#00ae9a;font-weight:600">5</td>
+    <td style="text-align:right;color:#B3382F;font-weight:600">2</td>
+    <td style="font-size:9px;color:#6B6B6D">AAA 16, CSR 3, ACE 1</td></tr><tr><td><b>Jake</b></td>
+    <td style="text-align:right">85</td>
+    <td style="text-align:right"><span style="color:#00ae9a;font-weight:700">81%</span> <span style="color:#9A9A9C;font-size:9px">of 105</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:44px"><i style="width:70%;background:#00ae9a"></i></div>
+    <span style="color:#00ae9a;font-weight:700;min-width:42px;text-align:right">70.5%</span></div></td>
+    <td style="text-align:right;color:#414042">+3.6 <span style='color:#9A9A9C;font-size:9px'>&plusmn;3.6</span></td>
+    <td style="text-align:right;color:#00ae9a;font-weight:600">27</td>
+    <td style="text-align:right;color:#B3382F;font-weight:600">9</td>
+    <td style="font-size:9px;color:#6B6B6D">PAS 42, CSR 35, AAA 5, ACE 3</td></tr><tr style="opacity:.55"><td><b>John</b></td>
+    <td style="text-align:right">1</td>
+    <td style="text-align:right"><span style="color:#00ae9a;font-weight:700">100%</span> <span style="color:#9A9A9C;font-size:9px">of 1</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:44px"><i style="width:43%;background:#B3382F"></i></div>
+    <span style="color:#B3382F;font-weight:700;min-width:42px;text-align:right">43.1%</span></div></td>
+    <td style="text-align:right;color:#414042"><span style="color:#9A9A9C">too few</span></td>
+    <td style="text-align:right;color:#00ae9a;font-weight:600">0</td>
+    <td style="text-align:right;color:#B3382F;font-weight:600">1</td>
+    <td style="font-size:9px;color:#6B6B6D">PAS 1</td></tr><tr><td><b>Makensie</b></td>
+    <td style="text-align:right">103</td>
+    <td style="text-align:right"><span style="color:#00ae9a;font-weight:700">84%</span> <span style="color:#9A9A9C;font-size:9px">of 123</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:44px"><i style="width:65%;background:#093e52"></i></div>
+    <span style="color:#093e52;font-weight:700;min-width:42px;text-align:right">64.8%</span></div></td>
+    <td style="text-align:right;color:#414042">-0.0 <span style='color:#9A9A9C;font-size:9px'>&plusmn;2.8</span></td>
+    <td style="text-align:right;color:#00ae9a;font-weight:600">17</td>
+    <td style="text-align:right;color:#B3382F;font-weight:600">12</td>
+    <td style="font-size:9px;color:#6B6B6D">PAS 75, CSR 18, AAA 7, ACE 3</td></tr><tr><td><b>Noelle</b></td>
+    <td style="text-align:right">35</td>
+    <td style="text-align:right"><span style="color:#00ae9a;font-weight:700">92%</span> <span style="color:#9A9A9C;font-size:9px">of 38</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:44px"><i style="width:63%;background:#093e52"></i></div>
+    <span style="color:#093e52;font-weight:700;min-width:42px;text-align:right">62.8%</span></div></td>
+    <td style="text-align:right;color:#414042">-1.5 <span style='color:#9A9A9C;font-size:9px'>&plusmn;6.0</span></td>
+    <td style="text-align:right;color:#00ae9a;font-weight:600">4</td>
+    <td style="text-align:right;color:#B3382F;font-weight:600">8</td>
+    <td style="font-size:9px;color:#6B6B6D">PAS 16, AAA 9, CSR 6, ACE 3</td></tr><tr><td><b>Roshana</b></td>
+    <td style="text-align:right">40</td>
+    <td style="text-align:right"><span style="color:#00ae9a;font-weight:700">98%</span> <span style="color:#9A9A9C;font-size:9px">of 41</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:44px"><i style="width:62%;background:#093e52"></i></div>
+    <span style="color:#093e52;font-weight:700;min-width:42px;text-align:right">62.2%</span></div></td>
+    <td style="text-align:right;color:#414042"><b>+4.7</b> <span style='color:#9A9A9C;font-size:9px'>&plusmn;4.0</span></td>
+    <td style="text-align:right;color:#00ae9a;font-weight:600">4</td>
+    <td style="text-align:right;color:#B3382F;font-weight:600">8</td>
+    <td style="font-size:9px;color:#6B6B6D">PCC 17, AAA 16, PAS 7</td></tr><tr style="opacity:.55"><td><b>Sabrina</b></td>
+    <td style="text-align:right">2</td>
+    <td style="text-align:right"><span style="color:#B3382F;font-weight:700">15%</span> <span style="color:#9A9A9C;font-size:9px">of 13</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:44px"><i style="width:77%;background:#00ae9a"></i></div>
+    <span style="color:#00ae9a;font-weight:700;min-width:42px;text-align:right">76.9%</span></div></td>
+    <td style="text-align:right;color:#414042"><span style="color:#9A9A9C">too few</span></td>
+    <td style="text-align:right;color:#00ae9a;font-weight:600">1</td>
+    <td style="text-align:right;color:#B3382F;font-weight:600">0</td>
+    <td style="font-size:9px;color:#6B6B6D">PAS 1, PT 1</td></tr><tr><td><b>Tommy</b></td>
+    <td style="text-align:right">57</td>
+    <td style="text-align:right"><span style="color:#00ae9a;font-weight:700">84%</span> <span style="color:#9A9A9C;font-size:9px">of 68</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:44px"><i style="width:68%;background:#00ae9a"></i></div>
+    <span style="color:#00ae9a;font-weight:700;min-width:42px;text-align:right">68.2%</span></div></td>
+    <td style="text-align:right;color:#414042">+1.4 <span style='color:#9A9A9C;font-size:9px'>&plusmn;4.2</span></td>
+    <td style="text-align:right;color:#00ae9a;font-weight:600">15</td>
+    <td style="text-align:right;color:#B3382F;font-weight:600">8</td>
+    <td style="font-size:9px;color:#6B6B6D">PAS 34, CSR 19, AAA 3, ACE 1</td></tr><tr><td><b>Yolanda</b></td>
+    <td style="text-align:right">48</td>
+    <td style="text-align:right"><span style="color:#B3382F;font-weight:700">36%</span> <span style="color:#9A9A9C;font-size:9px">of 134</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="mbar" style="flex:1;min-width:44px"><i style="width:63%;background:#093e52"></i></div>
+    <span style="color:#093e52;font-weight:700;min-width:42px;text-align:right">62.6%</span></div></td>
+    <td style="text-align:right;color:#414042">-1.7 <span style='color:#9A9A9C;font-size:9px'>&plusmn;4.9</span></td>
+    <td style="text-align:right;color:#00ae9a;font-weight:600">4</td>
+    <td style="text-align:right;color:#B3382F;font-weight:600">10</td>
+    <td style="font-size:9px;color:#6B6B6D">PT 43, PAS 5</td></tr></tbody></table>
+  <div class="note"><b>Read coverage before match.</b> <b>Yolanda</b> has resumes for only 36% of her 134 core hires and <b>Sabrina</b> 15% of 13, so their figures rest on a minority of their work; <b>Sabrina</b> (n=2) and <b>John</b> (n=1) are greyed out as too few to report. Roles score very differently (CSR 75.5%, PCC 53.3%), so the raw column largely reflects which reqs a recruiter filled; &ldquo;vs role mix&rdquo; benchmarks each recruiter against the same roles as scored by <i>other</i> recruiters. Two adjustments fall outside their interval &mdash; <b>Anissa</b> (-9.7&thinsp;&plusmn;&thinsp;6.7) and <b>Roshana</b> (+4.7&thinsp;&plusmn;&thinsp;4.0) &mdash; but across ten recruiters tested only Anissa would survive a correction for multiple comparisons, and her batch is AAA 30 against an AAA role average of 62.3%. The &plusmn; shown is 1.96&times;the standard error of that recruiter&rsquo;s own scores; it excludes uncertainty in the benchmark, so it is if anything too narrow. <b>Do not rank recruiters on this table.</b></div>
+</div>
+
+<div class="seclbl">Key Call-Outs</div>
+<div class="co-hero">
+  <div class="ch-big">19%</div>
+  <div class="ch-text">
+    <div class="ch-title">Nearly one scored hire in five is a <em>weak</em> JD fit</div>
+    <div class="ch-sub">Across 629 scored 2026 hires &mdash; 78% of the 808 core-role non-referral hires this year &mdash; the average resume evidences <b>64.3%</b> of its job description&rsquo;s weighted requirements. <b>118</b> (19%) fall below 50% and only <b>110</b> (17%) reach 80%. It does not look seasonal: across the seven months with usable coverage the mean stays inside a 62.0&ndash;69.9% band. The variation that matters is <b>between roles</b>, not between months or recruiters &mdash; CSR to PCC spans <b>22 points</b>, about 1.5&times; the widest recruiter gap once role mix is held constant (14 points).</div>
+  </div>
+</div>
+<div class="co-grid">
+  <div class="co-card co-red">
+    <div class="co-n">53.3%</div>
+    <div class="co-t">Patient Care Coordinator is the weakest role</div>
+    <div class="co-d">Only <b>2 of 40</b> PCC hires are strong fits and <b>19</b> score below 50%. <b>ACE</b> is statistically alongside it at 54.2% but on only 11 resumes; the next role up sits 9 points clear. <b>3</b> of its nine requirements are evidenced by fewer than a quarter of hires and <b>5</b> by a quarter or fewer; &ldquo;contacting physicians for missing information&rdquo; appears in <b>1 resume of 40</b>. Three readings fit equally: the JD describes work these hires have not done, the JD describes the job inaccurately, or PCC screening is not selecting against the JD at all. Worth resolving before the next intake &mdash; start by asking a PCC supervisor which of the nine requirements the job actually involves.</div>
+  </div>
+  <div class="co-card co-amber">
+    <div class="co-n">40 of 152</div>
+    <div class="co-t">pharmacy techs evidence no licence or certification</div>
+    <div class="co-d">Pharmacy Technician is the second-largest role at <b>257 hires</b> (behind PAS at 368). Of 152 scored, <b>148</b> show pharmacy experience but only <b>89</b> a state licence and <b>61</b> a national certification &mdash; <b>40 (26%)</b> evidence neither. The JD requires Kansas registration at hire and national licensure within six months, so this is compliance-relevant. PT also has the thinnest coverage of any role at <b>64%</b>, so verify against licence records before acting.</div>
+  </div>
+  <div class="co-card co-green">
+    <div class="co-n">75.5%</div>
+    <div class="co-t">CSR is the one role clearly working</div>
+    <div class="co-d">CSR scores <b>75.5%</b> on 99 resumes with <b>44</b> strong fits and just <b>3</b> weak &mdash; the only role above 70%, and the lowest of its 6 heavily-weighted requirements sits at 73%. Two light requirements do lag &mdash; adverse-event awareness and &ldquo;some college&rdquo;, together 7% of the weight, are evidenced by about a third of hires. Its heaviest requirement, customer-service or call-centre experience, is evidenced by <b>98%</b> of hires. That is the profile to aim the other five roles at: requirements the market actually supplies, evidenced consistently rather than in patches.</div>
+  </div>
+</div>
+
+<div class="panel" style="margin-top:14px">
+<div class="note" style="font-size:9.5px">
+<b>Methodology.</b> Match&nbsp;% = the share of weighted JD requirements evidenced in the resume. Each of the six job descriptions was parsed into nine weighted requirement dimensions drawn from its REQUIRED QUALIFICATIONS and KEY RESPONSIBILITIES; weights reflect how central each line is to the role rather than whether the JD words it as required or preferred, and each role&rsquo;s weights sum to 1.00. A dimension scores 0.85 when the requirement is directly evidenced (1.00 when it recurs), 0.45&ndash;0.55 on adjacent evidence only, 0.00 otherwise; dimensions specifying a tenure (&ldquo;3+ years&rdquo;, &ldquo;2&ndash;4 years&rdquo;) are capped at 0.70 without an explicit tenure statement.<br><br>
+<b>Population and sources.</b> 986 of 1221 2026 hire records fall in the six core roles, 808 of them non-referral; supervisor, manager and team-lead titles are excluded, job-family labels such as PAS &ldquo;Case Manager&rdquo; are kept. Resumes came from three sources: the <b>1,319-file</b> recruiting library, the <b>272</b> files recruiters supplied in September (from 330 supplied, one folder of 57 corporate resumes set aside and one duplicate removed), and <b>5</b> individual resumes supplied since &mdash; 2 of which belong to core-role non-referral hires, one of them replacing a scan that had returned no text. A sixth upload was <b>set aside</b>: its text is identical to a resume already scored for a different hire whose name differs by one letter, so attributing it would have invented evidence; the upload&rsquo;s nominal hire, a Patient Care Coordinator, remains unscored pending confirmation from TA. Each was matched to a named hire by a first-name-plus-surname token alignment test, then one resume kept per hire, longer text winning. Two matchers were used &mdash; the library files through a test with an acceptance floor of 78, the September files through an earlier variant with no floor &mdash; so every September file was force-assigned; the lowest confidence among <i>scored</i> resumes was 89.7 for September and 86.7 for the library; across all accepted matches, including unscored non-core hires, the floor was 76.6 and 86.7. The lowest-confidence matches in both sets were read by hand and none proved to be the wrong person. That yields <b>972</b> matched hires, <b>785</b> in the six core roles, of which <b>12</b> are scanned PDFs that returned no usable text under OCR within the time available and were dropped &mdash; leaving 629 non-referral (469 library, 158 September, 2 later uploads) and 144 referral resumes scored (81% of core referral hires). The other 480 library files are applicant-pool resumes for which the matcher found no 2026 hire; a hand sample confirmed these are candidates who were not hired, though a handful of unusual surnames may be genuine misses.<br><br>
+<b>Coverage is the main limit on this view.</b> 629 of 808 non-referral core hires (78%) have a scorable resume, so 179 do not, and the shortfall is not random &mdash; it clusters in specific cuts: <b>Yolanda</b> (36% of 134) and <b>Sabrina</b> (15% of 13) by recruiter, <b>Pharmacy Technician</b> (64%) by role, and <b>June and July</b> (52% and 41%) by month. Figures for those cuts are directional only, and the &plusmn;1.3 beside the headline is a within-sample standard error, not a margin for the 179 unscored hires. The two main sources also score differently &mdash; library resumes average <b>63.5%</b> and September-supplied ones <b>66.8%</b> &mdash; so the unscored hires should not be assumed to look like the scored ones. The 808 denominator counts hire <i>records</i>; collapsing 30 repeat rows for the same person gives 778 people and coverage of 81%. Separately, the workbook&rsquo;s row-level Resume Status column claims 1,192 of 1221 hires have a resume on file while its own Sept-09 per-recruiter headers say 771 and this exercise located 972; the row-level column appears to have been bulk-updated and should not be used for recordkeeping assurance.<br><br>
+<b>June 2026 review, for context only.</b> That run scored 760 resumes at 68.0% overall (CSR 73.5% on 82 &middot; ACE 70.2% on 39 &middot; AAA 70.0% on 65 &middot; PT 69.9% on 162 &middot; PAS 66.0% on 369 &middot; PCC 63.7% on 43). Those figures are deliberately kept off the panels above and no delta is shown, because they cannot be compared: June&rsquo;s PAS count (369) exceeds this workbook&rsquo;s entire PAS population including referrals (368), its ACE count (39) exceeds ACE&rsquo;s (22), its rubrics were built independently from the same job descriptions, and the 22 individuals it excluded at TA&rsquo;s request could not be re-applied here. Any apparent movement would mix a rubric change with a population change.<br><br>
+<b>Three residual cautions.</b> (1) <b>29</b> scored resumes arrived as Indeed &ldquo;Smart Screening&rdquo; PDFs wrapping the resume in AI-written text that paraphrases the job description, 16 of them with an AI phone-screen transcript attached; both blocks were cut and only the resume body read. After cutting they average 65.7% against 64.3% for plain resumes. (2) The score rewards <b>resume detail</b>: match&nbsp;% correlates with resume length at r&nbsp;=&nbsp;<b>0.28</b>, so a terse resume from a well-qualified hire under-scores. Treat any individual result below 50% as a prompt to read the resume, not a verdict. (3) <b>9</b> resumes are filed under a posting that differs from the hire&rsquo;s workbook title and are scored against the workbook title; excluding them moves the headline to 64.4% on 620.
+</div>
+</div>
+
+</div>
+<div class="foot"><span>AssistRx Talent Acquisition &nbsp;|&nbsp; Confidential &mdash; Internal Use Only</span><span>January&ndash;September 2026</span></div><div class="endbar"></div>
+</div></body></html>
