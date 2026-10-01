@@ -35,7 +35,7 @@
   .headline{font-size:22px;color:var(--dblue);font-weight:bold;line-height:1.3;margin:0 0 10px}
   .headline em{font-style:normal;color:var(--teal)}
   .lede{margin:0 0 18px;font-size:14.5px}
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
   .kpi{background:var(--g2);border-radius:12px;padding:14px 16px;border-top:4px solid var(--teal)}
   .kpi.alt{border-top-color:var(--lteal)} .kpi.blue{border-top-color:var(--dblue)} .kpi.gray{border-top-color:var(--g1)}
   .kpi .v{font-size:30px;font-weight:bold;color:var(--dblue);line-height:1.05}
@@ -238,7 +238,6 @@ const w=n=>n<10?words[n]:String(n);
 /* KPIs */
 document.getElementById('kpis').innerHTML=[
   ['', cur.signed, pct(cur.signed,N)+'%', 'Offers signed in iCIMS'],
-  ['alt', cur.reached, pct(cur.reached,N)+'%', 'Team members reached, up from zero at 3:15 p.m.'],
   ['blue', '+'+(cur.acc-D.prev1155), '', 'New acceptances since 11:55 a.m.'],
   ['gray', cur.dec, pct(cur.dec,N)+'%', 'Declined so far'],
 ].map(([c,v,p,k])=>`<div class="kpi ${c}"><div class="v">${v}<small>${p}</small></div><div class="k">${k}</div></div>`).join('');
