@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AssistRx Onboarding — 30/60/90 Trends (Jun–Oct 2026)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* AssistRx brand palette (Style Guide, May 2025) */
+:root{
+  --teal:#007178;      /* primary / dominant */
+  --ltteal:#ade2e3;    /* light teal */
+  --green:#00ae9a;     /* secondary green */
+  --navy:#093e52;      /* dark blue – contrast headers/bg */
+  --gold:#ffc629;      /* accent ONLY */
+  --ink:#414042;       /* body text */
+  --g1:#f2f2f2; --g2:#d9d9d9; --g3:#8d9097;
+  --bg:#f6f8f8; --card:#ffffff;
+  --good:#007178; --mid:#ffc629; --bad:#d8663a;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45;}
+.hdr{background:var(--navy);color:#fff;padding:22px 34px 18px;}
+.hdr h1{font-size:22px;font-weight:bold;letter-spacing:.2px;}
+.hdr .sub{font-size:12.5px;color:#c7d6dc;margin-top:5px;}
+.hdr .close{display:inline-block;margin-top:9px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:4px;padding:4px 11px;font-size:11px;color:#eaf3f5;}
+.tabs{background:var(--teal);display:flex;flex-wrap:wrap;padding:0 34px;gap:0;}
+.tb{background:none;border:none;color:rgba(255,255,255,.72);font-family:inherit;font-size:12.5px;font-weight:bold;padding:11px 18px 9px;cursor:pointer;border-bottom:3px solid transparent;}
+.tb:hover{color:#fff;}
+.tb.on{color:#fff;border-bottom-color:var(--gold);}
+.pg{max-width:1360px;margin:0 auto;padding:22px 34px 56px;}
+.sec{display:none;} .sec.on{display:block;}
+.eyebrow{color:var(--teal);font-weight:bold;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:4px 0 12px;}
+.prov{background:#fffaf0;border:1px solid var(--gold);border-left:5px solid var(--gold);border-radius:5px;padding:12px 16px;font-size:12px;color:var(--ink);margin-bottom:20px;line-height:1.55;}
+.prov b{color:var(--navy);}
+.r4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+.card{background:var(--card);border:1px solid var(--g2);border-radius:8px;padding:16px 18px;}
+.card h3{font-size:13px;color:var(--navy);font-weight:bold;margin-bottom:12px;}
+.kpi .lab{font-size:10.5px;font-weight:bold;letter-spacing:.6px;text-transform:uppercase;color:var(--g3);}
+.kpi .val{font-size:30px;font-weight:bold;color:var(--teal);line-height:1.05;margin-top:4px;}
+.kpi .sub{font-size:11.5px;margin-top:5px;color:var(--ink);}
+.up{color:var(--teal);font-weight:bold;} .dn{color:var(--bad);font-weight:bold;} .flat{color:var(--g3);font-weight:bold;}
+.warn{display:inline-block;background:#fff4d6;color:#8a6500;border:1px solid var(--gold);border-radius:3px;padding:1px 6px;font-size:10px;font-weight:bold;margin-top:6px;}
+.chart-wrap{position:relative;width:100%;height:260px;}
+.note{font-size:11.5px;color:var(--ink);background:var(--g1);border-radius:5px;padding:9px 13px;margin-bottom:16px;line-height:1.5;}
+.note b{color:var(--navy);}
+table.ft{width:100%;border-collapse:collapse;font-size:12px;}
+table.ft th{background:var(--navy);color:#fff;font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;text-align:left;}
+table.ft th.r,table.ft td.r{text-align:right;}
+table.ft td{padding:7px 10px;border-bottom:1px solid var(--g1);}
+table.ft tr:last-child td{border-bottom:none;}
+table.ft tr:nth-child(even) td{background:#fafcfc;}
+.bar{display:inline-block;height:7px;border-radius:4px;background:var(--teal);vertical-align:middle;}
+.fnu{display:flex;height:9px;width:120px;border-radius:3px;overflow:hidden;border:1px solid var(--g2);}
+.fnu i{display:block;height:100%;}
+.pill{display:inline-block;padding:2px 8px;border-radius:9px;font-size:11px;font-weight:bold;color:#fff;min-width:46px;text-align:center;}
+.src{font-size:11px;color:var(--g3);margin-top:8px;}
+.lead{font-size:13px;color:var(--ink);margin-bottom:16px;max-width:900px;}
+.lead b{color:var(--navy);}
+@media(max-width:860px){.r4,.r2{grid-template-columns:1fr;}.pg,.hdr,.tabs{padding-left:16px;padding-right:16px;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <h1>AssistRx Onboarding &mdash; 30 / 60 / 90-Day Trends</h1>
+  <div class="sub">Culture Amp &nbsp;|&nbsp; June 1 &ndash; October 1, 2026 &nbsp;|&nbsp; Waves 4&ndash;6 (the June &amp; July refreshes)</div>
+  <span class="close">Latest refresh: Wave 6 &middot; close date Jul 20, 2026 &middot; dashboard built Oct 5, 2026</span>
+</header>
+<nav class="tabs">
+  <button class="tb on" onclick="show('ov',this)">Overview</button>
+  <button class="tb" onclick="show('d30',this)">30-Day</button>
+  <button class="tb" onclick="show('d60',this)">60-Day</button>
+  <button class="tb" onclick="show('d90',this)">90-Day</button>
+  <button class="tb" onclick="show('mgr',this)">90-Day Managers</button>
+</nav>
+<main class="pg">
+
+<!-- OVERVIEW -->
+<section id="ov" class="sec on">
+  <div class="eyebrow">Measurement window</div>
+  <div class="prov">
+    <b>Two data sources, labeled throughout.</b><br>
+    &bull; <b>Trend (Waves 4&ndash;6):</b> per-wave favorability carried from the previously cell-verified wave-level exports. Within the <b>June 1 &ndash; October 1, 2026</b> window, three refreshes closed &mdash; Wave&nbsp;4 (Jun&nbsp;&rsquo;26), Wave&nbsp;5 (Jun&nbsp;&rsquo;26) and Wave&nbsp;6 (closed Jul&nbsp;20). No survey wave closed between Jul&nbsp;20 and Oct&nbsp;1, so these three are the full set for this window.<br>
+    &bull; <b>Pooled snapshot:</b> the three uploaded <i>All Results</i> files are single aggregates spanning 01 Nov 2025&ndash;05 Oct 2026 with no date or wave column, so they can neither be clipped to the June&ndash;October window nor produce a trend &mdash; they supply the current all-enrollee averages shown in the snapshot tables and the 90-day manager view.<br>
+    To rebuild the trend purely from source, a dated per-wave Culture Amp export (or a comparison export segmented by survey-close date) is needed.
+  </div>
+
+  <div class="eyebrow">Latest wave (Wave 6) vs prior wave</div>
+  <div class="r4">
+    <div class="card kpi"><div class="lab">30-Day Overall</div><div class="val">97.4%</div><div class="sub"><span class="up">&#9650; 1.2 pts</span> vs Wave 5</div><span class="warn">n=13 &middot; directional</span></div>
+    <div class="card kpi"><div class="lab">60-Day Overall</div><div class="val">89.4%</div><div class="sub"><span class="up">&#9650; 11.0 pts</span> vs Wave 5 &middot; new high</div><div class="src">n=90</div></div>
+    <div class="card kpi"><div class="lab">90-Day Overall</div><div class="val">82.3%</div><div class="sub"><span class="dn">&#9660; 6.8 pts</span> vs Wave 5</div><div class="src">n=165 &middot; largest cohort</div></div>
+    <div class="card kpi"><div class="lab">90-Day &ldquo;no quality 1:1&rdquo; gap</div><div class="val">32%</div><div class="sub"><span class="up">&#9660; from 73%</span> &middot; major reversal</div><div class="src">lower is better</div></div>
+  </div>
+
+  <div class="note"><b>Read the 90-day step-down with the cohort in mind.</b> Wave 5 was n=46; Wave 6 is n=165 (&asymp;3.6&times; larger) and far more representative. 82.3% sits inside the Wave&nbsp;4 range (84.0%), so the drop from Wave&nbsp;5&rsquo;s small-sample 89.1% peak largely reflects the move to a fuller cohort rather than a decline in experience. Wave&nbsp;6&rsquo;s 30-day read (n=13) is directional.</div>
+
+  <div class="r2">
+    <div class="card"><h3>Overall favorability across Waves 4&ndash;6</h3><div class="chart-wrap"><canvas id="cOverall"></canvas></div></div>
+    <div class="card"><h3>&ldquo;No quality 1:1 with my leader&rdquo; &mdash; % reporting the gap</h3><div class="chart-wrap"><canvas id="cGap"></canvas></div></div>
+  </div>
+</section>
+
+<!-- 30 DAY -->
+<section id="d30" class="sec">
+  <div class="eyebrow">30-Day cohort</div>
+  <p class="lead">The 30-day experience has climbed for three straight waves. Wave&nbsp;6 is the strongest reading on record, but at <b>n=13</b> it is a small early cohort &mdash; treat it as confirmation of the upward trajectory, not a large-sample high.</p>
+  <div class="card" style="margin-bottom:18px;"><h3>30-Day factors by wave (% favorable)</h3><div class="chart-wrap" style="height:300px"><canvas id="c30"></canvas></div><div class="src">Wave-level data. Cohort sizes: Wave 4 n=50 &middot; Wave 5 n=44 &middot; Wave 6 n=13.</div></div>
+  <div class="card"><h3>Current pooled snapshot &mdash; all 30-day enrollees (Nov 2025&ndash;Oct 2026)</h3><table class="ft" id="t30"></table><div class="src">Source: 30_Day_Onboarding_Survey_All_Results.xlsx &middot; 618 submitted of 1,575 (39.2%). Pooled across all waves &mdash; not a Wave 6 figure.</div></div>
+</section>
+
+<!-- 60 DAY -->
+<section id="d60" class="sec">
+  <div class="eyebrow">60-Day cohort</div>
+  <p class="lead">The 60-day cohort is the clearest good-news story in the window. On the largest 60-day sample to date (n=90), Overall rebounded <b>+11.0 pts</b> to a new high, and <b>Communication recovered from 70.1% to 82.6%</b> &mdash; reversing the Wave&nbsp;5 dip that earlier decks flagged as a watch-item.</p>
+  <div class="card" style="margin-bottom:18px;"><h3>60-Day factors by wave (% favorable)</h3><div class="chart-wrap" style="height:300px"><canvas id="c60"></canvas></div><div class="src">Wave-level data. Cohort sizes: Wave 4 n=130 &middot; Wave 5 n=59 &middot; Wave 6 n=90.</div></div>
+  <div class="card"><h3>Current pooled snapshot &mdash; all 60-day enrollees (Nov 2025&ndash;Oct 2026)</h3><table class="ft" id="t60"></table><div class="src">Source: 60_Day_Onboarding_Survey_All_Results.xlsx &middot; 549 submitted of 1,588 (34.6%). Softest pooled sub-items: &ldquo;role expectations communicated through onboarding&rdquo; 69.4% &middot; &ldquo;discussed development goals with leadership&rdquo; 55.5%.</div></div>
+</section>
+
+<!-- 90 DAY -->
+<section id="d90" class="sec">
+  <div class="eyebrow">90-Day cohort</div>
+  <p class="lead">The headline reversal is here: the 90-day <b>&ldquo;no quality 1:1&rdquo; gap fell from 73% to 32%</b> on the largest 90-day cohort measured (n=165) &mdash; the biggest single-wave improvement anywhere in the dataset, after five waves of the gap worsening. Overall favorability stepped down to 82.3%, but that is the cohort-size effect described on the Overview, not a deterioration.</p>
+  <div class="card" style="margin-bottom:18px;"><h3>90-Day factors by wave (% favorable)</h3><div class="chart-wrap" style="height:300px"><canvas id="c90"></canvas></div><div class="src">Wave-level data. Cohort sizes: Wave 4 n=145 &middot; Wave 5 n=46 &middot; Wave 6 n=165.</div></div>
+  <div class="card"><h3>Current pooled snapshot &mdash; all 90-day enrollees (Nov 2025&ndash;Oct 2026)</h3><table class="ft" id="t90"></table><div class="src">Source: 90_Day_Onboarding_Survey_All_Results.xlsx &middot; 502 submitted of 1,520 (33.0%). Softest pooled sub-items: &ldquo;discussed development goals with leadership&rdquo; 63.2% &middot; &ldquo;onboarding prepared me for my role&rdquo; 67.9% &middot; &ldquo;resources sufficient for training&rdquo; 69.6%.</div></div>
+</section>
+
+<!-- MANAGERS -->
+<section id="mgr" class="sec">
+  <div class="eyebrow">90-Day by manager</div>
+  <p class="lead">Pooled 90-day scores by manager, Nov 2025&ndash;Oct 2026. Shown for managers with <b>n&nbsp;&ge;&nbsp;5</b> responses to protect individual confidentiality and keep readings meaningful; sorted by Overall. This is a pooled cut, not part of the Waves 4&ndash;6 trend.</p>
+  <div class="card"><h3>Manager heatmap &mdash; 90-day (n &ge; 5)</h3><table class="ft" id="tmgr"></table><div class="src">Source: Manager_Heatmap.xlsx (Demographics Report), 90-day survey spread by manager. Company-wide 90-day Overall = 83.3% (n=502). Cells colored: &ge;80% teal &middot; 65&ndash;79% gold &middot; &lt;65% clay.</div></div>
+</section>
+
+</main>
+<script>
+function show(id,el){document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});document.querySelectorAll('.tb').forEach(function(t){t.classList.remove('on');});document.getElementById(id).classList.add('on');el.classList.add('on');}
+
+/* ---------- VERIFIED DATA ---------- */
+var WAVES=['Wave 4 · Jun \u201926','Wave 5 · Jun \u201926','Wave 6 · Jul \u201926'];
+var C={teal:'#007178',green:'#00ae9a',navy:'#093e52',ltteal:'#ade2e3',gold:'#ffc629',bad:'#d8663a'};
+
+/* wave-level factor trends (W4,W5,W6) */
+var F30={'Onboarding Experience':[90.3,94.3,98.1],'Overall':[92.0,96.2,97.4],'Job Satisfaction':[84.0,86.4,88.5],'Organizational Alignment':[89.5,93.2,92.3],'Team & Culture':[91.3,93.2,97.4]};
+var F60={'Onboarding Experience':[71.7,71.6,86.7],'Overall':[78.1,78.4,89.4],'Team & Culture':[83.3,81.4,91.1],'Job Satisfaction':[74.7,72.9,85.4],'Communication':[75.1,70.1,82.6],'Professional Development':[76.2,74.2,85.4]};
+var F90={'Onboarding Experience':[80.3,80.6,79.1],'Overall':[84.0,89.1,82.3],'Communication':[80.8,79.0,77.6],'Job Satisfaction':[85.6,83.3,82.0],'Professional Development':[77.6,77.8,77.9],'Team & Culture':[81.1,89.1,78.7]};
+var OVR={d30:[92.0,96.2,97.4],d60:[78.1,78.4,89.4],d90:[84.0,89.1,82.3]};
+var GAP={d30:[48,40,8],d60:[41,52,24],d90:[64,73,32]};
+
+/* pooled snapshots (new uploads): [factor, score%, pop, fav, neu, unf] */
+var P30=[['Onboarding Experience',86.4,613,86,9,5],['Overall',85.8,618,86,11,3],['Team & Culture',87.5,618,88,8,4],['Organizational Alignment',85.2,613,85,11,4],['Job Satisfaction',79.9,612,80,13,7]];
+var P60=[['Overall',84.6,545,85,12,3],['Team & Culture',87.1,549,87,9,4],['Job Satisfaction',79.3,545,79,15,6],['Onboarding Experience',78.6,548,79,13,8],['Professional Development',78.2,537,78,16,6],['Communication',75.9,546,76,15,9]];
+var P90=[['Overall',83.3,498,83,13,4],['Job Satisfaction',83.1,496,83,11,6],['Team & Culture',80.9,498,81,12,7],['Professional Development',78.6,491,79,15,6],['Onboarding Experience',78.2,495,78,14,8],['Communication',76.6,495,77,13,10]];
+
+/* 90-day managers n>=5, sorted by Overall */
+var MGR=[["Denise Solla",7,100.0,98.0,95.2,100.0,91.4,95.2],["Evona Hoover",6,100.0,92.9,77.8,100.0,90.0,100.0],["Nicole Harrison",6,100.0,85.7,100.0,100.0,83.3,88.9],["Amneris Coreano",5,100.0,82.9,86.7,100.0,96.0,93.3],["Michael Schultz",10,97.5,95.7,96.7,96.7,88.0,96.7],["Azadrian Collier",9,97.2,93.7,100.0,100.0,95.6,100.0],["Renata Phillip",6,91.7,95.2,100.0,100.0,96.7,88.9],["Vicky Antigua",9,88.9,81.0,88.9,85.2,77.8,81.5],["Patti VanVleck",6,87.5,85.7,61.1,88.9,86.7,83.3],["Cassandra King",9,86.1,79.4,85.2,85.2,64.4,81.5],["Elizabeth Godsey",6,83.3,57.1,50.0,61.1,56.0,66.7],["Natasha Doby",6,83.3,83.3,83.3,83.3,76.7,83.3],["Yanderi Soto",6,83.3,81.0,72.2,83.3,66.7,77.8],["Alexah Torres",8,81.2,69.6,70.8,66.7,87.5,75.0],["Mayar Lampkin",8,81.2,69.6,50.0,66.7,80.0,83.3],["Taraphanie Gayot",8,81.2,80.4,87.5,87.5,72.5,70.8],["Alisha Rither",5,80.0,82.1,80.0,86.7,88.0,83.3],["Andrew Schumacher",12,79.2,73.8,69.4,66.7,56.7,80.6],["Anquesha Brooks",13,75.0,61.5,61.5,71.8,73.8,69.2],["Arthur Viley",8,75.0,66.1,58.3,83.3,75.0,87.5],["Kaitlin Choate",6,75.0,78.6,60.0,61.1,66.7,72.2],["Renata McGovern",7,64.3,63.3,42.9,71.4,71.4,61.9],["Maria Maltsberger",6,62.5,69.0,72.2,66.7,66.7,66.7],["Santiago Murillo Castro",8,60.7,44.6,54.2,66.7,52.5,58.3],["Traci Townsend",9,52.8,60.3,59.3,66.7,62.2,63.0]];
+
+/* ---------- TABLES ---------- */
+function fnu(f,n,u){return '<span class="fnu"><i style="width:'+f+'%;background:'+C.teal+'"></i><i style="width:'+n+'%;background:'+C.g2+'"></i><i style="width:'+u+'%;background:'+C.bad+'"></i></span>';}
+function snap(id,rows){
+  var h='<thead><tr><th>Factor</th><th class="r">Score</th><th class="r">n</th><th>Favorable / Neutral / Unfavorable</th></tr></thead><tbody>';
+  rows.forEach(function(r){h+='<tr><td>'+r[0]+'</td><td class="r"><b style="color:'+C.teal+'">'+r[1].toFixed(1)+'%</b></td><td class="r">'+r[2]+'</td><td>'+fnu(r[3],r[4],r[5])+' <span style="font-size:11px;color:#8d9097">'+r[3]+' / '+r[4]+' / '+r[5]+'</span></td></tr>';});
+  document.getElementById(id).innerHTML=h+'</tbody>';
+}
+snap('t30',P30);snap('t60',P60);snap('t90',P90);
+
+function mcol(v){return v>=80?C.teal:v>=65?C.gold:C.bad;}
+(function(){
+  var h='<thead><tr><th>Manager</th><th class="r">n</th><th class="r">Overall</th><th class="r">Onboard</th><th class="r">Comm.</th><th class="r">Job Sat</th><th class="r">Prof Dev</th><th class="r">Team</th></tr></thead><tbody>';
+  MGR.forEach(function(m){
+    h+='<tr><td><b>'+m[0]+'</b></td><td class="r" style="color:'+C.navy+';font-weight:bold">'+m[1]+'</td>';
+    for(var i=2;i<8;i++){var v=m[i];h+='<td class="r"><span class="pill" style="background:'+mcol(v)+'">'+v.toFixed(0)+'%</span></td>';}
+    h+='</tr>';
+  });
+  document.getElementById('tmgr').innerHTML=h+'</tbody>';
+})();
+
+/* ---------- CHARTS ---------- */
+function mkLine(id,series,ymin,invert){
+  if(typeof Chart==='undefined')return;
+  new Chart(document.getElementById(id),{type:'line',
+    data:{labels:WAVES,datasets:series},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}}},
+      scales:{y:{min:ymin,max:100,ticks:{callback:function(v){return v+'%';},font:{size:11}},grid:{color:'#eef1f1'},reverse:!!invert},
+              x:{ticks:{font:{size:11}},grid:{display:false}}}}});
+}
+function mkBar(id,fobj,ymin){
+  if(typeof Chart==='undefined')return;
+  var facs=Object.keys(fobj);
+  var wcol=[C.ltteal,C.green,C.teal];
+  var ds=[0,1,2].map(function(wi){return{label:WAVES[wi],data:facs.map(function(f){return fobj[f][wi];}),backgroundColor:wcol[wi],borderRadius:3,borderWidth:wi===0?1:0,borderColor:'#9cc9ca'};});
+  new Chart(document.getElementById(id),{type:'bar',
+    data:{labels:facs,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}},
+        datalabels:false},
+      scales:{y:{min:ymin,max:100,ticks:{callback:function(v){return v+'%';},font:{size:10.5}},grid:{color:'#eef1f1'}},
+              x:{ticks:{font:{size:10.5}},grid:{display:false}}}}});
+}
+mkLine('cOverall',[
+  {label:'30-Day',data:OVR.d30,borderColor:C.teal,backgroundColor:C.teal,tension:.25,borderWidth:3,pointRadius:4},
+  {label:'60-Day',data:OVR.d60,borderColor:C.navy,backgroundColor:C.navy,tension:.25,borderWidth:3,pointRadius:4},
+  {label:'90-Day',data:OVR.d90,borderColor:C.green,backgroundColor:C.green,tension:.25,borderWidth:3,pointRadius:4}
+],60,false);
+mkLine('cGap',[
+  {label:'30-Day',data:GAP.d30,borderColor:C.teal,backgroundColor:C.teal,tension:.25,borderWidth:3,pointRadius:4},
+  {label:'60-Day',data:GAP.d60,borderColor:C.navy,backgroundColor:C.navy,tension:.25,borderWidth:3,pointRadius:4},
+  {label:'90-Day',data:GAP.d90,borderColor:C.bad,backgroundColor:C.bad,tension:.25,borderWidth:3,pointRadius:4}
+],0,false);
+mkBar('c30',F30,60);
+mkBar('c60',F60,60);
+mkBar('c90',F90,60);
+</script>
+</body>
+</html>
