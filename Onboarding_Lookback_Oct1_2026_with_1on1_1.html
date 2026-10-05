@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AssistRx Onboarding &mdash; Look-back from Oct 1, 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
+:root{--navy:#1D3557;--green:#1D9E75;--gl:#e8f7f2;--amber:#E09B2F;--red:#D85A30;--rl:#fdf0eb;--g50:#f8f9fb;--g100:#eef0f4;--g200:#dde1ea;--g400:#8b93a7;--g600:#4b5568;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--g50);color:#1a2233;}
+.hdr{background:var(--navy);padding:24px 36px 20px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.hdr h1{font-family:'DM Serif Display',serif;font-size:23px;color:#fff;line-height:1.1;}
+.hdr .sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px;}
+.badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 14px;font-size:11.5px;color:rgba(255,255,255,.85);font-weight:500;}
+.tabs{background:var(--navy);border-top:1px solid rgba(255,255,255,.1);display:flex;padding:0 36px;gap:2px;flex-wrap:wrap;}
+.tb{background:none;border:none;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;padding:11px 16px 9px;cursor:pointer;border-bottom:3px solid transparent;transition:.18s;white-space:nowrap;}
+.tb:hover{color:rgba(255,255,255,.85);}
+.tb.on{color:#fff;border-bottom-color:var(--green);}
+.pg{padding:24px 36px 48px;max-width:1440px;margin:0 auto;}
+.sec{display:none;}.sec.on{display:block;}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.r4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.full{margin-bottom:16px;}
+.card{background:#fff;border-radius:11px;border:1px solid var(--g100);box-shadow:0 1px 4px rgba(0,0,0,.04);overflow:hidden;}
+.ch{padding:14px 18px 11px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+.ct{font-size:12.5px;font-weight:600;color:var(--navy);}
+.tag{font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px;}
+.tg{background:var(--gl);color:var(--green);} .ta{background:#fef3e2;color:var(--amber);}
+.tr2{background:var(--rl);color:var(--red);} .tb2{background:#eff6ff;color:#2563EB;}
+.tp{background:#f5f3ff;color:#7C3AED;} .tn{background:var(--g100);color:var(--navy);}
+.cb{padding:16px 18px;}
+.chart-box{position:relative;width:100%;}
+.kpi{background:#fff;border-radius:11px;padding:16px 18px 14px;border:1px solid var(--g100);box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.kl{font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--g400);margin-bottom:6px;}
+.kv{font-size:26px;font-weight:700;line-height:1;color:var(--navy);}
+.ks{font-size:11px;color:var(--g400);margin-top:4px;}
+.ft{width:100%;border-collapse:collapse;font-size:12px;}
+.ft th{background:var(--g50);color:var(--g400);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:8px 12px;text-align:left;border-bottom:1px solid var(--g200);}
+.ft th.r{text-align:right;} .ft td{padding:8px 12px;border-bottom:1px solid var(--g100);vertical-align:middle;}
+.ft tr:last-child td{border-bottom:none;} .ft tr:hover td{background:var(--g50);}
+.pill{display:inline-flex;padding:2px 8px;border-radius:10px;font-size:10.5px;font-weight:700;}
+.pg2{background:var(--gl);color:var(--green);} .pa{background:#fef3e2;color:var(--amber);} .pr{background:var(--rl);color:var(--red);}
+.co{border-left:4px solid var(--navy);border-radius:7px;padding:12px 16px;margin-bottom:10px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.co.cup{border-left-color:var(--green);background:linear-gradient(90deg,#f0fdf9,#fff 55%);}
+.co.cdn{border-left-color:var(--red);background:linear-gradient(90deg,#fef2ed,#fff 55%);}
+.co.cfl{border-left-color:var(--amber);background:linear-gradient(90deg,#fef9ef,#fff 55%);}
+.co .ct2{font-size:12px;font-weight:700;color:var(--navy);}
+.co p{font-size:11.5px;color:var(--g600);line-height:1.5;margin-top:3px;}
+.note{background:#fff8e6;border:1px solid #f5d585;border-radius:7px;padding:10px 14px;margin-bottom:14px;font-size:11.5px;color:var(--g600);line-height:1.5;}
+.slab{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--g400);margin-bottom:9px;margin-top:2px;}
+.leg{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+.ld{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:500;color:var(--g600);}
+.ld span{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0;}
+@media(max-width:900px){.pg{padding:16px;}.hdr,.tabs{padding:0 16px;}.hdr{padding:16px 16px 14px;}.r2,.r3,.r4{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div><h1>Culture Amp Onboarding &mdash; Look-back from Oct 1, 2026</h1>
+  <div class="sub">AssistRx &middot; 30 / 60 / 90 Days Back &middot; Sep 1 &middot; Aug 2 &middot; Jul 3 &middot; 1,669 Responses &middot; 1:1 Gap Tracked at Every Depth</div></div>
+  <div class="badge">Anchor: Oct 1, 2026</div>
+</header>
+<nav class="tabs">
+  <button class="tb on" onclick="show('ov',this)">Overview</button>
+  <button class="tb" onclick="show('d30',this)">30 Days Back</button>
+  <button class="tb" onclick="show('d60',this)">60 Days Back</button>
+  <button class="tb" onclick="show('d90',this)">90 Days Back</button>
+  <button class="tb" onclick="show('one',this)">1:1 &amp; Leadership</button>
+  <button class="tb" onclick="show('cmp',this)">Depth Comparison</button>
+  <button class="tb" onclick="show('mgr',this)">Manager Heatmap</button>
+</nav>
+<main class="pg">
+
+<!-- OVERVIEW -->
+<section id="ov" class="sec on">
+  <div class="leg">
+    <div class="ld"><span style="background:#1D9E75"></span>30 Days Back &mdash; to Sep 1, 2026 (n=618)</div>
+    <div class="ld"><span style="background:#2563EB"></span>60 Days Back &mdash; to Aug 2, 2026 (n=549)</div>
+    <div class="ld"><span style="background:#7C3AED"></span>90 Days Back &mdash; to Jul 3, 2026 (n=502)</div>
+  </div>
+  <div class="r4">
+    <div class="kpi"><div class="kl">30 Days Back &middot; Overall</div><div class="kv" style="color:#1D9E75">85.8%</div><div class="ks">618 of 1,575 &middot; 39.2% response</div></div>
+    <div class="kpi"><div class="kl">60 Days Back &middot; Overall</div><div class="kv" style="color:#2563EB">84.6%</div><div class="ks">549 of 1,588 &middot; 34.6% response</div></div>
+    <div class="kpi"><div class="kl">90 Days Back &middot; Overall</div><div class="kv" style="color:#7C3AED">83.3%</div><div class="ks">502 of 1,520 &middot; 33.0% response</div></div>
+    <div class="kpi"><div class="kl">Total Responses</div><div class="kv">1,669</div><div class="ks">across all three checkpoints</div></div>
+  </div>
+  <div class="note"><strong>How to read the dates:</strong> the 30 / 60 / 90-Day surveys are onboarding checkpoints &mdash; each hire answers at 30, 60 and 90 days of tenure. So &ldquo;30 / 60 / 90 Days Back&rdquo; from the Oct&nbsp;1 anchor (Sep&nbsp;1 / Aug&nbsp;2 / Jul&nbsp;3) is the <strong>look-back depth of each check</strong>. Counts and percentages are each survey&rsquo;s totals from the uploaded Culture Amp files, which carry no response-date field &mdash; so these are full-survey figures, not a filter on submissions after a given date.</div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">Overall Score by Look-back Depth</span><span class="tag tg">% Favorable</span></div><div class="cb"><div class="chart-box" style="height:210px"><canvas id="cOv"></canvas></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">Responses vs. Invited by Look-back Depth</span><span class="tag tn">Counts</span></div><div class="cb"><div class="chart-box" style="height:210px"><canvas id="cResp"></canvas></div></div></div>
+  </div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">&ldquo;No high-quality 1:1 time with my direct leadership&rdquo; &mdash; Gap by Depth</span><span class="tag tr2">Lower is better</span></div><div class="cb"><div class="chart-box" style="height:210px"><canvas id="c1on1"></canvas></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">Favorable / Neutral / Unfavorable Mix</span><span class="tag tb2">% of Responses</span></div><div class="cb"><div class="chart-box" style="height:210px"><canvas id="cMix"></canvas></div></div></div>
+  </div>
+  <div class="co cdn"><div class="ct2">&#9660; The 1:1 gap is the #1 onboarding checklist gap at every depth &mdash; and it widens with tenure: 50% &rarr; 52% &rarr; 63%</div><p>154 people at the 30-day check, 136 at 60-day and 140 at 90-day reported no high-quality one-on-one time with their direct leadership. It outranks every other checklist item at all three depths, and the 13-point rise from 30 to 90 days means the gap is not closing as people settle in &mdash; it is growing. Entirely within manager control.</p></div>
+  <div class="co cfl"><div class="ct2">&#9679; Development conversations are the softest favorability item at every depth</div><p>&ldquo;Discussed development goals with direct leadership&rdquo; sits at 55.5% on the 60-day check and 63.2% on the 90-day &mdash; the lowest-scoring sub-item in both surveys. Paired with the 1:1 gap above, both of the weakest signals in this look-back are manager-coaching behaviors.</p></div>
+  <div class="co cup"><div class="ct2">&#9650; Favorability is highest at the shallowest look-back and steps down with depth: 85.8% &rarr; 84.6% &rarr; 83.3%</div><p>The 30-day check reads strongest, easing 2.5 points by the 90-day check. Response rate follows the same gradient (39.2% &rarr; 34.6% &rarr; 33.0%), so the deeper checkpoints rest on smaller, later-tenure samples.</p></div>
+</section>
+
+<!-- 30 -->
+<section id="d30" class="sec">
+  <div class="slab">30 Days Back &mdash; Look-back to Sep 1, 2026</div>
+  <div class="r4">
+    <div class="kpi"><div class="kl">Overall</div><div class="kv" style="color:#1D9E75">85.8%</div><div class="ks">n=618</div></div>
+    <div class="kpi"><div class="kl">Responses</div><div class="kv">618</div><div class="ks">of 1,575 invited</div></div>
+    <div class="kpi"><div class="kl">Response Rate</div><div class="kv">39.2%</div><div class="ks">highest of the three</div></div>
+    <div class="kpi"><div class="kl">No Quality 1:1 Time</div><div class="kv" style="color:#D85A30">50%</div><div class="ks">154 people &middot; #1 checklist gap</div></div>
+  </div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">30-Day Onboarding Checklist Gaps &mdash; % Not Yet Covered</span><span class="tag tr2">Lower is better</span></div><div class="cb"><div class="chart-box" style="height:240px"><canvas id="cl30"></canvas></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">30-Day Checklist Gaps &mdash; People Affected</span><span class="tag tn">Counts</span></div><div class="cb"><div class="chart-box" style="height:240px"><canvas id="cn30"></canvas></div></div></div>
+  </div>
+  <div class="card full"><div class="ch"><span class="ct">30-Day Factors &mdash; % Favorable</span><span class="tag tg">n=618</span></div><div class="cb"><div class="chart-box" style="height:250px"><canvas id="c30"></canvas></div></div></div>
+  <div class="card full"><div class="ch"><span class="ct">30-Day Factor Detail &mdash; Scores, Responses and Sentiment Split</span></div><div class="cb" style="padding:0"><table class="ft" id="t30"></table></div></div>
+  <div class="note"><strong>Softest sub-items:</strong> &ldquo;efficient training on procedures&rdquo; 69.5% &middot; &ldquo;accurate information during recruitment&rdquo; 74.2% &middot; &ldquo;experience matched my expectations&rdquo; 75.5%.</div>
+</section>
+
+<!-- 60 -->
+<section id="d60" class="sec">
+  <div class="slab">60 Days Back &mdash; Look-back to Aug 2, 2026</div>
+  <div class="r4">
+    <div class="kpi"><div class="kl">Overall</div><div class="kv" style="color:#2563EB">84.6%</div><div class="ks">n=545</div></div>
+    <div class="kpi"><div class="kl">Responses</div><div class="kv">549</div><div class="ks">of 1,588 invited</div></div>
+    <div class="kpi"><div class="kl">Response Rate</div><div class="kv">34.6%</div><div class="ks">mid of the three</div></div>
+    <div class="kpi"><div class="kl">No Quality 1:1 Time</div><div class="kv" style="color:#D85A30">52%</div><div class="ks">136 people &middot; #1 checklist gap</div></div>
+  </div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">60-Day Onboarding Checklist Gaps &mdash; % Not Yet Covered</span><span class="tag tr2">Lower is better</span></div><div class="cb"><div class="chart-box" style="height:240px"><canvas id="cl60"></canvas></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">60-Day Checklist Gaps &mdash; People Affected</span><span class="tag tn">Counts</span></div><div class="cb"><div class="chart-box" style="height:240px"><canvas id="cn60"></canvas></div></div></div>
+  </div>
+  <div class="card full"><div class="ch"><span class="ct">60-Day Factors &mdash; % Favorable</span><span class="tag tb2">n=549</span></div><div class="cb"><div class="chart-box" style="height:250px"><canvas id="c60"></canvas></div></div></div>
+  <div class="card full"><div class="ch"><span class="ct">60-Day Factor Detail &mdash; Scores, Responses and Sentiment Split</span></div><div class="cb" style="padding:0"><table class="ft" id="t60"></table></div></div>
+  <div class="note"><strong>Softest sub-items:</strong> &ldquo;discussed development goals with direct leadership&rdquo; 55.5% &middot; &ldquo;role expectations communicated through onboarding&rdquo; 69.4% &middot; &ldquo;on-the-job training prepared me&rdquo; 70.1% &middot; &ldquo;adequately informed about company updates&rdquo; 72.2%.</div>
+</section>
+
+<!-- 90 -->
+<section id="d90" class="sec">
+  <div class="slab">90 Days Back &mdash; Look-back to Jul 3, 2026</div>
+  <div class="r4">
+    <div class="kpi"><div class="kl">Overall</div><div class="kv" style="color:#7C3AED">83.3%</div><div class="ks">n=498</div></div>
+    <div class="kpi"><div class="kl">Responses</div><div class="kv">502</div><div class="ks">of 1,520 invited</div></div>
+    <div class="kpi"><div class="kl">Response Rate</div><div class="kv">33.0%</div><div class="ks">lowest of the three</div></div>
+    <div class="kpi"><div class="kl">No Quality 1:1 Time</div><div class="kv" style="color:#D85A30">63%</div><div class="ks">140 people &middot; worst of the three</div></div>
+  </div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">90-Day Onboarding Checklist Gaps &mdash; % Not Yet Covered</span><span class="tag tr2">Lower is better</span></div><div class="cb"><div class="chart-box" style="height:240px"><canvas id="cl90"></canvas></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">90-Day Checklist Gaps &mdash; People Affected</span><span class="tag tn">Counts</span></div><div class="cb"><div class="chart-box" style="height:240px"><canvas id="cn90"></canvas></div></div></div>
+  </div>
+  <div class="card full"><div class="ch"><span class="ct">90-Day Factors &mdash; % Favorable</span><span class="tag tp">n=502</span></div><div class="cb"><div class="chart-box" style="height:250px"><canvas id="c90"></canvas></div></div></div>
+  <div class="card full"><div class="ch"><span class="ct">90-Day Factor Detail &mdash; Scores, Responses and Sentiment Split</span></div><div class="cb" style="padding:0"><table class="ft" id="t90"></table></div></div>
+  <div class="note"><strong>Softest sub-items:</strong> &ldquo;discussed development goals with direct leadership&rdquo; 63.2% &middot; &ldquo;onboarding prepared me for my role&rdquo; 67.9% &middot; &ldquo;resources sufficient for training needs&rdquo; 69.6% &middot; &ldquo;adequately informed about company updates&rdquo; 74.7%.</div>
+</section>
+
+<!-- 1:1 & LEADERSHIP -->
+<section id="one" class="sec">
+  <div class="slab">1:1 Time &amp; Direct Leadership &mdash; All Three Look-back Depths</div>
+  <div class="r3">
+    <div class="kpi"><div class="kl">30 Days Back &middot; No Quality 1:1</div><div class="kv" style="color:#D85A30">50%</div><div class="ks">154 people &middot; #1 gap</div></div>
+    <div class="kpi"><div class="kl">60 Days Back &middot; No Quality 1:1</div><div class="kv" style="color:#D85A30">52%</div><div class="ks">136 people &middot; #1 gap</div></div>
+    <div class="kpi"><div class="kl">90 Days Back &middot; No Quality 1:1</div><div class="kv" style="color:#D85A30">63%</div><div class="ks">140 people &middot; #1 gap</div></div>
+  </div>
+  <div class="note"><strong>What this item is:</strong> on the Onboarding Checklist question, people select the things they believe have <strong>NOT</strong> been covered or completed so far. &ldquo;High quality one on one time with my direct leadership&rdquo; is the most-selected gap in all three surveys. Percentages are of those who answered the checklist question, so the base is smaller than the full survey n.</div>
+  <div class="r2">
+    <div class="card"><div class="ch"><span class="ct">1:1 Gap &mdash; % Reporting It Not Yet Covered</span><span class="tag tr2">Lower is better</span></div><div class="cb"><div class="chart-box" style="height:230px"><canvas id="cOne1"></canvas></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">1:1 Gap &mdash; People Affected</span><span class="tag tn">Counts</span></div><div class="cb"><div class="chart-box" style="height:230px"><canvas id="cOne2"></canvas></div></div></div>
+  </div>
+  <div class="card full"><div class="ch"><span class="ct">All Checklist Gaps &times; Look-back Depth &mdash; % Not Yet Covered</span><span class="tag tr2">1:1 leads at every depth</span></div><div class="cb"><div class="chart-box" style="height:300px"><canvas id="cClAll"></canvas></div></div></div>
+  <div class="card full"><div class="ch"><span class="ct">1:1 &amp; Leadership Detail &mdash; Gap Counts, Gap % and Related Favorability</span></div><div class="cb" style="padding:0"><table class="ft" id="tOne"></table></div></div>
+  <div class="co cdn"><div class="ct2">&#9660; The gap widens with tenure instead of closing: 50% &rarr; 52% &rarr; 63%</div><p>If 1:1s were simply slow to start, the gap would shrink as people reach 90 days. It does the opposite &mdash; 13 points worse at the 90-day check than the 30-day. Nearly two in three people at 90 days report no quality one-on-one time with their leader.</p></div>
+  <div class="co cfl"><div class="ct2">&#9679; Leadership favorability holds up even where 1:1s are missing</div><p>&ldquo;Direct leadership is easily accessible&rdquo; scores 79.9% at 60 days and 79.3% at 90 &mdash; people can reach their managers. What is missing is the structured, scheduled one-on-one, not approachability. That makes this a cadence problem rather than a relationship problem, and cheaper to fix.</p></div>
+</section>
+
+<!-- COMPARISON -->
+<section id="cmp" class="sec">
+  <div class="slab">Side by Side &mdash; 30 vs 60 vs 90 Days Back</div>
+  <div class="card full"><div class="ch"><span class="ct">Shared Factors Across All Three Look-back Depths</span><span class="tag tn">% Favorable</span></div><div class="cb"><div class="chart-box" style="height:290px"><canvas id="cCmp"></canvas></div></div></div>
+  <div class="card full"><div class="ch"><span class="ct">Every Factor &times; Every Look-back Depth</span></div><div class="cb" style="padding:0"><table class="ft" id="tCmp"></table></div></div>
+  <div class="note"><strong>Reading the comparison:</strong> these are three different checkpoints, not the same people measured repeatedly &mdash; each row compares separate cohorts at different tenure depths. Factors present in only one survey (Organizational Alignment at 30-day; Communication and Professional Development at 60/90-day) show a dash where not asked.</div>
+</section>
+
+<!-- MANAGERS -->
+<section id="mgr" class="sec">
+  <div class="slab">90 Days Back &mdash; By Manager</div>
+  <div class="note"><strong>Scope:</strong> 90-Day survey spread by manager (company-wide n=502, Overall 83.3%). Shown for managers with <strong>n &ge; 5</strong> responses to keep readings meaningful and protect individual confidentiality. Sorted lowest to highest on Overall.</div>
+  <div class="card full"><div class="ch"><span class="ct">90-Day Manager Scores &mdash; Overall (n &ge; 5, sorted lowest to highest)</span><span class="tag tp">% Favorable</span></div><div class="cb"><div class="chart-box" style="height:620px"><canvas id="cMgr"></canvas></div></div></div>
+  <div class="card full"><div class="ch"><span class="ct">90-Day Manager Detail &mdash; All Factors</span></div><div class="cb" style="padding:0"><table class="ft" id="tMgr"></table></div></div>
+</section>
+
+</main>
+<script>
+function show(id,el){document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});document.querySelectorAll('.tb').forEach(function(t){t.classList.remove('on');});document.getElementById(id).classList.add('on');el.classList.add('on');}
+if(typeof Chart!=='undefined'&&typeof ChartDataLabels!=='undefined'){Chart.register(ChartDataLabels);}
+
+var GREEN='#1D9E75',BLUE='#2563EB',PURPLE='#7C3AED',AMBER='#E09B2F',RED='#D85A30',NAVY='#1D3557',G200='#dde1ea';
+
+/* [factor, %score, responses, fav%, neu%, unf%] — cell-verified from uploaded All-Results files */
+var D30=[['Overall',85.8,618,86,11,3],['Onboarding Experience',86.4,613,86,9,5],['Team & Culture',87.5,618,88,8,4],['Organizational Alignment',85.2,613,85,11,4],['Job Satisfaction',79.9,612,80,13,7]];
+var D60=[['Overall',84.6,545,85,12,3],['Team & Culture',87.1,549,87,9,4],['Job Satisfaction',79.3,545,79,15,6],['Onboarding Experience',78.6,548,79,13,8],['Professional Development',78.2,537,78,16,6],['Communication',75.9,546,76,15,9]];
+var D90=[['Overall',83.3,498,83,13,4],['Job Satisfaction',83.1,496,83,11,6],['Team & Culture',80.9,498,81,12,7],['Professional Development',78.6,491,79,15,6],['Onboarding Experience',78.2,495,78,14,8],['Communication',76.6,495,77,13,10]];
+/* Onboarding Checklist gaps — % who said item NOT yet covered. [item, count, pct] — from Multiple Choice sheets */
+var CL30=[['1:1 w/ Leadership',154,50],['Know Who Leadership Is',116,38],['Assigned Help',113,37],['Tools/Software',108,35],['Intro to Team',109,35],['Building Access',89,29],['Work Email',86,28]];
+var CL60=[['1:1 w/ Leadership',136,52],['Tools/Software',98,38],['Intro to Team',91,35],['Know Who Leadership Is',90,34],['Building Access',80,31],['Work Email',74,28]];
+var CL90=[['1:1 w/ Leadership',140,63],['Tools/Software',107,48],['Intro to Team',101,45],['Know Who Leadership Is',96,43],['Building Access',91,41],['Work Email',86,38]];
+/* 1:1 + leadership favorability by depth: [depth, gapCount, gapPct, commFromLeader, leaderAccessible, devGoalsDiscussed] */
+var ONE=[['30 Days Back (Sep 1)',154,50,null,null,null],
+         ['60 Days Back (Aug 2)',136,52,75.8,79.9,55.5],
+         ['90 Days Back (Jul 3)',140,63,75.5,79.3,63.2]];
+
+var MGR=[["Denise Solla",7,100.0,98.0,95.2,100.0,91.4,95.2],["Evona Hoover",6,100.0,92.9,77.8,100.0,90.0,100.0],["Nicole Harrison",6,100.0,85.7,100.0,100.0,83.3,88.9],["Amneris Coreano",5,100.0,82.9,86.7,100.0,96.0,93.3],["Michael Schultz",10,97.5,95.7,96.7,96.7,88.0,96.7],["Azadrian Collier",9,97.2,93.7,100.0,100.0,95.6,100.0],["Renata Phillip",6,91.7,95.2,100.0,100.0,96.7,88.9],["Vicky Antigua",9,88.9,81.0,88.9,85.2,77.8,81.5],["Patti VanVleck",6,87.5,85.7,61.1,88.9,86.7,83.3],["Cassandra King",9,86.1,79.4,85.2,85.2,64.4,81.5],["Elizabeth Godsey",6,83.3,57.1,50.0,61.1,56.0,66.7],["Natasha Doby",6,83.3,83.3,83.3,83.3,76.7,83.3],["Yanderi Soto",6,83.3,81.0,72.2,83.3,66.7,77.8],["Alexah Torres",8,81.2,69.6,70.8,66.7,87.5,75.0],["Mayar Lampkin",8,81.2,69.6,50.0,66.7,80.0,83.3],["Taraphanie Gayot",8,81.2,80.4,87.5,87.5,72.5,70.8],["Alisha Rither",5,80.0,82.1,80.0,86.7,88.0,83.3],["Andrew Schumacher",12,79.2,73.8,69.4,66.7,56.7,80.6],["Anquesha Brooks",13,75.0,61.5,61.5,71.8,73.8,69.2],["Arthur Viley",8,75.0,66.1,58.3,83.3,75.0,87.5],["Kaitlin Choate",6,75.0,78.6,60.0,61.1,66.7,72.2],["Renata McGovern",7,64.3,63.3,42.9,71.4,71.4,61.9],["Maria Maltsberger",6,62.5,69.0,72.2,66.7,66.7,66.7],["Santiago Murillo Castro",8,60.7,44.6,54.2,66.7,52.5,58.3],["Traci Townsend",9,52.8,60.3,59.3,66.7,62.2,63.0]];
+
+/* ---- chart helpers (same pattern as Wave 6 dashboard) ---- */
+function mkLine(id,labels,datasets,yMin,yMax){
+  var el=document.getElementById(id);if(!el||typeof Chart==='undefined')return;
+  new Chart(el,{type:'line',data:{labels:labels,datasets:datasets},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{datalabels:{display:true,color:function(ctx){return ctx.dataset.borderColor;},font:{weight:'700',size:10},formatter:function(v){return v?v.toFixed(1)+'%':null;},anchor:'top',align:'top',offset:4},legend:{position:'bottom',labels:{boxWidth:10,font:{size:10.5}}}},
+    scales:{x:{ticks:{font:{size:10.5}},grid:{display:false}},y:{min:yMin||50,max:yMax||100,ticks:{callback:function(v){return v+'%';},font:{size:11}},grid:{color:'rgba(0,0,0,.05)'}}}}});
+}
+function mkBar(id,labels,datasets,opts){
+  var el=document.getElementById(id);if(!el||typeof Chart==='undefined')return;
+  opts=opts||{};
+  new Chart(el,{type:'bar',data:{labels:labels,datasets:datasets},options:{responsive:true,maintainAspectRatio:false,indexAxis:opts.h?'y':'x',
+    plugins:{datalabels:{display:opts.dl!==false,color:opts.dlc||'#fff',font:{weight:'700',size:opts.dls||10},formatter:function(v){return v!=null?(opts.pct?Math.round(v)+'%':v):null;},anchor:'center',align:'center'},legend:{display:opts.leg!==false,position:'bottom',labels:{boxWidth:10,font:{size:10.5}}}},
+    scales:opts.h
+      ? {x:{stacked:opts.st||false,min:opts.ym,max:opts.yM,ticks:{callback:function(v){return opts.pct?v+'%':v;},font:{size:opts.xs||10.5}},grid:{color:'rgba(0,0,0,.05)'}},
+         y:{stacked:opts.st||false,ticks:{font:{size:opts.ys||10.5}},grid:{display:false}}}
+      : {x:{stacked:opts.st||false,ticks:{font:{size:opts.xs||10.5},maxRotation:opts.xr||0},grid:{display:false}},
+         y:{stacked:opts.st||false,min:opts.ym,max:opts.yM,ticks:{callback:function(v){return opts.pct?v+'%':v;},font:{size:opts.ys||11}},grid:{color:'rgba(0,0,0,.05)'}}}
+  }});
+}
+
+/* ---- Overview charts ---- */
+var DEPTHS=['30 Days Back (Sep 1)','60 Days Back (Aug 2)','90 Days Back (Jul 3)'];
+mkBar('cOv',DEPTHS,[{label:'Overall % Favorable',data:[85.8,84.6,83.3],backgroundColor:[GREEN,BLUE,PURPLE],borderRadius:4}],{pct:true,ym:70,yM:100,dls:12,leg:false});
+mkBar('cResp',DEPTHS,[
+  {label:'Responses',data:[618,549,502],backgroundColor:NAVY,borderRadius:4},
+  {label:'Invited',data:[1575,1588,1520],backgroundColor:G200,borderRadius:4,datalabels:{color:'#4b5568'}}
+],{dls:10});
+mkBar('cMix',DEPTHS,[
+  {label:'Favorable',data:[86,85,83],backgroundColor:GREEN,borderRadius:2},
+  {label:'Neutral',data:[11,12,13],backgroundColor:G200,borderRadius:2,datalabels:{color:'#4b5568'}},
+  {label:'Unfavorable',data:[3,3,4],backgroundColor:RED,borderRadius:2}
+],{st:true,pct:true,h:true,dls:10});
+
+/* ---- per-depth factor charts ---- */
+function factorBar(id,rows,color,tagColor){
+  mkBar(id,rows.map(function(r){return r[0];}),[{label:'% Favorable',data:rows.map(function(r){return r[1];}),backgroundColor:rows.map(function(r){return r[1]>=85?color:r[1]>=78?AMBER:RED;}),borderRadius:4}],{pct:true,ym:60,yM:100,dls:11,leg:false,xs:10.5});
+}
+factorBar('c30',D30,GREEN);
+factorBar('c60',D60,BLUE);
+factorBar('c90',D90,PURPLE);
+
+/* ---- comparison chart: shared factors ---- */
+var SHARED=['Overall','Onboarding Experience','Team & Culture','Job Satisfaction'];
+function look(rows,f){for(var i=0;i<rows.length;i++){if(rows[i][0]===f)return rows[i][1];}return null;}
+mkBar('cCmp',SHARED,[
+  {label:'30 Days Back',data:SHARED.map(function(f){return look(D30,f);}),backgroundColor:GREEN,borderRadius:4},
+  {label:'60 Days Back',data:SHARED.map(function(f){return look(D60,f);}),backgroundColor:BLUE,borderRadius:4},
+  {label:'90 Days Back',data:SHARED.map(function(f){return look(D90,f);}),backgroundColor:PURPLE,borderRadius:4}
+],{pct:true,ym:60,yM:100,dls:10});
+
+/* ---- tables ---- */
+function pillFor(v){var c=v>=85?'pg2':v>=78?'pa':'pr';return '<span class="pill '+c+'">'+v.toFixed(1)+'%</span>';}
+function mix(f,n,u){
+  return '<span style="display:inline-flex;height:8px;width:110px;border-radius:3px;overflow:hidden;border:1px solid '+G200+';vertical-align:middle">'+
+    '<i style="display:block;height:100%;width:'+f+'%;background:'+GREEN+'"></i>'+
+    '<i style="display:block;height:100%;width:'+n+'%;background:'+G200+'"></i>'+
+    '<i style="display:block;height:100%;width:'+u+'%;background:'+RED+'"></i></span>'+
+    '<span style="font-size:10.5px;color:#8b93a7">&nbsp; '+f+' / '+n+' / '+u+'</span>';
+}
+function detailTbl(id,rows){
+  var h='<thead><tr><th>Factor</th><th class="r">% Favorable</th><th class="r">Responses</th><th>Favorable / Neutral / Unfavorable</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    h+='<tr><td><strong>'+r[0]+'</strong></td><td class="r">'+pillFor(r[1])+'</td>'+
+       '<td class="r" style="color:#1D3557;font-weight:700;font-size:11px">'+r[2]+'</td><td>'+mix(r[3],r[4],r[5])+'</td></tr>';
+  });
+  document.getElementById(id).innerHTML=h+'</tbody>';
+}
+detailTbl('t30',D30);detailTbl('t60',D60);detailTbl('t90',D90);
+
+(function(){
+  var facs=['Overall','Onboarding Experience','Team & Culture','Job Satisfaction','Communication','Professional Development','Organizational Alignment'];
+  var h='<thead><tr><th>Factor</th><th class="r">30 Days Back</th><th class="r">60 Days Back</th><th class="r">90 Days Back</th><th class="r">Spread</th></tr></thead><tbody>';
+  facs.forEach(function(f){
+    var a=look(D30,f),b=look(D60,f),c=look(D90,f);
+    var vals=[a,b,c].filter(function(v){return v!=null;});
+    var spread=vals.length>1?(Math.max.apply(null,vals)-Math.min.apply(null,vals)).toFixed(1)+' pts':'&mdash;';
+    function cell(v){return v==null?'<span style="color:#8b93a7">&mdash;</span>':pillFor(v);}
+    h+='<tr><td><strong>'+f+'</strong></td><td class="r">'+cell(a)+'</td><td class="r">'+cell(b)+'</td><td class="r">'+cell(c)+'</td>'+
+       '<td class="r" style="font-size:11px;color:#4b5568">'+spread+'</td></tr>';
+  });
+  document.getElementById('tCmp').innerHTML=h+'</tbody>';
+})();
+
+/* ---- 1:1 gap charts ---- */
+mkBar('c1on1',DEPTHS,[{label:'% reporting no quality 1:1',data:[50,52,63],backgroundColor:[AMBER,AMBER,RED],borderRadius:4}],{pct:true,ym:0,yM:80,dls:12,leg:false});
+mkBar('cOne1',DEPTHS,[{label:'% reporting no quality 1:1',data:[50,52,63],backgroundColor:[AMBER,AMBER,RED],borderRadius:4}],{pct:true,ym:0,yM:80,dls:12,leg:false});
+mkBar('cOne2',DEPTHS,[{label:'People reporting the gap',data:[154,136,140],backgroundColor:RED,borderRadius:4}],{ym:0,yM:180,dls:12,leg:false});
+
+/* per-depth checklist charts: % and counts, 1:1 highlighted */
+function clCharts(pctId,cntId,rows){
+  var labels=rows.map(function(r){return r[0];});
+  mkBar(pctId,labels,[{label:'% not yet covered',data:rows.map(function(r){return r[2];}),
+    backgroundColor:rows.map(function(r){return r[0].indexOf('1:1')===0?RED:G200;}),
+    datalabels:{color:function(ctx){return ctx.dataIndex===0?'#fff':'#4b5568';}},borderRadius:4}],
+    {h:true,pct:true,ym:0,yM:80,dls:10,leg:false,ys:10});
+  mkBar(cntId,labels,[{label:'People affected',data:rows.map(function(r){return r[1];}),
+    backgroundColor:rows.map(function(r){return r[0].indexOf('1:1')===0?NAVY:G200;}),
+    datalabels:{color:function(ctx){return ctx.dataIndex===0?'#fff':'#4b5568';}},borderRadius:4}],
+    {h:true,ym:0,dls:10,leg:false,ys:10});
+}
+clCharts('cl30','cn30',CL30);
+clCharts('cl60','cn60',CL60);
+clCharts('cl90','cn90',CL90);
+
+/* all checklist gaps x depth */
+(function(){
+  var items=['1:1 w/ Leadership','Tools/Software','Intro to Team','Know Who Leadership Is','Building Access','Work Email'];
+  function g(rows,it){for(var i=0;i<rows.length;i++){if(rows[i][0]===it)return rows[i][2];}return null;}
+  mkBar('cClAll',items,[
+    {label:'30 Days Back',data:items.map(function(i){return g(CL30,i);}),backgroundColor:GREEN,borderRadius:4},
+    {label:'60 Days Back',data:items.map(function(i){return g(CL60,i);}),backgroundColor:BLUE,borderRadius:4},
+    {label:'90 Days Back',data:items.map(function(i){return g(CL90,i);}),backgroundColor:PURPLE,borderRadius:4}
+  ],{pct:true,ym:0,yM:80,dls:9,xs:9.5,xr:20});
+})();
+
+/* 1:1 & leadership detail table */
+(function(){
+  function gp(v){if(v==null)return '<span style="color:#8b93a7">not asked</span>';var c=v>=85?'pg2':v>=78?'pa':'pr';return '<span class="pill '+c+'">'+v.toFixed(1)+'%</span>';}
+  var h='<thead><tr><th>Look-back Depth</th><th class="r">No Quality 1:1 &mdash; People</th><th class="r">No Quality 1:1 &mdash; %</th>'+
+        '<th class="r">Comms Clear from Leader</th><th class="r">Leader Accessible</th><th class="r">Dev Goals Discussed</th></tr></thead><tbody>';
+  ONE.forEach(function(r){
+    var gapCls=r[2]>=60?'pr':'pa';
+    h+='<tr><td><strong>'+r[0]+'</strong></td>'+
+       '<td class="r" style="color:#1D3557;font-weight:700;font-size:11px">'+r[1]+'</td>'+
+       '<td class="r"><span class="pill '+gapCls+'">'+r[2]+'%</span></td>'+
+       '<td class="r">'+gp(r[3])+'</td><td class="r">'+gp(r[4])+'</td><td class="r">'+gp(r[5])+'</td></tr>';
+  });
+  document.getElementById('tOne').innerHTML=h+'</tbody>';
+})();
+
+/* ---- manager chart + table ---- */
+(function(){
+  var s=MGR.slice().sort(function(a,b){return a[2]-b[2];});
+  mkBar('cMgr',s.map(function(m){return m[0]+' (n='+m[1]+')';}),
+    [{label:'Overall % Favorable',data:s.map(function(m){return m[2];}),backgroundColor:s.map(function(m){return m[2]>=85?GREEN:m[2]>=70?AMBER:RED;}),borderRadius:4}],
+    {h:true,pct:true,ym:0,yM:100,dls:10,leg:false,ys:10.5});
+  var h='<thead><tr><th>Manager</th><th class="r">Responses</th><th class="r">Overall</th><th class="r">Onboarding Exp.</th><th class="r">Communication</th><th class="r">Job Sat.</th><th class="r">Prof. Dev.</th><th class="r">Team &amp; Culture</th></tr></thead><tbody>';
+  s.forEach(function(m){
+    h+='<tr><td><strong>'+m[0]+'</strong></td><td class="r" style="color:#1D3557;font-weight:700;font-size:11px">'+m[1]+'</td>';
+    for(var i=2;i<8;i++){h+='<td class="r">'+pillFor(m[i])+'</td>';}
+    h+='</tr>';
+  });
+  document.getElementById('tMgr').innerHTML=h+'</tbody>';
+})();
+</script>
+</body>
+</html>
