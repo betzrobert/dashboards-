@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AssistRx TA — 2026 New Hire Retention Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+ --teal:#007178; --teal2:#00ae9a; --navy:#093e52; --ice:#ade2e3; --gold:#ffc629;
+ --ink:#414042; --g2:#D9D9D9; --g1:#F2F2F2; --white:#fff;
+ --good:#00ae9a; --warn:#ffc629; --bad:#c14b3a;
+ --shadow:0 1px 3px rgba(9,62,82,.08),0 8px 24px rgba(9,62,82,.06);
+}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--g1);color:var(--ink);
+ -webkit-font-smoothing:antialiased;font-size:14px;line-height:1.45}
+.wrap{max-width:1360px;margin:0 auto;padding:0 28px 72px}
+
+/* ---------- header ---------- */
+header{background:linear-gradient(135deg,var(--navy) 0%,var(--teal) 62%,#00868d 100%);color:#fff;padding:0;
+ box-shadow:var(--shadow);position:relative;overflow:hidden}
+header:after{content:"";position:absolute;right:-90px;top:-120px;width:420px;height:420px;border-radius:50%;
+ background:radial-gradient(circle,rgba(173,226,227,.22),transparent 68%)}
+.hdr{max-width:1360px;margin:0 auto;padding:34px 28px 66px;position:relative;z-index:2;text-align:center}
+.logo{height:48px;display:block;margin:0 auto 20px}
+h1{font-size:28px;font-weight:700;letter-spacing:-.4px;line-height:1.15}
+.sub{color:var(--ice);font-size:13.5px;margin:9px auto 0;max-width:720px}
+.meta{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 22px;margin-top:18px;
+ font-size:11.5px;color:var(--ice);letter-spacing:.2px}
+.meta b{color:#fff;font-weight:700}
+.src{font-size:11px;color:rgba(173,226,227,.72);margin-top:7px}
+.conf{display:inline-block;margin-top:16px;border:1px solid rgba(173,226,227,.45);border-radius:3px;
+ padding:5px 12px;font-size:10px;letter-spacing:1.3px;color:var(--ice);font-weight:700}
+
+/* ---------- kpi ---------- */
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin:-34px 0 26px;position:relative;z-index:5}
+.kpi{background:#fff;border-radius:8px;padding:16px 16px 14px;box-shadow:var(--shadow);border-top:3px solid var(--teal2)}
+.kpi.hero{border-top-color:var(--gold);grid-column:span 2;background:linear-gradient(160deg,#fff,#f6fcfc)}
+.kpi .lbl{font-size:10.5px;letter-spacing:1.1px;text-transform:uppercase;color:#7b8a8c;font-weight:700}
+.kpi .val{font-size:31px;font-weight:700;color:var(--navy);letter-spacing:-1px;margin-top:5px;line-height:1}
+.kpi.hero .val{font-size:46px;color:var(--teal)}
+.kpi .note{font-size:11.5px;color:#7b8a8c;margin-top:5px;background:none;border:0;padding:0;border-radius:0}
+.kpi .note b{color:var(--ink);display:inline;font-size:inherit;margin:0}
+
+/* ---------- layout ---------- */
+.card{background:#fff;border-radius:8px;box-shadow:var(--shadow);padding:22px 24px;margin-bottom:20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid2>.card,.grid3>.card{margin-bottom:0}
+h2{font-size:16.5px;color:var(--navy);font-weight:700;letter-spacing:-.2px;display:flex;align-items:center;gap:10px}
+h2:before{content:"";width:4px;height:17px;background:var(--teal2);border-radius:2px;flex:none}
+h3{font-size:13px;color:var(--navy);font-weight:700;margin-bottom:10px}
+.hint{font-size:11.5px;color:#8b9799;margin:6px 0 16px;line-height:1.5}
+.sechead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+
+/* ---------- tables ---------- */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:10.5px;letter-spacing:.7px;text-transform:uppercase;color:#7b8a8c;
+ font-weight:700;padding:0 10px 9px;border-bottom:2px solid var(--g2);white-space:nowrap}
+th.n,td.n{text-align:right}
+th.s{cursor:pointer;user-select:none}
+th.s:hover{color:var(--teal)}
+th.s:after{content:"⇅";opacity:.32;margin-left:4px;font-size:10px}
+th.s.asc:after{content:"↑";opacity:1;color:var(--teal)}
+th.s.desc:after{content:"↓";opacity:1;color:var(--teal)}
+td{padding:9px 10px;border-bottom:1px solid var(--g1);vertical-align:middle}
+tbody tr:hover{background:#f7fcfc}
+tr.tot{background:var(--g1);font-weight:700}
+tr.tot td{border-bottom:none;color:var(--navy)}
+.who{font-weight:700;color:var(--navy)}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:9px;font-weight:700;letter-spacing:.3px}
+.tag.core{background:#e2f4f4;color:var(--teal)}
+.tag.con{background:#fff4d4;color:#9a6c00}
+.tag.vol{background:#e2f4f4;color:#00747c}
+.tag.inv{background:#fbe6e2;color:#a83d2d}
+.bar{position:relative;height:8px;background:var(--g1);border-radius:5px;overflow:hidden;min-width:110px}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:5px;display:block}
+.pct{font-weight:700;font-size:13.5px;min-width:46px;display:inline-block;text-align:right}
+.retcell{display:flex;align-items:center;gap:11px;justify-content:flex-end}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.mut{color:#9aa5a7}
+
+/* ---------- charts ---------- */
+.hbars{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.hrow{display:grid;grid-template-columns:150px 1fr 62px;align-items:center;gap:12px;font-size:12.5px}
+.hrow .hl{color:var(--navy);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hrow .hv{text-align:right;font-weight:700;color:var(--navy)}
+.htrack{height:18px;background:var(--g1);border-radius:3px;overflow:hidden;display:flex}
+.htrack i{display:block;height:100%}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:#7b8a8c;margin-top:14px}
+.legend span{display:flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;border-radius:2px;flex:none}
+svg{display:block;width:100%;height:auto;overflow:visible}
+
+/* ---------- controls ---------- */
+.ctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.seg{display:inline-flex;background:var(--g1);border-radius:6px;padding:3px}
+.seg button{border:0;background:transparent;font:inherit;font-size:12.5px;font-weight:700;color:#7b8a8c;
+ padding:7px 15px;border-radius:4px;cursor:pointer;transition:.15s}
+.seg button.on{background:var(--teal);color:#fff;box-shadow:0 1px 3px rgba(0,113,120,.35)}
+input[type=search],select{font:inherit;font-size:13px;padding:8px 11px;border:1px solid var(--g2);
+ border-radius:6px;background:#fff;color:var(--ink);outline:none}
+input[type=search]{min-width:230px}
+input[type=search]:focus,select:focus{border-color:var(--teal2);box-shadow:0 0 0 3px rgba(0,174,154,.14)}
+.count{font-size:12px;color:#8b9799;margin-left:auto}
+.scroll{max-height:520px;overflow-y:auto;margin:0 -24px;padding:0 24px}
+.scroll thead th{position:sticky;top:0;background:#fff;z-index:2}
+
+/* ---------- callouts ---------- */
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:6px}
+.callout{background:var(--g1);border-left:3px solid var(--teal2);border-radius:0 6px 6px 0;padding:13px 15px}
+.callout.gold{border-left-color:var(--gold)}
+.callout.red{border-left-color:var(--bad)}
+.callout b{color:var(--navy);display:block;font-size:12.5px;margin-bottom:4px}
+.callout p{font-size:12px;color:#5f6b6d;line-height:1.5}
+footer{text-align:center;font-size:11.5px;color:#9aa5a7;padding:26px 0 0;line-height:1.7}
+footer b{color:#7b8a8c}
+@media(max-width:1180px){.kpis{grid-template-columns:repeat(4,1fr)}.kpi.hero{grid-column:span 4}
+ .grid3{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.kpi.hero{grid-column:span 2}
+ .grid2,.grid3{grid-template-columns:1fr}}
+@media print{body{background:#fff}.card{break-inside:avoid;box-shadow:none;border:1px solid var(--g2)}.scroll{max-height:none}}
+</style></head><body>
+<header><div class="hdr">
+<img class="logo" src="data:image/png;base64,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" alt="AssistRx">
+<h1>Talent Acquisition Performance &mdash; September 2026 and Q1&ndash;Q3</h1>
+<div class="sub">Requisitions closed, speed to fill, and what happened to the people hired &mdash; every 2026 placement from the
+TA Recruiting Tracker, joined to the active employee roster and the 2026 termination file.</div>
+<div class="meta"><span><b>Requisition data</b> through Sep 30, 2026</span>
+<span><b>Retention data</b> through Sep 15, 2026</span><span><b>Generated</b> October 05, 2026</span></div>
+<div class="src">Sources: TA Recruiting Tracker (CLOSED REQs) &middot; AssistRx YTD Hires &middot; Employee Details &middot; Term Employee Details</div>
+<div class="conf">ASSISTRX TA CONFIDENTIAL</div>
+</div></header><div class="wrap"><div class="kpis">
+<div class="kpi hero"><div class="lbl">Reqs closed &mdash; Q1 to Q3</div><div class="val">1,557</div>
+  <div class="note"><b>1,873</b> placements &middot; <b>1,057</b> new headcount, <b>772</b> backfill</div></div>
+<div class="kpi"><div class="lbl">Median time to fill</div><div class="val">28<span style="font-size:17px;font-weight:400"> d</span></div>
+  <div class="note">p75 41 d &middot; n = 1,752</div></div>
+<div class="kpi"><div class="lbl">Hit target fill date</div><div class="val" style="color:var(--teal2)">84%</div>
+  <div class="note">of 1,677 reqs with a valid target</div></div>
+<div class="kpi"><div class="lbl">New-hire retention</div><div class="val" style="color:var(--gold)">71.9%</div>
+  <div class="note"><b>728</b> of <b>1,013</b> confirmed hires</div></div>
+<div class="kpi"><div class="lbl">Open &middot; on hold</div><div class="val">207<span style="font-size:19px;color:#9aa5a7"> / 741</span></div>
+  <div class="note">reqs live &middot; reqs frozen</div></div>
+</div><div class="card"><h2>The year in three quarters</h2>
+<div class="hint">One row per metric so the trend reads left to right. <b>Headline retention</b> and <b>90-day retention</b> tell
+different stories on purpose &mdash; the headline flatters recent quarters because those hires have had less time to leave,
+while the 90-day figure asks the same question of every cohort.</div>
+<table><thead><tr><th>Metric</th><th class="n">Q1 &nbsp; Jan&ndash;Mar</th><th class="n">Q2 &nbsp; Apr&ndash;Jun</th>
+<th class="n">Q3 &nbsp; Jul&ndash;Sep</th><th>Direction</th></tr></thead><tbody><tr><td class="who">Reqs closed</td><td class="n">884</td><td class="n">432</td><td class="n">246</td><td class="mut">Volume fell away sharply after the Q1 ramp</td></tr><tr><td class="who">Placements made</td><td class="n">1,115</td><td class="n">437</td><td class="n">321</td><td class="mut">-71% Q1 to Q3 &mdash; March alone was 616</td></tr><tr><td class="who">New headcount share</td><td class="n">57%</td><td class="n">62%</td><td class="n">53%</td><td class="mut">Peaked in Q2, then shifted back toward backfill</td></tr><tr><td class="who">Median time to fill</td><td class="n">26 d</td><td class="n">31 d</td><td class="n">28 d</td><td class="mut">Held steady while volume dropped &mdash; the good news</td></tr><tr><td class="who">Hit target fill date</td><td class="n">92%</td><td class="n">72%</td><td class="n">73%</td><td class="mut">Slipped 19 points; May 61% and June 50% were worst</td></tr><tr><td class="who">Hires (TA external)</td><td class="n">609</td><td class="n">294</td><td class="n">271</td><td class="mut">External and referral hires matched to HR records</td></tr><tr><td class="who">Terminated</td><td class="n">177</td><td class="n">82</td><td class="n">35</td><td class="mut">Of those hires, how many have already left</td></tr><tr><td class="who">Headline retention</td><td class="n" style="color:var(--gold);font-weight:700">67.2%</td><td class="n" style="color:var(--gold);font-weight:700">69.4%</td><td class="n" style="color:var(--good);font-weight:700">85.0%</td><td class="mut">Rises across the year &mdash; but this is survivorship, not improvement</td></tr><tr><td class="who">90-day retention</td><td class="n" style="color:var(--good);font-weight:700">80.6%</td><td class="n" style="color:var(--teal2);font-weight:700">79.2%</td><td class="n">not yet</td><td class="mut">The comparable measure: flat near 80%. Q3 cohorts have not reached 90 days</td></tr><tr><td class="who">Internal moves</td><td class="n">1</td><td class="n">78</td><td class="n">115</td><td class="mut">Up from 1 to 115 &mdash; the org pivoted to redeployment</td></tr></tbody></table></div><div class="card"><div class="sechead"><div><h2>Placements by month, against time to fill</h2>
+<div class="hint">Teal bars are placements (left axis), the gold line is median days to fill (right axis). September is lighter
+because the month closed with only three start dates.</div></div></div>
+<svg viewBox="0 0 1280 300" role="img" aria-label="Placements by month with time to fill">
+<line x1="46" y1="197" x2="1234" y2="197" stroke="#F2F2F2"/><text x="38" y="201" font-size="10" fill="#9aa5a7" text-anchor="end">154</text><line x1="46" y1="140" x2="1234" y2="140" stroke="#F2F2F2"/><text x="38" y="144" font-size="10" fill="#9aa5a7" text-anchor="end">308</text><line x1="46" y1="83" x2="1234" y2="83" stroke="#F2F2F2"/><text x="38" y="87" font-size="10" fill="#9aa5a7" text-anchor="end">462</text><line x1="46" y1="26" x2="1234" y2="26" stroke="#F2F2F2"/><text x="38" y="30" font-size="10" fill="#9aa5a7" text-anchor="end">616</text><text x="1242" y="167" font-size="10" fill="#c98a00">20d</text><text x="1242" y="121" font-size="10" fill="#c98a00">30d</text><text x="1242" y="76" font-size="10" fill="#c98a00">40d</text><path d="M112.0,99.0 L244.0,108.1 L376.0,135.4 L508.0,112.6 L640.0,121.8 L772.0,126.3 L904.0,144.6 L1036.0,126.3 L1168.0,99.0" fill="none" stroke="#ffc629" stroke-width="2.5" stroke-linejoin="round"/><circle cx="112.0" cy="99.0" r="4.5" fill="#fff" stroke="#ffc629" stroke-width="2.5"/><circle cx="244.0" cy="108.1" r="4.5" fill="#fff" stroke="#ffc629" stroke-width="2.5"/><circle cx="376.0" cy="135.4" r="4.5" fill="#fff" stroke="#ffc629" stroke-width="2.5"/><circle cx="508.0" cy="112.6" r="4.5" fill="#fff" stroke="#ffc629" stroke-width="2.5"/><circle cx="640.0" cy="121.8" r="4.5" fill="#fff" stroke="#ffc629" stroke-width="2.5"/><circle cx="772.0" cy="126.3" r="4.5" fill="#fff" stroke="#ffc629" stroke-width="2.5"/><circle cx="904.0" cy="144.6" r="4.5" fill="#fff" stroke="#ffc629" stroke-width="2.5"/><circle cx="1036.0" cy="126.3" r="4.5" fill="#fff" stroke="#ffc629" stroke-width="2.5"/><circle cx="1168.0" cy="99.0" r="4.5" fill="#fff" stroke="#ffc629" stroke-width="2.5"/><rect x="81.6" y="200.7" width="60.7" height="53.3" rx="2" fill="#007178"/><rect x="213.6" y="122.6" width="60.7" height="131.4" rx="2" fill="#007178"/><rect x="345.6" y="26.0" width="60.7" height="228.0" rx="2" fill="#007178"/><rect x="477.6" y="169.2" width="60.7" height="84.8" rx="2" fill="#007178"/><rect x="609.6" y="214.0" width="60.7" height="40.0" rx="2" fill="#007178"/><rect x="741.6" y="217.0" width="60.7" height="37.0" rx="2" fill="#007178"/><rect x="873.6" y="224.8" width="60.7" height="29.2" rx="2" fill="#007178"/><rect x="1005.6" y="192.9" width="60.7" height="61.1" rx="2" fill="#007178"/><rect x="1137.6" y="225.5" width="60.7" height="28.5" rx="2" fill="#00ae9a"/><text x="112.0" y="193.7" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">144</text><text x="112.0" y="272" font-size="11" font-weight="bold" fill="#5f6b6d" text-anchor="middle">Jan</text><text x="112.0" y="286" font-size="9.5" fill="#9aa5a7" text-anchor="middle">80 reqs</text><text x="244.0" y="115.6" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">355</text><text x="244.0" y="272" font-size="11" font-weight="bold" fill="#5f6b6d" text-anchor="middle">Feb</text><text x="244.0" y="286" font-size="9.5" fill="#9aa5a7" text-anchor="middle">253 reqs</text><text x="376.0" y="19.0" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">616</text><text x="376.0" y="272" font-size="11" font-weight="bold" fill="#5f6b6d" text-anchor="middle">Mar</text><text x="376.0" y="286" font-size="9.5" fill="#9aa5a7" text-anchor="middle">587 reqs</text><text x="508.0" y="162.2" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">229</text><text x="508.0" y="272" font-size="11" font-weight="bold" fill="#5f6b6d" text-anchor="middle">Apr</text><text x="508.0" y="286" font-size="9.5" fill="#9aa5a7" text-anchor="middle">229 reqs</text><text x="640.0" y="207.0" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">108</text><text x="640.0" y="272" font-size="11" font-weight="bold" fill="#5f6b6d" text-anchor="middle">May</text><text x="640.0" y="286" font-size="9.5" fill="#9aa5a7" text-anchor="middle">107 reqs</text><text x="772.0" y="210.0" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">100</text><text x="772.0" y="272" font-size="11" font-weight="bold" fill="#5f6b6d" text-anchor="middle">Jun</text><text x="772.0" y="286" font-size="9.5" fill="#9aa5a7" text-anchor="middle">100 reqs</text><text x="904.0" y="217.8" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">79</text><text x="904.0" y="272" font-size="11" font-weight="bold" fill="#5f6b6d" text-anchor="middle">Jul</text><text x="904.0" y="286" font-size="9.5" fill="#9aa5a7" text-anchor="middle">75 reqs</text><text x="1036.0" y="185.9" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">165</text><text x="1036.0" y="272" font-size="11" font-weight="bold" fill="#5f6b6d" text-anchor="middle">Aug</text><text x="1036.0" y="286" font-size="9.5" fill="#9aa5a7" text-anchor="middle">160 reqs</text><text x="1168.0" y="218.5" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">77</text><text x="1168.0" y="272" font-size="11" font-weight="bold" fill="#5f6b6d" text-anchor="middle">Sep</text><text x="1168.0" y="286" font-size="9.5" fill="#9aa5a7" text-anchor="middle">16 reqs</text></svg></div><div class="card"><div class="sechead"><div><h2>By recruiter &mdash; what they filled and what stuck</h2>
+<div class="hint">Left half is requisition work from the TA tracker: placements, reqs closed, new-versus-backfill mix, median
+days to fill and the share that hit the agreed target date. Right half follows the same recruiter's own 2026 hires into
+HR data. <b>Placements</b> exceed <b>hires</b> because placements include internal moves, agency and contractor
+conversions, which the hire tracker excludes.</div></div>
+<div class="seg" id="teamseg"><button class="on" data-t="all">All 14</button><button data-t="Core">Core</button><button data-t="Contractor">Contractor</button></div></div>
+<table id="rtab"><thead><tr>
+<th class="s" data-k="0" data-type="t">Recruiter</th>
+<th class="s n" data-k="1">Placements</th><th class="s n" data-k="2">Reqs</th><th class="n">New/BF</th>
+<th class="s n" data-k="4">Days to fill</th><th class="s n" data-k="5">On target</th>
+<th class="s n" data-k="6">Hires</th><th class="s n" data-k="7">Still here</th><th class="s n" data-k="8">Termed</th>
+<th class="s n" data-k="9">Med. tenure</th><th class="s n" data-k="10">Retention</th><th class="s n" data-k="11">Unconf.</th>
+</tr></thead><tbody><tr data-team="Core"><td class="who">Donna
+<span class="tag core">Core</span></td>
+<td class="n">329</td><td class="n">243</td>
+<td class="n">212/117</td>
+<td class="n">27</td>
+<td class="n mut">86%</td>
+<td class="n">121</td>
+<td class="n" style="color:var(--teal2);font-weight:700">78</td>
+<td class="n" style="color:var(--bad);font-weight:700">28</td>
+<td class="n mut">43</td>
+<td><div class="retcell"><span class="bar"><i style="width:74%;background:var(--teal2)"></i></span>
+<span class="pct" style="color:var(--teal2)">74.3%</span></div></td>
+<td class="n mut">15</td></tr><tr data-team="Core"><td class="who">Amar
+<span class="tag core">Core</span></td>
+<td class="n">206</td><td class="n">172</td>
+<td class="n">128/71</td>
+<td class="n">33</td>
+<td class="n mut">86%</td>
+<td class="n">213</td>
+<td class="n" style="color:var(--teal2);font-weight:700">132</td>
+<td class="n" style="color:var(--bad);font-weight:700">42</td>
+<td class="n mut">51</td>
+<td><div class="retcell"><span class="bar"><i style="width:76%;background:var(--teal2)"></i></span>
+<span class="pct" style="color:var(--teal2)">75.9%</span></div></td>
+<td class="n mut">39</td></tr><tr data-team="Core"><td class="who">Makensie
+<span class="tag core">Core</span></td>
+<td class="n">191</td><td class="n">163</td>
+<td class="n">64/127</td>
+<td class="n">35</td>
+<td class="n mut">85%</td>
+<td class="n">165</td>
+<td class="n" style="color:var(--teal2);font-weight:700">96</td>
+<td class="n" style="color:var(--bad);font-weight:700">51</td>
+<td class="n mut">66</td>
+<td><div class="retcell"><span class="bar"><i style="width:66%;background:var(--gold)"></i></span>
+<span class="pct" style="color:var(--gold)">66.2%</span></div></td>
+<td class="n mut">18</td></tr><tr data-team="Core"><td class="who">Jake
+<span class="tag core">Core</span></td>
+<td class="n">188</td><td class="n">164</td>
+<td class="n">96/92</td>
+<td class="n">26</td>
+<td class="n mut">90%</td>
+<td class="n">143</td>
+<td class="n" style="color:var(--teal2);font-weight:700">85</td>
+<td class="n" style="color:var(--bad);font-weight:700">39</td>
+<td class="n mut">30</td>
+<td><div class="retcell"><span class="bar"><i style="width:70%;background:var(--gold)"></i></span>
+<span class="pct" style="color:var(--gold)">69.7%</span></div></td>
+<td class="n mut">19</td></tr><tr data-team="Core"><td class="who">Yolanda
+<span class="tag core">Core</span></td>
+<td class="n">171</td><td class="n">166</td>
+<td class="n">156/15</td>
+<td class="n">25</td>
+<td class="n mut">73%</td>
+<td class="n">164</td>
+<td class="n" style="color:var(--teal2);font-weight:700">104</td>
+<td class="n" style="color:var(--bad);font-weight:700">38</td>
+<td class="n mut">38</td>
+<td><div class="retcell"><span class="bar"><i style="width:73%;background:var(--teal2)"></i></span>
+<span class="pct" style="color:var(--teal2)">73.2%</span></div></td>
+<td class="n mut">22</td></tr><tr data-team="Core"><td class="who">Sabrina
+<span class="tag core">Core</span></td>
+<td class="n">162</td><td class="n">137</td>
+<td class="n">56/106</td>
+<td class="n">31</td>
+<td class="n mut">70%</td>
+<td class="n">25</td>
+<td class="n" style="color:var(--teal2);font-weight:700">21</td>
+<td class="n" style="color:var(--bad);font-weight:700">3</td>
+<td class="n mut">25</td>
+<td><div class="retcell"><span class="bar"><i style="width:88%;background:var(--good)"></i></span>
+<span class="pct" style="color:var(--good)">87.5%</span></div></td>
+<td class="n mut">1</td></tr><tr data-team="Core"><td class="who">Hailey
+<span class="tag core">Core</span></td>
+<td class="n">153</td><td class="n">104</td>
+<td class="n">56/61</td>
+<td class="n">14</td>
+<td class="n mut">80%</td>
+<td class="n">27</td>
+<td class="n" style="color:var(--teal2);font-weight:700">20</td>
+<td class="n" style="color:var(--bad);font-weight:700">4</td>
+<td class="n mut">44</td>
+<td><div class="retcell"><span class="bar"><i style="width:83%;background:var(--good)"></i></span>
+<span class="pct" style="color:var(--good)">83.3%</span></div></td>
+<td class="n mut">3</td></tr><tr data-team="Core"><td class="who">Tommy
+<span class="tag core">Core</span></td>
+<td class="n">152</td><td class="n">138</td>
+<td class="n">87/64</td>
+<td class="n">32</td>
+<td class="n mut">88%</td>
+<td class="n">126</td>
+<td class="n" style="color:var(--teal2);font-weight:700">86</td>
+<td class="n" style="color:var(--bad);font-weight:700">27</td>
+<td class="n mut">42</td>
+<td><div class="retcell"><span class="bar"><i style="width:76%;background:var(--teal2)"></i></span>
+<span class="pct" style="color:var(--teal2)">76.1%</span></div></td>
+<td class="n mut">13</td></tr><tr data-team="Core"><td class="who">John
+<span class="tag core">Core</span></td>
+<td class="n">106</td><td class="n">93</td>
+<td class="n">46/60</td>
+<td class="n">21</td>
+<td class="n mut">84%</td>
+<td class="n">19</td>
+<td class="n" style="color:var(--teal2);font-weight:700">13</td>
+<td class="n" style="color:var(--bad);font-weight:700">3</td>
+<td class="n mut">17</td>
+<td><div class="retcell"><span class="bar"><i style="width:81%;background:var(--good)"></i></span>
+<span class="pct" style="color:var(--good)">81.2%</span></div></td>
+<td class="n mut">3</td></tr><tr data-team="Contractor"><td class="who">Anissa
+<span class="tag con">Contractor</span></td>
+<td class="n">59</td><td class="n">58</td>
+<td class="n">54/5</td>
+<td class="n">19</td>
+<td class="n mut">98%</td>
+<td class="n">39</td>
+<td class="n" style="color:var(--teal2);font-weight:700">21</td>
+<td class="n" style="color:var(--bad);font-weight:700">11</td>
+<td class="n mut">23</td>
+<td><div class="retcell"><span class="bar"><i style="width:66%;background:var(--gold)"></i></span>
+<span class="pct" style="color:var(--gold)">65.6%</span></div></td>
+<td class="n mut">7</td></tr><tr data-team="Core"><td class="who">Robert
+<span class="tag core">Core</span></td>
+<td class="n">53</td><td class="n">51</td>
+<td class="n">32/21</td>
+<td class="n">35</td>
+<td class="n mut">82%</td>
+<td class="n">36</td>
+<td class="n" style="color:var(--teal2);font-weight:700">24</td>
+<td class="n" style="color:var(--bad);font-weight:700">7</td>
+<td class="n mut">96</td>
+<td><div class="retcell"><span class="bar"><i style="width:86%;background:var(--good)"></i></span>
+<span class="pct" style="color:var(--good)">85.7%</span></div></td>
+<td class="n mut">5</td></tr><tr data-team="Contractor"><td class="who">Noelle
+<span class="tag con">Contractor</span></td>
+<td class="n">45</td><td class="n">45</td>
+<td class="n">27/18</td>
+<td class="n">29</td>
+<td class="n mut">82%</td>
+<td class="n">45</td>
+<td class="n" style="color:var(--teal2);font-weight:700">19</td>
+<td class="n" style="color:var(--bad);font-weight:700">21</td>
+<td class="n mut">21</td>
+<td><div class="retcell"><span class="bar"><i style="width:48%;background:var(--bad)"></i></span>
+<span class="pct" style="color:var(--bad)">47.5%</span></div></td>
+<td class="n mut">5</td></tr><tr data-team="Contractor"><td class="who">Roshana
+<span class="tag con">Contractor</span></td>
+<td class="n">42</td><td class="n">42</td>
+<td class="n">34/8</td>
+<td class="n">31</td>
+<td class="n mut">100%</td>
+<td class="n">42</td>
+<td class="n" style="color:var(--teal2);font-weight:700">22</td>
+<td class="n" style="color:var(--bad);font-weight:700">18</td>
+<td class="n mut">46</td>
+<td><div class="retcell"><span class="bar"><i style="width:55%;background:var(--bad)"></i></span>
+<span class="pct" style="color:var(--bad)">55.0%</span></div></td>
+<td class="n mut">2</td></tr><tr data-team="Core"><td class="who">Shawn
+<span class="tag core">Core</span></td>
+<td class="n">11</td><td class="n">11</td>
+<td class="n">5/6</td>
+<td class="n">55</td>
+<td class="n mut">56%</td>
+<td class="n">9</td>
+<td class="n" style="color:var(--teal2);font-weight:700">7</td>
+<td class="n" style="color:var(--bad);font-weight:700">2</td>
+<td class="n mut">155</td>
+<td><div class="retcell"><span class="bar"><i style="width:88%;background:var(--good)"></i></span>
+<span class="pct" style="color:var(--good)">87.5%</span></div></td>
+<td class="n mut">0</td></tr></tbody></table>
+<div class="legend"><span><i class="sw" style="background:var(--good)"></i>&ge;80%</span>
+<span><i class="sw" style="background:var(--teal2)"></i>72&ndash;79%</span>
+<span><i class="sw" style="background:var(--gold)"></i>62&ndash;71%</span>
+<span><i class="sw" style="background:var(--bad)"></i>&lt;62%</span>
+<span class="mut">Click any column header to sort</span></div></div><div class="grid2"><div class="card"><h2>September in detail</h2>
+<div class="hint">77 placements landing on three start dates &mdash; Sep 8 (5), Sep 14 (55) and Sep 28 (17).
+38 new headcount against 33 backfill, median 34 days to fill.</div>
+<div class="hbars"><div class="hrow" style="grid-template-columns:186px 1fr 86px">
+<div class="hl" title="Patient Access Specialist">Patient Access Specialist</div>
+<div class="htrack"><i style="width:100.0%;background:var(--teal)"></i></div>
+<div class="hv">31</div></div><div class="hrow" style="grid-template-columns:186px 1fr 86px">
+<div class="hl" title="Customer Service Representative">Customer Service Representative</div>
+<div class="htrack"><i style="width:48.4%;background:var(--teal)"></i></div>
+<div class="hv">15</div></div><div class="hrow" style="grid-template-columns:186px 1fr 86px">
+<div class="hl" title="Academy Associate">Academy Associate</div>
+<div class="htrack"><i style="width:35.5%;background:var(--teal)"></i></div>
+<div class="hv">11</div></div><div class="hrow" style="grid-template-columns:186px 1fr 86px">
+<div class="hl" title="Pharmacy Technician">Pharmacy Technician</div>
+<div class="htrack"><i style="width:22.6%;background:var(--teal)"></i></div>
+<div class="hv">7</div></div><div class="hrow" style="grid-template-columns:186px 1fr 86px">
+<div class="hl" title="Pharmacy Patient Care Coordinator">Pharmacy Patient Care Coordinator</div>
+<div class="htrack"><i style="width:16.1%;background:var(--teal)"></i></div>
+<div class="hv">5</div></div><div class="hrow" style="grid-template-columns:186px 1fr 86px">
+<div class="hl" title="Bilingual Pharmacy Patient Care Co">Bilingual Pharmacy Patient Care Co</div>
+<div class="htrack"><i style="width:3.2%;background:var(--teal)"></i></div>
+<div class="hv">1</div></div><div class="hrow" style="grid-template-columns:186px 1fr 86px">
+<div class="hl" title="Bilingual Call Center Nurse">Bilingual Call Center Nurse</div>
+<div class="htrack"><i style="width:3.2%;background:var(--teal)"></i></div>
+<div class="hv">1</div></div></div>
+<div class="legend"><span style="color:var(--bad)"><b>Only 16 of 77 September rows carry a REQ number</b>
+&mdash; current-month entry lag, so September req counts are understated.</span></div></div><div class="card"><h2>How long a req stays open</h2>
+<div class="hint">Days from req input date to the hire's start date, across all 1,752 2026 placements with both
+dates. Median 28 days, but a long tail: 174 reqs took more than 60 days.</div>
+<div class="hbars"><div class="hrow" style="grid-template-columns:110px 1fr 86px">
+<div class="hl" title="0–14 d">0–14 d</div>
+<div class="htrack"><i style="width:71.2%;background:var(--teal2)"></i></div>
+<div class="hv">301  <span class='mut' style='font-weight:400'>17%</span></div></div><div class="hrow" style="grid-template-columns:110px 1fr 86px">
+<div class="hl" title="15–21 d">15–21 d</div>
+<div class="htrack"><i style="width:65.5%;background:var(--teal2)"></i></div>
+<div class="hv">277  <span class='mut' style='font-weight:400'>16%</span></div></div><div class="hrow" style="grid-template-columns:110px 1fr 86px">
+<div class="hl" title="22–30 d">22–30 d</div>
+<div class="htrack"><i style="width:86.8%;background:var(--teal2)"></i></div>
+<div class="hv">367  <span class='mut' style='font-weight:400'>21%</span></div></div><div class="hrow" style="grid-template-columns:110px 1fr 86px">
+<div class="hl" title="31–45 d">31–45 d</div>
+<div class="htrack"><i style="width:100.0%;background:var(--teal2)"></i></div>
+<div class="hv">423  <span class='mut' style='font-weight:400'>24%</span></div></div><div class="hrow" style="grid-template-columns:110px 1fr 86px">
+<div class="hl" title="46–60 d">46–60 d</div>
+<div class="htrack"><i style="width:49.6%;background:var(--teal2)"></i></div>
+<div class="hv">210  <span class='mut' style='font-weight:400'>12%</span></div></div><div class="hrow" style="grid-template-columns:110px 1fr 86px">
+<div class="hl" title="61–90 d">61–90 d</div>
+<div class="htrack"><i style="width:26.7%;background:var(--bad)"></i></div>
+<div class="hv">113  <span class='mut' style='font-weight:400'>6%</span></div></div><div class="hrow" style="grid-template-columns:110px 1fr 86px">
+<div class="hl" title="90+ d">90+ d</div>
+<div class="htrack"><i style="width:14.4%;background:var(--bad)"></i></div>
+<div class="hv">61  <span class='mut' style='font-weight:400'>3%</span></div></div></div>
+</div></div><div class="grid3"><div class="card"><h2>Where placements came from</h2>
+<div class="hint">All 1,873 2026 placements. Only the external, referral and unspecified rows appear on the TA hire tracker.</div>
+<div class="hbars"><div class="hrow" style="grid-template-columns:140px 1fr 86px">
+<div class="hl" title="External">External</div>
+<div class="htrack"><i style="width:100.0%;background:var(--teal)"></i></div>
+<div class="hv">895  <span class='mut' style='font-weight:400'>48%</span></div></div><div class="hrow" style="grid-template-columns:140px 1fr 86px">
+<div class="hl" title="Internal / transfer">Internal / transfer</div>
+<div class="htrack"><i style="width:35.1%;background:var(--teal2)"></i></div>
+<div class="hv">314  <span class='mut' style='font-weight:400'>17%</span></div></div><div class="hrow" style="grid-template-columns:140px 1fr 86px">
+<div class="hl" title="Agency">Agency</div>
+<div class="htrack"><i style="width:22.1%;background:var(--teal2)"></i></div>
+<div class="hv">198  <span class='mut' style='font-weight:400'>11%</span></div></div><div class="hrow" style="grid-template-columns:140px 1fr 86px">
+<div class="hl" title="Referral">Referral</div>
+<div class="htrack"><i style="width:21.2%;background:var(--teal)"></i></div>
+<div class="hv">190  <span class='mut' style='font-weight:400'>10%</span></div></div><div class="hrow" style="grid-template-columns:140px 1fr 86px">
+<div class="hl" title="Other">Other</div>
+<div class="htrack"><i style="width:9.5%;background:var(--teal2)"></i></div>
+<div class="hv">85  <span class='mut' style='font-weight:400'>5%</span></div></div><div class="hrow" style="grid-template-columns:140px 1fr 86px">
+<div class="hl" title="Contractor conversion">Contractor conversion</div>
+<div class="htrack"><i style="width:8.2%;background:var(--teal2)"></i></div>
+<div class="hv">73  <span class='mut' style='font-weight:400'>4%</span></div></div><div class="hrow" style="grid-template-columns:140px 1fr 86px">
+<div class="hl" title="Contractor">Contractor</div>
+<div class="htrack"><i style="width:7.9%;background:var(--teal2)"></i></div>
+<div class="hv">71  <span class='mut' style='font-weight:400'>4%</span></div></div><div class="hrow" style="grid-template-columns:140px 1fr 86px">
+<div class="hl" title="Unspecified">Unspecified</div>
+<div class="htrack"><i style="width:5.3%;background:var(--teal2)"></i></div>
+<div class="hv">47  <span class='mut' style='font-weight:400'>3%</span></div></div></div></div><div class="card"><h2>Placements by site</h2>
+<div class="hint">With median days to fill for each.</div>
+<div class="hbars"><div class="hrow" style="grid-template-columns:130px 1fr 86px">
+<div class="hl" title="Remote">Remote</div>
+<div class="htrack"><i style="width:100.0%;background:var(--teal)"></i></div>
+<div class="hv">484  <span class='mut' style='font-weight:400'>27d</span></div></div><div class="hrow" style="grid-template-columns:130px 1fr 86px">
+<div class="hl" title="Southpark Orlando">Southpark Orlando</div>
+<div class="htrack"><i style="width:90.3%;background:var(--teal)"></i></div>
+<div class="hv">437  <span class='mut' style='font-weight:400'>26d</span></div></div><div class="hrow" style="grid-template-columns:130px 1fr 86px">
+<div class="hl" title="Maitland">Maitland</div>
+<div class="htrack"><i style="width:69.4%;background:var(--teal)"></i></div>
+<div class="hv">336  <span class='mut' style='font-weight:400'>32d</span></div></div><div class="hrow" style="grid-template-columns:130px 1fr 86px">
+<div class="hl" title="Overland Park">Overland Park</div>
+<div class="htrack"><i style="width:52.5%;background:var(--teal)"></i></div>
+<div class="hv">254  <span class='mut' style='font-weight:400'>33d</span></div></div><div class="hrow" style="grid-template-columns:130px 1fr 86px">
+<div class="hl" title="CoAssist">CoAssist</div>
+<div class="htrack"><i style="width:43.2%;background:var(--teal)"></i></div>
+<div class="hv">209  <span class='mut' style='font-weight:400'>28d</span></div></div><div class="hrow" style="grid-template-columns:130px 1fr 86px">
+<div class="hl" title="Arizona Tempe">Arizona Tempe</div>
+<div class="htrack"><i style="width:24.4%;background:var(--teal)"></i></div>
+<div class="hv">118  <span class='mut' style='font-weight:400'>28d</span></div></div></div></div><div class="card"><h2>Open req aging</h2>
+<div class="hint">207 open reqs, but only 55 carry an input date &mdash;
+so treat this shape as indicative. Median age 28 days, p75 64.</div>
+<div class="hbars"><div class="hrow" style="grid-template-columns:92px 1fr 86px">
+<div class="hl" title="0–30 d">0–30 d</div>
+<div class="htrack"><i style="width:100.0%;background:var(--teal2)"></i></div>
+<div class="hv">29</div></div><div class="hrow" style="grid-template-columns:92px 1fr 86px">
+<div class="hl" title="31–60 d">31–60 d</div>
+<div class="htrack"><i style="width:41.4%;background:var(--teal2)"></i></div>
+<div class="hv">12</div></div><div class="hrow" style="grid-template-columns:92px 1fr 86px">
+<div class="hl" title="61–90 d">61–90 d</div>
+<div class="htrack"><i style="width:17.2%;background:var(--teal2)"></i></div>
+<div class="hv">5</div></div><div class="hrow" style="grid-template-columns:92px 1fr 86px">
+<div class="hl" title="91–180 d">91–180 d</div>
+<div class="htrack"><i style="width:20.7%;background:var(--bad)"></i></div>
+<div class="hv">6</div></div><div class="hrow" style="grid-template-columns:92px 1fr 86px">
+<div class="hl" title="180+ d">180+ d</div>
+<div class="htrack"><i style="width:10.3%;background:var(--bad)"></i></div>
+<div class="hv">3</div></div></div>
+<div class="legend"><span class="mut">A further <b style="color:var(--navy)">741</b> reqs are on hold.</span></div></div></div><div class="grid2"><div class="card"><h2>How long new hires last</h2>
+<div class="hint">Share of 2026 hires still employed at each tenure milestone, counting only hires who have had time to
+reach it. The first 60 days do the damage: 19.1 points lost by day 60, then only
+12.8 more over the next four months.</div>
+<svg viewBox="0 0 620 230" role="img" aria-label="Retention survival curve">
+<defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00ae9a" stop-opacity=".26"/>
+<stop offset="100%" stop-color="#00ae9a" stop-opacity="0"/></linearGradient></defs><line x1="44" y1="198.0" x2="604" y2="198.0" stroke="#F2F2F2"/><text x="36" y="202.0" font-size="10" fill="#9aa5a7" text-anchor="end">60%</text><line x1="44" y1="152.5" x2="604" y2="152.5" stroke="#F2F2F2"/><text x="36" y="156.5" font-size="10" fill="#9aa5a7" text-anchor="end">70%</text><line x1="44" y1="107.0" x2="604" y2="107.0" stroke="#F2F2F2"/><text x="36" y="111.0" font-size="10" fill="#9aa5a7" text-anchor="end">80%</text><line x1="44" y1="61.5" x2="604" y2="61.5" stroke="#F2F2F2"/><text x="36" y="65.5" font-size="10" fill="#9aa5a7" text-anchor="end">90%</text><line x1="44" y1="16.0" x2="604" y2="16.0" stroke="#F2F2F2"/><text x="36" y="20.0" font-size="10" fill="#9aa5a7" text-anchor="end">100%</text>
+<path d="M44.0,16.0 L137.3,70.6 L230.7,102.9 L324.0,119.3 L417.3,140.2 L604.0,161.1 L604.0,198 L44.0,198 Z" fill="url(#g1)"/>
+<path d="M44.0,16.0 L137.3,70.6 L230.7,102.9 L324.0,119.3 L417.3,140.2 L604.0,161.1" fill="none" stroke="#007178" stroke-width="2.5" stroke-linejoin="round"/><circle cx="137.3" cy="70.6" r="4" fill="#fff" stroke="#007178" stroke-width="2.5"/><text x="137.3" y="58.6" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">88.0%</text><circle cx="230.7" cy="102.9" r="4" fill="#fff" stroke="#007178" stroke-width="2.5"/><text x="230.7" y="90.9" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">80.9%</text><circle cx="324.0" cy="119.3" r="4" fill="#fff" stroke="#007178" stroke-width="2.5"/><text x="324.0" y="107.3" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">77.3%</text><circle cx="417.3" cy="140.2" r="4" fill="#fff" stroke="#007178" stroke-width="2.5"/><text x="417.3" y="128.2" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">72.7%</text><circle cx="604.0" cy="161.1" r="4" fill="#fff" stroke="#007178" stroke-width="2.5"/><text x="604.0" y="149.1" font-size="11" font-weight="bold" fill="#093e52" text-anchor="middle">68.1%</text><text x="44.0" y="215" font-size="10" fill="#9aa5a7" text-anchor="middle">0d</text><text x="137.3" y="215" font-size="10" fill="#9aa5a7" text-anchor="middle">30d</text><text x="230.7" y="215" font-size="10" fill="#9aa5a7" text-anchor="middle">60d</text><text x="324.0" y="215" font-size="10" fill="#9aa5a7" text-anchor="middle">90d</text><text x="417.3" y="215" font-size="10" fill="#9aa5a7" text-anchor="middle">120d</text><text x="604.0" y="215" font-size="10" fill="#9aa5a7" text-anchor="middle">180d</text></svg></div>
+<div class="card"><h2>Why new hires left</h2>
+<div class="hint">294 of 1,174 hires have left &mdash; median 41 days,
+21% inside 90 days. Red is company-initiated, teal employee-initiated.</div>
+<div class="hbars"><div class="hrow" style="grid-template-columns:150px 1fr 92px">
+<div class="hl" title="Attendance">Attendance</div>
+<div class="htrack"><i style="width:100.0%;background:var(--bad)"></i></div>
+<div class="hv">59  <span class='mut' style='font-weight:400'>20%</span></div></div><div class="hrow" style="grid-template-columns:150px 1fr 92px">
+<div class="hl" title="Dissatisfied with Job">Dissatisfied with Job</div>
+<div class="htrack"><i style="width:76.3%;background:var(--teal2)"></i></div>
+<div class="hv">45  <span class='mut' style='font-weight:400'>15%</span></div></div><div class="hrow" style="grid-template-columns:150px 1fr 92px">
+<div class="hl" title="Abandoned Job">Abandoned Job</div>
+<div class="htrack"><i style="width:76.3%;background:var(--bad)"></i></div>
+<div class="hv">45  <span class='mut' style='font-weight:400'>15%</span></div></div><div class="hrow" style="grid-template-columns:150px 1fr 92px">
+<div class="hl" title="Other">Other</div>
+<div class="htrack"><i style="width:67.8%;background:var(--teal2)"></i></div>
+<div class="hv">40  <span class='mut' style='font-weight:400'>14%</span></div></div><div class="hrow" style="grid-template-columns:150px 1fr 92px">
+<div class="hl" title="No Show">No Show</div>
+<div class="htrack"><i style="width:61.0%;background:var(--bad)"></i></div>
+<div class="hv">36  <span class='mut' style='font-weight:400'>12%</span></div></div><div class="hrow" style="grid-template-columns:150px 1fr 92px">
+<div class="hl" title="Performance">Performance</div>
+<div class="htrack"><i style="width:45.8%;background:var(--bad)"></i></div>
+<div class="hv">27  <span class='mut' style='font-weight:400'>9%</span></div></div><div class="hrow" style="grid-template-columns:150px 1fr 92px">
+<div class="hl" title="Misconduct">Misconduct</div>
+<div class="htrack"><i style="width:40.7%;background:var(--bad)"></i></div>
+<div class="hv">24  <span class='mut' style='font-weight:400'>8%</span></div></div><div class="hrow" style="grid-template-columns:150px 1fr 92px">
+<div class="hl" title="Mutual">Mutual</div>
+<div class="htrack"><i style="width:11.9%;background:var(--teal2)"></i></div>
+<div class="hv">7  <span class='mut' style='font-weight:400'>2%</span></div></div></div>
+<div class="legend"><span><b style="color:var(--navy)">Attendance, abandonment and no-shows are
+48% of all exits</b>
+&mdash; a show-up problem more than a pay or fit problem.</span></div></div></div><div class="grid2"><div class="card"><h2>Retention by role</h2><div class="hint">Job family from the hire tracker. Front-line patient-facing roles carry the churn.</div><div class="hbars"><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Patient Access Specialist">Patient Access Specialist</div>
+<div class="htrack"><i style="width:64.0%;background:var(--gold)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--gold)">64.0%</span>
+<span class="mut" style="font-weight:400"> &middot; 303</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Pharmacy Technician">Pharmacy Technician</div>
+<div class="htrack"><i style="width:76.5%;background:var(--teal2)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--teal2)">76.5%</span>
+<span class="mut" style="font-weight:400"> &middot; 213</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Customer Service Rep">Customer Service Rep</div>
+<div class="htrack"><i style="width:66.4%;background:var(--gold)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--gold)">66.4%</span>
+<span class="mut" style="font-weight:400"> &middot; 143</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Other / Corporate">Other / Corporate</div>
+<div class="htrack"><i style="width:82.9%;background:var(--good)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--good)">82.9%</span>
+<span class="mut" style="font-weight:400"> &middot; 146</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Advanced Academy Assoc">Advanced Academy Assoc</div>
+<div class="htrack"><i style="width:48.4%;background:var(--bad)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--bad)">48.4%</span>
+<span class="mut" style="font-weight:400"> &middot; 64</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Patient Care Coordinator">Patient Care Coordinator</div>
+<div class="htrack"><i style="width:66.7%;background:var(--gold)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--gold)">66.7%</span>
+<span class="mut" style="font-weight:400"> &middot; 51</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Supervisor / Manager">Supervisor / Manager</div>
+<div class="htrack"><i style="width:87.5%;background:var(--good)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--good)">87.5%</span>
+<span class="mut" style="font-weight:400"> &middot; 40</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Pharmacist">Pharmacist</div>
+<div class="htrack"><i style="width:95.5%;background:var(--good)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--good)">95.5%</span>
+<span class="mut" style="font-weight:400"> &middot; 22</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Analyst">Analyst</div>
+<div class="htrack"><i style="width:85.7%;background:var(--good)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--good)">85.7%</span>
+<span class="mut" style="font-weight:400"> &middot; 21</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Engineer / Tech">Engineer / Tech</div>
+<div class="htrack"><i style="width:72.7%;background:var(--teal2)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--teal2)">72.7%</span>
+<span class="mut" style="font-weight:400"> &middot; 11</span></div></div></div></div><div class="card"><h2>Retention by program</h2><div class="hint">Client program from the HR record, 12+ confirmed hires.</div><div class="hbars"><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Novo Nordisk: Obesity">Novo Nordisk: Obesity</div>
+<div class="htrack"><i style="width:67.5%;background:var(--gold)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--gold)">67.5%</span>
+<span class="mut" style="font-weight:400"> &middot; 234</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="COA Pharmacy COS">COA Pharmacy COS</div>
+<div class="htrack"><i style="width:76.4%;background:var(--teal2)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--teal2)">76.4%</span>
+<span class="mut" style="font-weight:400"> &middot; 216</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Gilead: Advancing Access">Gilead: Advancing Access</div>
+<div class="htrack"><i style="width:72.6%;background:var(--teal2)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--teal2)">72.6%</span>
+<span class="mut" style="font-weight:400"> &middot; 84</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="PS - Academy">PS - Academy</div>
+<div class="htrack"><i style="width:55.9%;background:var(--bad)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--bad)">55.9%</span>
+<span class="mut" style="font-weight:400"> &middot; 68</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="NCP Pharmacy COS">NCP Pharmacy COS</div>
+<div class="htrack"><i style="width:74.2%;background:var(--teal2)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--teal2)">74.2%</span>
+<span class="mut" style="font-weight:400"> &middot; 66</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="UCB: BIMZELX">UCB: BIMZELX</div>
+<div class="htrack"><i style="width:70.0%;background:var(--gold)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--gold)">70.0%</span>
+<span class="mut" style="font-weight:400"> &middot; 50</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Galderma">Galderma</div>
+<div class="htrack"><i style="width:74.4%;background:var(--teal2)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--teal2)">74.4%</span>
+<span class="mut" style="font-weight:400"> &middot; 39</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Novo Nordisk: Norditropin">Novo Nordisk: Norditropin</div>
+<div class="htrack"><i style="width:95.5%;background:var(--good)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--good)">95.5%</span>
+<span class="mut" style="font-weight:400"> &middot; 22</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Takeda">Takeda</div>
+<div class="htrack"><i style="width:46.7%;background:var(--bad)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--bad)">46.7%</span>
+<span class="mut" style="font-weight:400"> &middot; 15</span></div></div><div class="hrow" style="grid-template-columns:170px 1fr 120px">
+<div class="hl" title="Apellis: Syfovre">Apellis: Syfovre</div>
+<div class="htrack"><i style="width:71.4%;background:var(--gold)"></i></div>
+<div class="hv" style="font-size:12px"><span style="color:var(--gold)">71.4%</span>
+<span class="mut" style="font-weight:400"> &middot; 14</span></div></div></div></div></div><div class="card"><h2>What this means</h2><div class="notes">
+<div class="callout gold"><b>Capacity has outrun demand</b>
+<p>Placements fell 71% from Q1 to Q3 while the team stayed the same
+size, and 741 reqs sit on hold. Internal moves went from 1 a quarter to 115.
+The Q4 question is redeployment, not headcount.</p></div>
+<div class="callout"><b>Speed is not the problem</b>
+<p>Median time to fill held at 28 days all year (Q1 26, Q2 31,
+Q3 28). What slipped is hitting the agreed target date &mdash; 92% in Q1 down to
+73% in Q3, with May at 61% and June at 50%.</p></div>
+<div class="callout red"><b>Retention is flat, not improving</b>
+<p>Q3's 85% headline is survivorship. On the comparable 90-day measure Q1 was 80.6%
+and Q2 79.2%. Contractor recruiters sit at 55.4% against
+73.9% for the core team.</p></div>
+<div class="callout red"><b>Half the exits are show-up failures</b>
+<p>140 of 294 exits were
+attendance, job abandonment or no-shows. That sits upstream in screening and pre-start contact, not in management.</p></div>
+<div class="callout gold"><b>The data needs one fix</b>
+<p>152 hires cannot be confirmed against HR records, 172 target-fill dates carry year
+typos, and 79% of September rows have no REQ number. Putting the ADP Associate ID on the
+tracker at offer-accept closes most of it.</p></div>
+<div class="callout"><b>Rehires underperform</b>
+<p>67.7% retention on
+31 rehires, well below external hires at
+71.2%. Worth a harder look at the rehire approval bar.</p></div>
+</div></div><footer><b>AssistRx Talent Acquisition &middot; Confidential</b><br>
+Requisition figures from the TA Recruiting Tracker CLOSED REQs tab, 2026 start dates only &mdash; 1,873
+placements across 1,557 reqs. The 1,217 external and referral placements reconcile to the
+1,217 rows on the YTD Hires tracker, a difference of one.<br>
+Retention is still-active divided by confirmed hires, excluding 9 planned exits (contract end,
+position elimination, reduction in force). 172 target-fill dates carrying year typos are excluded from the
+on-time measure. Hires matched to HR records on name &mdash; exact, then nickname, spelling and maiden-name variants.<br>
+Requisition data through Sep 30, 2026 &middot; retention data through Sep 15, 2026 &middot; generated October 05, 2026.
+Brand colors and typography per AssistRx Style Guide, May 2025.</footer></div>
+<script>
+const RT=document.getElementById('rtab');
+document.querySelectorAll('#teamseg button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#teamseg button').forEach(o=>o.classList.remove('on')); b.classList.add('on');
+  const t=b.dataset.t;
+  [...RT.tBodies[0].rows].forEach(r=>r.style.display=(t==='all'||r.dataset.team===t)?'':'none');}));
+let rk=10,ra=false;
+document.querySelectorAll('#rtab th.s').forEach(th=>th.addEventListener('click',()=>{
+  const k=+th.dataset.k, isTxt=th.dataset.type==='t';
+  ra=(rk===k)?!ra:isTxt; rk=k;
+  document.querySelectorAll('#rtab th.s').forEach(o=>o.classList.remove('asc','desc'));
+  th.classList.add(ra?'asc':'desc');
+  const rows=[...RT.tBodies[0].rows];
+  rows.sort((a,b)=>{const x=a.cells[k].textContent,y=b.cells[k].textContent;
+    const cmp=isTxt?x.localeCompare(y):(parseFloat(x.replace(/[^0-9.]/g,''))||0)-(parseFloat(y.replace(/[^0-9.]/g,''))||0);
+    return ra?cmp:-cmp;});
+  rows.forEach(r=>RT.tBodies[0].appendChild(r));}));
+</script></body></html>
