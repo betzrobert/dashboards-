@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CPO Status Update — Non-Billable</title>
+<style>
+  :root{
+    color-scheme:light;
+    --navy:#1C2A5E; --navy-2:#28407F; --navy-dk:#141F45;
+    --gold:#C89116; --gold-br:#DCA426; --green:#2E9E5B; --red:#C4402E; --teal:#2A8F9E;
+    --kpi-bg:#EFF2F8; --stripe:#F7F9FC; --track:#E7EBF3;
+    --txt:#333F4E; --muted:#6B7480; --faint:#A3AAB6; --line:#E3E7EF;
+    --canvas:#F1F4F8; --white:#fff;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+    --shadow:0 1px 2px rgba(20,31,69,.05),0 8px 24px rgba(20,31,69,.07);
+    --radius:9px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--txt);font-family:var(--font);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+
+  header{background:var(--navy);background-image:linear-gradient(112deg,var(--navy-dk),var(--navy) 55%,var(--navy-2));color:#fff;border-bottom:4px solid var(--gold-br)}
+  .htop{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding:22px 0 16px}
+  .eyebrow{font-size:10px;font-weight:700;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold-br);margin-bottom:5px}
+  h1{margin:0;font-size:27px;font-weight:900;letter-spacing:-.2px;line-height:1.1}
+  .hmeta{font-size:12px;color:#BACADB;text-align:right;line-height:1.7}
+  .hmeta b{display:block;color:#fff;font-weight:700;font-size:13px}
+  nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
+  nav button{
+    appearance:none;border:0;background:transparent;color:#B9CADC;cursor:pointer;
+    font-family:var(--font);font-size:12.5px;font-weight:700;letter-spacing:.2px;
+    padding:11px 15px;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s;
+  }
+  nav button:hover{color:#fff;background:rgba(255,255,255,.06)}
+  nav button[aria-selected="true"]{color:#fff;border-bottom-color:var(--gold-br)}
+  nav button:focus-visible{outline:2px solid var(--gold-br);outline-offset:-3px}
+
+  .view{display:none;padding:24px 0 56px}
+  .view.on{display:block}
+  .vhead{margin-bottom:18px}
+  .vhead h2{margin:0 0 4px;font-size:21px;font-weight:900;color:var(--navy)}
+  .vhead p{margin:0;font-size:13px;color:var(--muted)}
+
+  .kpis{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+  .kpi{flex:1 1 170px;background:var(--white);border:1px solid var(--line);border-left:5px solid var(--navy);border-radius:var(--radius);padding:13px 15px;box-shadow:var(--shadow)}
+  .kpi.c2{border-left-color:var(--green)} .kpi.c3{border-left-color:var(--red)}
+  .kpi.c4{border-left-color:var(--teal)} .kpi.c5{border-left-color:var(--gold-br)}
+  .kpi .n{font-size:27px;font-weight:900;color:var(--navy);line-height:1.05}
+  .kpi .n small{font-size:14px;font-weight:700;color:var(--muted)}
+  .kpi .l{font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#5B6472;margin-top:6px}
+  .kpi .ks{font-size:10.5px;color:var(--muted);margin-top:5px;line-height:1.35}
+
+  .cols{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+  .col{flex:1 1 380px;min-width:0}
+  .col.wide{flex:1.25 1 460px}
+  .panel{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px 18px;margin-bottom:18px}
+  .ptitle{margin:0 0 3px;font-size:14px;font-weight:900;color:var(--navy);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ptitle .tools{margin-left:auto;display:flex;gap:6px;align-items:center;font-weight:400}
+  .ptitle.mt{margin-top:18px}
+  .psub{margin:0 0 12px;font-size:11.5px;color:var(--muted)}
+  .pnote{margin:12px 0 0;font-size:11.5px;color:var(--muted);line-height:1.55}
+
+  .btn{font-family:var(--font);font-size:11.5px;font-weight:700;color:var(--navy);background:var(--white);border:1px solid var(--line);border-radius:999px;padding:4px 11px;cursor:pointer}
+  .btn:hover{border-color:var(--teal);color:var(--teal)}
+  .btn[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+  input[type="search"]{font-family:var(--font);font-size:11.5px;padding:4px 10px;border:1px solid var(--line);border-radius:999px;width:130px;color:var(--txt)}
+  input[type="search"]:focus{outline:none;border-color:var(--teal)}
+
+  table{width:100%;border-collapse:collapse}
+  thead th{background:var(--navy);color:#fff;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:8px 10px;text-align:right;white-space:nowrap}
+  thead th:first-child{text-align:left;border-radius:4px 0 0 0}
+  thead th:last-child{border-radius:0 4px 0 0}
+  thead th.l{text-align:left}
+  thead th.s{cursor:pointer;user-select:none}
+  thead th.s:hover{background:var(--navy-2)}
+  thead th .ar{opacity:.4;font-size:9px;margin-left:3px}
+  thead th.sorted .ar{opacity:1;color:var(--gold-br)}
+  tbody td{padding:6.5px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  tbody td:first-child,tbody td.l{text-align:left}
+  tbody tr:nth-child(even) td{background:var(--stripe)}
+  tbody tr:hover td{background:#EAF3F5}
+  tbody td.note{color:var(--muted);font-size:11.5px;text-align:left}
+  tbody tr.tot td{font-weight:900;color:var(--navy);background:var(--kpi-bg);border-top:2px solid var(--navy);border-bottom:0}
+  tbody tr.sub td{font-weight:700;color:var(--navy);background:#F4F6FA}
+  .up{color:var(--green);font-weight:700} .dn{color:var(--red);font-weight:700} .flat{color:var(--muted)}
+
+  .bars{display:flex;flex-direction:column}
+  .bar{display:flex;align-items:center;gap:11px;padding:5.5px 0}
+  .bar .bl{flex:0 0 var(--lw,140px);font-size:12px;font-weight:700;color:var(--navy);line-height:1.25}
+  .bar .bl em{display:block;font-style:normal;font-weight:400;font-size:10.5px;color:var(--muted)}
+  .bar .bt{flex:1 1 auto;background:var(--track);border-radius:999px;height:14px;overflow:hidden;min-width:40px}
+  .bar .bf{display:block;height:100%;border-radius:999px;width:0;transition:width .75s cubic-bezier(.2,.7,.2,1)}
+  .bar .bv{flex:0 0 46px;text-align:right;font-size:12px;font-weight:900;color:var(--navy)}
+
+  .takeaway{background:var(--kpi-bg);border-radius:var(--radius);border-left:5px solid var(--gold-br);padding:15px 18px;font-size:13px;line-height:1.65}
+  .takeaway b{color:var(--navy)}
+  .src{font-size:10.5px;color:var(--faint);margin:12px 0 0;line-height:1.55}
+
+  @media (max-width:760px){
+    h1{font-size:21px} .hmeta{text-align:left}
+    .kpi{flex:1 1 45%} .bar .bl{flex-basis:110px;font-size:11px}
+    .view{padding-top:18px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media print{
+    body{background:#fff} nav,.tools{display:none}
+    .view{display:block!important;page-break-after:always;padding:12px 0}
+    .panel,.kpi{box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="htop"><div>
+<div class="eyebrow">Weekly Non-Billable Staffing Status</div>
+<h1>Corporate &amp; Shared Services</h1></div>
+<div class="hmeta"><b>Snapshot as of November 2, 2026</b>Prepared for the Chief People Officer</div>
+</div><nav id="nav" role="tablist"></nav></div></header>
+<main class="wrap" id="main"></main>
+<script>
+(function(){
+  "use strict";
+  var SPEC = {"slides": [{"title": "Workforce Summary: Non-Billable", "tab": "Summary", "subtitle": ["Corporate and shared-services departments", "Requisition snapshot as of November 2, 2026"], "kpis": [{"value": 31, "label": "Open Reqs", "accent": "navy"}, {"value": 0, "label": "Pending Reqs", "accent": "gold"}, {"value": 31, "label": "Total Anticipated Demand", "accent": "red"}, {"value": 4, "label": "Pending Starts", "accent": "green"}, {"value": 9, "label": "Departments Represented", "accent": "teal"}], "body": {"layout": "two-col", "split": 0.62, "left": {"title": "Requisition Pipeline at a Glance", "block": {"type": "table", "columns": [{"label": "Metric", "w": 0.32, "align": "left"}, {"label": "Count", "w": 0.12}, {"label": "Notes", "w": 0.56, "align": "left"}], "rows": [["Total open reqs", 31, "Across 9 departments"], ["Open positions (headcount)", 31, "One position per requisition in this export"], ["Pending starts (confirmed)", 4, "Accepted offers with a start date, in background / onboarding"], ["Pending reqs (anticipated)", 0, "Reqs awaiting approval are counted as open this cycle"], {"cells": ["Total anticipated demand", 31, "Open reqs + pending reqs"], "style": "total"}, ["Pending offers (awaiting approval)", 7, "Offers out for internal approval; not yet committed supply"]], "row_height": 15.0, "size": 7.8}}, "right": {"title": "Open Reqs by C-Suite Leader", "block": {"type": "barlist", "items": [{"label": "Lynn Mettler", "value": 17, "display": 17}, {"label": "Jackie Britt", "value": 11, "display": 11}, {"label": "Not yet assigned", "value": 2, "display": 2}, {"label": "J. Gruener", "value": 1, "display": 1}], "color": "navy", "label_w": 0.4, "value_w": 0.1}, "note": "Lynn Mettler, Chief Product and Technology Officer, carries 17 of the 31 open reqs (55%). There are no pending reqs held back this cycle. Leader is the C-Suite owner of the requisition's home department. Product now reports to the Chief Product and Technology Officer."}}, "takeaway": "Open non-billable requisitions rose 3 to 31 and the list widened rather than deepened: Business Development appears for the first time with two internal-mobility transfers at VP and Senior Director level, and Procurement Specialist has moved from Product to Finance. Departments represented jumped from 7 to 9. The hire mix is steady — new headcount flat at 15, backfill up 1 to 13 — but internal mobility tripled to 3. Lynn Mettler, Chief Product and Technology Officer, holds 17 of the 31 (55%) and Jackie Britt 11 (35%). Four starts are committed and a further seven offers are out awaiting approval, five of them J. Britt's, so near-term supply is better than the headline net demand of 27 suggests.", "footnote": "Scope is non-billable only — every requisition counted here is flagged 'Is this a Billable Position? = No' — and covers the corporate and shared-services departments this report has always reported; client-delivery departments are out of scope. Finance and Business Development are new to the list this cycle and have been added to that scope. One test requisition ('TEST JOB (Do Not Apply)') was present and is excluded. Every requisition in this export is at 'Approved' status, so the pending-reqs line is a true zero. Pending starts and pending offers come from the recruiting tracker, not this export, and pending offers are not counted in demand or committed supply. The C-Suite split maps each requisition's home department to its owner; Finance is attributed to J. Gruener on the evidence of the pending-offers list, and Business Development has no owner in the lookup yet and is shown as not yet assigned rather than folded into another leader.", "timestamp": "Report date Nov 2, 2026"}, {"title": "Week-over-Week Trend", "tab": "Week-over-Week", "subtitle": ["Non-billable requisition movement", "Oct 26 vs. Nov 2"], "kpis": [{"value": "+3", "label": "Open Reqs WoW", "accent": "navy"}, {"value": "0", "label": "Pending Reqs WoW", "accent": "gold"}, {"value": "+3", "label": "Demand WoW", "accent": "red"}, {"value": "0", "label": "Starts WoW", "accent": "green"}, {"value": "+3", "label": "Net Demand WoW", "accent": "teal"}, {"value": "+2", "label": "Departments WoW", "accent": "gold"}], "body": {"layout": "two-col", "split": 0.56, "left": {"title": "Week-over-Week Comparison", "block": {"type": "table", "columns": [{"label": "Metric", "w": 0.46, "align": "left"}, {"label": "Oct 26", "w": 0.18}, {"label": "Nov 2", "w": 0.18}, {"label": "Change", "w": 0.18}], "rows": [["Open reqs", 28, 31, "+3"], ["Pending reqs (anticipated)", 0, 0, "0"], ["Total anticipated demand", 28, 31, "+3"], ["Pending starts", 4, 4, "0"], ["Committed supply", 4, 4, "0"], ["Net demand after supply", 24, 27, "+3"], ["Departments represented", 7, 9, "+2"], ["New headcount (open reqs)", 15, 15, "0"], ["Backfill (open reqs)", 12, 13, "+1"]], "row_height": 15.0, "size": 7.8}}, "right": {"title": "Magnitude of Change", "block": {"type": "barlist", "items": [{"label": "Departments represented", "value": 28.571428571428573, "display": "+29%", "color": "navy"}, {"label": "Net demand after supply", "value": 12.5, "display": "+12%", "color": "red"}, {"label": "Open reqs", "value": 10.714285714285714, "display": "+11%", "color": "red"}, {"label": "Total anticipated demand", "value": 10.714285714285714, "display": "+11%", "color": "red"}, {"label": "Backfill (open reqs)", "value": 8.333333333333334, "display": "+8%", "color": "navy"}, {"label": "Pending starts", "value": 0.0, "display": "0%", "color": "navy"}, {"label": "Committed supply", "value": 0.0, "display": "0%", "color": "navy"}, {"label": "New headcount (open reqs)", "value": 0.0, "display": "0%", "color": "navy"}], "label_w": 0.56, "value_w": 0.12}}}, "takeaway": "Demand ticked up while supply held. Open reqs rose 3 to 31 and anticipated demand with it, driven entirely by departments new to the list — Business Development with 2 and Finance with 1 — rather than by growth in the existing ones. New headcount was unchanged at 15 and backfill rose 1 to 13, so the mix is stable; the notable move is internal mobility, up from 1 to 3. Committed supply held at 4 accepted starts, taking net demand after supply to 27. Seven offers awaiting approval sit behind those starts and would materially change the picture if they convert.", "footnote": "Both columns are recomputed by this toolkit from their own export, on the same basis, and both classify billable status from the explicit iCIMS flag and count reqs awaiting approval as open. This cycle's export contains no reqs at Pending Approval, so that line is zero rather than folded. Pending starts are transcribed from the recruiting tracker in both weeks. Hire-reason rows exclude internal mobility transfers, so those two rows sum to 28 of the 31 open reqs.", "timestamp": "Report date Nov 2, 2026"}, {"title": "Open Positions — Breakdown", "tab": "Open Positions", "subtitle": ["31 open non-billable requisitions, by title and department", "15 new headcount, 13 backfill"], "kpis": [{"value": 31, "label": "Total Open Reqs", "accent": "navy"}, {"value": 15, "label": "New Headcount", "accent": "green"}, {"value": 13, "label": "Backfill", "accent": "red"}, {"value": 3, "label": "Internal Moves", "accent": "gold"}, {"value": 24, "label": "Distinct Job Titles", "accent": "gold"}, {"value": 9, "label": "Departments", "accent": "teal"}], "body": {"layout": "two-col", "split": 0.58, "left": {"title": "Open Reqs by Title", "block": {"type": "table", "columns": [{"label": "Title", "w": 0.54, "align": "left"}, {"label": "Department", "w": 0.3, "align": "left"}, {"label": "Open", "w": 0.16}], "rows": [["Implementation Manager", "Project Management Org", 3], ["Associate Implementation Manager", "Project Management Org", 2], ["Principal Full-Stack AI Engineer", "Development", 2], ["Product Owner", "Product", 2], ["Senior Implementation Analyst", "Project Management Org", 2], ["Staff Full-Stack AI Engineer", "Development", 2], ["Account Coordinator", "Account Management", 1], ["Associate Director, Strategic Account Management", "Account Management", 1], ["Data Analyst", "Enterprise Data", 1], ["Data Engineer II", "Data & Reporting", 1], ["Data Scientist, ITA", "Data & Reporting", 1], ["Manager, Software Engineering", "Development", 1], ["Other titles (12, 1 each)*", "across 8 departments", 12], {"cells": ["Total", "", 31], "style": "total"}], "row_height": 13.2, "size": 7.4}}, "right": {"title": "Open Reqs by Department", "block": {"type": "stack", "blocks": [{"type": "barlist", "items": [{"label": "Project Management Org", "value": 8}, {"label": "Development", "value": 7}, {"label": "Account Management", "value": 3}, {"label": "Data & Reporting", "value": 3}, {"label": "Product", "value": 3}, {"label": "Quality & Release Mngmt", "value": 3}, {"label": "Business Development", "value": 2}, {"label": "Enterprise Data", "value": 1}, {"label": "All other (1 departments)", "value": 1}], "color": "navy", "label_w": 0.56, "value_w": 0.1, "pitch": 14.54, "bar_h": 8.14, "size": 6.8}, {"heading": "Open Reqs by Hire Reason", "type": "barlist", "space_before": 12.0, "label_w": 0.56, "value_w": 0.1, "items": [{"label": "New", "value": 15, "color": "green"}, {"label": "Backfill – Termination", "value": 10, "color": "red"}, {"label": "Backfill – Mobility", "value": 3, "color": "red"}, {"label": "Internal Mobility – Transfer", "value": 3, "color": "gold"}], "pitch": 14.54, "bar_h": 8.14, "size": 6.8}]}}}, "takeaway": "Project Management Org remains the largest block at 8 of 31 open reqs (26%), all Implementation Manager and analyst roles. Development holds 7, of which 4 are the Full-Stack AI Engineer reqs. The week's change is at the edges: Business Development enters with a VP, Enterprise Strategy and a Senior Director, Strategy & Key Partnerships, both internal transfers, and the Procurement Specialist req now sits in Finance rather than Product. Hire reason splits 15 new, 13 backfill and 3 internal mobility transfers — the most internal movement in this series. Delivery stays remote-first: 26 of 31 are Remote - US and 5 hybrid, with no onsite roles open.", "footnote": "31 non-billable open requisitions carrying 31 openings, one per req. Department is taken from ADP Department : Name and hire reason from Hire Type, which splits New 15, Backfill – Termination 10, Backfill – Mobility 3, Internal Mobility – Transfer 3. One test requisition is excluded. Titles shown as recorded. Other titles folded into the final row: Procurement Specialist, QA Lead Data & Reporting, Release Coordinator, Senior Director, Strategy & Key Partnerships, Senior Implementation Manager, Senior Scrum Master, Software Engineer III, Software Quality Analyst I, Strategic Account Manager, Tech Lead, Vice President, Enterprise Strategy, Vice President, Insights to Action.", "timestamp": "Report date Nov 2, 2026"}, {"title": "Pending Starts", "tab": "Pending Starts", "subtitle": ["4 accepted offers with a confirmed start date", "2 are starting November 2, 2026"], "kpis": [{"value": 4, "label": "Pending Starts", "accent": "green"}, {"value": 1, "label": "New Headcount", "accent": "navy"}, {"value": 3, "label": "Backfill", "accent": "red"}, {"value": 2, "label": "Starting Nov 2", "accent": "teal"}, {"value": 4, "label": "Remote", "accent": "navy"}], "body": {"layout": "two-col", "split": 0.58, "left": {"title": "Pending Starts (4 total)", "block": {"type": "table", "columns": [{"label": "Title", "w": 0.34, "align": "left"}, {"label": "Department", "w": 0.28, "align": "left"}, {"label": "Type", "w": 0.17, "align": "left"}, {"label": "Start Date", "w": 0.21, "align": "left"}], "rows": [["Data Steward", "Enterprise Data", "Backfill", "Nov 2, 2026"], ["Product Owner", "Product", "Backfill", "Nov 2, 2026"], ["Implementation Analyst", "Project Management Org", "Backfill", "Nov 9, 2026"], ["Business Intelligence Developer", "Data & Reporting", "New", "Nov 16, 2026"]], "row_height": 15.4, "size": 8.0}, "note": "Two backfills start today — Data Steward in Enterprise Data and Product Owner in Product — followed by an Implementation Analyst on November 9 and a net-new Business Intelligence Developer on November 16. All four are remote. The Salesforce Administrator II counted last week started on October 26 and has come off this list. Candidate names, hiring managers, recruiters, replaced-employee names and offered compensation are recorded in the tracker and are excluded from this report."}, "right": {"title": "Pending Offers Awaiting Approval (7)", "block": {"type": "table", "columns": [{"label": "Leader", "w": 0.3, "align": "left"}, {"label": "Title", "w": 0.7, "align": "left"}], "rows": [["J. Britt", "Senior Strategic Account Manager"], ["J. Britt", "Implementation Manager"], ["J. Britt", "Associate Implementation Manager"], ["J. Britt", "Associate Implementation Analyst"], ["J. Britt", "Associate Implementation Analyst"], ["L. Mettler", "Data Systems Analyst, contractor"], ["J. Gruener", "Procurement Specialist"]], "row_height": 15.4, "size": 8.0}, "note": "Offers extended and awaiting internal approval. Five of the seven sit with J. Britt, all Implementation or Account Management roles. Not counted as committed supply until accepted. Candidate names are recorded in the source and are excluded from this report."}}, "takeaway": "Four starts are committed and one more cohort is close behind. Two backfills land today, the Data Steward in Enterprise Data and the Product Owner in Product; an Implementation Analyst follows on November 9 and a net-new Business Intelligence Developer on November 16. Seven further offers are out awaiting internal approval, five of them J. Britt's across Implementation and Account Management, one a contractor conversion to Data Systems Analyst under L. Mettler and one a Procurement Specialist under J. Gruener. Those seven are not counted as committed supply, but if they convert they would take committed intake to 11 against 31 open reqs.", "footnote": "Pending starts and pending offers are transcribed from the recruiting tracker — the ATS export carries no starts or offers data, so these rows are the only source and are not derived from the requisition data on the other pages. Candidate names, hiring manager names, recruiter names, the names of employees being replaced, offered compensation and free-text hire reasons are present in the source and are all excluded from this report; the build fails if any person-level field reaches this page. Pending offers are shown by the leader recorded against them in the source, which is not necessarily the C-Suite owner of the requisition's home department used on page 1.", "timestamp": "Report date Nov 2, 2026"}]};
+  var COLOR = {navy:'var(--navy)', green:'var(--green)', red:'var(--red)',
+               teal:'var(--teal)', gold:'var(--gold-br)', purple:'#5B4B8A'};
+  var CYCLE = ['navy','green','red','teal','gold','purple'];
+
+  function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+
+  function kpis(items){
+    var w=el('div','kpis');
+    items.forEach(function(it,i){
+      var cls = it.accent ? 'c'+(CYCLE.indexOf(it.accent)+1) : 'c'+((i%6)+1);
+      var k=el('div','kpi '+cls);
+      k.innerHTML='<div class="n">'+it.value+'</div><div class="l">'+it.label+'</div>'+
+                  (it.ksub?'<div class="ks">'+it.ksub+'</div>':'');
+      w.appendChild(k);
+    });
+    return w;
+  }
+
+  function panel(title,sub,tools){
+    var p=el('div','panel');
+    if(title!=null){var h=el('h3','ptitle',title); if(tools)h.appendChild(tools); p.appendChild(h);}
+    if(sub)p.appendChild(el('p','psub',sub));
+    return p;
+  }
+
+  function num(v){
+    if(typeof v==='number')return v;
+    var n=parseFloat(String(v).replace(/[^0-9.\-]/g,''));
+    return isNaN(n)?String(v).toLowerCase():n;
+  }
+
+  function isLeft(c,i){
+    var a=c.align||(i===0?'left':'right');
+    return a==='l'||a==='left'||a==='center';
+  }
+
+  function table(cols,rows,opts){
+    opts=opts||{};
+    // spec rows are either a plain array of cells or {cells, style}
+    rows=rows.map(function(r){return Array.isArray(r)?{cells:r}:r;});
+    var t=el('table'),thead=el('thead'),tr=el('tr');
+    cols.forEach(function(c,i){
+      var th=el('th',(isLeft(c,i)?'l ':'')+(opts.sort?'s':''),
+                c.label+(opts.sort?'<span class="ar">▾</span>':''));
+      if(opts.sort){th.tabIndex=0;th.dataset.i=i;}
+      tr.appendChild(th);
+    });
+    thead.appendChild(tr);t.appendChild(thead);
+    var tb=el('tbody');t.appendChild(tb);
+    var state={i:-1,asc:false,q:''};
+
+    function draw(){
+      tb.innerHTML='';
+      var body=rows.filter(function(r){return r.style!=='total';});
+      var pinned=rows.filter(function(r){return r.style==='total';});
+      if(state.q){
+        body=body.filter(function(r){
+          return String(r.cells[0]).toLowerCase().indexOf(state.q)>-1;
+        });
+      }
+      if(state.i>-1){
+        body=body.slice().sort(function(a,b){
+          var x=num(a.cells[state.i]),y=num(b.cells[state.i]);
+          if(typeof x==='string'||typeof y==='string')
+            return state.asc?String(x).localeCompare(String(y)):String(y).localeCompare(String(x));
+          return state.asc?x-y:y-x;
+        });
+      }
+      body.concat(pinned).forEach(function(r){
+        var row=el('tr', r.style==='total'?'tot':(r.style||''));
+        cols.forEach(function(c,i){
+          var v=r.cells[i]==null?'':r.cells[i];
+          // a wide left-aligned column that isn't the first is prose, not a label
+          var prose=(isLeft(c,i)&&i>0&&(c.w||0)>=0.40);
+          var cls=c.cls||(prose?'note':(isLeft(c,i)&&i>0?'l':''));
+          row.appendChild(el('td',cls,String(v)));
+        });
+        tb.appendChild(row);
+      });
+      Array.prototype.forEach.call(thead.querySelectorAll('th'),function(th,i){
+        th.classList.toggle('sorted',i===state.i);
+        var ar=th.querySelector('.ar');
+        if(ar)ar.textContent=(i===state.i&&state.asc)?'▴':'▾';
+      });
+    }
+    if(opts.sort){
+      Array.prototype.forEach.call(thead.querySelectorAll('th'),function(th){
+        var go=function(){
+          var i=+th.dataset.i;
+          if(state.i===i)state.asc=!state.asc; else {state.i=i;state.asc=false;}
+          draw();
+        };
+        th.addEventListener('click',go);
+        th.addEventListener('keydown',function(e){
+          if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}
+        });
+      });
+    }
+    draw();
+    t.filter=function(q){state.q=(q||'').toLowerCase();draw();};
+    return t;
+  }
+
+  function bars(items,fixed,lw){
+    var max=1;
+    items.forEach(function(i){max=Math.max(max,Math.abs(+i.value||0));});
+    var w=el('div','bars');
+    items.forEach(function(r,i){
+      var b=el('div','bar');
+      if(lw)b.style.setProperty('--lw',lw+'px');
+      var key=r.color||fixed||CYCLE[i%CYCLE.length];
+      var p=Math.max(1.5,(Math.abs(+r.value||0)/max)*100);
+      b.innerHTML='<span class="bl">'+r.label+'</span>'+
+        '<span class="bt"><i class="bf" data-w="'+p.toFixed(1)+'" style="background:'+(COLOR[key]||COLOR.navy)+'"></i></span>'+
+        '<span class="bv">'+(r.display!=null?r.display:r.value)+'</span>';
+      w.appendChild(b);
+    });
+    return w;
+  }
+
+  function searchTools(t){
+    var tools=el('span','tools');
+    var inp=document.createElement('input');
+    inp.setAttribute('type','search'); inp.setAttribute('placeholder','Filter…');
+    inp.addEventListener('input',function(){t.filter(inp.value);});
+    tools.appendChild(inp);
+    return tools;
+  }
+
+  function addBlock(host,blk,lw){
+    if(!blk)return;
+    if(blk.type==='table'){
+      var sortable=(blk.rows||[]).length>=8;
+      var t=table(blk.columns,blk.rows,{sort:sortable});
+      if(sortable && host.firstChild && host.firstChild.classList
+         && host.firstChild.classList.contains('ptitle')){
+        host.firstChild.appendChild(searchTools(t));
+      }
+      host.appendChild(t);
+    } else if(blk.type==='barlist'||blk.type==='hbar'){
+      host.appendChild(bars(blk.items,blk.color,lw));
+    } else if(blk.type==='text'){
+      host.appendChild(el('p','pnote',blk.text));
+    } else if(blk.type==='stack'){
+      blk.blocks.forEach(function(b,i){
+        if(b.heading)host.appendChild(el('h3','ptitle'+(i?' mt':''),b.heading));
+        addBlock(host,b,lw);
+      });
+    }
+  }
+
+  function buildPanel(p,lw){
+    var host=panel(p.title==null?null:p.title);
+    addBlock(host,p.block,lw);
+    if(p.note)host.appendChild(el('p','pnote',p.note));
+    return host;
+  }
+
+  var nav=document.getElementById('nav'), main=document.getElementById('main');
+
+  var viewCount=0, lastView=null;
+  SPEC.slides.forEach(function(s,idx){
+    // a continuation section belongs to the tab before it
+    if(s.merge_into_previous && lastView){
+      var host=lastView, tk=host.querySelector('.takeaway'), sr=host.querySelector('.src');
+      var frag=document.createElement('div');
+      if(s.body){
+        if(s.body.layout==='full'){ frag.appendChild(buildPanel(s.body.panel,170)); }
+        else{
+          var cc=el('div','cols');
+          var LL=el('div','col'), RR=el('div','col');
+          if(s.body.left)LL.appendChild(buildPanel(s.body.left,150));
+          if(s.body.right)RR.appendChild(buildPanel(s.body.right,150));
+          cc.appendChild(LL);cc.appendChild(RR);frag.appendChild(cc);
+        }
+      }
+      // insert before the takeaway/sources so they stay last
+      var anchor=tk||sr;
+      while(frag.firstChild){
+        var node=frag.firstChild; frag.removeChild(node);
+        if(anchor)host.insertBefore(node,anchor); else host.appendChild(node);
+      }
+      return;
+    }
+    viewCount++;
+    var id='v'+viewCount;
+    var b=el('button',null,s.tab||s.title);
+    b.dataset.id=id; b.setAttribute('role','tab');
+    b.setAttribute('aria-selected',idx===0?'true':'false');
+    b.addEventListener('click',function(){show(id);});
+    nav.appendChild(b);
+
+    var view=el('section','view'+(idx===0?' on':''));
+    view.id='v-'+id; view.setAttribute('role','tabpanel');
+
+    var sub=s.subtitle;
+    if(Array.isArray(sub))sub=sub.join(' · ');
+    view.appendChild(el('div','vhead','<h2>'+s.title+'</h2>'+(sub?'<p>'+sub+'</p>':'')));
+    if(s.kpis&&s.kpis.length)view.appendChild(kpis(s.kpis));
+
+    var body=s.body;
+    if(body){
+      if(body.layout==='full'){
+        view.appendChild(buildPanel(body.panel,170));
+      }else{
+        var c=el('div','cols');
+        var split=body.split||0.565;
+        var L=el('div','col'+(split>0.5?' wide':''));
+        var R=el('div','col'+(split<=0.5?' wide':''));
+        if(body.left)L.appendChild(buildPanel(body.left,150));
+        if(body.right)R.appendChild(buildPanel(body.right,150));
+        c.appendChild(L);c.appendChild(R);
+        view.appendChild(c);
+      }
+    }
+    if(s.takeaway)view.appendChild(el('div','takeaway','<b>Key takeaway:</b> '+s.takeaway));
+    if(s.footnote)view.appendChild(el('p','src',s.footnote));
+    main.appendChild(view);
+    lastView=view;
+  });
+
+  function fillBars(scope){
+    if(!scope)return;
+    Array.prototype.forEach.call(scope.querySelectorAll('.bf'),function(b){
+      b.style.width='0%';
+      requestAnimationFrame(function(){b.style.width=b.getAttribute('data-w')+'%';});
+    });
+  }
+  function show(id){
+    Array.prototype.forEach.call(nav.querySelectorAll('button'),function(b){
+      b.setAttribute('aria-selected',b.dataset.id===id?'true':'false');
+    });
+    Array.prototype.forEach.call(main.querySelectorAll('.view'),function(s){
+      s.classList.toggle('on',s.id==='v-'+id);
+    });
+    fillBars(document.getElementById('v-'+id));
+    if(history.replaceState)history.replaceState(null,'','#'+id);
+    window.scrollTo(0,0);
+  }
+  nav.addEventListener('keydown',function(e){
+    var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;
+    if(!d)return;
+    var btns=[].slice.call(nav.querySelectorAll('button'));
+    var i=btns.findIndex(function(b){return b.getAttribute('aria-selected')==='true';});
+    var n=(i+d+btns.length)%btns.length;
+    e.preventDefault(); btns[n].focus(); show(btns[n].dataset.id);
+  });
+  var start=(location.hash||'').replace('#','');
+  show(document.getElementById('v-'+start)?start:'v1');
+})();
+</script>
+</body></html>
