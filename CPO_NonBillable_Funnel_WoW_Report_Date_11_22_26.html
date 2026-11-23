@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CPO Status Update — Non-Billable Funnel — Report Date Nov 22, 2026</title>
+<style>
+  :root{--navy:#1C2A5E;--gold:#C89116;--gold-br:#DCA426;--green:#2E9E5B;--red:#C4402E;--teal:#2A8F9E;--kpi-bg:#EFF2F8;--stripe:#F3F5FA;--track:#EDF0F6;--txt:#333F4E;--muted:#6B7480;--faint:#A3AAB6;--line:#E3E7EF;
+    --font:"Lato","Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;background:#DFE3EB;color:var(--txt);font-family:var(--font);font-size:13px;line-height:1.5}
+  .slide{width:1440px;min-height:810px;margin:26px auto;background:#fff;padding:38px 46px 34px;display:flex;flex-direction:column;box-shadow:0 2px 4px rgba(20,31,69,.08),0 14px 40px rgba(20,31,69,.10)}
+  .eyebrow{display:flex;justify-content:space-between;margin-bottom:14px}
+  .tag{color:var(--gold);font-weight:700;font-size:10px;letter-spacing:2.1px;text-transform:uppercase}
+  .gen{color:var(--faint);font-size:9.5px;letter-spacing:1.1px}
+  h1{font-size:35px;font-weight:900;color:var(--navy);margin:0;letter-spacing:-.4px;line-height:1.1}
+  .deck{color:var(--muted);font-size:12.5px;margin:9px 0 0}
+  .kpistrip{display:flex;gap:16px;margin:24px 0 22px}
+  .k{flex:1;background:var(--kpi-bg);border-radius:6px;padding:14px 10px 12px;text-align:center;border-left:7px solid var(--navy)}
+  .k.c2{border-left-color:var(--green)}.k.c3{border-left-color:var(--red)}.k.c4{border-left-color:var(--teal)}.k.c5{border-left-color:var(--gold-br)}
+  .kn{font-size:30px;font-weight:700;color:var(--navy);line-height:1.05}
+  .kl{font-size:8.6px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#5B6472;margin-top:7px}
+  .ksub{font-size:9.5px;color:#8A93A3;margin-top:5px;font-weight:600}
+  .cols{display:flex;gap:22px;flex:1}
+  .col{flex:1;min-width:0;display:flex}.col.wide{flex:1.25}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:8px;padding:19px 21px 21px;box-shadow:0 1px 3px rgba(20,31,69,.05);flex:1}
+  .ptitle{font-size:13.5px;font-weight:700;color:var(--navy);margin:0 0 4px}
+  .psub{font-size:10.5px;color:var(--muted);margin:0 0 14px}
+  /* funnel */
+  .fn{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .stage{display:flex;align-items:center;justify-content:space-between;color:#fff;padding:0 18px;height:50px;border-radius:4px;font-weight:700;font-size:12px}
+  .stage b{font-size:22px}
+  .stage small{display:block;font-weight:400;font-size:9.5px;opacity:.85}
+  .s1{background:var(--navy)}.s2{background:var(--teal)}.s3{background:var(--gold-br);color:#1C2A5E}.s4{background:var(--green)}
+  .flow{width:100%;margin-top:16px;display:flex;gap:10px}
+  .fb{flex:1;border-radius:6px;padding:10px 12px;font-size:10.4px;background:var(--stripe)}
+  .fb h3{margin:0 0 4px;font-size:9.6px;letter-spacing:1.3px;text-transform:uppercase;color:var(--navy)}
+  .fb.out{border-top:3px solid var(--teal)}.fb.new{border-top:3px solid var(--gold-br)}.fb.inf{border-top:3px solid var(--green)}
+  table{width:100%;border-collapse:collapse}
+  thead th{background:var(--navy);color:#fff;font-size:9.6px;padding:7px 10px;text-align:right;white-space:nowrap}
+  thead th:first-child{text-align:left}
+  tbody td{font-size:10.6px;padding:6.5px 10px;text-align:right;font-variant-numeric:tabular-nums}
+  tbody td:first-child{text-align:left}
+  tbody tr:nth-child(even) td{background:var(--stripe)}
+  td.na{color:var(--faint);font-style:italic}
+  .up{color:var(--red);font-weight:700}.ok{color:var(--green);font-weight:700}.even{color:var(--muted);font-weight:700}
+  .pnote{font-size:9.8px;color:var(--muted);margin:12px 0 0;line-height:1.5}
+  .ou{display:flex;gap:10px;margin:14px 0 4px}
+  .ou div{flex:1;border-radius:6px;padding:10px;text-align:center;background:var(--kpi-bg)}
+  .ou .n{font-size:24px;font-weight:700;color:var(--navy)}.ou .l{font-size:8.6px;letter-spacing:1.3px;font-weight:700;text-transform:uppercase;color:#5B6472}
+  .takeaway{background:var(--kpi-bg);border-radius:6px;padding:14px 20px;margin-top:20px;font-size:11.4px;line-height:1.65}
+  .takeaway b{color:var(--navy)}
+  .foot{font-size:7.8px;color:var(--faint);margin-top:12px;line-height:1.55}
+  /* additions for the non-billable edition */
+  td.tl{text-align:left!important}
+  tbody tr.tot td{background:var(--kpi-bg)!important;font-weight:700;color:var(--navy);border-top:1px solid var(--line)}
+  tbody tr.grp td{background:#E6EAF3!important;font-weight:700;color:var(--navy)}
+  .lf{margin:0 0 13px}
+  .lf h4{margin:0 0 5px;font-size:11.4px;color:var(--navy);display:flex;justify-content:space-between}
+  .lf h4 span{font-weight:400;font-size:9.6px;color:var(--muted)}
+  .br{display:flex;align-items:center;gap:8px;margin:3px 0}
+  .br .bl{width:92px;font-size:9.6px;color:var(--muted)}
+  .br .bt{flex:1;height:14px;background:var(--track);border-radius:3px;overflow:hidden}
+  .br .bf{height:100%;border-radius:3px}
+  .br .bv{width:22px;text-align:right;font-size:11px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums}
+  .bf.o{background:var(--navy)}.bf.f{background:var(--teal)}.bf.s{background:var(--gold-br)}
+  .legend{display:flex;gap:14px;font-size:9.4px;color:var(--muted);margin:-4px 0 12px}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+  ul.items{margin:2px 0 0;padding-left:16px;font-size:10.6px;line-height:1.6}
+  ul.items li{margin-bottom:6px}
+  ul.items b{color:var(--navy)}
+</style>
+</head>
+<body>
+
+<!-- ============ SLIDE 1 — NON-BILLABLE FUNNEL ============ -->
+<section class="slide">
+  <div class="eyebrow"><span class="tag">CPO Status Update &middot; Non-Billable</span><span class="gen">Report date November 22, 2026 · vs. November 15, 2026</span></div>
+  <h1>Non-Billable Funnel</h1>
+  <p class="deck">Open demand · filled this week · on hold · what came off · what's new · week over week</p>
+
+  <div class="kpistrip">
+    <div class="k c5"><div class="kn">24</div><div class="kl">Open Reqs</div><div class="ksub">Across 8 departments</div></div>
+    <div class="k c2"><div class="kn">6</div><div class="kl">Filled This Week</div><div class="ksub">11/16&ndash;11/22</div></div>
+    <div class="k"><div class="kn">6</div><div class="kl">On Hold</div><div class="ksub">Not counted in demand</div></div>
+    <div class="k c4"><div class="kn">&minus;4</div><div class="kl">Open Reqs WoW</div><div class="ksub">28 &rarr; 24</div></div>
+    <div class="k c3"><div class="kn">8</div><div class="kl">Departments</div><div class="ksub">+1 WoW</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Non-Billable Funnel — This Week</h2>
+        <p class="psub">Open demand, what filled, and what is parked</p>
+        <div class="fn">
+          <div class="stage s1" style="width:100%"><span>Open Reqs<small>Approved; pending approval counted as open (none)</small></span><b>24</b></div>
+          <div class="stage s2" style="width:62%"><span>Filled This Week<small>Closed as filled 11/16&ndash;11/22</small></span><b>6</b></div>
+          <div class="stage s3" style="width:44%"><span>On Hold<small>Not counted</small></span><b>6</b></div>
+        </div>
+        <div class="flow">
+          <div class="fb out"><h3>Came Off</h3>5 reqs left the open list, all filled<br>No cancellations this week</div>
+          <div class="fb new"><h3>What's New</h3>1 req opened: Principal Cloud Architect, Infrastructure &amp; Telecom (new to the list)<br>Departments 7 &rarr; 8</div>
+          <div class="fb inf"><h3>In Flight</h3>Pending starts not reported this cycle<br>Senior Data Systems Analyst opened and filled 11/17<br>Holds unchanged at 6</div>
+        </div>
+      </div>
+    </div>
+    <div class="col wide">
+      <div class="panel">
+        <h2 class="ptitle">Week over Week</h2>
+        <p class="psub">Prior week = 11/15 report, on the same basis</p>
+        <table>
+          <thead><tr><th>Metric</th><th>11/15</th><th>11/22</th><th>Δ WoW</th><th style="text-align:left">Over / Under</th></tr></thead>
+          <tbody>
+            <tr><td>Open reqs</td><td>28</td><td>24</td><td class="ok">&minus;4</td><td class="tl up">Under &mdash; 24 open</td></tr>
+            <tr><td>Pending reqs (anticipated)</td><td>0</td><td>0</td><td class="even">0</td><td class="tl even">None held back</td></tr>
+            <tr><td>Total anticipated demand</td><td>28</td><td>24</td><td class="ok">&minus;4</td><td class="tl even">Demand easing</td></tr>
+            <tr><td>Filled this week</td><td>9</td><td>6</td><td class="even">&minus;3</td><td class="tl even">5 from the 11/15 list, 1 same-week</td></tr>
+            <tr><td>Pending starts</td><td class="na">n/r</td><td class="na">n/r</td><td class="na">n/r</td><td class="tl even">Not provided this cycle</td></tr>
+            <tr><td>On hold (not counted)</td><td>6</td><td>6</td><td class="even">0</td><td class="tl even">Same six reqs</td></tr>
+            <tr><td>Departments represented</td><td>7</td><td>8</td><td class="even">+1</td><td class="tl even">Infrastructure &amp; Telecom new</td></tr>
+            <tr><td>New headcount (open reqs)</td><td>9</td><td>9</td><td class="even">0</td><td class="tl even">1 filled, 1 opened</td></tr>
+            <tr><td>Backfill (open reqs)</td><td>15</td><td>13</td><td class="ok">&minus;2</td><td class="tl even">2 backfills filled</td></tr>
+            <tr><td>Internal mobility (open reqs)</td><td>4</td><td>2</td><td class="even">&minus;2</td><td class="tl even">2 Product promotions filled</td></tr>
+          </tbody>
+        </table>
+        <div class="ou">
+          <div><div class="n">5</div><div class="l">Came off the list</div></div>
+          <div><div class="n">1</div><div class="l">Added this week</div></div>
+          <div><div class="n">24</div><div class="l">Under: open reqs</div></div>
+        </div>
+        <p class="pnote">Net change of &minus;4: 5 reqs came off the open list, all filled, and 1 was added, matched by requisition against the 11/15 report.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaway"><b>Takeaway:</b> Non-billable open reqs fell 4 to 24 as fills outpaced new demand: 5 reqs came off the list, all filled, and only 1 was added, a Principal Cloud Architect that brings Infrastructure &amp; Telecom onto the list. Jackie Britt's reqs fell from 9 to 6 on three fills, and Product dropped from 7 to 5 as two internal promotions closed. Six reqs were filled in all, including a Senior Data Systems Analyst opened and filled on 11/17. The six reqs on hold are unchanged and not counted. Pending starts were not provided this cycle.</div>
+  <p class="foot">Scope: non-billable requisitions (iCIMS &lsquo;Is this a Billable Position? = No&rsquo;) in corporate and shared-services departments; client-delivery departments (Patient Solutions, Pharmacy) are out of scope. The Senior Strategic Account Manager req, included in prior weeks as mis-flagged billable, was filled 11/19 and is counted among this week's fills; every open req this week is flagged non-billable. Approved reqs are open; there are no non-billable reqs at Pending Approval. Hold is reported separately and excluded from demand. No test requisitions were present. Filled this week = reqs whose status moved to Closed (Filled) between 11/16 and 11/22 (prior week: 11/7&ndash;11/15). n/r = not reported. Aggregate counts only; no personal data.</p>
+</section>
+
+<!-- ============ SLIDE 2 — NON-BILLABLE DETAIL ============ -->
+<section class="slide">
+  <div class="eyebrow"><span class="tag">CPO Status Update &middot; Non-Billable</span><span class="gen">Report date November 22, 2026 · Backup detail</span></div>
+  <h1>Non-Billable Funnel &mdash; Detail</h1>
+  <p class="deck">Titles, departments, hire reasons and fills behind the funnel counts</p>
+
+  <div class="kpistrip">
+    <div class="k c5"><div class="kn">24</div><div class="kl">Open Reqs</div></div>
+    <div class="k c2"><div class="kn">6</div><div class="kl">Filled This Week</div></div>
+    <div class="k"><div class="kn">9</div><div class="kl">New Headcount</div></div>
+    <div class="k c4"><div class="kn">13</div><div class="kl">Backfill</div></div>
+    <div class="k c3"><div class="kn">2</div><div class="kl">Internal Moves</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col" style="flex-direction:column;gap:18px">
+      <div class="panel">
+        <h2 class="ptitle">Open Reqs by Title (24)</h2>
+        <p class="psub">19 distinct titles across 8 departments &middot; one opening per req</p>
+        <table>
+          <thead><tr><th>Title</th><th style="text-align:left">Department</th><th>Open</th></tr></thead>
+          <tbody>
+            <tr><td>Implementation Manager</td><td class="tl">Project Management Org</td><td>3</td></tr>
+            <tr><td>Product Owner</td><td class="tl">Product</td><td>3</td></tr>
+            <tr><td>Manager, Product Delivery</td><td class="tl">Product</td><td>2</td></tr>
+            <tr><td>Administrative Assistant I</td><td class="tl">Facilities &amp; Admin</td><td>1</td></tr>
+            <tr><td>Associate Director, Strategic Account Management</td><td class="tl">Account Management</td><td>1</td></tr>
+            <tr><td>Associate Implementation Manager</td><td class="tl">Project Management Org</td><td>1</td></tr>
+            <tr><td>Data Engineer II</td><td class="tl">Data &amp; Reporting</td><td>1</td></tr>
+            <tr><td>Data Scientist, ITA</td><td class="tl">Data &amp; Reporting</td><td>1</td></tr>
+            <tr><td>Facilities &amp; Security Operations Associate</td><td class="tl">Facilities &amp; Admin</td><td>1</td></tr>
+            <tr><td>Manager, Software Engineering</td><td class="tl">Development</td><td>1</td></tr>
+            <tr><td>Principal Cloud Architect</td><td class="tl">Infrastructure &amp; Telecom</td><td>1</td></tr>
+            <tr><td>QA Lead Data &amp; Reporting</td><td class="tl">Quality &amp; Release Mngmt</td><td>1</td></tr>
+            <tr><td>Other titles (7, 1 each)*</td><td class="tl">across 4 departments</td><td>7</td></tr>
+            <tr class="tot"><td>Total</td><td class="tl"></td><td>24</td></tr>
+          </tbody>
+        </table>
+        <p class="pnote">*Release Coordinator, Senior Implementation Manager, Software Engineer III, Software Quality Analyst I, Staff Full-Stack AI Engineer, Tech Lead, Vice President, Insights to Action. Work arrangement: 20 Remote - US, 2 Hybrid, 2 Onsite (both Facilities &amp; Admin).</p>
+      </div>
+      <div class="panel">
+        <h2 class="ptitle">Open Reqs by Hire Reason</h2>
+        <p class="psub">As recorded in Hire Type</p>
+        <table>
+          <thead><tr><th>Hire reason</th><th>11/15</th><th>11/22</th><th>Δ WoW</th></tr></thead>
+          <tbody>
+            <tr><td>New</td><td>9</td><td>9</td><td class="even">0</td></tr>
+            <tr><td>Backfill &ndash; Termination</td><td>14</td><td>12</td><td class="even">&minus;2</td></tr>
+            <tr><td>Backfill &ndash; Mobility</td><td>1</td><td>1</td><td class="even">0</td></tr>
+            <tr><td>Internal Mobility &ndash; Promotion</td><td>3</td><td>1</td><td class="even">&minus;2</td></tr>
+            <tr><td>Internal Mobility &ndash; Transfer</td><td>1</td><td>1</td><td class="even">0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col" style="flex-direction:column;gap:18px">
+      <div class="panel" style="flex:0 0 auto">
+        <h2 class="ptitle">Filled This Week (6)</h2>
+        <p class="psub">Status moved to Closed (Filled), 11/16&ndash;11/22</p>
+        <table>
+          <thead><tr><th>Title</th><th style="text-align:left">Department</th><th style="text-align:left">Hire reason</th><th style="text-align:left">Filled</th><th>Reqs</th></tr></thead>
+          <tbody>
+            <tr><td>Manager, Product Delivery</td><td class="tl">Product</td><td class="tl">Promotion</td><td class="tl">11/16</td><td>1</td></tr>
+            <tr><td>Product Owner</td><td class="tl">Product</td><td class="tl">Promotion</td><td class="tl">11/16</td><td>1</td></tr>
+            <tr><td>Associate Implementation Analyst</td><td class="tl">Project Management Org</td><td class="tl">Backfill</td><td class="tl">11/17</td><td>1</td></tr>
+            <tr><td>Senior Data Systems Analyst</td><td class="tl">Enterprise Data</td><td class="tl">New</td><td class="tl">11/17</td><td>1</td></tr>
+            <tr><td>Senior Strategic Account Manager</td><td class="tl">Account Management</td><td class="tl">Backfill</td><td class="tl">11/19</td><td>1</td></tr>
+            <tr><td>Implementation Manager</td><td class="tl">Project Management Org</td><td class="tl">New</td><td class="tl">11/20</td><td>1</td></tr>
+          </tbody>
+        </table>
+        <p class="pnote">Senior Data Systems Analyst was opened and filled on 11/17 and was not on the 11/15 list. No reqs were canceled or closed unfilled this week.</p>
+      </div>
+      <div class="panel">
+        <h2 class="ptitle">Open Reqs by Department (8)</h2>
+        <p class="psub">Home department &middot; week over week</p>
+        <table>
+          <thead><tr><th>Department</th><th>11/15</th><th>11/22</th><th>Δ WoW</th></tr></thead>
+          <tbody>
+            <tr><td>Project Management Org</td><td>7</td><td>5</td><td class="ok">&minus;2</td></tr>
+            <tr><td>Product</td><td>7</td><td>5</td><td class="ok">&minus;2</td></tr>
+            <tr><td>Development</td><td>4</td><td>4</td><td class="even">0</td></tr>
+            <tr><td>Data &amp; Reporting</td><td>3</td><td>3</td><td class="even">0</td></tr>
+            <tr><td>Quality &amp; Release Mngmt</td><td>3</td><td>3</td><td class="even">0</td></tr>
+            <tr><td>Facilities &amp; Admin</td><td>2</td><td>2</td><td class="even">0</td></tr>
+            <tr><td>Account Management</td><td>2</td><td>1</td><td class="ok">&minus;1</td></tr>
+            <tr><td>Infrastructure &amp; Telecom</td><td>0</td><td>1</td><td class="up">+1</td></tr>
+            <tr class="tot"><td>Total</td><td>28</td><td>24</td><td>&minus;4</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <p class="foot">Department from ADP Department : Name; hire reason from Hire Type. Titles shown as recorded. Fill dates are the date the req moved to Closed (Filled) in iCIMS, not start dates. Candidate names, hiring managers, recruiters, replaced-employee names, compensation, ticket references and free-text hire reasons are excluded. Aggregate counts only; no personal data.</p>
+</section>
+
+<!-- ============ SLIDE 3 — C-SUITE LEADER FUNNEL ============ -->
+<section class="slide">
+  <div class="eyebrow"><span class="tag">CPO Status Update &middot; Non-Billable</span><span class="gen">Report date November 22, 2026 · by C-Suite leader</span></div>
+  <h1>C-Suite Leader Funnel</h1>
+  <p class="deck">Open demand · filled this week · on hold, by the C-Suite owner of each req's home department · week over week</p>
+
+  <div class="kpistrip">
+    <div class="k"><div class="kn">16</div><div class="kl">Lynn Mettler</div><div class="ksub">67% &middot; 5 departments</div></div>
+    <div class="k c4"><div class="kn">6</div><div class="kl">Jackie Britt</div><div class="ksub">25% &middot; 2 departments</div></div>
+    <div class="k c5"><div class="kn">2</div><div class="kl">Anthony Spalitto</div><div class="ksub">8% &middot; Facilities &amp; Admin</div></div>
+    <div class="k c2"><div class="kn">6</div><div class="kl">Filled This Week</div><div class="ksub">3 Mettler &middot; 3 Britt</div></div>
+    <div class="k c3"><div class="kn">6</div><div class="kl">On Hold</div><div class="ksub">5 Mettler &middot; 1 Britt</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="panel">
+        <h2 class="ptitle">Leader Funnels — This Week</h2>
+        <p class="psub">Bars scaled to the largest count (16)</p>
+        <div class="legend"><span><i style="background:var(--navy)"></i>Open reqs</span><span><i style="background:var(--teal)"></i>Filled this week</span><span><i style="background:var(--gold-br)"></i>On hold</span></div>
+
+        <div class="lf"><h4>Lynn Mettler <span>Chief Product and Technology Officer</span></h4>
+          <div class="br"><span class="bl">Open reqs</span><div class="bt"><div class="bf o" style="width:100%"></div></div><span class="bv">16</span></div>
+          <div class="br"><span class="bl">Filled this week</span><div class="bt"><div class="bf f" style="width:18.75%"></div></div><span class="bv">3</span></div>
+          <div class="br"><span class="bl">On hold</span><div class="bt"><div class="bf s" style="width:31.25%"></div></div><span class="bv">5</span></div>
+        </div>
+        <div class="lf"><h4>Jackie Britt <span>Implementation &amp; Account Management</span></h4>
+          <div class="br"><span class="bl">Open reqs</span><div class="bt"><div class="bf o" style="width:37.5%"></div></div><span class="bv">6</span></div>
+          <div class="br"><span class="bl">Filled this week</span><div class="bt"><div class="bf f" style="width:18.75%"></div></div><span class="bv">3</span></div>
+          <div class="br"><span class="bl">On hold</span><div class="bt"><div class="bf s" style="width:6.25%"></div></div><span class="bv">1</span></div>
+        </div>
+        <div class="lf" style="margin-bottom:0"><h4>Anthony Spalitto <span>Facilities &amp; Admin</span></h4>
+          <div class="br"><span class="bl">Open reqs</span><div class="bt"><div class="bf o" style="width:12.5%"></div></div><span class="bv">2</span></div>
+          <div class="br"><span class="bl">Filled this week</span><div class="bt"><div class="bf f" style="width:0"></div></div><span class="bv">0</span></div>
+          <div class="br"><span class="bl">On hold</span><div class="bt"><div class="bf s" style="width:0"></div></div><span class="bv">0</span></div>
+        </div>
+
+        <div class="flow">
+          <div class="fb out"><h3>Biggest Drop</h3>J. Britt: 9 &rarr; 6 on 3 fills</div>
+          <div class="fb new"><h3>New Department</h3>Infrastructure &amp; Telecom (1) under L. Mettler</div>
+          <div class="fb inf"><h3>Fills Split Evenly</h3>3 L. Mettler &middot; 3 J. Britt</div>
+        </div>
+      </div>
+    </div>
+    <div class="col wide">
+      <div class="panel">
+        <h2 class="ptitle">Leader Comparison</h2>
+        <p class="psub">Requisition owner = C-Suite leader of the req's home department</p>
+        <table>
+          <thead><tr><th>Leader</th><th>11/15</th><th>11/22</th><th>Δ WoW</th><th>Share</th><th>Filled</th><th>On hold</th><th style="text-align:left">Over / Under</th></tr></thead>
+          <tbody>
+            <tr><td>Lynn Mettler</td><td>17</td><td>16</td><td class="ok">&minus;1</td><td>67%</td><td>3</td><td>5</td><td class="tl up">Under &mdash; most open</td></tr>
+            <tr><td>Jackie Britt</td><td>9</td><td>6</td><td class="ok">&minus;3</td><td>25%</td><td>3</td><td>1</td><td class="tl even">Under &mdash; biggest drop</td></tr>
+            <tr><td>Anthony Spalitto</td><td>2</td><td>2</td><td class="even">0</td><td>8%</td><td>0</td><td>0</td><td class="tl even">Under &mdash; 2 open</td></tr>
+            <tr class="tot"><td>Total</td><td>28</td><td>24</td><td>&minus;4</td><td>100%</td><td>6</td><td>6</td><td class="tl"></td></tr>
+          </tbody>
+        </table>
+        <div class="ou">
+          <div><div class="n">16 of 24</div><div class="l">Open reqs: L. Mettler</div></div>
+          <div><div class="n">3 &middot; 3</div><div class="l">Fills: Mettler &middot; Britt</div></div>
+          <div><div class="n">9 &rarr; 6</div><div class="l">J. Britt</div></div>
+        </div>
+        <p class="pnote">Leader is the C-Suite owner of the req's home department; fills and holds are mapped the same way. Infrastructure &amp; Telecom maps to Lynn Mettler. Shares are rounded.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaway"><b>Takeaway:</b> Lynn Mettler holds 16 of 24 open reqs (67%), down 1: Product fell from 7 to 5 as two internal promotions filled, partly offset by a new Principal Cloud Architect in Infrastructure &amp; Telecom. She also carries 5 of the 6 reqs on hold. Jackie Britt had the biggest drop, from 9 to 6, after filling an Implementation Manager, an Associate Implementation Analyst and a Senior Strategic Account Manager. Anthony Spalitto is unchanged at 2. Fills split evenly, three each for Mettler and Britt.</div>
+  <p class="foot">Leader is the C-Suite owner of the requisition's home department. Lynn Mettler: Development, Data &amp; Reporting, Enterprise Data, Quality &amp; Release Mngmt, Architecture &amp; DevOps, Infrastructure &amp; Telecom, Product. Jackie Britt: Project Management Org, Account Management. Anthony Spalitto: Facilities &amp; Admin. J. Gruener (Finance) and Stacey Little (Business Development) have no open reqs in either week. Aggregate counts only; no personal data.</p>
+</section>
+
+<!-- ============ SLIDE 4 — C-SUITE LEADER DETAIL ============ -->
+<section class="slide">
+  <div class="eyebrow"><span class="tag">CPO Status Update &middot; Non-Billable</span><span class="gen">Report date November 22, 2026 · Backup detail</span></div>
+  <h1>C-Suite Leader Funnel &mdash; Detail</h1>
+  <p class="deck">Departments, week-over-week movement and holds behind each leader's counts</p>
+
+  <div class="kpistrip">
+    <div class="k c5"><div class="kn">24</div><div class="kl">Open Reqs</div></div>
+    <div class="k c2"><div class="kn">6</div><div class="kl">Filled This Week</div></div>
+    <div class="k c4"><div class="kn">5</div><div class="kl">Came Off the List</div></div>
+    <div class="k c3"><div class="kn">1</div><div class="kl">Added This Week</div></div>
+    <div class="k"><div class="kn">6</div><div class="kl">On Hold</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col" style="flex-direction:column;gap:18px">
+      <div class="panel">
+        <h2 class="ptitle">Open Reqs by Leader &amp; Department (24)</h2>
+        <p class="psub">Home department of each requisition &middot; week over week</p>
+        <table>
+          <thead><tr><th>Department</th><th>11/15</th><th>11/22</th><th>Δ WoW</th></tr></thead>
+          <tbody>
+            <tr class="grp"><td>Lynn Mettler</td><td>17</td><td>16</td><td>&minus;1</td></tr>
+            <tr><td>Product</td><td>7</td><td>5</td><td class="ok">&minus;2</td></tr>
+            <tr><td>Development</td><td>4</td><td>4</td><td class="even">0</td></tr>
+            <tr><td>Data &amp; Reporting</td><td>3</td><td>3</td><td class="even">0</td></tr>
+            <tr><td>Quality &amp; Release Mngmt</td><td>3</td><td>3</td><td class="even">0</td></tr>
+            <tr><td>Infrastructure &amp; Telecom</td><td>0</td><td>1</td><td class="up">+1</td></tr>
+            <tr class="grp"><td>Jackie Britt</td><td>9</td><td>6</td><td>&minus;3</td></tr>
+            <tr><td>Project Management Org</td><td>7</td><td>5</td><td class="ok">&minus;2</td></tr>
+            <tr><td>Account Management</td><td>2</td><td>1</td><td class="ok">&minus;1</td></tr>
+            <tr class="grp"><td>Anthony Spalitto</td><td>2</td><td>2</td><td>0</td></tr>
+            <tr><td>Facilities &amp; Admin</td><td>2</td><td>2</td><td class="even">0</td></tr>
+            <tr class="tot"><td>Total</td><td>28</td><td>24</td><td>&minus;4</td></tr>
+          </tbody>
+        </table>
+        <p class="pnote">Product and Project Management Org remain tied as the largest departments, now at 5 of 24 (21%) each.</p>
+      </div>
+    </div>
+    <div class="col" style="flex-direction:column;gap:18px">
+      <div class="panel" style="flex:0 0 auto">
+        <h2 class="ptitle">Movement by Leader (vs. 11/15)</h2>
+        <p class="psub">Reqs that came off the open list and reqs added, matched by requisition</p>
+        <table>
+          <thead><tr><th>Leader</th><th>Came off</th><th>Added</th><th>Net</th><th style="text-align:left">Added this week</th></tr></thead>
+          <tbody>
+            <tr><td>L. Mettler</td><td>2</td><td>1</td><td class="ok">&minus;1</td><td class="tl">Principal Cloud Architect</td></tr>
+            <tr><td>J. Britt</td><td>3</td><td>0</td><td class="ok">&minus;3</td><td class="tl na">&mdash;</td></tr>
+            <tr><td>A. Spalitto</td><td>0</td><td>0</td><td class="even">0</td><td class="tl na">&mdash;</td></tr>
+            <tr class="tot"><td>Total</td><td>5</td><td>1</td><td>&minus;4</td><td class="tl"></td></tr>
+          </tbody>
+        </table>
+        <p class="pnote">Came off, all filled: L. Mettler &mdash; Manager, Product Delivery; Product Owner (both internal promotions). J. Britt &mdash; Implementation Manager; Associate Implementation Analyst; Senior Strategic Account Manager.</p>
+      </div>
+      <div class="panel">
+        <h2 class="ptitle">Reqs on Hold (6)</h2>
+        <p class="psub">Excluded from open reqs and demand &middot; unchanged from 11/15</p>
+        <table>
+          <thead><tr><th>Leader</th><th style="text-align:left">Title</th><th style="text-align:left">Department</th><th>Reqs</th><th>Openings</th></tr></thead>
+          <tbody>
+            <tr><td>L. Mettler</td><td class="tl">Data Scientist, ITA</td><td class="tl">Data &amp; Reporting</td><td>2</td><td>2</td></tr>
+            <tr><td>L. Mettler</td><td class="tl">Salesforce Architect</td><td class="tl">Architecture &amp; DevOps</td><td>1</td><td>1</td></tr>
+            <tr><td>L. Mettler</td><td class="tl">Product Owner</td><td class="tl">Product</td><td>1</td><td>0</td></tr>
+            <tr><td>L. Mettler</td><td class="tl">Product Manager</td><td class="tl">Product</td><td>1</td><td>0</td></tr>
+            <tr><td>J. Britt</td><td class="tl">Manager, Implementation Analyst</td><td class="tl">Project Management Org</td><td>1</td><td>1</td></tr>
+          </tbody>
+        </table>
+        <p class="pnote">All six went on hold in September or October. Two carry zero openings.</p>
+      </div>
+    </div>
+  </div>
+  <p class="foot">Department from ADP Department : Name, mapped to its C-Suite owner. Movement matches requisitions against the 11/15 list. Holds are excluded from open reqs and demand. Aggregate counts only; no personal data.</p>
+</section>
+</body>
+</html>
